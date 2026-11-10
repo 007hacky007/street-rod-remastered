@@ -37,3 +37,9 @@ if(TARGET srelauncher)
         target_link_libraries(test_download PRIVATE ${wxWidgets_LIBRARIES})
     endif()
 endif()
+
+# The remaster's picture dump; needs the original game files: -DSRE_TEST_GAME_DIR=<folder with SR.EXE>.
+if(SRE_TEST_GAME_DIR)
+    add_test(NAME dump COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_dump.sh $<TARGET_FILE:streetrod-enhanced>
+             ${SRE_TEST_GAME_DIR})
+endif()

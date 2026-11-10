@@ -5,6 +5,7 @@
  *   --scale       initial window scale: 320x240 times N (default 3)
  *   --fullscreen  start in full screen (Alt+Enter switches)
  *   --check       load and verify the original executable, print a summary and exit (no window)
+ *   --dump-pictures DIR  write every picture of LIB1/LIB2 to DIR for the remaster and exit (no window)
  *   --music-volume N  volume of the music (the background tune), percent 0..100 (default 100)
  *   --sfx-volume N    volume of the sound effects, the engine and the loop sounds, 0..100 (default 100)
  * enhanced view (ENHANCED.md):
@@ -30,6 +31,7 @@
 #include "platform/ega.h"
 #include "platform/platform.h"
 #include "enhanced/enhanced.h"
+#include "remaster/rm_dump.h"
 
 #define MAX_GAME_ARGS 16
 
@@ -67,6 +69,7 @@ int main(int argc, char **argv)
     const char *dir = "Game";
     int scale = 3;
     bool check = false, fullscreen = false;
+    const char *dump_dir = NULL;
     bool classic = false, town = true;
     int music_volume = 100, sfx_volume = 100;
     int res_scale = -1, aa = ENH_DEFAULT_AA, motion_delay = ENH_DEFAULT_MOTION_DELAY;
@@ -78,6 +81,7 @@ int main(int argc, char **argv)
         else if (!strcmp(a, "--scale") && v) { scale = atoi(v); i++; }
         else if (!strcmp(a, "--fullscreen")) fullscreen = true;
         else if (!strcmp(a, "--check")) check = true;
+        else if (!strcmp(a, "--dump-pictures") && v) { dump_dir = v; i++; }
         else if (!strcmp(a, "--music-volume") && v) { music_volume = atoi(v); i++; }
         else if (!strcmp(a, "--sfx-volume") && v) { sfx_volume = atoi(v); i++; }
         else if (!strcmp(a, "--classic")) classic = true;
@@ -100,6 +104,12 @@ int main(int argc, char **argv)
     }
     if (check) {
         printf("%s ok: image %u bytes at %04X:0000, DGROUP %04X\n", exe_name, mem_image_size, LOAD_SEG, DGROUP);
+        return 0;
+    }
+    if (dump_dir) {
+        int n = rm_dump_pictures(dir, dump_dir);
+        if (n < 0) return 1;
+        printf("%d pictures written to %s\n", n, dump_dir);
         return 0;
     }
 
