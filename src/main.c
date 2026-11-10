@@ -6,6 +6,8 @@
  *   --fullscreen  start in full screen (Alt+Enter switches)
  *   --check       load and verify the original executable, print a summary and exit (no window)
  *   --dump-pictures DIR  write every picture of LIB1/LIB2 to DIR for the remaster and exit (no window)
+ *   --remaster-dir DIR   show the remastered pictures of the art pack in DIR (output scale 4 even with
+ *                        --classic, unless --res-scale is given)
  *   --music-volume N  volume of the music (the background tune), percent 0..100 (default 100)
  *   --sfx-volume N    volume of the sound effects, the engine and the loop sounds, 0..100 (default 100)
  * enhanced view (ENHANCED.md):
@@ -32,6 +34,7 @@
 #include "platform/platform.h"
 #include "enhanced/enhanced.h"
 #include "remaster/rm_dump.h"
+#include "remaster/rm_pack.h"
 
 #define MAX_GAME_ARGS 16
 
@@ -69,7 +72,7 @@ int main(int argc, char **argv)
     const char *dir = "Game";
     int scale = 3;
     bool check = false, fullscreen = false;
-    const char *dump_dir = NULL;
+    const char *dump_dir = NULL, *remaster_dir = NULL;
     bool classic = false, town = true;
     int music_volume = 100, sfx_volume = 100;
     int res_scale = -1, aa = ENH_DEFAULT_AA, motion_delay = ENH_DEFAULT_MOTION_DELAY;
@@ -82,6 +85,7 @@ int main(int argc, char **argv)
         else if (!strcmp(a, "--fullscreen")) fullscreen = true;
         else if (!strcmp(a, "--check")) check = true;
         else if (!strcmp(a, "--dump-pictures") && v) { dump_dir = v; i++; }
+        else if (!strcmp(a, "--remaster-dir") && v) { remaster_dir = v; i++; }
         else if (!strcmp(a, "--music-volume") && v) { music_volume = atoi(v); i++; }
         else if (!strcmp(a, "--sfx-volume") && v) { sfx_volume = atoi(v); i++; }
         else if (!strcmp(a, "--classic")) classic = true;
@@ -113,13 +117,15 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    if (res_scale < 0) res_scale = classic ? 1 : ENH_DEFAULT_RES_SCALE;
+    if (remaster_dir && !rm_pack_open(remaster_dir)) remaster_dir = NULL;
+    if (res_scale < 0) res_scale = classic && !remaster_dir ? 1 : ENH_DEFAULT_RES_SCALE;
     enh_init(!classic, res_scale, aa, motion_delay, town);
     if (!host_init(dir, scale, fullscreen)) return 1;
     host_set_volumes(music_volume, sfx_volume);
     ega_init();                     /* 16-colour planar display: frame source, planes */
     modules_init();                 /* hooks into subsystems ported separately (modules.h) */
     platform_main_init(game_argc, game_argv);   /* main 0000:066f up to the game loop */
+    atexit(rm_pack_report);
     int rc = game_main();           /* game_loop 0000:503f, platform_exit 0000:0fea */
     host_shutdown();
     return rc;

@@ -42,9 +42,16 @@ endif()
 if(SRE_TEST_GAME_DIR)
     add_test(NAME dump COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_dump.sh $<TARGET_FILE:streetrod-enhanced>
              ${SRE_TEST_GAME_DIR})
+    # Opens a window for a minute.
+    add_test(NAME identity COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_identity.sh $<TARGET_FILE:streetrod-enhanced>
+             ${SRE_TEST_GAME_DIR} ${CMAKE_SOURCE_DIR})
+    set_tests_properties(identity PROPERTIES TIMEOUT 180)
 endif()
 
 # The remaster's per-pixel tags, linked against the whole engine.
 add_executable(test_tags test_tags.c)
 target_link_libraries(test_tags PRIVATE sre_core)
 add_test(NAME tags COMMAND test_tags)
+add_executable(test_color test_color.c)
+target_link_libraries(test_color PRIVATE sre_core)
+add_test(NAME color COMMAND test_color)

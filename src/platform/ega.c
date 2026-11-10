@@ -4,6 +4,7 @@
 
 #include "host.h"
 #include "enhanced/enhanced.h"
+#include "remaster/rm_pack.h"
 
 static u8 planes[4][EGA_PLANE_SIZE];
 static u16 start_addr;
@@ -47,6 +48,10 @@ static bool compose(u32 *xrgb)
         /* ENH: the picture scaled up; the rows below repeat the first */
         u32 *first = xrgb + (size_t)y * scale * w;
         for (int j = 1; j < scale; j++) memcpy(first + (size_t)j * w, first, sizeof(u32) * (size_t)w);
+    }
+    if (rm_pack_active()) {                 /* ENH: remastered pictures */
+        u8 *const pl[4] = { planes[0], planes[1], planes[2], planes[3] };
+        rm_compose(xrgb, scale, rgb, start_addr, line_compare, pl);
     }
     enh_shown = enh_compose(xrgb, rgb);     /* ENH: the enhanced view over the picture */
     return true;
