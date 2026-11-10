@@ -62,17 +62,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: msys2/setup-msys2@v2
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
         with:
-          msystem: MINGW64
+          msystem: UCRT64
           update: true
-          install: >-
-            zip
-            mingw-w64-x86_64-gcc
-            mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-ninja
-            mingw-w64-x86_64-sdl3
-            mingw-w64-x86_64-wxwidgets3.2-msw
+          install: zip
+          pacboy: >-
+            gcc:p
+            cmake:p
+            ninja:p
+            sdl3:p
+            wxwidgets3.2-msw:p
 
       - name: Build and test
         run: tools/windows/package.sh

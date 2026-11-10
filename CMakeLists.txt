@@ -49,7 +49,7 @@ endif()
 
 # The launcher ("Street Rod Enhanced"): the game folder, the original or the data disk's cars, the
 # game's own switches and the display options; built beside streetrod-enhanced.exe. It needs
-# wxWidgets 3.2 (MSYS2: mingw-w64-x86_64-wxwidgets3.2-msw) and a C++17 compiler.
+# wxWidgets 3.2 (MSYS2: mingw-w64-ucrt-x86_64-wxwidgets3.2-msw) and a C++17 compiler.
 option(SRE_LAUNCHER "Also build the launcher, Street Rod Enhanced.exe (wxWidgets)" ON)
 if(SRE_LAUNCHER)
     add_subdirectory(launcher)

@@ -57,7 +57,7 @@ folder moves. Delete the file to go back to the defaults.
 ## Building
 
 Built with the game by default (`SRE_LAUNCHER`, see the README at the repository root); it needs CMake 3.24, a
-C++17 compiler and wxWidgets 3.2 (MSYS2 `mingw64`: `mingw-w64-x86_64-wxwidgets3.2-msw`; Debian and Ubuntu:
+C++17 compiler and wxWidgets 3.2 (MSYS2 `ucrt64`: `mingw-w64-ucrt-x86_64-wxwidgets3.2-msw`; Debian and Ubuntu:
 `libwxgtk3.2-dev`). It also builds on its own (`cmake -S launcher -B launcher/build -G Ninja`); then choose the
 program in the window or copy the launcher next to it.
 

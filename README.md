@@ -117,7 +117,8 @@ All with the remastered pictures.
 
 ### Build
 
-Windows, in an MSYS2 MinGW64 shell with `mingw-w64-x86_64-{gcc,cmake,ninja,sdl3,wxwidgets3.2-msw}` and `zip`:
+Windows, in an MSYS2 UCRT64 shell with `mingw-w64-ucrt-x86_64-{gcc,cmake,ninja,sdl3,wxwidgets3.2-msw}` and
+`zip`:
 
 ```bash
 tools/windows/package.sh     # tests, then dist/Street-Rod-Enhanced-windows.zip

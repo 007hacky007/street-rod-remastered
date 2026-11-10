@@ -1,9 +1,9 @@
 #!/bin/sh
-# Builds Street Rod Enhanced for Windows in an MSYS2 MinGW64 shell, runs the unit tests and packs
+# Builds Street Rod Enhanced for Windows in an MSYS2 UCRT64 shell, runs the unit tests and packs
 # dist/Street-Rod-Enhanced-windows.zip: the launcher, the game, their DLLs and an empty Game folder.
 #
 #   tools/windows/package.sh
-# Needs: mingw-w64-x86_64-{gcc,cmake,ninja,sdl3,wxwidgets3.2-msw} and zip.
+# Needs: mingw-w64-ucrt-x86_64-{gcc,cmake,ninja,sdl3,wxwidgets3.2-msw} and zip.
 set -eu
 
 root=$(cd "$(dirname "$0")/../.." && pwd)

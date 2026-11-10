@@ -4,7 +4,7 @@
 #   cmake -S launcher -B launcher/build -G Ninja && cmake --build launcher/build
 #
 # or, from the main project (SRE_LAUNCHER, on by default), next to streetrod-enhanced.exe.
-# Needs wxWidgets 3.2 (MSYS2: mingw-w64-x86_64-wxwidgets3.2-msw; Debian and Ubuntu: libwxgtk3.2-dev).
+# Needs wxWidgets 3.2 (MSYS2: mingw-w64-ucrt-x86_64-wxwidgets3.2-msw; Debian and Ubuntu: libwxgtk3.2-dev).
 cmake_minimum_required(VERSION 3.24)
 project(srelauncher LANGUAGES CXX)
 if(WIN32)
