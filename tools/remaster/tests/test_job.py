@@ -28,3 +28,13 @@ def test_job_single_and_sheet(tmp_path):
     meta = json.load(open(out / 'icons' / 'job.json'))
     assert [c['sha1'] for c in meta['cells']] == ['a' * 40, 'b' * 40]
     assert '2 separate' in open(out / 'icons' / 'prompt.txt').read()
+
+
+def test_sheet_of_alike_pictures_says_it_once(tmp_path):
+    a = np.full((10, 12), 4)
+    write_dump(tmp_path / 'dump', [('a' * 40, 1000, a, 1), ('b' * 40, 1001, a, 1)])
+    e = {'w': 12, 'h': 10, 'masked': 1, 'desc': 'a car part', 'keep': 'the outline', 'sheet': 'p'}
+    cat = {'a' * 40: dict(e), 'b' * 40: dict(e)}
+    jobs.build('p', ['a' * 40, 'b' * 40], cat, [str(tmp_path / 'dump')], {}, str(tmp_path / 'jobs'))
+    p = open(tmp_path / 'jobs' / 'p' / 'prompt.txt').read()
+    assert p.count('a car part') == 1 and 'Each picture' in p

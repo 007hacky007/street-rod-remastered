@@ -73,7 +73,12 @@ def prompt(sha1s, catalog, masked):
     else:
         parts.append('The attached image holds %d separate small pictures. Redraw each one where it is, at the same '
                      'position and size; do not merge, move or connect them.' % len(sha1s))
-        for i, s in enumerate(sha1s, 1):
+        said = {(catalog[s].get('desc'), catalog[s].get('keep')) for s in sha1s}
+        if len(said) == 1 and catalog[sha1s[0]].get('desc'):
+            e = catalog[sha1s[0]]
+            parts.append('Each picture: %s%s.' % (e['desc'].rstrip('.'),
+                                                  ('; keep ' + e['keep'].rstrip('.')) if e.get('keep') else ''))
+        for i, s in enumerate(sha1s if len(said) > 1 else [], 1):
             e = catalog[s]
             if e.get('desc'):
                 parts.append('Picture %d: %s%s.' % (i, e['desc'].rstrip('.'),

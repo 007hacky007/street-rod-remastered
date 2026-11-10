@@ -1,10 +1,10 @@
 {
  "007e822a024862bcb72a1401a5cf8c99f7de752a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -19,11 +19,11 @@
   "masked": 1
  },
  "0081d72694dec17705f958cea4b7e9bda5615554": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -38,11 +38,11 @@
   "masked": 1
  },
  "00864913f9fb1da243bc5d2db2c6f5ae25cef647": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -81,11 +81,11 @@
   "pal_like": 1014
  },
  "010100a90b77150b991fabfe03abca085c10d0d0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -100,11 +100,11 @@
   "masked": 1
  },
  "012525258e47c3bff0aa68ae15888dba8066e06c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -142,10 +142,10 @@
   "masked": 0
  },
  "01b09d3618179dbfcb39c861d41081a8a33fef83": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -161,11 +161,11 @@
   "masked": 1
  },
  "01e420c7deea083218cf04fcecdc6799fb8249dd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers-dd",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -180,11 +180,11 @@
   "masked": 1
  },
  "0212f7fd1e41711003881a7cea41de36c162e729": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -269,11 +269,11 @@
   "masked": 1
  },
  "06ccf90eef7e9a7b15d7bfddafb5c56eed1a88cb": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-4",
   "status": "new",
   "ids": {
    "main": [
@@ -311,10 +311,10 @@
   "masked": 0
  },
  "08e081571fdfd9c72555232769269f0fd0ae1745": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -330,11 +330,11 @@
   "masked": 1
  },
  "0945762f0656b66b642c790c45d1bc572ad0fcb6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers",
   "status": "new",
   "ids": {
    "main": [
@@ -349,10 +349,10 @@
   "masked": 1
  },
  "09ce8bbd2bb59fb67bb3150ef8a888f584ba32fd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -391,11 +391,11 @@
   "masked": 0
  },
  "0a630a705b212a931635347e754a4bd59dbba5ad": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -433,11 +433,11 @@
   "masked": 0
  },
  "0a87b6be1de896333c7f813f98e57840c0b22cbc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -452,11 +452,11 @@
   "masked": 1
  },
  "0b0ee248a03c73328b29d32c9e1287b3cbe7e315": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -471,11 +471,11 @@
   "masked": 1
  },
  "0b8ac48bd5609e4a6b7ec3898b484c872a872081": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -490,11 +490,11 @@
   "masked": 1
  },
  "0b9905337f6f7761a5710f8eec82d110c1373e3f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -509,11 +509,11 @@
   "masked": 1
  },
  "0bb68f6f22de056ae0a7bbe896addcc0056bb13d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -528,11 +528,11 @@
   "masked": 1
  },
  "0c3d8b72b0c8b55a976462ecdefba8b6d91e55c2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -547,11 +547,11 @@
   "masked": 1
  },
  "0c3f50e34843e5b358c64afd8d88f8647b15f335": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -612,11 +612,11 @@
   "masked": 1
  },
  "0fbe837446d1478985757f7b0dc81dd05f852404": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-6",
   "status": "new",
   "ids": {
    "main": [
@@ -654,11 +654,11 @@
   "masked": 1
  },
  "107c8b8a287cd8962890f2bfa9618cb273a1cfe6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-3",
   "status": "new",
   "ids": {
    "main": [
@@ -715,11 +715,11 @@
   "masked": 1
  },
  "12bb2bf7812ab7bb39b754acbe4da1d012240d31": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -734,11 +734,11 @@
   "masked": 1
  },
  "130421ccb530255d2d8fa15d146e362a2f4c2c47": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -753,11 +753,11 @@
   "masked": 1
  },
  "1349c7e723ed8f55c0f1de92e14c4914ff75659b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -841,11 +841,11 @@
   "masked": 0
  },
  "14ffe4949f1af4374fde0f5210381e5f1abe7665": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -860,11 +860,11 @@
   "masked": 1
  },
  "1504e30e869eb3c0ea8002e17afcc8275d14c891": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -879,11 +879,11 @@
   "masked": 1
  },
  "152f727b5dcbda7581a8de37de47cd2f3e5bd8ad": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "leftovers",
   "status": "new",
   "ids": {
    "main": [
@@ -921,11 +921,11 @@
   "masked": 1
  },
  "163bebfd0ca194c5c509eae8fe511841a250afca": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -940,11 +940,11 @@
   "masked": 1
  },
  "17817ae2e5a86f9352d81b4ea8e318412313d112": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-12",
   "status": "new",
   "ids": {
    "main": [
@@ -959,11 +959,11 @@
   "masked": 1
  },
  "17b2a38368f7bb65e3cd62822e2b544f243c10d4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-4",
   "status": "new",
   "ids": {
    "main": [
@@ -1001,11 +1001,11 @@
   "masked": 1
  },
  "180ba63d1ff5422ae909df537c21506bc00f3e3e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -1020,11 +1020,11 @@
   "masked": 1
  },
  "18bf1244beb71db26df125754146c09275464e3e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1154,11 +1154,11 @@
   "masked": 1
  },
  "1a808ccbe9d7aca18be6dc48541661513388d7cf": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -1223,11 +1223,11 @@
   "masked": 1
  },
  "1d6abbf692a15a8328e4317ad09e56829cd39a34": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-8",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1265,11 +1265,11 @@
   "masked": 1
  },
  "1e870f4f54d5cc73f80746a419f57f8eee9e86fc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-4",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1284,11 +1284,11 @@
   "masked": 1
  },
  "1ea03773f77892634c297170892aa8966aefb91d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers-dd",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1303,11 +1303,11 @@
   "masked": 1
  },
  "1f5814c9afdc109c78f9afccf312c341b26b2890": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers-dd",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1322,11 +1322,11 @@
   "masked": 1
  },
  "20b979b79bc1d619cfd5a1bacb38472d92618473": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1388,11 +1388,11 @@
   "pal_like": 1224
  },
  "23d952260d9c977585dad423b9a9539e6f27d2df": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -1411,11 +1411,11 @@
   "masked": 1
  },
  "2469e8b907a45a194794415f2aa789539beffbd6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1430,11 +1430,11 @@
   "masked": 1
  },
  "24aae294d973d11b1d8a0259cad8092ec097428a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-4",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1472,11 +1472,11 @@
   "masked": 0
  },
  "265973daf5f8c0dede5af7020c5e83fd1e9e557f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-9",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1514,11 +1514,11 @@
   "masked": 0
  },
  "285ba91be70ad30ecadf026e9ffbaf0dde9d9e89": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1533,11 +1533,11 @@
   "masked": 1
  },
  "28c8f1c8c89309486d2df56f80bf5bb0bd600d42": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-1",
   "status": "new",
   "ids": {
    "main": [
@@ -1552,11 +1552,11 @@
   "masked": 1
  },
  "2a12611731bc3f40d6cd8f3d227c7b6a7b947ab4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-2",
   "status": "new",
   "ids": {
    "main": [
@@ -1571,11 +1571,11 @@
   "masked": 1
  },
  "2d2069cf63557bb7b934585eceac2693b45c54b7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1659,11 +1659,11 @@
   "masked": 0
  },
  "3146e93247d3dce4111bd94d9009faafb8a01da5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1678,11 +1678,11 @@
   "masked": 1
  },
  "3422b8972979ae8252457a8c79aaed276eecdb88": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1720,10 +1720,10 @@
   "masked": 1
  },
  "3479817ab40be2fae2c19ce6e50d98d490b6fc3b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "ui",
+  "batch": 2,
+  "desc": "a sticker selection panel: eight colourful hot rod stickers with lettering on black in a grey frame, and at the right a vertical red button labelled \"SKIP IT\" in a grey frame",
+  "keep": "the lettering exactly, letter by letter: top row \"USA 1.\", an eagle emblem without words, \"NOT 4 SALE\", \"VETERAN\" (not Vietnam); bottom row \"REBEL\", \"HAWAII\", \"banana club\" in small letters, \"EXPLOSIVE\"; the label \"SKIP IT\" (letters stacked vertically); the black background",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1739,11 +1739,11 @@
   "masked": 0
  },
  "349bbf8ef14160de32a5b956bd84af47ba71ae9a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1758,11 +1758,11 @@
   "masked": 1
  },
  "357f4924f7df24423c703159ccaf860736fa45e5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1777,11 +1777,11 @@
   "masked": 1
  },
  "362192d4571a2694b7d7f448114737425e92719e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1815,11 +1815,11 @@
   "masked": 0
  },
  "3689b90384e83640837c841e70fb319787fa44c4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-7",
   "status": "new",
   "ids": {
    "main": [
@@ -1834,11 +1834,11 @@
   "masked": 1
  },
  "36999d3ed08962788dac5792c26b5075bb99a78b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -1895,11 +1895,11 @@
   "masked": 1
  },
  "3a07e1e06e5aab992ae795e3be04e5f5a6a261da": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1914,11 +1914,11 @@
   "masked": 1
  },
  "3b71e64002178fbc373a3b8c36671d916e1e3619": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-14",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1956,11 +1956,11 @@
   "masked": 0
  },
  "3dfb16ee96cefe553c58588c57783ac311d4758e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-11",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -1975,11 +1975,11 @@
   "masked": 1
  },
  "3e5acd69022877906f12b3583863828ba3cc776f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2018,11 +2018,11 @@
   "pal_like": 1099
  },
  "3ed921b26b5825ed2f73b6b83a4d4e9a7ace6043": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2037,11 +2037,11 @@
   "masked": 1
  },
  "40fb691a6dc48b56a4139716f2bd7ff4232ee1ae": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-9",
   "status": "new",
   "ids": {
    "main": [
@@ -2056,11 +2056,11 @@
   "masked": 1
  },
  "414c0695471b6be8ed1f09e1b7d77b75dab3b48a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-1",
   "status": "new",
   "ids": {
    "main": [
@@ -2117,11 +2117,11 @@
   "masked": 1
  },
  "42b9890de93b7ba726f326bf9376c9ce4692ea52": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-1",
   "status": "new",
   "ids": {
    "main": [
@@ -2136,11 +2136,11 @@
   "masked": 1
  },
  "4353aeeaa0372db37c2f0c3f108e2db1fd4cd461": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2155,11 +2155,11 @@
   "masked": 1
  },
  "450d3b0dc2d70e6c58bd7ddf26d9c839526acd61": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-4",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2174,11 +2174,11 @@
   "masked": 1
  },
  "4577fe4a74ddb0c5529706c2f4c88cc5a57ac8bc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -2244,11 +2244,11 @@
   "masked": 0
  },
  "472af1422905ab9600af0d21f3e1c8dc61ffe3b4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers-dd",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2309,11 +2309,11 @@
   "masked": 1
  },
  "488a284015694de689492ba9719f32a29f75b98d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2351,11 +2351,11 @@
   "masked": 1
  },
  "4953b80cd035f97260c72a64820e2607f77b020b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-2",
   "status": "new",
   "ids": {
    "main": [
@@ -2416,11 +2416,11 @@
   "masked": 0
  },
  "4b3c2e7560f1a7573e313fca7b9939268a88f098": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers-dd",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2435,11 +2435,11 @@
   "masked": 1
  },
  "4b8c01e26ebd8ed46e2fe900c9478ca9ee65b1fe": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-5",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2477,11 +2477,11 @@
   "masked": 1
  },
  "4f3e361f02174ed27121a68210c082246eeb9791": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-15",
   "status": "new",
   "ids": {
    "main": [
@@ -2519,11 +2519,11 @@
   "masked": 1
  },
  "50790e9962f32f1fc28de062b4e08416181530c6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2607,11 +2607,11 @@
   "masked": 1
  },
  "547f0bffed3b9ba206c50da60b88b2eb98e2b7a2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2672,11 +2672,11 @@
   "masked": 0
  },
  "5516c2cef08a91665c956b8b7188a561f5353a11": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2691,11 +2691,11 @@
   "masked": 1
  },
  "563f9434cce11963d4d4e3ea3cdcd62c73c32e5f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2710,11 +2710,11 @@
   "masked": 1
  },
  "56a18c0b7b35251ebe177c301875e99257d58c26": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-16",
   "status": "new",
   "ids": {
    "main": [
@@ -2752,11 +2752,11 @@
   "masked": 1
  },
  "56f2e619fbb04527e24c9da0414239c8f5781902": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -2794,11 +2794,11 @@
   "masked": 0
  },
  "583fd9ff3e9332f94a32b05500d86a15389348f0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -2817,11 +2817,11 @@
   "masked": 1
  },
  "58ab30c6b95a2c50479635ed1d2b5aaefa1af2f5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2836,11 +2836,11 @@
   "masked": 1
  },
  "59016bb1970c908d6adaae54b35ed39ab4677e6a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -2855,11 +2855,11 @@
   "masked": 1
  },
  "598a1967d73ae2306caa93165a1881fb21b15f86": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -2878,11 +2878,11 @@
   "masked": 1
  },
  "59f7e0c88d20ff520bb9a65e8c13e183d82a52ac": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "leftovers",
   "status": "new",
   "ids": {
    "main": [
@@ -2897,11 +2897,11 @@
   "masked": 1
  },
  "5b6a628dbe322857058882950d301d234a1f819f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-1",
   "status": "new",
   "ids": {
    "main": [
@@ -2916,11 +2916,11 @@
   "masked": 1
  },
  "5bb3d2ddbb40f3f399f37b8ab6897abf1356f08e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -2958,11 +2958,11 @@
   "masked": 1
  },
  "5cf362c98648dc2085fdb20a13d86e54fdfd8f4f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2977,11 +2977,11 @@
   "masked": 1
  },
  "5e2a788cdaab2925f3576e1a2748d62db0051c65": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-4",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -2996,11 +2996,11 @@
   "masked": 1
  },
  "5eed1171e33f5850db272d8eacbb187a94f617eb": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -3019,11 +3019,11 @@
   "masked": 1
  },
  "5f4cd6ce19da00112bc7429e35b5127317766895": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-16",
   "status": "new",
   "ids": {
    "main": [
@@ -3084,11 +3084,11 @@
   "masked": 0
  },
  "62b63494cf6315c663a39632329257806575b2e5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-4",
   "status": "new",
   "ids": {
    "main": [
@@ -3127,11 +3127,11 @@
   "pal_like": 1080
  },
  "647213bf3bf86a44428dbb9eaed5277ff26738b4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -3146,11 +3146,11 @@
   "masked": 1
  },
  "647e89aa049c8bc480d85f55dd8d12be831f384d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-4",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3165,11 +3165,11 @@
   "masked": 1
  },
  "651f99f2c91a40e19d6c5d819495903cbfd3d43a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -3184,11 +3184,11 @@
   "masked": 1
  },
  "656bf0b62ca73dd94c10e9fb8e5c98c0db433dc3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -3203,11 +3203,11 @@
   "masked": 1
  },
  "6739eb58f033ecc73b6c35a83e1b00e105302b01": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -3245,11 +3245,11 @@
   "masked": 1
  },
  "6a670c202446626bed4f8003e270a243d39c5878": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -3287,11 +3287,11 @@
   "masked": 0
  },
  "6ae519067909e19e645c3627c0774046331ddc2a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-8",
   "status": "new",
   "ids": {
    "main": [
@@ -3306,11 +3306,11 @@
   "masked": 1
  },
  "6b1c419ac6b234dde64c68d3a980d1f39eb2a11e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-12",
   "status": "new",
   "ids": {
    "main": [
@@ -3325,11 +3325,11 @@
   "masked": 1
  },
  "6b88b3dd14b617c1906cf0560fa1cb1235795069": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-3",
   "status": "new",
   "ids": {
    "main": [
@@ -3344,11 +3344,11 @@
   "masked": 1
  },
  "6bd14a0106476c32ead8cfe526d46415873097f8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers",
   "status": "new",
   "ids": {
    "main": [
@@ -3386,11 +3386,11 @@
   "masked": 1
  },
  "6d06b93b10f6234f33259c153894b2656d14f101": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3424,11 +3424,11 @@
   "masked": 1
  },
  "70a35df055026c4a749f10f89577fcb5677859a4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful sticker: a palm tree, a sailing boat on the sea and a setting sun, with the word \"HAWAII\" in striped letters along the bottom",
+  "keep": "the word \"HAWAII\" exactly, in striped letters",
+  "sheet": "leftovers",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3466,11 +3466,11 @@
   "masked": 1
  },
  "70c204914976c671663b6c6b752e0ea1a5a00dc3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers",
   "status": "new",
   "ids": {
    "main": [
@@ -3485,11 +3485,11 @@
   "masked": 1
  },
  "71382873d6ece7e7ad4a1f294e2c89ba04a04cdb": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-3",
   "status": "new",
   "ids": {
    "main": [
@@ -3527,11 +3527,11 @@
   "masked": 1
  },
  "73d5e6151dc49a57b6274288443035b5c8022eb3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-7",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3546,11 +3546,11 @@
   "masked": 1
  },
  "7642dcfa4b6533e18936b57c1cab90ca403cdc10": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3565,11 +3565,11 @@
   "masked": 1
  },
  "76b9deae45566c4922006174d45081fea9630c45": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-14",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3584,11 +3584,11 @@
   "masked": 1
  },
  "76cef277a7415beea71003a7b1b8a6fc4d1e9aea": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-15",
   "status": "new",
   "ids": {
    "main": [
@@ -3673,11 +3673,11 @@
   "masked": 0
  },
  "79f563d0ffd14e43a34a292ce9f4c733975a1009": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3715,11 +3715,11 @@
   "masked": 1
  },
  "7bae6b912bc81c8ea88bd7a52f1c919da4116728": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-4",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3849,11 +3849,11 @@
   "masked": 0
  },
  "7eb554af211fd87eec76b73625a98023a8d5b4c5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3868,11 +3868,11 @@
   "masked": 1
  },
  "7f5ddca24e0e123f0ceade957f62ae18d6b8734a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-14",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3887,11 +3887,11 @@
   "masked": 1
  },
  "7fc92e8902531976c78fe6747aad0a17805acf08": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-2",
   "status": "new",
   "ids": {
    "main": [
@@ -3998,11 +3998,11 @@
   "masked": 0
  },
  "823435891f5058d1d5b9387d1d13b993f6c10dc3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -4110,11 +4110,11 @@
   "pal_like": 1103
  },
  "84fa44ec81c36bc88f3f23e21b149ec29150b083": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4152,11 +4152,11 @@
   "masked": 0
  },
  "85e7b5e900dc58e93efcb293ad09343727bcbf3f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4194,11 +4194,11 @@
   "masked": 1
  },
  "876fac61f133aa60398e5e7835556eac3b7164aa": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-5",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4213,11 +4213,11 @@
   "masked": 1
  },
  "8873cee435967d68bc60d9915fcab2a03ee56096": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4278,11 +4278,11 @@
   "masked": 1
  },
  "892967b3cc5e510f96e9db73d77e01d652e7e0c7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4320,11 +4320,11 @@
   "masked": 0
  },
  "8a2a4defe1aa3e3ccdada07a9e4c978be2ecea65": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -4339,11 +4339,11 @@
   "masked": 1
  },
  "8ab8303356f16303c992d4b6d9b53aae586760be": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers-dd",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4358,11 +4358,11 @@
   "masked": 1
  },
  "8ac47d4f1c2abfaaff41d7300f176482d143bac8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4377,11 +4377,11 @@
   "masked": 1
  },
  "8c9c64b5bb0bebebd78f679bef773c6e7546fd80": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4396,11 +4396,11 @@
   "masked": 1
  },
  "8e097f5fb1d3ed585d6c44773270116020b8d3c0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -4438,11 +4438,11 @@
   "masked": 1
  },
  "8f5b6f06d7f159e458d88e69ccfc47dc6b23615a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -4484,11 +4484,11 @@
   "masked": 1
  },
  "8ff20fd0b838374ec60620a36290b9228df8b6f4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4503,11 +4503,11 @@
   "masked": 1
  },
  "9267a60f4a867aa252dfe69c8d9d99f2cff01f3f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-5",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4522,11 +4522,11 @@
   "masked": 1
  },
  "93ec8d682a21f195b607b516369805fe28d54bb8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4587,11 +4587,11 @@
   "masked": 2
  },
  "94ded5c6ef272ca3de90569a52959a615d5b9b50": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -4610,11 +4610,11 @@
   "masked": 1
  },
  "952a127f2aeba31f4a94fd214fbfdba005d0982a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -4675,11 +4675,11 @@
   "masked": 0
  },
  "96bc11058318e386f9b3b8f88308c178267f6066": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-6",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4713,11 +4713,11 @@
   "masked": 1
  },
  "97d130fc3f699786035278f772b332f1a96b5e2e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-4",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4732,11 +4732,11 @@
   "masked": 1
  },
  "9a57f622ccdd6f8f78ab30d7c61a3ec6d32d61d1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -4774,11 +4774,11 @@
   "masked": 0
  },
  "9d1a381e7312f81b5da0886f1973cc99d203f2b9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4793,11 +4793,11 @@
   "masked": 1
  },
  "9d5eeed4b4203ead293571d5177dbcc1718ecf51": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4812,11 +4812,11 @@
   "masked": 1
  },
  "9e8c2dc16ec83a86792c2d0e65adcf0d7dfe8bb4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-3",
   "status": "new",
   "ids": {
    "main": [
@@ -4854,11 +4854,11 @@
   "masked": 1
  },
  "9fda9a449c715727ab752abc98a50fde3c88ff11": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-4",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4873,11 +4873,11 @@
   "masked": 1
  },
  "a03faab669828ce28c01edabaf39895bd2f8c7c8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -4915,11 +4915,11 @@
   "masked": 1
  },
  "a1f76e28e8da0d5dd97e6f0f7d141c0522b8e8d7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -4934,11 +4934,11 @@
   "masked": 1
  },
  "a1fae587c51a3a5b4ba0a8cc5a887273f21476be": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4953,11 +4953,11 @@
   "masked": 1
  },
  "a2f434e80291da6ccc7d2440a4862ae2b19b8445": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -5000,11 +5000,11 @@
   "pal_like": 1085
  },
  "a56dd2c1835ec36639c7825e5de8091c4fa276fe": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -5019,11 +5019,11 @@
   "masked": 1
  },
  "a5908edbfde0bd8171bd261b3b8ca82550c1e523": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-13",
   "status": "new",
   "ids": {
    "main": [
@@ -5062,11 +5062,11 @@
   "pal_like": 1014
  },
  "a638fa04b6119ffee9d9d06772d071c79057dd86": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -5104,11 +5104,11 @@
   "masked": 1
  },
  "a6f41edaf4725ed73b3b221d7e990f504ece8978": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers",
   "status": "new",
   "ids": {
    "main": [
@@ -5146,11 +5146,11 @@
   "masked": 1
  },
  "a72cb4048b146eda4de8cd1dc8ab990b6d026893": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-3",
   "status": "new",
   "ids": {
    "main": [
@@ -5165,11 +5165,11 @@
   "masked": 1
  },
  "aa99f2667f6aa6a477773e8695ad51e38f281bc6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers",
   "status": "new",
   "ids": {
    "main": [
@@ -5184,11 +5184,11 @@
   "masked": 1
  },
  "ac340402756144b54fadd4be6e5169a8031a94ea": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -5230,11 +5230,11 @@
   "masked": 1
  },
  "ae38689bf5dd10b94d39e43706be9ad1ee164621": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -5249,11 +5249,11 @@
   "masked": 1
  },
  "af2373188d0257b15f631ae216153f02382e404d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-6",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -5268,11 +5268,11 @@
   "masked": 1
  },
  "b09608e734d6eb9bf4ff2f2e10bbf4203fc27fbd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-2",
   "status": "new",
   "ids": {
    "main": [
@@ -5310,11 +5310,11 @@
   "masked": 0
  },
  "b1c2825cd212a15989e80cd5a700a4e60197429e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-3",
   "status": "new",
   "ids": {
    "main": [
@@ -5329,11 +5329,11 @@
   "masked": 1
  },
  "b1f6cce52cf9636df1210f228a5614cd398fd543": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -5352,11 +5352,11 @@
   "masked": 1
  },
  "b2d36a9f629c09b132a9987f45c5bf77f732a5fd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-7",
   "status": "new",
   "ids": {
    "main": [
@@ -5375,11 +5375,11 @@
   "masked": 1
  },
  "b3c4a0ecf76ef5c51a86da4bc7f675ed1da94b95": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -5463,11 +5463,11 @@
   "masked": 1
  },
  "b5fd9feb55546d7e2543e4a7f29ff902fd13181b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -5505,11 +5505,11 @@
   "masked": 1
  },
  "b69e1c5a0e72adf9d6abcfd4d37ccf450a6df2e0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -5549,11 +5549,11 @@
   "masked": 1
  },
  "b8181a0b72ca0d9dce14d5d04213ace2819bc3e6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers",
   "status": "new",
   "ids": {
    "main": [
@@ -5568,11 +5568,11 @@
   "masked": 1
  },
  "b9a1735973f4ab3d2637636e0d932b8238b81860": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -5610,11 +5610,11 @@
   "masked": 0
  },
  "bab972bc7eb3da5d42b90c23c4063d094b962e59": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-2",
   "status": "new",
   "ids": {
    "main": [
@@ -5652,11 +5652,11 @@
   "masked": 1
  },
  "bb1d7b722854d64c626f482781743d10e3ea2470": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -5675,11 +5675,11 @@
   "masked": 1
  },
  "bb4bd942bd86a269f38654a8f47607da6ae1faaa": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -5694,11 +5694,11 @@
   "masked": 1
  },
  "bba70119288ad6f39ef268d0d362b6ba8ae15ef8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-1",
   "status": "new",
   "ids": {
    "main": [
@@ -5713,11 +5713,11 @@
   "masked": 1
  },
  "bbaa8a0c63649fabd0945f6807395cb5587a2ac4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -5829,11 +5829,11 @@
   "masked": 1
  },
  "befad056bcfb7063f78c760343d825929e91fd4c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -5871,11 +5871,11 @@
   "masked": 0
  },
  "c04e3a144665fee08260c6f6e7c0e561bbb93745": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-4",
   "status": "new",
   "ids": {
    "main": [
@@ -5890,11 +5890,11 @@
   "masked": 1
  },
  "c0b72e6632c3f1eaa512add7316c028afbf2226a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -5913,10 +5913,10 @@
   "masked": 1
  },
  "c145810a1b060dac275135c7e5e3b374b178e27c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "ui",
+  "batch": 2,
+  "desc": "a sticker selection panel: eight colourful hot rod stickers with lettering on black in a grey frame, and at the right a vertical red button labelled \"SKIP IT\" in a grey frame",
+  "keep": "the lettering exactly, letter by letter: top row \"Hot Lips\", \"RANGER\", \"not bullet proof\", \"HOT ROD\"; bottom row the skull-and-crossbones sticker with its two lines of lettering copied exactly as drawn, \"Love bandit\", \"Big Chief\", \"I'm not a cop\"; the label \"SKIP IT\" (letters stacked vertically); the black background",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5932,11 +5932,11 @@
   "masked": 0
  },
  "c21fafc0ab8757fff8383cedef92891ab2eebc7f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -5974,11 +5974,11 @@
   "masked": 0
  },
  "c39dd1dc74255b8e358cd75c936cde34718713cc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-10",
   "status": "new",
   "ids": {
    "main": [
@@ -5993,11 +5993,11 @@
   "masked": 1
  },
  "c467d27d1150e0aa063c27c7d6c17bbae1d8cf97": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-2",
   "status": "new",
   "ids": {
    "main": [
@@ -6058,11 +6058,11 @@
   "masked": 1
  },
  "c6487265c910713cbba511887aba52a0f063de9c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -6100,11 +6100,11 @@
   "masked": 1
  },
  "c75766f1b42e1f7b5e7333d37e408a88c9076130": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -6119,11 +6119,11 @@
   "masked": 1
  },
  "c7a2eb433cb10b702704e312ef087296bf4b05fd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-11",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -6161,11 +6161,11 @@
   "masked": 1
  },
  "c9cd2644a2e9daabc740e4e0150e845fb51e3ec1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -6226,11 +6226,11 @@
   "masked": 2
  },
  "cc91b80a1c08a537dce8d261731dd7a6854492c9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-4",
   "status": "new",
   "ids": {
    "main": [
@@ -6269,11 +6269,11 @@
   "pal_like": 1089
  },
  "ce4759360007047d4c16360245b2ad1bd6aa72ad": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-12",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -6288,11 +6288,11 @@
   "masked": 1
  },
  "cf4ef0e355be0f62a68969ac50571deef6c4c9c3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -6307,11 +6307,11 @@
   "masked": 1
  },
  "cf9580fab26c804254d311e7d64d962647503623": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a thin dark strip: the shadow under a car, grey and black",
+  "keep": "a strip that thin; dark greys only",
+  "sheet": "leftovers",
   "status": "new",
   "ids": {
    "main": [
@@ -6330,11 +6330,11 @@
   "masked": 1
  },
  "d038219f78d07f45bc79c19322ec957609d38375": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers",
   "status": "new",
   "ids": {
    "main": [
@@ -6512,11 +6512,11 @@
   "masked": 1
  },
  "d478d530c8134eef925d9cac13f160a06dc93c40": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -6554,11 +6554,11 @@
   "masked": 0
  },
  "d7ea19db3518e6a7709a52ba715db61a4247f902": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -6573,11 +6573,11 @@
   "masked": 1
  },
  "d811fe62d9c2322e18914ef1cd5c02724fe4014e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -6592,11 +6592,11 @@
   "masked": 1
  },
  "d87ff3781b8761d00fab4ab9bb67488efcbee632": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-1",
   "status": "new",
   "ids": {
    "main": [
@@ -6611,11 +6611,11 @@
   "masked": 1
  },
  "d8ab747fa0de7d3e247aab4114fa925c778e1554": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -6630,11 +6630,11 @@
   "masked": 1
  },
  "d996387b82684e3b98ecb996b3b2b67474440adb": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -6649,11 +6649,11 @@
   "masked": 1
  },
  "d9f4a203b7803f93b21d371135ffc6913a13abbc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-3",
   "status": "new",
   "ids": {
    "main": [
@@ -6668,11 +6668,11 @@
   "masked": 1
  },
  "da87045ded39aa592cb72e82867ede2322f48a6e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -6711,11 +6711,11 @@
   "pal_like": 1099
  },
  "dc21dd701da185c2c191a1029a44f8f225068771": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-2",
   "status": "new",
   "ids": {
    "main": [
@@ -6730,11 +6730,11 @@
   "masked": 1
  },
  "dc7a72a15219023b4a5ccb4a247e2105f68ff27b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-8",
   "status": "new",
   "ids": {
    "main": [
@@ -6772,11 +6772,11 @@
   "masked": 1
  },
  "de2c3b1b353bc28a9389d10b2cf6fca6367e90d3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-9",
   "status": "new",
   "ids": {
    "main": [
@@ -6791,11 +6791,11 @@
   "masked": 1
  },
  "df0c29654ed64b6fd5beb85f9323e4c5edf30522": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -6856,11 +6856,11 @@
   "masked": 1
  },
  "dfd97be295fe0bc8bf8d3ca1424bd278ff7bfd68": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-13",
   "status": "new",
   "ids": {
    "main": [
@@ -6944,11 +6944,11 @@
   "masked": 0
  },
  "e2c97c4aaddb4dfd8289e91c9939fc5dc3e9aea8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a classic car wheel seen from the side: tyre, rim and hubcap",
+  "keep": "a round wheel the same size; the tyre and hubcap style as drawn",
+  "sheet": "wheels",
   "status": "new",
   "ids": {
    "main": [
@@ -6967,10 +6967,10 @@
   "masked": 1
  },
  "e2d843b65a58e6afffd6cf8be819ada2d8512f8b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the two-tone paint: a white band along the top of the body above the side trim, teal paint below (the game repaints only the teal); the empty wheel arches; the windows; chrome stays chrome",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7009,11 +7009,11 @@
   "masked": 1
  },
  "e390e05db4313d31c24c6d876afd3fb0897e6c22": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -7052,11 +7052,11 @@
   "pal_like": 1014
  },
  "e4db08a24e3b63d20ae5008337ea812867d1d532": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -7071,10 +7071,10 @@
   "masked": 1
  },
  "e56f79e409fb51c51f3827cec7269050469ab0fa": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7090,11 +7090,11 @@
   "masked": 1
  },
  "e6690f30742c1e0002bc71416f2132d68ea70c2a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -7132,11 +7132,11 @@
   "masked": 0
  },
  "e698f4d0828b340a8569aac42570be1ac8878b8b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7175,11 +7175,11 @@
   "pal_like": 1089
  },
  "e76686ab8dc45cb2846e1c2827fc2a4c617d4178": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-1",
   "status": "new",
   "ids": {
    "main": [
@@ -7194,11 +7194,11 @@
   "masked": 1
  },
  "eae0dc09d15cb25a8ac8e30e4700cf6e8cfa5798": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-3",
   "status": "new",
   "ids": {
    "main": [
@@ -7213,11 +7213,11 @@
   "masked": 1
  },
  "eb1efb5ae543968542c35b5d3b5242e2a865b8d8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-1",
   "status": "new",
   "ids": {
    "main": [
@@ -7278,11 +7278,11 @@
   "masked": 0
  },
  "eb850c768ba8bcf8d442a7cb7db2847cd68d1ed9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers",
   "status": "new",
   "ids": {
    "main": [
@@ -7297,11 +7297,11 @@
   "masked": 1
  },
  "ebc761b861cc13e458548d46cd91e86734c56123": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -7316,11 +7316,11 @@
   "masked": 1
  },
  "ec84101cdc0f05d7b7fbe051896f234b5eddd9d9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-2",
   "status": "new",
   "ids": {
    "main": [
@@ -7335,11 +7335,11 @@
   "masked": 1
  },
  "ec8aa35543824739301efd72064a6a1d8672ae7b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-11",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7401,11 +7401,11 @@
   "pal_like": 1014
  },
  "efecfb2a6b8daae854fac4ad6d6b425454777c98": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7439,11 +7439,11 @@
   "masked": 1
  },
  "f13e5ad135e057c449fc3c50ee87746c700b0b15": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7458,11 +7458,11 @@
   "masked": 1
  },
  "f14b31bc2b7450174b5513221456474dcbe03d78": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7500,11 +7500,11 @@
   "masked": 1
  },
  "f2a4d7fbbd70809898e9d6445b2350ac94124867": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-2",
   "status": "new",
   "ids": {
    "main": [
@@ -7519,11 +7519,11 @@
   "masked": 1
  },
  "f2d63093bac9afeb79bd5657b463eea1ee27368b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-3",
   "status": "new",
   "ids": {
    "main": [
@@ -7561,11 +7561,11 @@
   "masked": 1
  },
  "f32612cdd261578e67c175a53128d50e0a448b20": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7580,11 +7580,11 @@
   "masked": 1
  },
  "f33305bf303320d747eb1e930adc358f8a28ef49": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-15",
   "status": "new",
   "ids": {
    "main": [
@@ -7599,11 +7599,11 @@
   "masked": 1
  },
  "f3df0fcecd203f5a968075fdac3692f1b03b8713": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7641,11 +7641,11 @@
   "masked": 1
  },
  "f576dfb187b2eb5938b658fd18ab6172522c74ef": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7660,11 +7660,11 @@
   "masked": 1
  },
  "f61705c63d0f76732fedb8fb328105f3da78be3c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "the side view of a classic American car body from the 1930s to the 1960s, without its wheels: paint, windows, chrome trim, door lines, lights and badges",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "bodies-13",
   "status": "new",
   "ids": {
    "main": [
@@ -7726,11 +7726,11 @@
   "masked": 1
  },
  "f883c86e85a142ef0ae978905c4159bed0f8b78c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "roofs-dd-3",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7857,11 +7857,11 @@
   "pal_like": 1228
  },
  "fc73fc8797dcdea1aabc2731c026d09e821c6144": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-1",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7876,11 +7876,11 @@
   "masked": 1
  },
  "fe37ace475686184df94230017fb4973a3e41849": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-3",
   "status": "new",
   "ids": {
    "main": [
@@ -7895,11 +7895,11 @@
   "masked": 1
  },
  "fe71eed020f9d1988b6a025cd2929224c0688b50": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-dd-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7937,11 +7937,11 @@
   "masked": 1
  },
  "fecf49cdbf1739cfe7974e0c24b6edf2f6856467": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a part of a classic car body seen from the side (a roof, fender, bumper, scoop or trim piece), cut out on its own",
+  "keep": "the outline exactly; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "parts-1",
   "status": "new",
   "ids": {
    "main": [
@@ -7956,11 +7956,11 @@
   "masked": 1
  },
  "ff2a525a173207b9588a0fc2a2bcaf5a4088f43f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 2,
+  "desc": "a small colourful hot rod sticker with lettering and a little emblem",
+  "keep": "copy the lettering exactly as it is in the picture, letter by letter; the emblem",
+  "sheet": "stickers-dd",
   "status": "new",
   "ids": {
    "datadisk": [
