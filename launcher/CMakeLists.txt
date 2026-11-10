@@ -13,11 +13,11 @@ endif()
 
 # MSYS2 and wxWidgets' own CMake builds install a package config; distributions
 # such as Debian only ship wx-config, which CMake's FindwxWidgets uses.
-find_package(wxWidgets 3.2 CONFIG QUIET COMPONENTS core base)
+find_package(wxWidgets 3.2 CONFIG QUIET COMPONENTS core base net)
 if(wxWidgets_FOUND AND TARGET wx::wxcore)
-    set(SRL_WX_LIBRARIES wx::wxcore wx::wxbase)
+    set(SRL_WX_LIBRARIES wx::wxcore wx::wxnet wx::wxbase)
 else()
-    find_package(wxWidgets 3.2 REQUIRED COMPONENTS core base)
+    find_package(wxWidgets 3.2 REQUIRED COMPONENTS core base net)
     include(${wxWidgets_USE_FILE})
     set(SRL_WX_LIBRARIES ${wxWidgets_LIBRARIES})
 endif()

@@ -28,6 +28,8 @@ wxString Path(const wxString& section, const wxString& key) { return "/" + secti
 wxString Folder() {
 #ifdef __WXMSW__
     wxString dir = wxStandardPaths::Get().GetUserConfigDir() + "\\Street Rod Enhanced";
+#elif defined(__WXOSX__)
+    wxString dir = wxStandardPaths::Get().GetUserDataDir();  // ~/Library/Application Support/Street Rod Enhanced
 #else
     wxString base;
     if (!wxGetEnv("XDG_CONFIG_HOME", &base) || base.empty()) base = wxGetHomeDir() + "/.config";

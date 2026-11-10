@@ -41,7 +41,8 @@ const char* const SUPPORT = "https://buymeacoffee.com/krzysztofkania";
 const char* const SECTION = "Game";
 const char* const SOUND = "Sound";
 
-const int ID_SOUNDS = wxID_HIGHEST + 1, ID_ABOUT = wxID_HIGHEST + 2;
+const int ID_SOUNDS = wxID_HIGHEST + 1;
+[[maybe_unused]] const int ID_ABOUT = wxID_HIGHEST + 2;  // macOS uses wxID_ABOUT
 // The book's pages.
 const int PAGE_MAIN = 0, PAGE_SOUNDS = 1;
 
@@ -390,6 +391,18 @@ Sounds LauncherFrame::EditedSounds() const {
 }
 
 void LauncherFrame::CreateMenus() {
+#ifdef __WXOSX__
+    // The Mac way: About, Preferences and Quit go to the application menu (wxWidgets moves them there).
+    auto* settingsMenu = new wxMenu;
+    settingsMenu->Append(ID_SOUNDS, wxString::FromUTF8("&Sounds…"));
+    settingsMenu->Append(wxID_ABOUT, wxString::FromUTF8("&About ") + APP_TITLE);
+    settingsMenu->Append(wxID_PREFERENCES, wxString::FromUTF8("&Preferences…\tCtrl+,"));
+    settingsMenu->Append(wxID_EXIT, "&Quit\tCtrl+Q");
+    auto* bar = new wxMenuBar;
+    bar->Append(settingsMenu, "&Game settings");
+    SetMenuBar(bar);
+    Bind(wxEVT_MENU, [this](wxCommandEvent&) { About(); }, wxID_ABOUT);
+#else
     auto* file = new wxMenu;
     file->Append(wxID_PREFERENCES, wxString::FromUTF8("&Preferences…"));
     file->AppendSeparator();
@@ -413,11 +426,12 @@ void LauncherFrame::CreateMenus() {
     AppendMenuW(native, MF_STRING, ID_ABOUT, L"A&bout");
     DrawMenuBar(static_cast<HWND>(GetHWND()));
 #endif
+    Bind(wxEVT_MENU, [this](wxCommandEvent&) { About(); }, ID_ABOUT);
+#endif
 
     Bind(wxEVT_MENU, [this](wxCommandEvent&) { Close(); }, wxID_EXIT);
     Bind(wxEVT_MENU, [this](wxCommandEvent&) { Preferences(); }, wxID_PREFERENCES);
     Bind(wxEVT_MENU, [this](wxCommandEvent&) { OpenPage(PAGE_SOUNDS); }, ID_SOUNDS);
-    Bind(wxEVT_MENU, [this](wxCommandEvent&) { About(); }, ID_ABOUT);
 }
 
 #ifdef __WXMSW__

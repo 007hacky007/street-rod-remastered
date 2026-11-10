@@ -1,5 +1,6 @@
 // settings.h -- settings kept between runs in settings.ini: under
-// %APPDATA%\Street Rod Enhanced on Windows, and ~/.config/street-rod-enhanced on Linux.
+// %APPDATA%\Street Rod Enhanced on Windows, ~/Library/Application Support/Street Rod Enhanced on macOS and
+// ~/.config/street-rod-enhanced on Linux.
 // Every change is written straight away.
 #pragma once
 

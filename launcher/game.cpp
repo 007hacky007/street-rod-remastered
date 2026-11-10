@@ -10,6 +10,8 @@
 
 #include <vector>
 
+#include "settings.h"
+
 namespace {
 
 // Whether `dir` holds the file `name` as written, in upper or in lower case (case matters outside
@@ -49,7 +51,14 @@ GameFolder ReadGameFolder(const wxString& dir) {
 
 wxString LauncherDir() { return wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(); }
 
-wxString DefaultGameDir() { return wxFileName(LauncherDir(), "Game").GetFullPath(); }
+wxString DefaultGameDir() {
+#ifdef __WXOSX__
+    // The app bundle stays read-only: the game and its saved games live with the settings.
+    return wxFileName(settings::Folder(), "Game").GetFullPath();
+#else
+    return wxFileName(LauncherDir(), "Game").GetFullPath();
+#endif
+}
 
 wxString DefaultProgram() {
     wxFileName name(LauncherDir(), "streetrod-enhanced");
