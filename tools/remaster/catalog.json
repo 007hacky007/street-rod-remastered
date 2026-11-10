@@ -4123,8 +4123,8 @@
  "8586d96448487cf5d73dcb328cfe6e47ab25329a": {
   "group": "screen",
   "batch": 1,
-  "desc": "two gas station attendants in green uniforms and caps, one lounging in a chair, one getting up from a chair, and a third standing with a chair beside him, against a chain link fence and grey pavement",
-  "keep": "the three figures and chairs where they are",
+  "desc": "three animation frames side by side of the same gas station attendant in a green uniform and cap: lounging in a folding chair, getting up from it, and standing beside it, each in front of a chain link fence on grey pavement",
+  "keep": "each frame stays in its own third of the picture with the same pose, chair and background, so the frames still line up",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5386,8 +5386,8 @@
  "b4710f0b14984a63bff1359d1813c7b08d1541a0": {
   "group": "screen",
   "batch": 1,
-  "desc": "Bob's Drive-In at night: a long red and white diner with \"BOB'S DRIVE-IN\" in neon letters on the roof, lit windows with people inside and an \"ORDER\" sign, a green car parked on the left, a man in a white shirt standing in the middle, a red car on the right, a dark parking lot and a kerb with a round drain in front",
-  "keep": "the lettering BOB'S DRIVE-IN and ORDER",
+  "desc": "Bob's Drive-In at night: a red and white diner roof with \"BOB'S DRIVE-IN\" in magenta and cyan light-bulb letters with yellow outlines, a purple band of round lights, an awning with lamps, three lit windows with customers in booths, a cook in a white hat at the counter under an \"ORDER\" sign, a checkered trim; a green 1950s car parked on the left seen from behind, a man in a white T-shirt and teal trousers leaning on a post in the middle, a red car with a couple on the right and a waitress beside it, a dark parking lot and a grey kerb with a short round post at the bottom left",
+  "keep": "the lettering BOB'S DRIVE-IN and ORDER; the parking lot stays empty and dark in the middle; the BOB'S DRIVE-IN letters are filled magenta with cyan dots and a yellow outline (not cream or yellow letters); the man's trousers are teal blue (not green); the green car stays bright green",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6386,7 +6386,7 @@
   "group": "screen",
   "batch": 1,
   "desc": "the credits screen as a blue California licence plate with four screws: \"CALIFORNIA Dreams\" at the top, small credit text columns left and right, a big yellow \"AD 1989\" and small copyright lines at the bottom",
-  "keep": "all the lettering and credit text exactly; the plate shape and screws",
+  "keep": "all the lettering exactly, letter for letter: left column \"PROGRAM BY:\" then ANDRZEJ SANOJCA, BOGDAN B\u0141ASZCZAK, TOMASZ PAW\u0141OWSKI, WOJTEK HAS, JAREK OLSZEWSKI, PRZEMEK ROKITA; right column \"COMPUTOGRAPHY BY:\" then MARCIN SZOSTAKOWSKI, MACIEJ MARKUSZEWSKI, HYRU GAU, then \"SOUNDS BY:\" DOROTA B\u0141ASZCZAK; \"DEVELOPMENT AND PROGRAMMING BY P.Z.KAREN CO. DEVELOPMENT GROUP\", \"ORIGINAL CONCEPT DEVELOPED BY MAGIC PARTNERS\", \"\u00a9 1989 LOGICAL DESIGN WORKS, INC.\", \"ALL RIGHTS RESERVED.\"; the plate shape and screws",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6798,7 +6798,7 @@
   "group": "screen",
   "batch": 1,
   "desc": "the top of the newspaper: two stacked paper tabs \"AUTO PARTS\" (with a wheel, a spark plug and an engine block) and \"USED CARS\" (with an old red sedan and a red sports car), then the \"Los Angeles News\" masthead in black gothic letters and \"10 cents\" on the right",
-  "keep": "all the lettering exactly; the paper stays white; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
+  "keep": "all the lettering exactly; the paper stays white; the stacked tabs keep their thin grey edges exactly as in the original, and nothing else gets a curl, fold or shadow",
   "sheet": null,
   "status": "new",
   "ids": {
