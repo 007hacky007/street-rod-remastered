@@ -34,7 +34,7 @@ static void save_png(const char *dir, const char *sha1, int w, int h, u32 abgr, 
 int main(void)
 {
     char dir[512];
-    snprintf(dir, sizeof dir, "/tmp/sre-compose-%d", (int)SDL_GetTicks());
+    snprintf(dir, sizeof dir, "sre-compose-%d", (int)SDL_GetTicks());      /* in the working directory */
     SDL_CreateDirectory(dir);
     char path[1024];
     snprintf(path, sizeof path, "%s/pics", dir);
