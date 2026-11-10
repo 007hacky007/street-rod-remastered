@@ -14,6 +14,8 @@
 
 typedef struct { char sha1[41]; u32 ref[16]; } Entry;
 
+static char *tagmap_dir;           /* dev aid SR_REMASTER_TAGMAP=dir */
+static unsigned long st_probe;
 static bool active;
 static char *pack_dir;
 static Entry *entries;
@@ -88,6 +90,8 @@ bool rm_pack_open(const char *dir)
     selftest = t ? SDL_atoi(t) : 0;
     const char *log = SDL_getenv("SR_REMASTER_PALETTE_LOG");
     if (log && *log) palette_log = fopen(log, "a");
+    const char *tm = SDL_getenv("SR_REMASTER_TAGMAP");
+    if (tm && *tm) tagmap_dir = SDL_strdup(tm);
     return active;
 }
 
@@ -208,6 +212,34 @@ static void log_palette(RmPic *p, const u32 rgb[16])
     fflush(palette_log);
 }
 
+/* Dev aid: every 25th frame, the composed frame (frameNNNN.bmp) and its tags (tagsNNNN.bmp, 320 x 200: R, G =
+ * top slot low / high bits, B = under slot low bits, 0 = none) are written to SR_REMASTER_TAGMAP. */
+static void tagmap_write(const u32 *xrgb, int scale, u16 start, int line_compare, u8 *const planes[4])
+{
+    static int n;
+    (void)planes;
+    SDL_Surface *f = SDL_CreateSurfaceFrom(320 * scale, 200 * scale, SDL_PIXELFORMAT_XRGB8888, (void *)xrgb, 320 * scale * 4);
+    SDL_Surface *t = SDL_CreateSurface(320, 200, SDL_PIXELFORMAT_XRGB8888);
+    if (!f || !t) { SDL_DestroySurface(f); SDL_DestroySurface(t); return; }
+    u32 *tp = t->pixels;
+    for (int y = 0; y < 200; y++) {
+        u16 row = y < line_compare ? (u16)(start + y * EGA_BYTES_PER_LINE) : (u16)((y - line_compare) * EGA_BYTES_PER_LINE);
+        for (int x = 0; x < 320; x++) {
+            u16 o = (u16)(row + (x >> 3));
+            RmTag a = rm_vtag(o, 7 - (x & 7)), b = rm_vunder(o, 7 - (x & 7));
+            int sa = a ? rm_tag_slot(a) : 0, sb = b ? rm_tag_slot(b) : 0;
+            tp[y * (t->pitch / 4) + x] = (u32)(sa & 0xFF) << 16 | (u32)(sa >> 8 & 0xFF) << 8 | (u32)(sb & 0xFF);
+        }
+    }
+    char path[1024];
+    SDL_snprintf(path, sizeof path, "%s/frame%04d.bmp", tagmap_dir, n);
+    SDL_SaveBMP(f, path);
+    SDL_snprintf(path, sizeof path, "%s/tags%04d.bmp", tagmap_dir, n++);
+    SDL_SaveBMP(t, path);
+    SDL_DestroySurface(f);
+    SDL_DestroySurface(t);
+}
+
 void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_compare, u8 *const planes[4])
 {
     if (!active) return;
@@ -258,6 +290,7 @@ void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_com
             }
         }
     }
+    if (tagmap_dir && st_probe++ % 25 == 0) tagmap_write(xrgb, scale, start, line_compare, planes);
     if (selftest && ++st_frames % 200 == 0) rm_pack_report();
 }
 

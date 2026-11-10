@@ -17,6 +17,7 @@
 #include "platform/platform.h"
 #include "platform/video.h"
 #include "platform/vga.h"
+#include "remaster/rm_tags.h"
 #include "sound/sound.h"
 
 #define DF(o)        ds_far(o)
@@ -67,6 +68,7 @@ static void ega_vram_cache_strips(u16 tails, const FarPtr *frames, s16 n, s16 yo
             out(0x3CE, 5); out(0x3CF, 2);
             for (s16 c = 0; (s16)(desc_stride(fr) * rows) > c; c++) vwr(tp.seg, (u16)(tp.off + c), (u8)colour);
             out(0x3CE, 5); out(0x3CF, 0);
+            rm_holes(tp.seg, tp.off, (u16)(desc_stride(fr) * rows));   /* ENH: the fill stands for the ground */
         }
         s16 s = (s16)desc_stride(fr);
         u16 off = (u16)(DSS((u16)(t + 4)) * s);

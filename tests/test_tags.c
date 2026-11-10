@@ -142,6 +142,40 @@ static void shift_moves_tags(void)
     CHECK(rm_mtag(far_lin(dp), 7) == 0);
 }
 
+/* A hole (the ground-colour fill behind a car's wheel rows) written through the latches leaves the tags
+ * that were there: it stands for "transparent". */
+static void hole_copy_keeps_destination(void)
+{
+    make_bitmap16();
+    rm_seed_bitmap(far_make(RAM, 0), 16, 2, 2, 5);
+    copy_bitmap16_to_vram();
+    rm_holes(0xA000, 200, 1);
+    rm_set_at(0xA000, 200, 0, rm_tag(7, 1, 1), RM_HOLE);     /* one car pixel over the fill */
+    vga_out(0x3CE, 5); vga_out(0x3CF, 1);
+    vmovedata(0xA000, 200, 0xA000, 0, 1);
+    vga_out(0x3CE, 5); vga_out(0x3CF, 0);
+    CHECK(rm_vtag(0, 7) == rm_tag(5, 0, 0));
+    CHECK(rm_vtag(0, 1) == rm_tag(5, 6, 0));
+    CHECK(rm_vtag(0, 0) == rm_tag(7, 1, 1));
+    CHECK(rm_vunder(0, 0) == rm_tag(5, 7, 0));
+}
+
+/* After the wheel rows are copied to the page, their holes show the background the sprite is drawn over,
+ * and car pixels over a hole blend with that background. */
+static void tail_holes_take_background(void)
+{
+    make_bitmap16();
+    rm_seed_bitmap(far_make(RAM, 0), 16, 2, 2, 5);           /* the background bitmap in RAM */
+    rm_holes(0xA000, 0x50, 2);
+    rm_set_at(0xA000, 0x51, 0, rm_tag(7, 1, 1), RM_HOLE);
+    rm_tail_holes(far_make(0xA000, 0x50), 0x28, far_make(RAM, 2), 2, 2, 1);
+    CHECK(rm_vtag(0x50, 7) == rm_tag(5, 0, 1));
+    CHECK(rm_vunder(0x50, 7) == 0);
+    CHECK(rm_vtag(0x51, 1) == rm_tag(5, 14, 1));
+    CHECK(rm_vtag(0x51, 0) == rm_tag(7, 1, 1));
+    CHECK(rm_vunder(0x51, 0) == rm_tag(5, 15, 1));
+}
+
 /* The same sequence with the tags off and on leaves the same pixels. */
 static u8 run_sequence_planes[4][0x80];
 static void run_sequence(u8 out[4][0x80])
@@ -177,5 +211,7 @@ int main(void)
     RUN(set_reset_fill_clears);
     RUN(masked_or_sets_under);
     RUN(shift_moves_tags);
+    RUN(hole_copy_keeps_destination);
+    RUN(tail_holes_take_background);
     return failures != 0;
 }

@@ -41,7 +41,16 @@ Needs Python 3 with Pillow and numpy (tests: pytest).
    passes them), so every review sheet is also looked at: `reject SHA1 NOTE` sends a picture back,
    `accept SHA1 NOTE` takes one the checks flagged.
 
+   Repairs: `repair NAME` (hue lock of the tiles that failed for colour; `--all` for UI chrome that lines up
+   exactly) and `splice SHA1 SCENE_SHA1 --cell W --common --margin 3` for opaque animation frames that carry
+   their own copy of the scene (the attendant at Gus'): each frame takes the scene's art wherever it shows
+   the scene, so no rectangle shows around the figure. Run it again after a new ingest of the frames.
+
 6. `pack OUT` collects the art that passed (and was not rejected) with each picture's palette; `install` it
    where the launcher looks (`~/Library/Application Support/Street Rod Enhanced/Remaster` on a Mac).
+
+In the game, `SR_REMASTER_SELFTEST=2` tints every remastered pixel, and `SR_REMASTER_TAGMAP=DIR` writes
+every 25th frame with a map of which picture each pixel shows (`tagsNNNN.bmp`: R + 256 G = the picture's
+slot, B = the slot under it, 0 = none).
 
 Tests: `python3 -m pytest tools/remaster/tests -q`.

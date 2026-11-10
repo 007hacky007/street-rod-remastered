@@ -399,6 +399,7 @@ s16 ega_sprite_over_bg(FarPtr spr, FarPtr dst, FarPtr bg, const Tail *t, const R
     FarPtr bpl = desc_planes(bg);
     u16 bo = sstr == bgstr ? (u16)((u16)((u16)c.dy * bgstr) + bpl.off)            /* (sic) no x offset */
                            : (u16)((u16)((u16)c.sy * bgstr) + bpl.off + (u16)c.dx); /* (sic) */
+    u16 bo0 = bo;
     for (u16 mm = 1; mm < 9; mm <<= 1) {
         if (dstep == 0) { out(0x3C4, 2); out(0x3C5, (u8)mm); }
         rows_composite(dp, seg, so, mo, bo, (s16)sstr, c.w, hmain, (s16)bgstr, (s16)dstr);
@@ -412,6 +413,7 @@ s16 ega_sprite_over_bg(FarPtr spr, FarPtr dst, FarPtr bg, const Tail *t, const R
         ax = (u16)(0x28 * hmain);
         dp.off = (u16)(dp.off + ax);
         ega_latch_copy_to40(tsrc, c.w, trows, dp, (s16)sstr);
+        rm_tail_holes(dp, 0x28, far_make(bpl.seg, (u16)(bo0 + hmain * bgstr)), bgstr, c.w, trows);   /* ENH */
         if (c.w >= 1) ax = (u16)(c.w & 0xFF00);                    /* AX left by 24e7:008b */
     }
     return (s16)ax;

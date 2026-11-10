@@ -12,7 +12,7 @@ from rmlib.cleanup import cleanup  # noqa: E402
 from rmlib.images import unique_pictures  # noqa: E402
 from rmlib.progress import Progress  # noqa: E402
 from rmlib.register import register  # noqa: E402
-from rmlib.repair import hue_lock, tiles_of  # noqa: E402
+from rmlib.repair import find_offset, hue_lock, splice, tiles_of  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
@@ -177,6 +177,55 @@ def cmd_repair(name, only=None, whole=False):
         print('  ', r)
 
 
+def erode(mask, n):
+    """mask without the pixels within n (Chebyshev distance) of a False one."""
+    out = mask.copy()
+    for _ in range(n):
+        m = out.copy()
+        m[1:] &= out[:-1]; m[:-1] &= out[1:]
+        m[:, 1:] &= out[:, :-1]; m[:, :-1] &= out[:, 1:]
+        m[1:, 1:] &= out[:-1, :-1]; m[:-1, :-1] &= out[1:, 1:]
+        m[1:, :-1] &= out[:-1, 1:]; m[:-1, 1:] &= out[1:, :-1]
+        out = m
+    return out
+
+
+def cmd_splice(sha1, bg, cell=0, common=False, max_diff=None, margin=0):
+    """Opaque frames that carry a copy of the scene (sha1) drawn over the scene picture bg: each frame (cells
+    of `cell` pixels across, 0 = the whole picture) takes the scene's art outside its figure; with common,
+    not near the scene's own figure (where at least two frames differ from the scene). Run after the
+    ingest of sha1; a new ingest undoes it. Takes the art from the last ingest (the .json raw), not a spliced one."""
+    pics, src = unique_pictures(DUMPS), os.path.join(ART, 'art', 'pics')
+    p, b = pics[sha1], pics[bg]
+    m = json.load(open(os.path.join(src, sha1 + '.json')))
+    ref = [int(c, 16) for c in m['ref']] if m.get('ref') else jobs.palette_of(sha1, palettes())
+    if m.get('repaired'):
+        sys.exit('%s was repaired (%s); splice works on the cleaned-up result only' % (sha1[:8], m['repaired']))
+    res = np.asarray(Image.open(m['raw']).convert('RGBA'))     # from the generated image again
+    rgba, ix = cleanup(p.idx, p.transparent, res, m['rect'], ref)
+    brgba = np.asarray(Image.open(os.path.join(src, bg + '.png')).convert('RGBA'))
+    bix = np.asarray(Image.open(os.path.join(src, bg + '.idx.png')))
+    cell = cell or p.w
+    done, cells = [], []
+    for c0 in range(0, p.w, cell):
+        fr = p.idx[:, c0:c0 + cell]
+        cells.append((c0, fr, find_offset(fr, b.idx)))
+    allowed = None
+    if common:                  # the scene's own figure: where at least two frames differ from the scene
+        votes = sum((b.idx[y0:y0 + fr.shape[0], x0:x0 + fr.shape[1]] != fr).astype(int) for _, fr, (x0, y0) in cells)
+        allowed = erode(votes < min(2, len(cells)), margin)
+    for c0, fr, at in cells:
+        xs = slice(c0 * 4, (c0 + fr.shape[1]) * 4)
+        r, x, n = splice(rgba[:, xs], ix[:, xs], fr, brgba, bix, b.idx, at, allowed, max_diff)
+        rgba, ix = rgba.copy(), ix.copy()
+        rgba[:, xs], ix[:, xs] = r, x
+        done.append({'cell': c0, 'at': list(at), 'pixels': n})
+        print('cell %d at %d,%d: %d pixels from the scene' % (c0, at[0], at[1], n))
+    pack.write_entry(os.path.join(ART, 'art'), sha1, rgba, ix, ref)
+    m['spliced'] = {'bg': bg, 'common': common, 'margin': margin, 'max_diff': max_diff, 'cells': done}
+    json.dump(m, open(os.path.join(src, sha1 + '.json'), 'w'), indent=1)
+
+
 def set_review(sha1, verdict, note):
     path = os.path.join(ART, 'art', 'pics', sha1 + '.json')
     m = json.load(open(path))
@@ -256,6 +305,13 @@ def main():
     rp.add_argument('name')
     rp.add_argument('--at', nargs='*', default=None, help='only the tiles containing these X,Y original pixels')
     rp.add_argument('--all', action='store_true', help='lock the whole picture (no seams)')
+    sp = sub.add_parser('splice', help='opaque frames: the scene art outside the figure')
+    sp.add_argument('sha1')
+    sp.add_argument('bg')
+    sp.add_argument('--cell', type=int, default=0)
+    sp.add_argument('--common', action='store_true', help="not near the scene's own figure (two frames differ from the scene there)")
+    sp.add_argument('--margin', type=int, default=0, help="with --common: keep this far from the scene's own figure")
+    sp.add_argument('--max-diff', type=float, default=None, help='only where the two drawings agree (mean RGB difference)')
     sub.add_parser('pack').add_argument('out')
     sub.add_parser('status')
     a = ap.parse_args()
@@ -282,6 +338,8 @@ def main():
         set_review(a.sha1, a.cmd, a.note)
     elif a.cmd == 'repair':
         cmd_repair(a.name, [tuple(int(v) for v in p.split(',')) for p in a.at] if a.at else None, a.all)
+    elif a.cmd == 'splice':
+        cmd_splice(a.sha1, a.bg, a.cell, a.common, a.max_diff, a.margin)
     elif a.cmd == 'pack':
         cmd_pack(a.out)
     elif a.cmd == 'status':

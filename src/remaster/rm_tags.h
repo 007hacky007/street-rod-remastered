@@ -24,6 +24,12 @@ static inline int rm_tag_slot(RmTag t) { return (int)(t >> 18 & 0x1FF); }
 static inline int rm_tag_u(RmTag t)    { return (int)(t >> 9 & 0x1FF); }
 static inline int rm_tag_v(RmTag t)    { return (int)(t & 0x1FF); }
 
+/* A hole: a pixel the game filled with the ground colour behind a sprite (the wheel rows of a driving car
+ * are built over a plain fill and copied opaque). It stands for "transparent": writing a hole leaves the
+ * destination's tags, and a pixel drawn over a hole gets the destination's tag as its under. Never shown. */
+#define RM_HOLE_SLOT 0x1FF
+#define RM_HOLE (0x80000000u | (u32)RM_HOLE_SLOT << 18)
+
 extern bool rm_tags_active;              /* on and not suspended: the inline hooks test this */
 
 bool rm_tags_on(void);
@@ -68,6 +74,11 @@ void rm_masked_byte(u16 dseg, u16 doff, u16 sseg, u16 soff, u8 mask);
 /* A byte of sprite-over-background (dst = (mask & bg) | src): opaque pixels top = source, under =
  * background; transparent pixels the background as it is. */
 void rm_composite_byte(u16 dseg, u16 doff, u16 sseg, u16 soff, u16 bseg, u16 boff, u8 mask);
+/* The n bytes at seg:off (all 8 pixels) are holes. */
+void rm_holes(u16 seg, u16 off, u16 n);
+/* Wheel rows copied to the screen: in rows x wb bytes at dst (row stride dstr), holes take the tags of the
+ * background byte at the same place of bg (row stride bgstr), and pixels over a hole get it as under. */
+void rm_tail_holes(FarPtr dst, u16 dstr, FarPtr bg, u16 bgstr, s16 wb, s16 rows);
 /* The pixels set in `bits` copied as they are from s to d (same pixel positions). */
 void rm_copy_bits(u16 dseg, u16 doff, u16 sseg, u16 soff, u8 bits);
 

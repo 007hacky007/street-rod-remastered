@@ -86,6 +86,15 @@ void rm_set_at(u16 seg, u16 off, int bit, RmTag top, RmTag under)
     if (slot_at(seg, off, bit, &t, &u, &i)) { t[i] = top; u[i] = under; }
 }
 
+/* One pixel written with (st, su): a hole leaves it; an under that is a hole becomes the old top. */
+static inline void put(RmTag *t, RmTag *u, RmTag st, RmTag su)
+{
+    if (st == RM_HOLE) return;
+    if (su == RM_HOLE) su = *t == st ? *u : *t == RM_HOLE ? *u : *t;
+    *t = st;
+    *u = su;
+}
+
 void rm_on_vram_read(u16 off)
 {
     if (!on) return;
@@ -103,11 +112,9 @@ void rm_on_vram_write(u16 off, u8 cpu_bits, bool data)
     for (int p = 0; p < 8; p++) {
         int bit = 7 - p;
         if (!(cpu_bits >> bit & 1)) {            /* the pixel keeps the latched value */
-            vtop[b + p] = latch_top[p];
-            vund[b + p] = latch_und[p];
+            put(&vtop[b + p], &vund[b + p], latch_top[p], latch_und[p]);
         } else if (armed && data) {
-            vtop[b + p] = cpu_top[p];
-            vund[b + p] = cpu_und[p];
+            put(&vtop[b + p], &vund[b + p], cpu_top[p], cpu_und[p]);
         } else {
             vtop[b + p] = 0;
             vund[b + p] = 0;
@@ -127,8 +134,7 @@ void rm_on_ram_write(u32 l)
     if (!rm_tags_active || l >= MEM_SIZE) return;
     size_t b = (size_t)l * 8;
     if (armed) {
-        memcpy(mtop + b, cpu_top, sizeof cpu_top);
-        memcpy(mund + b, cpu_und, sizeof cpu_und);
+        for (int p = 0; p < 8; p++) put(&mtop[b + p], &mund[b + p], cpu_top[p], cpu_und[p]);
     } else {
         memset(mtop + b, 0, sizeof cpu_top);
         memset(mund + b, 0, sizeof cpu_und);
@@ -158,7 +164,7 @@ void rm_over(u16 dseg, u16 doff, int dbit, u16 sseg, u16 soff, int sbit)
 {
     RmTag *dt, *du, *st, *su; size_t di, si;
     if (!slot_at(dseg, doff, dbit, &dt, &du, &di) || !slot_at(sseg, soff, sbit, &st, &su, &si)) return;
-    if (dt[di] == st[si]) return;                /* idempotent over the four plane passes */
+    if (dt[di] == st[si] || st[si] == RM_HOLE) return;  /* idempotent over the plane passes; a hole: none */
     du[di] = dt[di];
     dt[di] = st[si];
 }
@@ -167,8 +173,7 @@ void rm_copy_px(u16 dseg, u16 doff, int dbit, u16 sseg, u16 soff, int sbit)
 {
     RmTag *dt, *du, *st, *su; size_t di, si;
     if (!slot_at(dseg, doff, dbit, &dt, &du, &di) || !slot_at(sseg, soff, sbit, &st, &su, &si)) return;
-    dt[di] = st[si];
-    du[di] = su[si];
+    put(&dt[di], &du[di], st[si], su[si]);
 }
 
 void rm_clear_px(u16 seg, u16 off, int bit)
@@ -189,6 +194,7 @@ void rm_composite_byte(u16 dseg, u16 doff, u16 sseg, u16 soff, u16 bseg, u16 bof
     if (!on) return;
     for (int bit = 0; bit < 8; bit++) {
         if (mask >> bit & 1) rm_copy_px(dseg, doff, bit, bseg, boff, bit);
+        else if (rm_tag_at(sseg, soff, bit) == RM_HOLE) rm_copy_px(dseg, doff, bit, bseg, boff, bit);
         else rm_set_at(dseg, doff, bit, rm_tag_at(sseg, soff, bit), rm_tag_at(bseg, boff, bit));
     }
 }
@@ -198,4 +204,26 @@ void rm_copy_bits(u16 dseg, u16 doff, u16 sseg, u16 soff, u8 bits)
     if (!on) return;
     for (int bit = 0; bit < 8; bit++)
         if (bits >> bit & 1) rm_copy_px(dseg, doff, bit, sseg, soff, bit);
+}
+
+void rm_holes(u16 seg, u16 off, u16 n)
+{
+    if (!on) return;
+    for (u16 i = 0; i < n; i++)
+        for (int bit = 0; bit < 8; bit++) rm_set_at(seg, (u16)(off + i), bit, RM_HOLE, 0);
+}
+
+void rm_tail_holes(FarPtr dst, u16 dstr, FarPtr bg, u16 bgstr, s16 wb, s16 rows)
+{
+    if (!on) return;
+    for (s16 y = 0; y < rows; y++)
+        for (s16 i = 0; i < wb; i++) {
+            u16 d = (u16)(dst.off + y * dstr + i), b = (u16)(bg.off + y * bgstr + i);
+            for (int bit = 0; bit < 8; bit++) {
+                RmTag t = rm_tag_at(dst.seg, d, bit), u = rm_under_at(dst.seg, d, bit);
+                RmTag g = rm_tag_at(bg.seg, b, bit);
+                if (t == RM_HOLE) rm_set_at(dst.seg, d, bit, g, rm_under_at(bg.seg, b, bit));
+                else if (u == RM_HOLE) rm_set_at(dst.seg, d, bit, t, g);
+            }
+        }
 }
