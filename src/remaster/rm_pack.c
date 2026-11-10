@@ -248,6 +248,47 @@ static void tagmap_write(const u32 *xrgb, int scale, u16 start, int line_compare
     SDL_DestroySurface(t);
 }
 
+/* A sprite pixel that is transparent in its art but has no usable under tag (the tags of a car's corners
+ * were made while the car stood there): the background of the nearest pixel in the row that shows another
+ * background picture (160 pixels wide or more), if it has the same original index at the shifted position. 0 if none. */
+/* The art of tag t is fully transparent at its pixel's centre (or there is no art). */
+static bool transparent_at(RmTag t, const u32 rgb[16])
+{
+    RmPic *q = rm_pic(rm_tag_slot(t));
+    if (!q || rm_tag_u(t) >= q->w || rm_tag_v(t) >= q->h) return true;
+    int a;
+    texel(q, rm_tag_u(t) * RM_ART_SCALE + RM_ART_SCALE / 2, rm_tag_v(t) * RM_ART_SCALE + RM_ART_SCALE / 2, rgb, &a);
+    return a == 0;
+}
+
+static RmTag background_at(RmTag t, int x, u16 row, int c, const u32 rgb[16]);
+
+static RmTag borrowed_under(RmTag t, int x, u16 row, int c, const u32 rgb[16])
+{
+    return transparent_at(t, rgb) ? background_at(t, x, row, c, rgb) : 0;
+}
+
+/* The search itself: the nearest pixel of the row (48 at most either side) that shows a background picture
+ * other than t's, opaque there, whose original has index c at this pixel's position. */
+static RmTag background_at(RmTag t, int x, u16 row, int c, const u32 rgb[16])
+{
+    for (int d = 1; d <= 48; d++)
+        for (int sgn = -1; sgn <= 1; sgn += 2) {
+            int xn = x + sgn * d;
+            if (xn < 0 || xn >= 320) continue;
+            u16 on = (u16)(row + (xn >> 3));
+            int bn = 7 - (xn & 7);
+            RmTag tn = rm_vtag(on, bn);
+            if (!tn || rm_tag_slot(tn) == rm_tag_slot(t) || transparent_at(tn, rgb)) continue;
+            RmPic *q = rm_pic(rm_tag_slot(tn));
+            if (!q || q->w < 160) continue;                /* backgrounds only, not other sprites */
+            int u = rm_tag_u(tn) - sgn * d, v = rm_tag_v(tn);
+            if (u < 0 || u >= q->w || v >= q->h || q->orig[v * q->w + u] != c) continue;
+            return rm_tag(rm_tag_slot(tn), u, v);
+        }
+    return 0;
+}
+
 void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_compare, u8 *const planes[4])
 {
     if (!active) return;
@@ -266,9 +307,18 @@ void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_com
             if (u >= p->w || v >= p->h) continue;
             int c = (planes[0][o] >> bit & 1) | (planes[1][o] >> bit & 1) << 1 | (planes[2][o] >> bit & 1) << 2 |
                     (planes[3][o] >> bit & 1) << 3;
-            if (p->orig[v * p->w + u] != c) continue;        /* verify: the screen still shows that pixel */
+            if (p->orig[v * p->w + u] != c) {                /* verify: the screen still shows that pixel */
+                /* a stale tag (a sprite that moved on): the background next to it, verified the same way */
+                RmTag b = background_at(t, x, row, c, rgb);
+                if (!b) continue;
+                t = b;
+                p = rm_pic(rm_tag_slot(t));
+                u = rm_tag_u(t);
+                v = rm_tag_v(t);
+            }
             log_palette(p, rgb);
             RmTag ut = rm_vunder(o, bit);
+            if (!ut || ut == t || transparent_at(ut, rgb)) ut = borrowed_under(t, x, row, c, rgb);
             RmPic *up = ut ? rm_pic(rm_tag_slot(ut)) : NULL;
             int uu = up ? rm_tag_u(ut) : 0, uv = up ? rm_tag_v(ut) : 0;
             if (up && (uu >= up->w || uv >= up->h)) up = NULL;
@@ -299,7 +349,7 @@ void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_com
             }
         }
     }
-    if (tagmap_dir && st_probe++ % 25 == 0) tagmap_write(xrgb, scale, start, line_compare, planes);
+    if (tagmap_dir && st_probe++ % (SDL_getenv("SR_REMASTER_TAGMAP_N") ? SDL_atoi(SDL_getenv("SR_REMASTER_TAGMAP_N")) : 25) == 0) tagmap_write(xrgb, scale, start, line_compare, planes);
     if (selftest && ++st_frames % 200 == 0) rm_pack_report();
 }
 
