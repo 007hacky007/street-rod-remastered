@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- HD remaster: with an art pack, every picture can be shown redrawn as pixel art at four times the resolution
+  (`--remaster-dir`, launcher: Art). Painting, fades and colour cycling recolour the redrawn art; the race view
+  uses the redrawn pictures and road-side shapes. The art pack is not distributed (see REMASTER.md).
+- Remastered music: the game's own tune played by a small synthesised band in stereo (`--music remastered`,
+  launcher: Game settings > Sounds > Music, default Remastered). Sound effects stay as they were.
+- Launcher: the Graphics choice is now called Race view.
+- Tools for building the art pack in `tools/remaster/`.
+
 ## 0.3.0
 
 - macOS app for Apple Silicon (M1 or later, macOS 12 or newer), on a disk image from the Releases page.
