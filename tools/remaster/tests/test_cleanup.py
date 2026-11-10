@@ -25,3 +25,22 @@ def test_cleanup_replaces_key_bleed():
     res[30:, 20:] = (255, 0, 128)                 # the pink key inside the outline
     rgba, ix = cleanup(idx, np.zeros(idx.shape, bool), res, (0, 0, 40, 40), EGA_PALETTE)
     assert tuple(rgba[35, 35, :3]) == (0, 0xAA, 0)
+
+
+def test_dark_shade_keeps_its_colour_index():
+    """A dark shade of a colour next to black stays on the colour's index (it must repaint and fade with it);
+    only a texel that is itself near black goes to black's index."""
+    from rmlib.cleanup import assign_index
+    orig = np.zeros((4, 4), np.uint8)
+    orig[:, 2:] = 3                                   # black | cyan
+    rgb = np.zeros((16, 16, 3), np.uint8)
+    rgb[:, 8:] = (0, 170, 170)
+    rgb[:, 8:10] = (0, 73, 73)                        # the cyan's dark shaded edge
+    rgb[:, 6:8] = (12, 12, 12)                        # a near-black outline drawn into the black side
+    rgb[0, 0:2] = (0, 60, 60)                         # a dark cyan texel inside the black area, by cyan
+    alpha = np.full((16, 16), 255, np.uint8)
+    ix = assign_index(rgb, alpha, orig, EGA_PALETTE)
+    assert (ix[:, 8:10] == 3).all()
+    assert (ix[:, 6:8] == 0).all()
+    assert (ix[0, 0:2] == 0).all()                    # far from cyan: no colour index to take
+    assert (ix[:, 10:] == 3).all()

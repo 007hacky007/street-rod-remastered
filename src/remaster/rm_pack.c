@@ -289,9 +289,18 @@ static RmTag background_at(RmTag t, int x, u16 row, int c, const u32 rgb[16])
     return 0;
 }
 
+/* Every register black (the game's fades): the original frame is black and no art may show, not even
+ * texels drawn lighter than black on a black index. */
+static bool all_black(const u32 rgb[16])
+{
+    u32 any = 0;
+    for (int i = 0; i < 16; i++) any |= rgb[i] & 0xFFFFFF;
+    return any == 0;
+}
+
 void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_compare, u8 *const planes[4])
 {
-    if (!active) return;
+    if (!active || all_black(rgb)) return;
     int w = 320 * scale;
     compose_frame++;
     for (int y = 0; y < 200; y++) {
@@ -371,5 +380,6 @@ void rm_selftest_race(bool differs)
 u32 rm_texel(const RmPic *p, int tu, int tv, const u32 rgb[16], int *alpha)
 {
     log_palette((RmPic *)p, rgb);                            /* the race view's pictures and shapes too */
-    return texel(p, tu, tv, rgb, alpha);
+    u32 c = texel(p, tu, tv, rgb, alpha);
+    return all_black(rgb) ? 0 : c;
 }

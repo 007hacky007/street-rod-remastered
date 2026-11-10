@@ -25,7 +25,8 @@ ids and descriptions, no pixels) are committed. Without a pack the game runs exa
 
 The pack is a folder: `pics/<sha1>.png` (RGBA, exactly 4x the original picture), `pics/<sha1>.idx.png` (the
 original palette index of every texel) and `pack.json` (format version and the palette each picture was drawn
-in). Pictures are keyed by the SHA-1 of their decoded pixels, so the main game and the data disk share them.
+in). Pictures are keyed by the SHA-1 of their packed bytes in the game's picture library, so the main game and
+the data disk share them.
 
 Every pixel of video memory and of the game's RAM bitmaps carries a tag: which picture it came from and where in
 it. The tags travel with the pixels through every copy, blit and sprite helper; any other write clears them.

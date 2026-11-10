@@ -17,6 +17,7 @@ static int failures;
 #define SPRITE "2222222222222222222222222222222222222222"
 #define PART   "3333333333333333333333333333333333333333"
 #define WHEEL  "4444444444444444444444444444444444444444"
+#define DARK   "5555555555555555555555555555555555555555"
 #define W 320
 
 static void save_png(const char *dir, const char *sha1, int w, int h, u32 abgr, bool idx)
@@ -46,7 +47,7 @@ int main(void)
     fprintf(f, "\"%s\": {\"ref\": %s}, \"%s\": {\"ref\": %s}, \"%s\": {\"ref\": %s}}, \"shapes\": {}}", GROUND, pal,
             SPRITE, pal, PART, pal);
     fseek(f, -2 - (long)strlen(", \"shapes\": {}}"), SEEK_END);
-    fprintf(f, ", \"%s\": {\"ref\": %s}}, \"shapes\": {}}", WHEEL, pal);
+    fprintf(f, ", \"%s\": {\"ref\": %s}, \"%s\": {\"ref\": %s}}, \"shapes\": {}}", WHEEL, pal, DARK, pal);
     fclose(f);
     /* the ground: index 7 (grey) drawn as a textured dark grey 0x404040 */
     save_png(dir, GROUND, W * 4, 4, 0xFF404040u, false);
@@ -58,6 +59,8 @@ int main(void)
     save_png(dir, PART, 8 * 4, 4, 0xFF070707u, true);
     save_png(dir, WHEEL, 4 * 4, 4, 0xFFFFFFFFu, false);      /* an opaque sprite next to it */
     save_png(dir, WHEEL, 4 * 4, 4, 0xFF070707u, true);
+    save_png(dir, DARK, 4 * 4, 4, 0xFF303030u, false);       /* a dark grey drawn on the black index */
+    save_png(dir, DARK, 4 * 4, 4, 0xFF000000u, true);
 
     memset(mem, 0, MEM_SIZE);
     vga_mode_0d();
@@ -92,5 +95,28 @@ int main(void)
     CHECK(frame[23] == 0x404040);           /* under is a part transparent there too */
     CHECK(frame[30] == 0x404040);           /* a stale tag: the ground's art */
     printf("%s transparent_sprite_shows_ground\n", failures ? "FAIL" : "ok  ");
+
+    /* the game's fade to black (every register black): nothing of the art shows, not even texels drawn
+     * lighter than black on the black index */
+    int before = failures;
+    u8 black[4] = { 0, 0, 0, 0 };
+    rm_slot_register_raw(6, DARK, black, 4, 1);
+    for (int x = 40; x < 44; x++) {
+        int bit = 7 - (x & 7);
+        for (int k = 0; k < 4; k++) ega_plane(k)[x >> 3] &= (u8)~(1 << bit);
+        rm_set_at(0xA000, (u16)(x >> 3), bit, rm_tag(6, x - 40, 0), 0);
+    }
+    rgb[0] = 0;                             /* the normal palette: black is black */
+    memset(frame, 0, sizeof frame);
+    rm_compose(frame, 1, rgb, 0, 1000, planes);
+    CHECK(frame[41] == 0x303030);           /* shown as drawn in the normal palette */
+    u32 dark[16] = { 0 };
+    memset(frame, 0, sizeof frame);
+    rm_compose(frame, 1, dark, 0, 1000, planes);
+    CHECK(frame[41] == 0);
+    CHECK(frame[2] == 0);
+    int a;
+    CHECK(rm_texel(rm_pic(6), 4, 0, dark, &a) == 0);
+    printf("%s black_palette_shows_black\n", failures != before ? "FAIL" : "ok  ");
     return failures != 0;
 }

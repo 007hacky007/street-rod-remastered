@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw  # noqa: E402
 from rmlib import catalog, jobs, pack  # noqa: E402
 from rmlib import palettes as palettes_lib  # noqa: E402
 from rmlib.check import check  # noqa: E402
-from rmlib.cleanup import cleanup  # noqa: E402
+from rmlib.cleanup import assign_index, cleanup  # noqa: E402
 from rmlib.images import unique_pictures  # noqa: E402
 from rmlib.progress import Progress  # noqa: E402
 from rmlib.register import register  # noqa: E402
@@ -253,6 +253,26 @@ def set_review(sha1, verdict, note):
         pr.save()
 
 
+def cmd_reindex():
+    """Every picture's texel indices again from its art as it is now (after repairs), by assign_index."""
+    pics, src, n, changed = unique_pictures(DUMPS), os.path.join(ART, 'art', 'pics'), 0, 0
+    for f in sorted(os.listdir(src)):
+        if not f.endswith('.json'):
+            continue
+        s, m = f[:-5], json.load(open(os.path.join(src, f)))
+        if not os.path.exists(os.path.join(src, s + '.png')):
+            continue
+        ref = [int(c, 16) for c in m['ref']] if m.get('ref') else jobs.palette_of(s, palettes())
+        rgba = np.asarray(Image.open(os.path.join(src, s + '.png')).convert('RGBA'))
+        path = os.path.join(src, s + '.idx.png')
+        old = np.asarray(Image.open(path))
+        ix = assign_index(rgba[..., :3], rgba[..., 3], pics[s].idx, ref)
+        Image.fromarray(ix, 'L').save(path)
+        n += 1
+        changed += int((ix != old).sum())
+    print(n, 'pictures,', changed, 'texels moved to another index')
+
+
 def cmd_pack(out):
     """The art that passed the checks and was not rejected on review (or was accepted on review)."""
     src = os.path.join(ART, 'art', 'pics')
@@ -318,6 +338,7 @@ def main():
     sp.add_argument('--common', action='store_true', help="not near the scene's own figure (two frames differ from the scene there)")
     sp.add_argument('--margin', type=int, default=0, help="with --common: keep this far from the scene's own figure")
     sp.add_argument('--max-diff', type=float, default=None, help='only where the two drawings agree (mean RGB difference)')
+    sub.add_parser('reindex', help='texel indices again from the art as it is (after repairs)')
     sub.add_parser('pack').add_argument('out')
     sub.add_parser('status')
     a = ap.parse_args()
@@ -338,6 +359,8 @@ def main():
         cmd_job(a.name)
     elif a.cmd == 'next':
         print(progress().next() or '')
+    elif a.cmd == 'reindex':
+        cmd_reindex()
     elif a.cmd == 'ingest':
         cmd_ingest(a.name, a.result, a.again)
     elif a.cmd in ('accept', 'reject', 'original'):

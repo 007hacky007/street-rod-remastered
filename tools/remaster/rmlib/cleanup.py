@@ -17,6 +17,35 @@ def _box3(a):
     return sum(p[dy:dy + a.shape[0], dx:dx + a.shape[1]] for dy in range(3) for dx in range(3)) / 9.0
 
 
+NEAR_BLACK = 40     # a texel goes to a black reference only if no channel is above this
+
+
+def assign_index(rgb, alpha, orig_idx, ref):
+    """The original index per texel: the nearest reference colour among the 3 x 3 original neighbours. A
+    black reference takes only texels that are near black themselves: a dark shade of a colour stays on that
+    colour's index, so it repaints and fades with it."""
+    h, w = orig_idx.shape
+    pal = np.array([[c >> 16, c >> 8 & 255, c & 255] for c in ref], np.float32)
+    black = pal.max(-1) == 0
+    dark = rgb.max(-1) <= NEAR_BLACK
+    pad = np.pad(orig_idx, 1, mode='edge')
+    best = np.full((h * SCALE, w * SCALE), 1e9, np.float32)
+    idx = _up(orig_idx).copy()
+    f = rgb.astype(np.float32)
+    for dy in range(3):
+        for dx in range(3):
+            cand = _up(pad[dy:dy + h, dx:dx + w])
+            d = ((f - pal[cand]) ** 2).sum(-1)
+            if dy == 1 and dx == 1:
+                d -= 1.0                                   # ties go to the pixel's own index
+            d[black[cand] & ~dark] = 1e9
+            take = d < best
+            best[take] = d[take]
+            idx[take] = cand[take]
+    idx[alpha == 0] = _up(orig_idx)[alpha == 0]
+    return idx.astype(np.uint8)
+
+
 def cleanup(orig_idx, transparent, result, rect, ref):
     """orig_idx: h x w original indices; transparent: h x w (masked pictures, else all False); result: the
     generated image; rect: (x, y, w, h) of the picture in it (register); ref: 16 x 0xRRGGBB, the colours the
@@ -39,20 +68,5 @@ def cleanup(orig_idx, transparent, result, rect, ref):
         alpha = np.minimum(alpha, big[..., 3] / 255.0)
     alpha = (alpha * 255 + 0.5).astype(np.uint8)
     rgb[alpha == 0] = 0
-    # the original index per texel: the nearest reference colour among the 3 x 3 original neighbours
-    pal = np.array([[c >> 16, c >> 8 & 255, c & 255] for c in ref], np.float32)
-    pad = np.pad(orig_idx, 1, mode='edge')
-    best = np.full((h * SCALE, w * SCALE), 1e9, np.float32)
-    idx = _up(orig_idx).copy()
-    f = rgb.astype(np.float32)
-    for dy in range(3):
-        for dx in range(3):
-            cand = _up(pad[dy:dy + h, dx:dx + w])
-            d = ((f - pal[cand]) ** 2).sum(-1)
-            if dy == 1 and dx == 1:
-                d -= 1.0                                   # ties go to the pixel's own index
-            take = d < best
-            best[take] = d[take]
-            idx[take] = cand[take]
-    idx[alpha == 0] = _up(orig_idx)[alpha == 0]
-    return np.dstack([rgb, alpha]), idx.astype(np.uint8)
+    idx = assign_index(rgb, alpha, orig_idx, ref)
+    return np.dstack([rgb, alpha]), idx
