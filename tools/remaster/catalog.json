@@ -5342,11 +5342,11 @@
   "masked": 1
  },
  "b2d36a9f629c09b132a9987f45c5bf77f732a5fd": {
-  "group": "ui",
-  "batch": 1,
-  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
-  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
-  "sheet": "faces-1",
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
   "status": "new",
   "ids": {
    "main": [
@@ -5902,11 +5902,11 @@
   "masked": 1
  },
  "c145810a1b060dac275135c7e5e3b374b178e27c": {
-  "group": "ui",
-  "batch": 1,
-  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
-  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
-  "sheet": "faces-1",
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
   "status": "new",
   "ids": {
    "main": [

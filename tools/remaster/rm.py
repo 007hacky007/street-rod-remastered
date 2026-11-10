@@ -101,7 +101,8 @@ def cmd_ingest(name, result, again=False):
             ok, why = check(orig, ~p.transparent, rgba)
         pack.write_entry(os.path.join(ART, 'art'), s, rgba, ix, ref)
         json.dump({'ok': ok, 'reasons': why, 'rect': rect[:4], 'score': rect[4], 'job': name, 'raw': kept,
-                   'review': None}, open(os.path.join(ART, 'art', 'pics', s + '.json'), 'w'), indent=1)
+                   'review': None, 'ref': ['%06X' % c for c in ref]},
+                  open(os.path.join(ART, 'art', 'pics', s + '.json'), 'w'), indent=1)
         all_ok &= ok
         reasons += ['%s: %s' % (s[:8], r) for r in why]
         rows.append((orig, rgba, why))
@@ -210,7 +211,8 @@ def cmd_pack(out):
             continue
         for ext in ('.png', '.idx.png'):
             shutil.copyfile(os.path.join(src, s + ext), os.path.join(out, 'pics', s + ext))
-        refs[s] = jobs.palette_of(s, palettes())
+        # the palette the art was made in (kept at ingest), not a later one
+        refs[s] = [int(c, 16) for c in m['ref']] if m.get('ref') else jobs.palette_of(s, palettes())
     pack.write_meta(out, refs)
     print(len(refs), 'pictures in', out)
 
