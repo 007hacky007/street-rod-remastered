@@ -199,11 +199,11 @@
   "masked": 1
  },
  "03319b5265a3d2aca8a1204da73d26b814c88881": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a very close view of the rear corner of a white car passing by: tail fin, chrome bumper and the white side of a tyre",
+  "keep": "white paint, chrome stays chrome",
+  "sheet": "race-close",
   "status": "new",
   "ids": {
    "main": [
@@ -268,6 +268,29 @@
   "h": 18,
   "masked": 1
  },
+ "06850de5319108192c60e4d72061da5d2a85dc2c": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a pair of grey rocks",
+  "keep": "the shape",
+  "sheet": "shapes-2",
+  "status": "new",
+  "ids": {
+   "main": [
+    2008
+   ],
+   "datadisk": [
+    2008
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 28,
+  "h": 12,
+  "masked": 1
+ },
  "06ccf90eef7e9a7b15d7bfddafb5c56eed1a88cb": {
   "group": "car",
   "batch": 2,
@@ -309,6 +332,29 @@
   "w": 16,
   "h": 70,
   "masked": 0
+ },
+ "08913569e28f0c45bbc84d68116d6da9ef27c022": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a yellow diamond road sign on a grey post with a black winding road symbol",
+  "keep": "the symbol",
+  "sheet": "shapes-1",
+  "status": "new",
+  "ids": {
+   "main": [
+    2018
+   ],
+   "datadisk": [
+    2018
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 63,
+  "masked": 1
  },
  "08e081571fdfd9c72555232769269f0fd0ae1745": {
   "group": "car",
@@ -566,11 +612,11 @@
   "masked": 1
  },
  "0d39d76a136bcea91c7813433e4f38419bb1f796": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a tiny far-away police car seen from the front, coming towards us, with red roof lights",
+  "keep": "white body, red lights",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [
@@ -589,11 +635,11 @@
   "masked": 1
  },
  "0ebfcb69b7fdd004fc73f8d7f5257c5c34fac67d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a black 1960s sports car seen straight from behind: split curved rear window, round tail lights, chrome bumper, licence plate",
+  "keep": "black paint, chrome stays chrome",
+  "sheet": "race-cars-2",
   "status": "new",
   "ids": {
    "main": [
@@ -898,11 +944,11 @@
   "masked": 1
  },
  "1566f195b1e8ff612bd049af5619be84af5de9e6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a low sports car seen from behind and a little from the side at night: rear window, tail lights, chrome bumper, licence plate, a thin aerial",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-cars-1",
   "status": "new",
   "ids": {
    "main": [
@@ -1242,11 +1288,11 @@
   "masked": 1
  },
  "1db8142ddd998f9a74fb7e89b7528d8d9d434cf2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "four traffic light lamps: dark grey housings, one with a red light lit, one with a green light lit, two unlit",
+  "keep": "which lamps are lit and their colours",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [
@@ -1262,6 +1308,29 @@
   ],
   "w": 48,
   "h": 32,
+  "masked": 1
+ },
+ "1e0a9bed482c302bb645b0e1d9725e38b4d17f47": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a white road sign on a grey post showing a road narrowing: two black curved lines with a dashed centre line",
+  "keep": "the symbol",
+  "sheet": "shapes-1",
+  "status": "new",
+  "ids": {
+   "main": [
+    2015
+   ],
+   "datadisk": [
+    2015
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 25,
+  "h": 57,
   "masked": 1
  },
  "1e870f4f54d5cc73f80746a419f57f8eee9e86fc": {
@@ -1677,6 +1746,29 @@
   "h": 53,
   "masked": 1
  },
+ "3343a3f8cf8405887b7974acb2ee759db12f7c27": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a roadside palm tree: green fronds and a brown curved trunk",
+  "keep": "the shape",
+  "sheet": "shapes-2",
+  "status": "new",
+  "ids": {
+   "main": [
+    2000
+   ],
+   "datadisk": [
+    2000
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 87,
+  "masked": 1
+ },
  "3422b8972979ae8252457a8c79aaed276eecdb88": {
   "group": "car",
   "batch": 2,
@@ -1697,11 +1789,11 @@
   "masked": 1
  },
  "345423e0fdcb5186c56bea02e652433de23be38b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a classic 1950s American car seen straight from behind at night: rear window, tail lights, chrome bumper, licence plate",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-cars-1",
   "status": "new",
   "ids": {
    "main": [
@@ -1876,11 +1968,11 @@
   "masked": 1
  },
  "394b0ca8219d061f199a9c000758e0f7ae1685c8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a tiny far-away 1930s hot rod seen from the front, coming towards us, with yellow headlights",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [
@@ -1954,6 +2046,29 @@
   "w": 168,
   "h": 18,
   "masked": 0
+ },
+ "3da1556884fb34f7ce10608c181d9f7f730222fd": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a small grey rock",
+  "keep": "the shape",
+  "sheet": "shapes-2",
+  "status": "new",
+  "ids": {
+   "main": [
+    2007
+   ],
+   "datadisk": [
+    2007
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 18,
+  "h": 9,
+  "masked": 1
  },
  "3dfb16ee96cefe553c58588c57783ac311d4758e": {
   "group": "car",
@@ -2075,11 +2190,11 @@
   "masked": 1
  },
  "41d89fb55eaa403dd09efcf50c4e30b38be76a13": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a 1930s hot rod coupe seen straight from behind with a white roof: small rear window, round tail lights, chrome bumper",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-cars-2",
   "status": "new",
   "ids": {
    "main": [
@@ -2369,6 +2484,29 @@
   "h": 18,
   "masked": 1
  },
+ "49e8abc962070e6b968ce3f15eb16f4d10879fc0": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a big roadside tree with a thick brown trunk and a full round green crown",
+  "keep": "the shape",
+  "sheet": "shapes-2",
+  "status": "new",
+  "ids": {
+   "main": [
+    2011
+   ],
+   "datadisk": [
+    2011
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 80,
+  "h": 76,
+  "masked": 1
+ },
  "4a537bc5493009d3a906acc850c814c59a25bf6f": {
   "group": "sprite",
   "batch": null,
@@ -2584,11 +2722,11 @@
   "masked": 1
  },
  "538e3914de3a9b73a3544a9c21f06278819395d1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a tiny far-away car seen from the front, coming towards us, with yellow headlights",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [
@@ -3202,6 +3340,29 @@
   "h": 18,
   "masked": 1
  },
+ "65e8a38ae6d9e08107bcd8c5811273bd0c2e1313": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a yellow diamond road sign on a grey post with a black winding road symbol",
+  "keep": "the symbol",
+  "sheet": "shapes-1",
+  "status": "new",
+  "ids": {
+   "main": [
+    2019
+   ],
+   "datadisk": [
+    2019
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 63,
+  "masked": 1
+ },
  "6739eb58f033ecc73b6c35a83e1b00e105302b01": {
   "group": "car",
   "batch": 2,
@@ -3221,12 +3382,35 @@
   "h": 14,
   "masked": 1
  },
+ "67b28aee71bd47a1dc804b300748522bbc90bb60": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a yellow road sign on a grey post with a black chevron pointing left",
+  "keep": "the chevron direction",
+  "sheet": "shapes-1",
+  "status": "new",
+  "ids": {
+   "main": [
+    2016
+   ],
+   "datadisk": [
+    2016
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 25,
+  "h": 54,
+  "masked": 1
+ },
  "68bff67158adf8413cdadd17f7839f97d04fca25": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a black 1950s car seen straight from behind: wide curved rear window, round tail lights, chrome bumper, licence plate",
+  "keep": "black paint, chrome stays chrome",
+  "sheet": "race-cars-2",
   "status": "new",
   "ids": {
    "main": [
@@ -3363,11 +3547,11 @@
   "masked": 1
  },
  "6bf9c556bd0aa381294824e5b34140b8dcddec43": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a tiny far-away car seen from the front, coming towards us, with yellow headlights",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [
@@ -3405,11 +3589,11 @@
   "masked": 1
  },
  "6d98eb256352e64efff4823be4ac5b12b6baa1a6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a 1930s hot rod coupe seen straight from behind with a white roof: small rear window, round tail lights, chrome bumper",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-cars-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -3803,11 +3987,11 @@
   "masked": 0
  },
  "7d4ca6d5cb451313143c2647c9758f664b6d26ff": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a classic 1950s-60s American car seen straight from behind at night: rear window, tail lights, chrome bumper, licence plate",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-cars-1",
   "status": "new",
   "ids": {
    "main": [
@@ -3823,6 +4007,29 @@
   ],
   "w": 112,
   "h": 64,
+  "masked": 1
+ },
+ "7dd7fd53989f0b1cb39e24e3a542c11c9efa7319": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a low green roadside bush",
+  "keep": "the shape",
+  "sheet": "shapes-2",
+  "status": "new",
+  "ids": {
+   "main": [
+    2004
+   ],
+   "datadisk": [
+    2004
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 30,
+  "h": 21,
   "masked": 1
  },
  "7df41106dfae2a92e1694f4f4b3ced043c18c6d1": {
@@ -3952,11 +4159,11 @@
   "masked": 1
  },
  "8175da6aeb62cb33169167fb9dc9769e7008c4bc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a white 1950s police car seen straight from behind with red roof lights and a \"POLICE\" licence plate",
+  "keep": "the plate lettering as it is; white body, red lights",
+  "sheet": "race-cars-2",
   "status": "new",
   "ids": {
    "main": [
@@ -4171,11 +4378,11 @@
   "masked": 1
  },
  "8635a0f8f5df704d85c717aea44083dadf6578bc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a classic 1960s American car seen straight from behind at night: wide rear window, tail lights, chrome bumper, licence plate",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-cars-1",
   "status": "new",
   "ids": {
    "main": [
@@ -4191,6 +4398,29 @@
   ],
   "w": 96,
   "h": 64,
+  "masked": 1
+ },
+ "86e9315e8c64f60cfc13753799b9aab017d43b6e": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a tall brown telephone pole with grey crossbars",
+  "keep": "the shape",
+  "sheet": "shapes-2",
+  "status": "new",
+  "ids": {
+   "main": [
+    2009
+   ],
+   "datadisk": [
+    2009
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 27,
+  "h": 81,
   "masked": 1
  },
  "876fac61f133aa60398e5e7835556eac3b7164aa": {
@@ -4376,6 +4606,29 @@
   "h": 15,
   "masked": 1
  },
+ "8b49e5a07a37814ee337af16034bd85bb53e824c": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a teal highway sign with a white arrow pointing up and a black and white route shield with the number \"69\"",
+  "keep": "the arrow and the number \"69\" exactly",
+  "sheet": "shapes-1",
+  "status": "new",
+  "ids": {
+   "main": [
+    2014
+   ],
+   "datadisk": [
+    2014
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 23,
+  "masked": 1
+ },
  "8c9c64b5bb0bebebd78f679bef773c6e7546fd80": {
   "group": "car",
   "batch": 2,
@@ -4461,11 +4714,11 @@
   "masked": 1
  },
  "8fec6259f22b7b3b71666b3f267f67d0dee35209": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a very close view of the rear corner of a purple car passing by: curved fender, chrome bumper and the white side of a tyre",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-close",
   "status": "new",
   "ids": {
    "main": [
@@ -4541,11 +4794,11 @@
   "masked": 1
  },
  "942a0871766e54f814c831112a9bc2770cb51a39": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "an irregular dark red splatter shape, long and vertical",
+  "keep": "the shape and dark red colour",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [
@@ -4629,11 +4882,11 @@
   "masked": 1
  },
  "968652c00c87f0e5bfa46bc7c3702cc1d3a39ffc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "an irregular dark red splatter shape, round",
+  "keep": "the shape and dark red colour",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [
@@ -4694,11 +4947,11 @@
   "masked": 1
  },
  "96cb3b54cfbe712c1ca4d485109eda40e7d8f1de": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a 1930s hot rod sedan seen straight from behind: tall body, small rear window, round tail lights, chrome bumper",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-cars-2",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -4811,6 +5064,29 @@
   "h": 17,
   "masked": 1
  },
+ "9e08bae8925477e90ad4cdee51b9d02c8eaf627f": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a grey fire hydrant",
+  "keep": "the shape",
+  "sheet": "shapes-2",
+  "status": "new",
+  "ids": {
+   "main": [
+    2002
+   ],
+   "datadisk": [
+    2002
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 12,
+  "h": 19,
+  "masked": 1
+ },
  "9e8c2dc16ec83a86792c2d0e65adcf0d7dfe8bb4": {
   "group": "car",
   "batch": 2,
@@ -4892,11 +5168,11 @@
   "masked": 1
  },
  "a1dbf3075a5f1d0c4fb35ae2040cc7603814878e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a small grey and green strip of road edge",
+  "keep": "the shape",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [
@@ -4999,6 +5275,29 @@
   "masked": 1,
   "pal_like": 1085
  },
+ "a542d9f33e4cdb495aa0548cdcc296bdaa1d7380": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a white road sign on a grey post reading \"SPEED 35 LIMIT\" in black",
+  "keep": "the words \"SPEED\", \"35\", \"LIMIT\" exactly",
+  "sheet": "shapes-1",
+  "status": "new",
+  "ids": {
+   "main": [
+    2005
+   ],
+   "datadisk": [
+    2005
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 25,
+  "h": 59,
+  "masked": 1
+ },
  "a56dd2c1835ec36639c7825e5de8091c4fa276fe": {
   "group": "car",
   "batch": 2,
@@ -5060,6 +5359,29 @@
   "h": 41,
   "masked": 0,
   "pal_like": 1014
+ },
+ "a5ec9e3c26bbe216c8b190447954d5c166a7d862": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a roadside tree with a brown branching trunk and small green leaf clusters",
+  "keep": "the shape",
+  "sheet": "shapes-2",
+  "status": "new",
+  "ids": {
+   "main": [
+    2010
+   ],
+   "datadisk": [
+    2010
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 68,
+  "h": 70,
+  "masked": 1
  },
  "a638fa04b6119ffee9d9d06772d071c79057dd86": {
   "group": "car",
@@ -5204,6 +5526,29 @@
   ],
   "w": 40,
   "h": 28,
+  "masked": 1
+ },
+ "ac65141d25d1162a205e06ae38513082164e49c2": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a white road sign reading \"CITY LIMITS\" in black",
+  "keep": "the words \"CITY LIMITS\" exactly",
+  "sheet": "shapes-1",
+  "status": "new",
+  "ids": {
+   "main": [
+    2013
+   ],
+   "datadisk": [
+    2013
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 64,
+  "h": 23,
   "masked": 1
  },
  "ae2c99858dc521e5d66b4a9622767c05a56b827f": {
@@ -5482,11 +5827,11 @@
   "masked": 1
  },
  "b62ca3be2b2aec8bed84dacf161086d4b309ddde": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a very close view of the rear corner of a black car passing by: curved fender, tail light, chrome bumper and a big rear wheel",
+  "keep": "black paint, chrome stays chrome",
+  "sheet": "race-close",
   "status": "new",
   "ids": {
    "main": [
@@ -5502,6 +5847,29 @@
   ],
   "w": 96,
   "h": 88,
+  "masked": 1
+ },
+ "b6703b0f1ec11c8243a911d3ef0b6b13c3980246": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a teal highway sign with a white arrow pointing up-left and a black and yellow interstate shield with the number \"48\"",
+  "keep": "the arrow and the number \"48\" exactly",
+  "sheet": "shapes-1",
+  "status": "new",
+  "ids": {
+   "main": [
+    2012
+   ],
+   "datadisk": [
+    2012
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 23,
   "masked": 1
  },
  "b69e1c5a0e72adf9d6abcfd4d37ccf450a6df2e0": {
@@ -5565,6 +5933,29 @@
   ],
   "w": 40,
   "h": 21,
+  "masked": 1
+ },
+ "b848512b6852e608bd192601f2732e1dfc840edf": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a yellow road sign on a grey post with a black chevron pointing right",
+  "keep": "the chevron direction",
+  "sheet": "shapes-1",
+  "status": "new",
+  "ids": {
+   "main": [
+    2017
+   ],
+   "datadisk": [
+    2017
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 54,
   "masked": 1
  },
  "b9a1735973f4ab3d2637636e0d932b8238b81860": {
@@ -5783,11 +6174,11 @@
   "pal_like": 1014
  },
  "bc96986c83dc7f462622ba9ab82b2170616be69e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a classic 1950s American car seen straight from behind at night: rear window, tail lights, chrome bumper, licence plate",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-cars-1",
   "status": "new",
   "ids": {
    "main": [
@@ -5805,12 +6196,35 @@
   "h": 64,
   "masked": 1
  },
+ "bda76942d3459f9c92d4a41c7e2065e17b102db9": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a tiny red and white roadside marker",
+  "keep": "the shape",
+  "sheet": "shapes-2",
+  "status": "new",
+  "ids": {
+   "main": [
+    2001
+   ],
+   "datadisk": [
+    2001
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 7,
+  "h": 14,
+  "masked": 1
+ },
  "be102373f36c45c30300e4560f9da456f962a226": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a long finned 1959 American car seen straight from behind at night: rear window, tail fins, round tail lights, chrome bumper, licence plate",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-cars-1",
   "status": "new",
   "ids": {
    "main": [
@@ -6097,6 +6511,29 @@
   ],
   "w": 24,
   "h": 18,
+  "masked": 1
+ },
+ "c7095bbf4cd23419f0ac14c44f75e1b543184852": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a road barrier: a black and yellow striped beam on two slanted grey legs, a small red lamp at its left end",
+  "keep": "the stripes and the lamp",
+  "sheet": "shapes-2",
+  "status": "new",
+  "ids": {
+   "main": [
+    2006
+   ],
+   "datadisk": [
+    2006
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 87,
+  "h": 31,
   "masked": 1
  },
  "c75766f1b42e1f7b5e7333d37e408a88c9076130": {
@@ -6464,6 +6901,29 @@
   "h": 39,
   "masked": 0
  },
+ "d39c8552139680aaf7c067c6c4924a767c3de7f0": {
+  "group": "race",
+  "batch": 3,
+  "desc": "a yellow diamond road sign on a grey post reading \"ROAD WORK AHEAD\" in black",
+  "keep": "the words \"ROAD WORK AHEAD\" exactly",
+  "sheet": "shapes-1",
+  "status": "new",
+  "ids": {
+   "main": [
+    2003
+   ],
+   "datadisk": [
+    2003
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 31,
+  "h": 63,
+  "masked": 1
+ },
  "d3b87380fafa9ae2f175c90a3ec56c78c4fdf569": {
   "group": "sprite",
   "batch": null,
@@ -6749,11 +7209,11 @@
   "masked": 1
  },
  "dd69cc95ba1446b9f24a838ab36f6f96d37cabaf": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "an irregular dark red splatter shape, wide and flat",
+  "keep": "the shape and dark red colour",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [
@@ -6833,11 +7293,11 @@
   "masked": 0
  },
  "dfd8e3115e5d60c8d4fb3aaedb5f5bb098820d56": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a white 1950s police car seen straight from behind with red roof lights, a \"POLICE\" licence plate and a badge on the side",
+  "keep": "the plate lettering as it is; white body, red lights",
+  "sheet": "race-cars-2",
   "status": "new",
   "ids": {
    "main": [
@@ -7420,11 +7880,11 @@
   "masked": 1
  },
  "f13308f77a9e38e444b99d69719659f00508e71d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a 1930s hot rod sedan seen straight from behind: tall body, small rear window, round tail lights, chrome bumper",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-cars-2",
   "status": "new",
   "ids": {
    "main": [
@@ -7703,11 +8163,11 @@
   "pal_like": 1080
  },
  "f80ff7416d551cb25f14827fc1812cb4f64adf87": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a tiny far-away car seen from the front, coming towards us, with yellow headlights",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [
@@ -7745,11 +8205,11 @@
   "masked": 1
  },
  "f964387c50a5f0ed7309f03f06672a146b0aecbf": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a tiny far-away 1930s hot rod seen from the front, coming towards us, with yellow headlights",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "datadisk": [
@@ -7810,11 +8270,11 @@
   "masked": 1
  },
  "fc014fd4f32ac5203d4857e9d9fb51e32afe66d0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 3,
+  "desc": "a tiny far-away car seen from the front, coming towards us, with yellow headlights",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "race-small",
   "status": "new",
   "ids": {
    "main": [

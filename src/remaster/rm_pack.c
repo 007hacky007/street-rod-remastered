@@ -318,4 +318,8 @@ void rm_selftest_race(bool differs)
     if (differs) st_mismatched++;
 }
 
-u32 rm_texel(const RmPic *p, int tu, int tv, const u32 rgb[16], int *alpha) { return texel(p, tu, tv, rgb, alpha); }
+u32 rm_texel(const RmPic *p, int tu, int tv, const u32 rgb[16], int *alpha)
+{
+    log_palette((RmPic *)p, rgb);                            /* the race view's pictures and shapes too */
+    return texel(p, tu, tv, rgb, alpha);
+}
