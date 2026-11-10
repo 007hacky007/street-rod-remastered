@@ -1,0 +1,99 @@
+name: CI
+
+# Every push to master and every pull request: build the game and the launcher on macOS and Windows, run
+# the unit tests and the remaster tools' tests. The Windows zip and the Mac app are kept as artifacts.
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    runs-on: macos-15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Tools
+        run: brew list ninja >/dev/null 2>&1 || brew install ninja
+
+      - uses: actions/cache@v6
+        with:
+          path: build-deps/prefix
+          key: macos-deps-${{ runner.os }}-${{ hashFiles('tools/macos/build-deps.sh') }}
+
+      - name: Dependencies
+        run: tools/macos/build-deps.sh
+
+      - name: Build and test
+        run: |
+          set -euo pipefail
+          VERSION=$(sed -n 's/^#define APP_VERSION_TEXT "\(.*\)"/\1/p' launcher/version.h)
+          tools/macos/package.sh --version "$VERSION"
+          tools/macos/make-dmg.sh --version "$VERSION"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Street-Rod-Enhanced-mac
+          path: |
+            dist/Street-Rod-Enhanced.dmg
+            dist/Street-Rod-Enhanced.dmg.sha256
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            zip
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-sdl3
+            mingw-w64-x86_64-wxwidgets3.2-msw
+
+      - name: Build and test
+        run: tools/windows/package.sh
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Street-Rod-Enhanced-windows
+          path: |
+            dist/Street-Rod-Enhanced-windows.zip
+            dist/Street-Rod-Enhanced-windows.zip.sha256
+
+  tools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Remaster tools tests
+        run: |
+          python -m pip install --quiet pillow numpy pytest
+          python -m pytest -q tools/remaster/tests

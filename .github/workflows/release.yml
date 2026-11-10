@@ -1,7 +1,7 @@
 name: Release
 
-# A v* tag builds the macOS disk image and attaches it to a draft release; a manual run builds it as an
-# artifact only.
+# A v* tag builds the macOS disk image and the Windows zip and attaches both to a draft release; a manual
+# run builds them as artifacts only.
 on:
   push:
     tags:
@@ -53,20 +53,59 @@ jobs:
       - name: Disk image
         run: tools/macos/make-dmg.sh --version "$VERSION"
 
-      - name: Artifact
-        if: github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v7
         with:
-          name: Street-Rod-Enhanced-${{ env.VERSION }}
+          name: mac
           path: |
             dist/Street-Rod-Enhanced.dmg
             dist/Street-Rod-Enhanced.dmg.sha256
 
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            zip
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-sdl3
+            mingw-w64-x86_64-wxwidgets3.2-msw
+
+      - name: Zip
+        run: tools/windows/package.sh
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: windows
+          path: |
+            dist/Street-Rod-Enhanced-windows.zip
+            dist/Street-Rod-Enhanced-windows.zip.sha256
+
+  release:
+    if: github.ref_type == 'tag'
+    needs: [macos, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          path: dist
+          merge-multiple: true
+
       - name: Draft release
-        if: github.ref_type == 'tag'
         env:
           GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          gh release create "$GITHUB_REF_NAME" dist/Street-Rod-Enhanced.dmg dist/Street-Rod-Enhanced.dmg.sha256 \
+          VERSION="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" --repo "$REPO" dist/* \
             --draft --title "Street Rod Enhanced $VERSION" --generate-notes

@@ -1,0 +1,11 @@
+Street Rod Enhanced
+
+1. Download Street Rod (sr1pc.zip) and, for 25 more cars, Street Rod SE (srsepc.zip) from
+   https://www.streetrodonline.com/downloads/ - the game is free from its copyright owner.
+2. Copy the files from the SR1 folder in sr1pc.zip into the Game folder here, so that SR.EXE, LIB1,
+   LIB2 and HOT_DATA are directly in Game. Copy the files from the SRSE folder in srsepc.zip into
+   a new folder Game\datadisk.
+3. Run "Street Rod Enhanced.exe", pick your options and press Play.
+
+Keep this folder somewhere you can write to (not Program Files): saved games are stored in Game.
+Alt+Enter switches full screen. More: https://github.com/007hacky007/streetrod-enhanced
