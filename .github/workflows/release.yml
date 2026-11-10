@@ -1,0 +1,72 @@
+name: Release
+
+# A v* tag builds the macOS disk image and attaches it to a draft release; a manual run builds it as an
+# artifact only.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  macos:
+    runs-on: macos-15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Tools
+        run: |
+          set -euo pipefail
+          brew list ninja >/dev/null 2>&1 || brew install ninja
+
+      - uses: actions/cache@v6
+        with:
+          path: build-deps/prefix
+          key: macos-deps-${{ runner.os }}-${{ hashFiles('tools/macos/build-deps.sh') }}
+
+      - name: Dependencies
+        run: tools/macos/build-deps.sh
+
+      - name: Version
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION=$(sed -n 's/^#define APP_VERSION_TEXT "\(.*\)"/\1/p' launcher/version.h)
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: App
+        run: tools/macos/package.sh --version "$VERSION"
+
+      - name: Disk image
+        run: tools/macos/make-dmg.sh --version "$VERSION"
+
+      - name: Artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v7
+        with:
+          name: Street-Rod-Enhanced-${{ env.VERSION }}
+          path: |
+            dist/Street-Rod-Enhanced.dmg
+            dist/Street-Rod-Enhanced.dmg.sha256
+
+      - name: Draft release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create "$GITHUB_REF_NAME" dist/Street-Rod-Enhanced.dmg dist/Street-Rod-Enhanced.dmg.sha256 \
+            --draft --title "Street Rod Enhanced $VERSION" --generate-notes
