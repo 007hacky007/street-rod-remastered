@@ -82,7 +82,7 @@ private:
     wxButton* play_ = nullptr;
     // The Sounds page: a slider and a number field for each volume.
     wxSlider* musicSlider_ = nullptr;
-    wxChoice* music_ = nullptr;      // music: remastered / original
+    wxChoice* music_ = nullptr;      // main window: the music, remastered / original
     wxSpinCtrl* musicField_ = nullptr;
     wxSlider* effectsSlider_ = nullptr;
     wxSpinCtrl* effectsField_ = nullptr;

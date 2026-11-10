@@ -17,7 +17,7 @@ ids and descriptions, no pixels) are committed. Without a pack the game runs exa
 
 * Launcher: **Art: Remastered** (enabled when a pack is found in the launcher's settings folder, `Remaster/`;
   on a Mac `~/Library/Application Support/Street Rod Enhanced/Remaster`, on Windows next to the launcher).
-  **Race view** (Enhanced / Original) is a separate choice. **Game settings > Sounds > Music** picks the
+  **Race view** (Enhanced / Original) is a separate choice. **Music** in the main window's Options picks the
   remastered or the original tune (default Remastered).
 * Game: `--remaster-dir DIR` shows the pack in DIR; `--music remastered` plays the band (default original).
 

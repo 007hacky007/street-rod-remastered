@@ -6,7 +6,7 @@
   (`--remaster-dir`, launcher: Art). Painting, fades and colour cycling recolour the redrawn art; the race view
   uses the redrawn pictures and road-side shapes. The art pack is not distributed (see REMASTER.md).
 - Remastered music: the game's own tune played by a small synthesised band in stereo (`--music remastered`,
-  launcher: Game settings > Sounds > Music, default Remastered). Sound effects stay as they were.
+  launcher: Music in Options, default Remastered). Sound effects stay as they were.
 - Launcher: the Graphics choice is now called Race view.
 - Tools for building the art pack in `tools/remaster/`.
 

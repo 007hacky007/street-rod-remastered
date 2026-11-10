@@ -20,7 +20,9 @@ like the Street Rod and Test Drive III launchers it is modelled on.
     as in the usual GOG/eXoDOS copies; the game then runs in that folder and keeps its own saved games there.
   * The original's own command-line switches: **Demo** (`demo`: the game plays itself, Esc ends it), **Races
     drive themselves** (`auto`) and **No mouse** (`nomouse`).
-* **Options**: **Window size** (`--scale`) and **Start in full screen** (`--fullscreen`; Alt+Enter switches).
+* **Options**: **Window size** (`--scale`), **Music**: Remastered (`--music remastered`, the default: the tune
+  played by a small band) or Original (the PC speaker), and **Start in full screen** (`--fullscreen`;
+  Alt+Enter switches).
 * **Keys in the game**: a reminder of the game's keys, including the port's A / Z gear keys.
 * **Picture**: **Art** original (the default) or remastered (`--remaster-dir`: every picture redrawn, from the
   art pack in `Remaster` in the settings folder, or beside the launcher on Windows; only available when a pack
@@ -44,8 +46,7 @@ like the Street Rod and Test Drive III launchers it is modelled on.
 
 * **File**: **Preferences** (**Always on top** keeps the launcher above other windows) and **Exit**.
 * **Game settings > Sounds**: **Music** (`--music-volume`) and **Sound effects** (`--sfx-volume`), 0 - 100 %,
-  each a slider and a number field, and **Music**: Remastered (`--music remastered`, the default) or Original
-  (the PC speaker). **Default**, **Apply**, **Cancel**.
+  each a slider and a number field. **Default**, **Apply**, **Cancel**.
 * **About**: version, author and links.
 
 Everything is remembered in `%APPDATA%\Street Rod Enhanced\settings.ini` (`~/Library/Application Support/Street Rod Enhanced`

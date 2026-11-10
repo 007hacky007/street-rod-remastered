@@ -158,6 +158,7 @@ LauncherFrame::LauncherFrame()
         wxMax(MIN_RES, wxMin(MAX_RES, settings::GetInt(SECTION, "ResScale", DEFAULT_RES))) - MIN_RES);
     aa_->SetSelection(wxMax(1, wxMin(MAX_AA, settings::GetInt(SECTION, "AA", DEFAULT_AA))) - 1);
     town_->SetValue(settings::GetInt(SECTION, "Town", 1) != 0);
+    music_->SetSelection(sounds_.remasteredMusic ? 0 : 1);
     ShowSounds(sounds_);
     loading_ = false;
     UpdateState();
@@ -262,6 +263,14 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     for (int s = MIN_SCALE; s <= MAX_SCALE; ++s) scale_->Append(wxString::Format(L"%d × %d", 320 * s, 240 * s));
     scale_->SetToolTip("The window's size when the game starts. Alt+Enter switches to full screen.");
     grid->Add(scale_, 0, wxALIGN_CENTER_VERTICAL);
+    grid->Add(new wxStaticText(ob, wxID_ANY, "&Music:"), 0, wxALIGN_CENTER_VERTICAL);
+    music_ = new wxChoice(ob, wxID_ANY);
+    music_->Append("Remastered: the tune played by a small band (default)");
+    music_->Append("Original: the PC speaker");
+    music_->SetToolTip("Remastered plays the game's own tune, note for note, with bass, guitar or piano, and "
+                       "drums. The sound effects stay the PC speaker's either way. The volumes are under "
+                       "Game settings > Sounds.");
+    grid->Add(music_, 0, wxALIGN_CENTER_VERTICAL);
     optionsBox->Add(grid, 0, wxLEFT | wxRIGHT | wxTOP, gap);
     fullscreen_ = new wxCheckBox(ob, wxID_ANY, "Start in f&ull screen (Alt+Enter switches)");
     optionsBox->Add(fullscreen_, 0, wxALL, gap);
@@ -375,18 +384,9 @@ wxWindow* LauncherFrame::CreateSoundsPage(wxWindow* parent) {
               0, 100, 10, &effectsSlider_, &effectsField_);
     volumeBox->Add(grid, 0, wxEXPAND | wxALL, gap);
 
-    auto* musicBox = new wxStaticBoxSizer(wxVERTICAL, page, "Music");
-    wxWindow* mb = musicBox->GetStaticBox();
-    music_ = new wxChoice(mb, wxID_ANY);
-    music_->Append("Remastered: the tune played by a small band (default)");
-    music_->Append("Original: the PC speaker");
-    music_->SetToolTip("Remastered plays the game's own tune, note for note, with bass, guitar or piano, and "
-                       "drums. The sound effects stay the PC speaker's either way.");
-    musicBox->Add(music_, 0, wxALL, gap);
-
     auto* buttons = new wxBoxSizer(wxHORIZONTAL);
     auto* defaults = new wxButton(page, wxID_ANY, "&Default");
-    defaults->SetToolTip("Put both volumes back to 100 % and the music to Remastered.");
+    defaults->SetToolTip("Put both volumes back to 100 %.");
     auto* apply = new wxButton(page, wxID_APPLY, "&Apply");
     apply->SetToolTip("Keep these settings and go back.");
     auto* cancel = new wxButton(page, wxID_CANCEL, "Cancel");
@@ -400,14 +400,12 @@ wxWindow* LauncherFrame::CreateSoundsPage(wxWindow* parent) {
         sounds_ = EditedSounds();
         settings::SetInt(SOUND, "MusicVolume", sounds_.music);
         settings::SetInt(SOUND, "EffectsVolume", sounds_.effects);
-        settings::SetInt(SOUND, "Music", sounds_.remasteredMusic ? 1 : 0);
         ClosePage();
     });
     cancel->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { ClosePage(); });
 
     auto* all = new wxBoxSizer(wxVERTICAL);
-    all->Add(volumeBox, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, margin);
-    all->Add(musicBox, 1, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, margin);
+    all->Add(volumeBox, 1, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, margin);
     all->Add(buttons, 0, wxEXPAND | wxALL, margin);
     page->SetSizer(all);
     return page;
@@ -418,7 +416,6 @@ void LauncherFrame::ShowSounds(const Sounds& s) {
     musicSlider_->SetValue(s.music);
     effectsField_->SetValue(s.effects);
     effectsSlider_->SetValue(s.effects);
-    music_->SetSelection(s.remasteredMusic ? 0 : 1);
 }
 
 Sounds LauncherFrame::EditedSounds() const {
@@ -426,7 +423,7 @@ Sounds LauncherFrame::EditedSounds() const {
     Sounds s;
     s.music = musicSlider_->GetValue();
     s.effects = effectsSlider_->GetValue();
-    s.remasteredMusic = music_->GetSelection() == 0;
+    s.remasteredMusic = sounds_.remasteredMusic;   // chosen in the main window
     return s;
 }
 
@@ -619,6 +616,7 @@ void LauncherFrame::Play() {
     options.aa = aa_->GetSelection() + 1;
     options.town = town_->GetValue();
     options.sounds = sounds_;
+    options.sounds.remasteredMusic = music_->GetSelection() == 0;
     wxString error;
     if (!LaunchGame(options, error)) wxMessageBox(error, APP_TITLE, wxOK | wxICON_ERROR, this);
 }
@@ -641,6 +639,8 @@ void LauncherFrame::Save() {
     settings::SetInt(SECTION, "ResScale", resolution_->GetSelection() + MIN_RES);
     settings::SetInt(SECTION, "AA", aa_->GetSelection() + 1);
     settings::SetInt(SECTION, "Town", town_->GetValue() ? 1 : 0);
+    sounds_.remasteredMusic = music_->GetSelection() == 0;
+    settings::SetInt(SOUND, "Music", sounds_.remasteredMusic ? 1 : 0);   // the key the Sounds page used
     settings::SaveWindowPosition(SECTION, this);
 }
 
