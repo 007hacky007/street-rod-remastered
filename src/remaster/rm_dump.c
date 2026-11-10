@@ -11,6 +11,7 @@
 #include "mem.h"
 #include "platform/ega.h"
 #include "platform/video.h"
+#include "symbols.h"
 
 /* Scratch segments for one picture: above the program image and DGROUP, unused before the game starts. */
 #define PACK_SEG 0x8000
@@ -147,6 +148,77 @@ static int dump_lib(const char *path, int lib, const char *out, FILE *jsonl)
     return done;
 }
 
+bool rm_shape_picture(int type, u8 *px, u8 *mask, int *w, int *h, int *x0, int *y0, char sha1[41])
+{
+    if (type < 0 || type >= RM_SHAPE_TYPES) return false;
+    u16 set = DSW((u16)(DS_shape_table + 2 * type));
+    if (!set) return false;
+    int nsizes = DSS(set);
+    if (nsizes <= 0 || nsizes > 16) return false;
+    u16 e = (u16)(DSW((u16)(set + 2)) + 6 * (nsizes - 1));
+    int n = DSS(e);
+    FarPtr ln = ds_far((u16)(e + 2));
+    if (n <= 0 || n > 4096) return false;
+    int minx = 1 << 30, maxx = -(1 << 30), miny = 1 << 30, maxy = -(1 << 30);
+    u8 *key = malloc((size_t)n * 4 + 6);
+    memcpy(key, "SHAPE", 5);
+    key[5] = (u8)type;
+    for (int i = 0; i < n; i++) {
+        const u8 *l = mp(ln.seg, (u16)(ln.off + 4 * i));
+        memcpy(key + 6 + 4 * i, l, 4);
+        int ldx = (s8)l[0], ldy = (s8)l[1], lw = (s8)l[2];
+        if (ldx < minx) minx = ldx;
+        if (ldx + lw > maxx) maxx = ldx + lw;
+        if (ldy < miny) miny = ldy;
+        if (ldy > maxy) maxy = ldy;
+    }
+    rm_sha1_hex(key, (unsigned long)n * 4 + 6, sha1);
+    free(key);
+    *w = maxx - minx + 1;
+    *h = maxy - miny + 1;
+    if (*w <= 0 || *h <= 0 || *w > 256 || *h > 256) return false;
+    *x0 = minx;
+    *y0 = miny;
+    memset(px, 0, (size_t)*w * *h);
+    memset(mask, 1, (size_t)*w * *h);
+    for (int i = 0; i < n; i++) {                       /* in order: a later span covers an earlier one */
+        const u8 *l = mp(ln.seg, (u16)(ln.off + 4 * i));
+        int ldx = (s8)l[0], ldy = (s8)l[1], lw = (s8)l[2];
+        for (int x = ldx; x <= ldx + lw; x++) {
+            size_t o = (size_t)(ldy - miny) * *w + (size_t)(x - minx);
+            px[o] = l[3] & 15;
+            mask[o] = 0;
+        }
+    }
+    return true;
+}
+
+static int dump_shapes(const char *out)
+{
+    char jp[1100];
+    snprintf(jp, sizeof jp, "%s/shapes.jsonl", out);
+    FILE *f = fopen(jp, "w");
+    if (!f) return -1;
+    static u8 px[256 * 256], mask[256 * 256], mk[256 * 256];
+    int done = 0;
+    for (int t = 0; t < RM_SHAPE_TYPES; t++) {
+        int w, h, x0, y0;
+        char sha[41];
+        if (!rm_shape_picture(t, px, mask, &w, &h, &x0, &y0, sha)) continue;
+        for (int i = 0; i < w * h; i++) mk[i] = mask[i] ? 255 : 0;
+        char p[1200];
+        snprintf(p, sizeof p, "%s/%s.bmp", out, sha);
+        if (!save_indexed(p, px, w, h, false)) { fclose(f); return -1; }
+        snprintf(p, sizeof p, "%s/%s.mask.bmp", out, sha);
+        if (!save_indexed(p, mk, w, h, true)) { fclose(f); return -1; }
+        fprintf(f, "{\"sha1\":\"%s\",\"kind\":\"shape\",\"type\":%d,\"lib\":0,\"index\":%d,\"id\":%d,\"w\":%d,\"h\":%d,"
+                   "\"masked\":1,\"x0\":%d,\"y0\":%d}\n", sha, t, t, 2000 + t, w, h, x0, y0);
+        done++;
+    }
+    fclose(f);
+    return done;
+}
+
 int rm_dump_pictures(const char *game_dir, const char *out)
 {
     char path[1024], jp[1100];
@@ -166,5 +238,6 @@ int rm_dump_pictures(const char *game_dir, const char *out)
         total += n;
     }
     fclose(jsonl);
+    if (dump_shapes(out) < 0) { fprintf(stderr, "cannot write the shapes to %s\n", out); return -1; }
     return total;
 }

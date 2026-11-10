@@ -19,6 +19,7 @@
 
 #define RM_ART_SCALE 4
 #define RM_MAX_SLOTS 512
+#define RM_SHAPE_SLOT0 400       /* race-view shape t has slot RM_SHAPE_SLOT0 + t */
 
 typedef struct {
     int w, h;                    /* the original picture */
@@ -35,6 +36,8 @@ bool rm_pack_open(const char *dir);
 bool rm_pack_active(void);
 /* pic_decode: the packed bytes (from the leading BCh) and the decoded planes of picture `slot`. */
 void rm_slot_register(int slot, FarPtr packed, u16 psize, FarPtr planes, int w, int h, int stride);
+/* A picture that does not come from a library (the race-view shapes): its key and w x h original indices. */
+void rm_slot_register_raw(int slot, const char sha1[41], const u8 *orig, int w, int h);
 /* The registered picture of `slot` with its art loaded, or NULL. */
 RmPic *rm_pic(int slot);
 /* compose (ega.c): replaces verified tagged pixels of the S x S output frame. */

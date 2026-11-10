@@ -10,6 +10,7 @@
  *     sy = 4 (Y + z dy - 76Ch) / z + 60
  * A band between two rows takes the flags of its far row (road_draw_band_front). */
 #include "enhanced/enh_internal.h"
+#include "remaster/rm_dump.h"
 #include "remaster/rm_pack.h"
 #include "remaster/rm_tags.h"
 
@@ -295,6 +296,39 @@ static int size_for(double z, int nsizes, double *f)
 }
 
 /* shape_draw: an hline sprite of the shape table, type `type`, anchored at (x, y) */
+/* ENH: a shape with remastered art: its most detailed size as an image (rm_shape_picture). */
+static struct { bool tried; EnhImage img; int x0, y0; } shp[RM_SHAPE_TYPES];
+
+static const EnhImage *shape_art(int type, int *x0, int *y0)
+{
+    if (!rm_pack_active() || type < 0 || type >= RM_SHAPE_TYPES) return NULL;
+    if (!shp[type].tried) {
+        shp[type].tried = true;
+        static u8 px[256 * 256], mask[256 * 256];
+        int w, h;
+        char sha[41];
+        if (rm_shape_picture(type, px, mask, &w, &h, &shp[type].x0, &shp[type].y0, sha)) {
+            int slot = RM_SHAPE_SLOT0 + type;
+            rm_slot_register_raw(slot, sha, px, w, h);
+            EnhImage *img = &shp[type].img;
+            img->w = w;
+            img->h = h;
+            img->px = SDL_malloc((size_t)w * h);
+            img->rm = SDL_malloc((size_t)w * h * sizeof *img->rm);
+            for (int j = 0; j < h; j++)
+                for (int i = 0; i < w; i++) {
+                    size_t o = (size_t)j * w + i;
+                    img->px[o] = mask[o] ? ENH_CLEAR : px[o];
+                    img->rm[o] = mask[o] ? 0 : rm_tag(slot, i, j);
+                }
+        }
+    }
+    if (!shp[type].img.rm || !rm_pic(RM_SHAPE_SLOT0 + type)) return NULL;
+    *x0 = shp[type].x0;
+    *y0 = shp[type].y0;
+    return &shp[type].img;
+}
+
 static void shape(double x, double y, double z, int side, int type)
 {
     u16 set = DSW((u16)(DS_shape_table + 2 * type));
@@ -302,6 +336,14 @@ static void shape(double x, double y, double z, int side, int type)
     if (nsizes <= 0 || z <= 0.5) return;
     double f;
     int k = size_for(z, nsizes, &f);
+    int ax, ay;
+    const EnhImage *art = shape_art(type, &ax, &ay);
+    if (art) {                         /* ENH: the remastered shape over the box its spans cover */
+        double top = y + f * ay, bot = y + f * (ay + art->h);
+        if (side == -1) enh_draw_image(art, x - f * ax + f, top, x - f * (ax + art->w - 1), bot);
+        else            enh_draw_image(art, x + f * ax, top, x + f * (ax + art->w), bot);
+        return;
+    }
     u16 e = (u16)(DSW((u16)(set + 2)) + 6 * k);
     int n = DSS(e);
     FarPtr ln = ds_far((u16)(e + 2));

@@ -28,8 +28,14 @@ class Picture:
 
 
 def read_dump(dump):
-    with open(os.path.join(dump, 'pictures.jsonl')) as f:
-        return [Picture(dump, json.loads(line)) for line in f if line.strip()]
+    """The pictures of a dump folder, then its race-view shapes (shapes.jsonl, kind "shape")."""
+    out = []
+    for name in ('pictures.jsonl', 'shapes.jsonl'):
+        path = os.path.join(dump, name)
+        if os.path.exists(path):
+            with open(path) as f:
+                out += [Picture(dump, json.loads(line)) for line in f if line.strip()]
+    return out
 
 
 def unique_pictures(dumps):

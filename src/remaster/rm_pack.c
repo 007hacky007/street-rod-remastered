@@ -118,6 +118,17 @@ void rm_slot_register(int slot, FarPtr packed, u16 psize, FarPtr planes, int w, 
     rm_resume();
 }
 
+void rm_slot_register_raw(int slot, const char sha1[41], const u8 *orig, int w, int h)
+{
+    if (!active || slot <= 0 || slot >= RM_MAX_SLOTS || pics[slot].orig || w <= 0 || h <= 0) return;
+    RmPic *p = &pics[slot];
+    memcpy(p->sha1, sha1, 41);
+    p->w = w;
+    p->h = h;
+    p->orig = malloc((size_t)w * h);
+    memcpy(p->orig, orig, (size_t)w * h);
+}
+
 static u8 *load_rgba(const char *path, int w, int h)
 {
     SDL_Surface *s = SDL_LoadPNG(path);
