@@ -74,7 +74,8 @@ private:
     wxCheckBox* noMouse_ = nullptr;
     wxChoice* scale_ = nullptr;
     wxCheckBox* fullscreen_ = nullptr;
-    wxChoice* graphics_ = nullptr;   // enhanced / original
+    wxChoice* graphics_ = nullptr;   // race view: enhanced / original
+    wxChoice* art_ = nullptr;        // art: original / remastered (with an art pack)
     wxChoice* resolution_ = nullptr;
     wxChoice* aa_ = nullptr;
     wxCheckBox* town_ = nullptr;

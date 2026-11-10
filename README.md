@@ -101,6 +101,7 @@ tools/macos/make-dmg.sh --version 0.3.0    # dist/Street-Rod-Enhanced.dmg
 | `--music-volume P` | Music volume, % (default 100) |
 | `--sfx-volume P` | Sound effects volume, % (default 100) |
 | `--classic` | Original picture only |
+| `--remaster-dir DIR` | Remastered pictures from the art pack in DIR (see `tools/remaster/README.md`) |
 | `--check` | Check that `SR.EXE` loads, then exit |
 | `demo`, `auto`, `nomouse` | The original's switches: self-playing demo, races drive themselves, no mouse |
 

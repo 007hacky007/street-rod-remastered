@@ -23,6 +23,19 @@ if(TARGET srelauncher)
     add_test(NAME gamefiles COMMAND test_gamefiles)
 endif()
 
+# The launcher's command line for the game: wxBase only.
+if(TARGET srelauncher)
+    add_executable(test_args test_args.cpp ../launcher/gameargs.cpp)
+    target_include_directories(test_args PRIVATE ../launcher)
+    target_compile_features(test_args PRIVATE cxx_std_17)
+    if(TARGET wx::wxbase)
+        target_link_libraries(test_args PRIVATE wx::wxbase)
+    else()
+        target_link_libraries(test_args PRIVATE ${wxWidgets_LIBRARIES})
+    endif()
+    add_test(NAME args COMMAND test_args)
+endif()
+
 # The downloader for real (see the file): run by hand, not by ctest.
 if(TARGET srelauncher)
     find_package(wxWidgets 3.2 CONFIG QUIET COMPONENTS net base)

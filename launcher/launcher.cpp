@@ -152,6 +152,7 @@ LauncherFrame::LauncherFrame()
         wxMax(MIN_SCALE, wxMin(MAX_SCALE, settings::GetInt(SECTION, "Scale", DEFAULT_SCALE))) - MIN_SCALE);
     fullscreen_->SetValue(settings::GetInt(SECTION, "Fullscreen", 0) != 0);
     graphics_->SetSelection(settings::GetInt(SECTION, "Classic", 0) != 0 ? 1 : 0);
+    art_->SetSelection(settings::GetInt(SECTION, "Art", 0) != 0 && IsArtPack(DefaultRemasterDir()) ? 1 : 0);
     resolution_->SetSelection(
         wxMax(MIN_RES, wxMin(MAX_RES, settings::GetInt(SECTION, "ResScale", DEFAULT_RES))) - MIN_RES);
     aa_->SetSelection(wxMax(1, wxMin(MAX_AA, settings::GetInt(SECTION, "AA", DEFAULT_AA))) - 1);
@@ -296,7 +297,14 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     auto* pictureBox = new wxStaticBoxSizer(wxVERTICAL, page, "Picture");
     wxWindow* pb = pictureBox->GetStaticBox();
     auto* pgrid = new wxFlexGridSizer(2, gap, gap);
-    pgrid->Add(new wxStaticText(pb, wxID_ANY, "&Graphics:"), 0, wxALIGN_CENTER_VERTICAL);
+    pgrid->Add(new wxStaticText(pb, wxID_ANY, "A&rt:"), 0, wxALIGN_CENTER_VERTICAL);
+    art_ = new wxChoice(pb, wxID_ANY);
+    art_->Append("Original: the game's pictures (default)");
+    art_->Append("Remastered: every picture redrawn");
+    art_->SetToolTip("Remastered shows the redrawn pictures of the art pack in " + DefaultRemasterDir() +
+                     ". Without a pack only Original is available.");
+    pgrid->Add(art_, 0, wxALIGN_CENTER_VERTICAL);
+    pgrid->Add(new wxStaticText(pb, wxID_ANY, "Race &view:"), 0, wxALIGN_CENTER_VERTICAL);
     graphics_ = new wxChoice(pb, wxID_ANY);
     graphics_->Append("Enhanced: smooth, high-resolution road (default)");
     graphics_->Append("Original: the game's own picture");
@@ -514,6 +522,9 @@ void LauncherFrame::UpdateState() {
     statusNote_->SetLabel(note);
     play_->Enable(ok);
     const bool enhanced = graphics_->GetSelection() == 0;
+    const bool pack = IsArtPack(DefaultRemasterDir());
+    if (!pack) art_->SetSelection(0);
+    art_->Enable(pack);
     resolution_->Enable(enhanced);
     aa_->Enable(enhanced);
     town_->Enable(enhanced);
@@ -589,6 +600,7 @@ void LauncherFrame::Play() {
     options.scale = scale_->GetSelection() + MIN_SCALE;
     options.fullscreen = fullscreen_->GetValue();
     options.classic = graphics_->GetSelection() == 1;
+    if (art_->GetSelection() == 1 && IsArtPack(DefaultRemasterDir())) options.remasterDir = DefaultRemasterDir();
     options.resScale = resolution_->GetSelection() + MIN_RES;
     options.aa = aa_->GetSelection() + 1;
     options.town = town_->GetValue();
@@ -611,6 +623,7 @@ void LauncherFrame::Save() {
     settings::SetInt(SECTION, "Scale", scale_->GetSelection() + MIN_SCALE);
     settings::SetInt(SECTION, "Fullscreen", fullscreen_->GetValue() ? 1 : 0);
     settings::SetInt(SECTION, "Classic", graphics_->GetSelection() == 1 ? 1 : 0);
+    settings::SetInt(SECTION, "Art", art_->GetSelection() == 1 ? 1 : 0);
     settings::SetInt(SECTION, "ResScale", resolution_->GetSelection() + MIN_RES);
     settings::SetInt(SECTION, "AA", aa_->GetSelection() + 1);
     settings::SetInt(SECTION, "Town", town_->GetValue() ? 1 : 0);
