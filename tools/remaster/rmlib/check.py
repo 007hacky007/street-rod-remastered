@@ -11,6 +11,7 @@ TILE_BAD = 0.08         # a tile fails when this share of its pixels differ ...
 TILE_MIN = 6            # ... and at least this many
 EDGE_MIN = 12           # tiles with at least this many original outline pixels ...
 EDGE_RECALL = 0.55      # ... need this share of them on an outline of the remaster
+EDGE_SHIFT = 1.2        # ... and their mean distance to it below this (pixels): an object moved by 2 fails
 
 
 def _ycc(a):
@@ -55,7 +56,8 @@ def _dilate(m):
 
 
 def outlines(orig_rgb, rgba):
-    """(original outline pixels, those of them near an outline of the remaster), h x w bool each."""
+    """(original outline pixels, those of them near an outline of the remaster, each pixel's distance to an
+    outline of the remaster), h x w each."""
     o = orig_rgb.astype(np.int32)
     eo = np.zeros(o.shape[:2], bool)
     big = lambda a, b: np.abs(a - b).sum(-1) > 120
@@ -71,14 +73,23 @@ def outlines(orig_rgb, rgba):
     gr[:, 1:] = np.maximum(gr[:, 1:], np.abs(g[:, 1:] - g[:, :-1]))
     gr[1:, :] = np.maximum(gr[1:, :], np.abs(g[1:, :] - g[:-1, :]))
     er = gr > 25
-    return eo, eo & _dilate(_dilate(er))
+    return eo, eo & _dilate(_dilate(er)), _distance(er, 3)
+
+
+def _distance(m, cap):
+    """Distance in pixels (chessboard, at most cap) from every pixel to the nearest one set in m."""
+    d = np.full(m.shape, float(cap), np.float32)
+    for k in range(cap):
+        d[m & (d == cap)] = k
+        m = _dilate(m)
+    return d
 
 
 def check(orig_rgb, opaque, rgba):
     """orig_rgb: h x w x 3 original colours (as shown); opaque: h x w where the picture draws; rgba: the
     cleaned-up art. Returns (ok, reasons)."""
     bad = differs(orig_rgb, rgba) & opaque
-    eo, hit = outlines(orig_rgb, rgba)
+    eo, hit, dist = outlines(orig_rgb, rgba)
     eo &= opaque
     hit &= opaque
     h, w = bad.shape
@@ -94,4 +105,6 @@ def check(orig_rgb, opaque, rgba):
             ne, nh = int(eo[t].sum()), int(hit[t].sum())
             if ne >= EDGE_MIN and nh < EDGE_RECALL * ne:
                 reasons.append('%s: %d of %d outline pixels missing' % (where, ne - nh, ne))
+            elif ne >= EDGE_MIN and dist[t][eo[t]].mean() > EDGE_SHIFT:
+                reasons.append('%s: outlines %.1f pixels off' % (where, dist[t][eo[t]].mean()))
     return not reasons, reasons

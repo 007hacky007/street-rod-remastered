@@ -34,3 +34,14 @@ def test_recoloured_object_rejected():
 def test_added_blob_rejected():
     ok, reasons = run(scene(extra_blob=True))
     assert not ok
+
+
+def test_moved_two_pixels_sideways_rejected():
+    ok, reasons = run(scene(shift=(2, 0)))
+    assert not ok
+
+
+def test_moved_one_pixel_passes():
+    """A redraw lands within a pixel of the original's outlines; that is not a moved object."""
+    ok, reasons = run(scene(shift=(1, 0)))
+    assert ok, reasons
