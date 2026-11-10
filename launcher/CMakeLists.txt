@@ -25,6 +25,8 @@ endif()
 add_executable(srelauncher WIN32
     app.cpp
     game.cpp
+    gamefiles.cpp
+    sha256.cpp
     icon.cpp
     launcher.cpp
     settings.cpp
