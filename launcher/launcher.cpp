@@ -166,6 +166,13 @@ LauncherFrame::LauncherFrame()
     });
     Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent&) {
         Save();
+        if (downloader_.Running()) {
+            // The request reports to downloader_, which this frame owns: stop it and go once it has ended.
+            closing_ = true;
+            Hide();
+            downloader_.Cancel();
+            return;
+        }
         Destroy();
     });
 
@@ -552,6 +559,10 @@ void LauncherFrame::StartDownload() {
             UpdateState();
         },
         [this](bool ok, std::vector<gamefiles::Download> downloads, wxString error) {
+            if (closing_) {
+                Destroy();
+                return;
+            }
             const bool installed = ok && gamefiles::Install(folder_->GetValue(), downloads, error);
             UpdateState();
             if (!installed) DownloadFailed(error);

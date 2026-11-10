@@ -64,6 +64,7 @@ private:
     wxButton* download_ = nullptr;  // macOS only
     GameDownload downloader_;
     wxString downloadNote_;         // the download's progress, shown while it runs
+    bool closing_ = false;          // closed mid-download: destroyed once the cancelled download ends
     wxStaticBitmap* statusIcon_ = nullptr;
     wxStaticText* statusNote_ = nullptr;
     wxChoice* cars_ = nullptr;     // the original cars / the data disk's

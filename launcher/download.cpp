@@ -13,11 +13,23 @@ void GameDownload::Start(Progress progress, Done done) {
     done_ = std::move(done);
     got_.clear();
     running_ = true;
+    cancelled_ = false;
     Next();
+}
+
+void GameDownload::Cancel() {
+    if (!running_ || cancelled_) return;
+    cancelled_ = true;
+    if (request_.IsOk()) request_.Cancel();  // State_Cancelled follows
+    else CallAfter([this] { Next(); });      // between two requests: Next() finishes
 }
 
 void GameDownload::Next() {
     const auto& all = gamefiles::Official();
+    if (cancelled_) {
+        Finish(false, wxString::Format("The download of %s was cancelled.", all[got_.size() % all.size()].label));
+        return;
+    }
     if (got_.size() == all.size()) {
         Finish(true, wxEmptyString);
         return;
@@ -40,6 +52,10 @@ void GameDownload::OnState(wxWebRequestEvent& event) {
     const gamefiles::Archive& a = gamefiles::Official()[got_.size()];
     switch (event.GetState()) {
     case wxWebRequest::State_Completed: {
+        if (cancelled_) {
+            Finish(false, wxString::Format("The download of %s was cancelled.", a.label));
+            return;
+        }
         const wxWebResponse& response = event.GetResponse();
         if (response.GetStatus() != 200) {
             Finish(false, wxString::Format("The download of %s failed: the website answered %d %s.", a.label,
@@ -70,6 +86,7 @@ void GameDownload::OnState(wxWebRequestEvent& event) {
 
 void GameDownload::Finish(bool ok, const wxString& error) {
     running_ = false;
+    cancelled_ = false;
     request_ = wxWebRequest();
     std::vector<gamefiles::Download> got = std::move(got_);
     got_.clear();
