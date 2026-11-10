@@ -109,7 +109,16 @@ bool FolderIsFree(const wxString& dir) {
     return true;
 }
 
-bool Install(const wxString& gameDir, const std::vector<Download>& downloads, wxString& error) {
+bool Install(const wxString& folder, const std::vector<Download>& downloads, wxString& error) {
+    // One spelling of the folder, without a trailing separator, so <folder>.partial sits beside it.
+    wxFileName name = wxFileName::DirName(folder);
+    if (!name.IsAbsolute()) {
+        error = wxString::Format("%s isn't a full path. Choose the folder with Browse.", folder);
+        return false;
+    }
+    name.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE);
+    wxString gameDir = name.GetPath();
+    if (gameDir.empty()) gameDir = wxFileName::GetPathSeparator();
     for (const Download& d : downloads)
         if (Sha256Hex(d.data.GetData(), d.data.GetDataLen()) != d.archive->sha256) {
             error = wxString::Format("The download of %s is damaged or has changed on the website.", d.archive->label);

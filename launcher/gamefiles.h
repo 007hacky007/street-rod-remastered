@@ -34,8 +34,8 @@ wxString Url(const Archive& a);
 // True if `dir` doesn't exist, is empty or holds only .DS_Store: installing there can't overwrite anything.
 bool FolderIsFree(const wxString& dir);
 
-// Checks every download's checksum, then installs them all into `gameDir`, which must be free. Either
-// everything is installed or nothing is: on failure `gameDir` is left as it was and `error` says why.
-bool Install(const wxString& gameDir, const std::vector<Download>& downloads, wxString& error);
+// Checks every download's checksum, then installs them all into `folder` (a full path), which must be free.
+// Either everything is installed or nothing is: on failure `folder` is left as it was and `error` says why.
+bool Install(const wxString& folder, const std::vector<Download>& downloads, wxString& error);
 
 }  // namespace gamefiles

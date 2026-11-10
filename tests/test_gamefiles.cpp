@@ -143,6 +143,28 @@ void installs_layout() {
     CHECK(!Exists(game + ".partial"));
 }
 
+void installs_into_path_with_trailing_slash() {
+    const wxString game = TempDir() + "/game";
+    const wxMemoryBuffer za = Zip({{"SR1/SR.EXE", "exe"}});
+    TestArchive a("Street Rod", "SR1", "", za);
+    wxString error;
+    const bool ok = gamefiles::Install(game + "/", {{&a.archive, za}}, error);
+    CHECK(ok);
+    if (!ok) std::printf("  error: %s\n", static_cast<const char*>(error.utf8_str()));
+    CHECK(ReadFile(game + "/SR.EXE") == "exe");
+    CHECK(!Exists(game + ".partial"));
+    CHECK(!Exists(game + "/.partial"));
+}
+
+void refuses_relative_path() {
+    const wxMemoryBuffer za = Zip({{"SR1/SR.EXE", "exe"}});
+    TestArchive a("Street Rod", "SR1", "", za);
+    wxString error;
+    CHECK(!gamefiles::Install("~/sre-test-relative", {{&a.archive, za}}, error));
+    CHECK(error.Contains("full path"));
+    CHECK(!Exists("~"));
+}
+
 void rejects_checksum_mismatch() {
     const wxString game = TempDir() + "/game";
     const wxMemoryBuffer za = Zip({{"SR1/SR.EXE", "exe"}}), zb = Zip({{"SRSE/SRSE.EXE", "se"}});
@@ -197,6 +219,8 @@ int main(int argc, char** argv) {
     RUN(url_override);
     RUN(free_folder_rules);
     RUN(installs_layout);
+    RUN(installs_into_path_with_trailing_slash);
+    RUN(refuses_relative_path);
     RUN(rejects_checksum_mismatch);
     RUN(refuses_nonfree_folder);
     RUN(rejects_zip_slip);
