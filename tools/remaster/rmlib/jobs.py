@@ -1,11 +1,20 @@
 """A generation job: input.png (the original in its in-game colours, enlarged with hard pixels on a canvas
 ChatGPT can produce), prompt.txt and job.json (where each picture sits on the canvas)."""
-import json, os
+import collections, json, os
 import numpy as np
 from PIL import Image
 
 from .images import EGA_PALETTE, unique_pictures
 from .sheet import layout
+
+
+def group(cat, batch):
+    """Jobs of a batch: name -> sha1s, one per sheet name, else one per picture; pictures kept original skipped."""
+    out = collections.OrderedDict()
+    for s, e in cat.items():
+        if e.get('batch') == batch and e.get('status') != 'original':
+            out.setdefault(e.get('sheet') or s, []).append(s)
+    return out
 
 KEY = (255, 0, 128)          # hot pink: far from every EGA colour
 MARGIN = (128, 128, 128)

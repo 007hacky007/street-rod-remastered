@@ -120,10 +120,10 @@
  },
  "012ed1610273a5d0a14239df1db16b5d16a8100b": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "batch": 4,
+  "desc": "the same roadside billboard drawn six times, from large on the left to tiny on the right, each copy in its own place and size: a salmon pink billboard 'TRY VEGAS GAMBLER' in green letters with a stack of cash",
+  "keep": "every copy's place and size, the lettering exactly",
+  "sheet": "signs-2",
   "status": "new",
   "ids": {
    "main": [
@@ -457,9 +457,9 @@
  },
  "0a6f37254f3674397687dda5f86218203eaab27c": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 4,
+  "desc": "the paint colour chooser: the top of a chrome jukebox with a record player under a glass dome, chrome pillars at both sides, and a panel of twelve red-framed buttons labelled '1 GREY', '2 BROWN', '3 RED', '4 PINK', '5 ORANGE', '6 YELLOW', 'DARK GREEN 7', 'LIGHT GREEN 8', 'DARK BLUE 9', 'LIGHT BLUE 10', 'DARK PURPLE 11', 'LIGHT PURPLE 12'",
+  "keep": "chrome stays grey, the button labels exactly as they are",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -720,9 +720,9 @@
  },
  "11fb5534e457f771aa3db9d60e5aec24856f8454": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 4,
+  "desc": "a publisher's title card: 'CALIFORNIA' in big yellow block letters between two green lines with a small 'TM', red script 'Dreams' under it and small white 'presents', on black",
+  "keep": "the lettering exactly as it is, black background",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -865,11 +865,11 @@
  },
  "13a691b9d2fe20dba946cb304cd1aa720d3ed30a": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
+  "batch": 4,
+  "desc": "kept original: a paragraph of the game's text, for the later text stage",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "main": [
     9
@@ -2337,9 +2337,9 @@
  },
  "472073d6b3d5ed4c19114e2aa5764c89fc1c7112": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 4,
+  "desc": "the high score wall: a black wall at night split into panels by grey pipes edged with cyan neon light, a grey concrete edge and a cyan glass door with a round silver handle on the right. Cyan script heading 'King Street Rodders:', small cyan scribble 'Rodders for ever' top right, grey chalk 'VINNIE WAS HERE', cyan scribble 'Whaddya lookin' at?' running diagonally, the numbers 1 to 10 written down the left panel",
+  "keep": "the big middle panel stays plain flat black (names are written there); all lettering exactly as it is",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -2509,10 +2509,10 @@
  },
  "4a537bc5493009d3a906acc850c814c59a25bf6f": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "batch": 4,
+  "desc": "the same roadside billboard drawn six times, from large on the left to tiny on the right, each copy in its own place and size: a green 'GUS GAS' billboard with grey arrows, yellow frame",
+  "keep": "every copy's place and size, the lettering exactly",
+  "sheet": "signs-1",
   "status": "new",
   "ids": {
    "main": [
@@ -3689,11 +3689,11 @@
  },
  "714790f0434efdf70f6bedc9ff4be497c2960642": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
+  "batch": 4,
+  "desc": "kept original: too small to carry detail",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "main": [
     1137
@@ -3811,10 +3811,10 @@
  },
  "78671c730249379f41e0b2cb711d4787e1f7437e": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "batch": 4,
+  "desc": "a close view of a pale grey tree trunk with dark bark at both sides and 'Love' with a heart carved into it",
+  "keep": "grey, the carving exactly",
+  "sheet": "roadside",
   "status": "new",
   "ids": {
    "main": [
@@ -4137,11 +4137,11 @@
  },
  "816096145f1a12f3e85169b8de64c0bfddcd18fc": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
+  "batch": 4,
+  "desc": "kept original: too small to carry detail",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "main": [
     1138
@@ -4183,10 +4183,10 @@
  },
  "8231a5627b4a157d034de0835e7bebe1f7d3fa9c": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "batch": 4,
+  "desc": "the same roadside billboard drawn six times, from large on the left to tiny on the right, each copy in its own place and size: a drive-in billboard with a big burger and 'DRIVE-IN' on a green frame",
+  "keep": "every copy's place and size, the lettering exactly",
+  "sheet": "signs-1",
   "status": "new",
   "ids": {
    "main": [
@@ -4248,9 +4248,9 @@
  },
  "82ec493735b4d1efce45bcf0d71dab962f276c1f": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 4,
+  "desc": "animation frames of glossy red lips: big lips puckered for a kiss, smiling lips, small lips",
+  "keep": "red lips with white shine, every frame in its exact place, shape and size",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4818,11 +4818,11 @@
  },
  "94aab2711b187f0d10777fd629b8baf56e92df3c": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
+  "batch": 4,
+  "desc": "kept original: a flat one-colour mask",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "main": [
     1096
@@ -4906,10 +4906,10 @@
  },
  "96a4b48a187abadd8718763860aef629b4f4c0aa": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "batch": 4,
+  "desc": "the horizon: a low band of red-brown desert hills over a bright green grass strip",
+  "keep": "bright green grass, the hill line",
+  "sheet": "roadside",
   "status": "new",
   "ids": {
    "main": [
@@ -5338,10 +5338,10 @@
  },
  "a5c9bb2215a6e139eac1fb589c43aa5f196ac826": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "batch": 4,
+  "desc": "a grey concrete overpass seen from the road: a white deck on five round pillars over a dark speckled strip",
+  "keep": "grey and white concrete",
+  "sheet": "roadside",
   "status": "new",
   "ids": {
    "main": [
@@ -5763,9 +5763,9 @@
  },
  "b4bd555e128a20d736bd200a3fe4fb4d08f894b6": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 4,
+  "desc": "animation frames of a young woman with dark curly hair and a green dress, sitting behind the black top edge of a car door, turning her head, smiling and waving; the top row shows heads rising over the door",
+  "keep": "every frame in its exact place and size, the same woman in every frame; green dress, black door",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6151,10 +6151,10 @@
  },
  "bc61ea423f6784789055089e61aea38e76a02b11": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "batch": 4,
+  "desc": "the same roadside billboard drawn six times, from large on the left to tiny on the right, each copy in its own place and size: a white 'COUNTY LINE' sign in red letters with palm trees and a yellow beach",
+  "keep": "every copy's place and size, the lettering exactly",
+  "sheet": "signs-2",
   "status": "new",
   "ids": {
    "main": [
@@ -6641,11 +6641,11 @@
  },
  "cb563f83ef23f6ef1f254b7efda143e379c73b7d": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
+  "batch": 4,
+  "desc": "kept original: a flat one-colour mask",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "main": [
     1140
@@ -6926,10 +6926,10 @@
  },
  "d3b87380fafa9ae2f175c90a3ec56c78c4fdf569": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "batch": 4,
+  "desc": "a thin grey metal pole",
+  "keep": "grey",
+  "sheet": "roadside",
   "status": "new",
   "ids": {
    "main": [
@@ -6992,10 +6992,10 @@
  },
  "d7d2bf994cc5a9092c05b46628971e5db9951f6f": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "batch": 4,
+  "desc": "the same roadside billboard drawn six times, from large on the left to tiny on the right, each copy in its own place and size: a purple billboard 'PLAY BLOCK OUT' with green letters and a green block",
+  "keep": "every copy's place and size, the lettering exactly",
+  "sheet": "signs-2",
   "status": "new",
   "ids": {
    "main": [
@@ -7815,10 +7815,10 @@
  },
  "ec8ce2a7b5920906a978ee258e429a5c8b57dd90": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "batch": 4,
+  "desc": "the same roadside billboard drawn six times, from large on the left to tiny on the right, each copy in its own place and size: a dark red garage billboard with a big silver bolt and 'GARAGE' with an arrow, white frame",
+  "keep": "every copy's place and size, the lettering exactly",
+  "sheet": "signs-1",
   "status": "new",
   "ids": {
    "main": [
@@ -8375,11 +8375,11 @@
  },
  "fe920e497645ba76a48f6680c5bfedabcbd4044d": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
+  "batch": 4,
+  "desc": "kept original: too small to carry detail",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "main": [
     1234

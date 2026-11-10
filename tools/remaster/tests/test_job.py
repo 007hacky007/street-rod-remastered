@@ -38,3 +38,13 @@ def test_sheet_of_alike_pictures_says_it_once(tmp_path):
     jobs.build('p', ['a' * 40, 'b' * 40], cat, [str(tmp_path / 'dump')], {}, str(tmp_path / 'jobs'))
     p = open(tmp_path / 'jobs' / 'p' / 'prompt.txt').read()
     assert p.count('a car part') == 1 and 'Each picture' in p
+
+
+def test_group_skips_pictures_kept_original():
+    cat = {'a': {'batch': 4, 'sheet': 'signs', 'status': 'new'},
+           'b': {'batch': 4, 'sheet': 'signs', 'status': 'new'},
+           'c': {'batch': 4, 'sheet': None, 'status': 'new'},
+           'd': {'batch': 4, 'sheet': None, 'status': 'original'},
+           'e': {'batch': 3, 'sheet': None, 'status': 'new'}}
+    g = jobs.group(cat, 4)
+    assert list(g.items()) == [('signs', ['a', 'b']), ('c', ['c'])]

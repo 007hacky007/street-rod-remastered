@@ -67,12 +67,8 @@ def cmd_palettes(logs):
 
 def cmd_jobs(batch):
     """Jobs for every catalogue entry of the batch: one per sheet name, else one per picture."""
-    cat, pr = load_catalog(), progress()
-    sheets = collections.OrderedDict()
-    for s, e in cat.items():
-        if e.get('batch') != batch:
-            continue
-        sheets.setdefault(e.get('sheet') or s, []).append(s)
+    pr = progress()
+    sheets = jobs.group(load_catalog(), batch)
     for name, shas in sheets.items():
         pr.add(name, shas)
     print(len(sheets), 'jobs for batch', batch)
