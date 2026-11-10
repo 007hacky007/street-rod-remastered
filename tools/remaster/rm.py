@@ -7,6 +7,7 @@ import numpy as np  # noqa: E402
 from PIL import Image, ImageDraw  # noqa: E402
 
 from rmlib import catalog, jobs, pack  # noqa: E402
+from rmlib import palettes as palettes_lib  # noqa: E402
 from rmlib.check import check  # noqa: E402
 from rmlib.cleanup import cleanup  # noqa: E402
 from rmlib.images import unique_pictures  # noqa: E402
@@ -38,16 +39,25 @@ def progress():
 
 
 def cmd_palettes(logs):
-    """Merge SR_REMASTER_PALETTE_LOG files: per picture the palette it was first shown with; 'default' =
-    the most common one (for pictures never seen)."""
+    """Merge SR_REMASTER_PALETTE_LOG files: per picture the first palette it was shown with that is not dark (a
+    fade); 'default' = the most common one (for pictures never seen)."""
     path = os.path.join(ART, 'palettes.json')
-    out = json.load(open(path)) if os.path.exists(path) else {}
-    out.pop('default', None)
-    for log in logs:
-        for line in open(log):
-            if line.strip():
-                r = json.loads(line)
-                out.setdefault(r['sha1'], r['pal'])
+    known = json.load(open(path)) if os.path.exists(path) else {}
+    known.pop('default', None)
+    records = [json.loads(line) for log in logs for line in open(log) if line.strip()]
+    out = palettes_lib.merge(known, records)
+    cat, by_id = load_catalog(), {}
+    for k, e in cat.items():                    # pictures never seen: the palette of a sibling (catalogue pal_like)
+        for g, ids in e['ids'].items():
+            for i in ids:
+                by_id[(g, i)] = k
+    for k, e in cat.items():
+        like = e.get('pal_like')
+        if like and k not in out:
+            g = 'main' if 'main' in e['ids'] else 'datadisk'
+            src = by_id.get((g, like))
+            if src in out:
+                out[k] = out[src]
     common = collections.Counter(tuple(v) for v in out.values()).most_common(1)
     if common:
         out['default'] = list(common[0][0])

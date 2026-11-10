@@ -57,10 +57,10 @@
   "masked": 1
  },
  "00d45462d1d4ea802ec7edc4729a6fd74deeab06": {
-  "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 2,
+  "desc": "a shattered car windshield seen from inside: grey crazed glass with cracks all over, a big jagged hole in the middle, the rear-view mirror broken at the top right, and the top of the steering wheel at the bottom",
+  "keep": "the jagged hole stays where it is",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -77,7 +77,8 @@
   ],
   "w": 320,
   "h": 108,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1014
  },
  "010100a90b77150b991fabfe03abca085c10d0d0": {
   "group": "sprite",
@@ -221,11 +222,11 @@
   "masked": 1
  },
  "044fc6400469b69defa4ef89fc7b209b15be974c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a chrome clutch and flywheel seen face on, as a half disc with bolts",
+  "keep": "the half-disc shape",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -241,7 +242,8 @@
   ],
   "w": 40,
   "h": 22,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1076
  },
  "063e22f390c536d64f266f04df7a2d8dddf181fc": {
   "group": "ui",
@@ -366,10 +368,10 @@
   "masked": 1
  },
  "0a5faa756e9145646556e17880c1eba0ac5d006e": {
-  "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 2,
+  "desc": "the view from the driver's seat of a 1940s hot rod at night: the windshield frame and pillars, the rear-view mirror at the top right, the bright green hood seen through the windshield, a chrome steering wheel in front of two round gauges (RPM x1000 with a red zone, and MPH), the dashboard with chrome trim and buttons, and the door at the left",
+  "keep": "the windshield area and the rear-view mirror stay plain black (the road and the view behind are drawn there by the game); the gauges keep all their numbers and the words \"RPM\", \"x1000\" and \"MPH\" exactly and have no needles (the game draws them); the hood stays bright green",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1060,11 +1062,11 @@
   "masked": 0
  },
  "194d8e8d5f29d5597cfcf17239fa42dac635c66f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a small oval gear-shift knob top engraved \"R 1 3 / 2 4\"",
+  "keep": "the engraving exactly",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -1083,11 +1085,11 @@
   "masked": 1
  },
  "198a48590d44871954aa24acd1e9d49f663c56a0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "the lower half of a chrome steering wheel with a red centre button, in front of a strip of dashboard",
+  "keep": "the shape",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -1106,10 +1108,10 @@
   "masked": 0
  },
  "1a3c497bb84110b6d0719fb675be72dfd6e130a5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "a long chrome car gearbox (four-speed transmission) seen from the side, with a tall gear lever and knob on top, the input shaft at the left and the bell housing at the right",
+  "keep": "the shape and all its details",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1198,11 +1200,11 @@
   "masked": 1
  },
  "1d4f837dcc3ac52b30d6e80e92771a3f33bd3a96": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a chrome two-barrel carburettor on a flat base",
+  "keep": "the shape",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -1339,11 +1341,11 @@
   "masked": 1
  },
  "237afab6d3a72107a396f6b600d23bee8724e287": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a flat chrome intake manifold for one carburettor with ribbed grilles at both ends, seen from the side in perspective",
+  "keep": "one carburettor pad",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -1362,11 +1364,11 @@
   "masked": 1
  },
  "23cfa9dd0c6855e9cfc32c8d7410647735501ef5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a narrow vertical yellow strip",
+  "keep": "the shape",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -1382,7 +1384,8 @@
   ],
   "w": 16,
   "h": 70,
-  "masked": 2
+  "masked": 2,
+  "pal_like": 1224
  },
  "23d952260d9c977585dad423b9a9539e6f27d2df": {
   "group": "sprite",
@@ -1610,10 +1613,10 @@
   "masked": 1
  },
  "2e67a56f07a048bf9c9281a31bad3860b0cf965e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "four tall vertical steel rails with rivets, grey on black, the right one with a small white arrow at its top",
+  "keep": "the rails, rivets and the arrow",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1633,10 +1636,10 @@
   "masked": 0
  },
  "30258d3e8615515f6177c468fec713cf73d5e6e5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 2,
+  "desc": "a strip of black night sky with a few faint stars and grey haze at the bottom",
+  "keep": "stays almost all black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1991,10 +1994,10 @@
   "masked": 1
  },
  "3e9889c539b80f62bf441067328f7396df345a6e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "a chrome car gearbox (manual transmission) seen from the side, with a slanted gear lever and knob on top, the input shaft at the left and the bell housing at the right",
+  "keep": "the shape and all its details",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -2011,7 +2014,8 @@
   ],
   "w": 112,
   "h": 86,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1099
  },
  "3ed921b26b5825ed2f73b6b83a4d4e9a7ace6043": {
   "group": "sprite",
@@ -2193,11 +2197,11 @@
   "masked": 1
  },
  "46c924dc26c645d2c06ccddd5d94850c5e5f866c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a small oval gear-shift knob top engraved \"R 1 3 / 2\"",
+  "keep": "the engraving exactly",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -2213,7 +2217,8 @@
   ],
   "w": 24,
   "h": 19,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1231
  },
  "472073d6b3d5ed4c19114e2aa5764c89fc1c7112": {
   "group": "screen",
@@ -2388,11 +2393,11 @@
   "masked": 0
  },
  "4a87159733805d803f05d92724a1f6ce789db338": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "the lower half of a chrome steering wheel turned a little, with a red centre button, in front of a strip of dashboard",
+  "keep": "the shape",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -2491,11 +2496,11 @@
   "masked": 1
  },
  "4f58cebdaa222d53e1c477534504a264f378a8d5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a small low chrome carburettor on a flat base",
+  "keep": "the shape",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -2556,11 +2561,11 @@
   "masked": 0
  },
  "5311693fa31a41c27adcbae46a8f3d9cb3fd246f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a tiny red spark plug tip",
+  "keep": "the shape",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -2644,11 +2649,11 @@
   "masked": 1
  },
  "54eddcb68b27bb09dd6027557f61ce5af4afb2ee": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "the lower half of a chrome steering wheel turned the other way, with a red centre button, in front of a strip of dashboard",
+  "keep": "the shape",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -2724,11 +2729,11 @@
   "masked": 1
  },
  "56d262df573e5dfa7564619f394989aa1c61c90d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a flat chrome intake manifold for one carburettor, with grilles at both ends, seen from the side in perspective",
+  "keep": "one carburettor pad",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -2930,11 +2935,11 @@
   "masked": 1
  },
  "5bcc34a7c2387871439f5f0f273e63eff4e8f04f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a very thin multicoloured strip",
+  "keep": "a strip that thin",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -3033,10 +3038,10 @@
   "masked": 1
  },
  "619d4ad1ad379fabbedf63b8feff115ea6602e9c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "a big chrome straight-eight car engine lying on its side, seen from above: one long cylinder head with five bolts, a timing cover at the left, pipes below",
+  "keep": "the shape and all its details",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3056,11 +3061,11 @@
   "masked": 1
  },
  "6265fe423c7c258a9e89cb5958dc19f48b8511e1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a thin green bar with a white frame",
+  "keep": "the shape",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -3098,11 +3103,11 @@
   "masked": 1
  },
  "63e3b12bb91c9650b6d113d99d48153c36c7a159": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a flat chrome intake manifold for two carburettors, seen from the side in perspective",
+  "keep": "two carburettor pads",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -3118,7 +3123,8 @@
   ],
   "w": 112,
   "h": 15,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1080
  },
  "647213bf3bf86a44428dbb9eaed5277ff26738b4": {
   "group": "sprite",
@@ -3258,11 +3264,11 @@
   "masked": 1
  },
  "6a6dee8fdb190b4991a5e4c133bcd7f179e138b0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a square chrome plate with an engraved H gear-shift pattern for a four-speed gearbox",
+  "keep": "the pattern",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -3597,10 +3603,10 @@
   "masked": 1
  },
  "779dc4a67c62b2b79ac9717aceee581f27d2ff79": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "the empty parts window of the engine screen: a plain black panel inside a light grey bevelled metal frame",
+  "keep": "the black panel stays plain black (parts are drawn in it); the frame",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3640,7 +3646,8 @@
   ],
   "w": 64,
   "h": 149,
-  "masked": 0
+  "masked": 0,
+  "pal_like": 1014
  },
  "79ad9be710261740af7285244dcf07a15e4b363f": {
   "group": "screen",
@@ -3750,10 +3757,10 @@
   "masked": 0
  },
  "7cbc8d09cb62165b9a8f8cc025c98c825bee2992": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "the engine screen: a black window with the front of a chrome V8 engine (fan, pulleys, red top) cut off at its right edge, and below it a grey metal control bar with two red buttons labelled \"SELECT\" and \"DONE\" and an empty grey slot between them",
+  "keep": "the labels \"SELECT\" and \"DONE\" exactly; the black window stays black around the engine; the engine stays cut off at the right edge",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3773,11 +3780,11 @@
   "masked": 0
  },
  "7ce632d75277389f9eadd0a424ac37340e33dbea": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a narrow vertical chrome lever with a red top",
+  "keep": "the shape",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -3819,11 +3826,11 @@
   "masked": 1
  },
  "7df41106dfae2a92e1694f4f4b3ced043c18c6d1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "an empty rear-view mirror: a black rectangle in a thin grey frame",
+  "keep": "the black inside stays plain black",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -3899,11 +3906,11 @@
   "masked": 1
  },
  "7fceb607515187aa7317936001f1e14f623af1f5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a thin strip of the bright green hood edge of a car, seen from inside",
+  "keep": "a strip that thin",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -4079,11 +4086,11 @@
   "masked": 1
  },
  "84f49f6604005b501ba66768902ccee5aeb64178": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a flat chrome intake manifold for two carburettors with grilles at both ends, seen from the side in perspective",
+  "keep": "two carburettor pads",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -4099,7 +4106,8 @@
   ],
   "w": 112,
   "h": 16,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1103
  },
  "84fa44ec81c36bc88f3f23e21b149ec29150b083": {
   "group": "sprite",
@@ -4968,11 +4976,11 @@
   "masked": 1
  },
  "a3e8aad553b14d3919899a0057c6758c0c6ca852": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a tall chrome four-barrel carburettor on a flat base",
+  "keep": "the shape",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -4988,7 +4996,8 @@
   ],
   "w": 40,
   "h": 18,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1085
  },
  "a56dd2c1835ec36639c7825e5de8091c4fa276fe": {
   "group": "sprite",
@@ -5049,7 +5058,8 @@
   ],
   "w": 320,
   "h": 41,
-  "masked": 0
+  "masked": 0,
+  "pal_like": 1014
  },
  "a638fa04b6119ffee9d9d06772d071c79057dd86": {
   "group": "sprite",
@@ -5071,10 +5081,10 @@
   "masked": 1
  },
  "a6d32c2bff1a272d8131c13bb787ffc2a14c8169": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 2,
+  "desc": "the left windshield pillar of a car seen from inside: a curved chrome and grey frame edge",
+  "keep": "the shape and all its details",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5514,11 +5524,11 @@
   "masked": 1
  },
  "b72bc9bf5ed868ab47f24613b31cb305eae5516a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a flat chrome intake manifold for two carburettors, seen from the side in perspective",
+  "keep": "two carburettor pads",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -5619,11 +5629,11 @@
   "masked": 1
  },
  "bb01f7ddccf80fea319a9f65afc71383eeb547fc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a row of four spark plugs with red insulators lying end to end, chrome and black",
+  "keep": "four plugs",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -5769,7 +5779,8 @@
   ],
   "w": 264,
   "h": 43,
-  "masked": 0
+  "masked": 0,
+  "pal_like": 1014
  },
  "bc96986c83dc7f462622ba9ab82b2170616be69e": {
   "group": "sprite",
@@ -5940,10 +5951,10 @@
   "masked": 1
  },
  "c303a8ff61fcc2b6e9474dde2b356cf0509eb716": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "the tuning screen: a black window with the green title \"TUNING\", a big chrome engine seen close up from the side (cylinders, pulleys, an up and down arrow on the timing cover) with a red and green gauge at its lower right, and below it a grey control bar with one red button labelled \"DONE\"",
+  "keep": "the words \"TUNING\" and \"DONE\" exactly; the arrows; the black background stays black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6234,11 +6245,11 @@
   "masked": 1
  },
  "cdb3a745bd8dd3b108d0bc608fe4df2253d92d6e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a tiny spark plug with a red top",
+  "keep": "the shape",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -6254,7 +6265,8 @@
   ],
   "w": 8,
   "h": 11,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1089
  },
  "ce4759360007047d4c16360245b2ad1bd6aa72ad": {
   "group": "sprite",
@@ -6360,10 +6372,10 @@
   "masked": 0
  },
  "d07c0037411415b90870a3b9e054a117a954cb37": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "a chrome V8 car engine lying on its side, seen from above: two long cylinder heads with bolts, a timing cover at the left, pipes below",
+  "keep": "the shape and all its details",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6406,11 +6418,11 @@
   "masked": 0
  },
  "d301fbad67fe99904a3c37e893e7d2c560a65442": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a tiny vertical strip of colours",
+  "keep": "the shape",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -6426,14 +6438,15 @@
   ],
   "w": 8,
   "h": 25,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1224
  },
  "d34c933107f315f23f79c03a6355f9e2779616ca": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a small round dashboard clock with the numbers 1 to 12, without hands",
+  "keep": "the numbers exactly; no hands (the game draws them)",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -6472,7 +6485,8 @@
   ],
   "w": 16,
   "h": 149,
-  "masked": 0
+  "masked": 0,
+  "pal_like": 1014
  },
  "d4760611a9e2d87821285a90132068300a0101f7": {
   "group": "ui",
@@ -6673,10 +6687,10 @@
   "masked": 1
  },
  "da990aa429871615fc161580ef07d95af8c5cd06": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "a chrome car gearbox (manual transmission) seen from the side, with a straight gear lever and knob on top, the input shaft at the left and the bell housing at the right",
+  "keep": "the shape and all its details",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6693,7 +6707,8 @@
   ],
   "w": 112,
   "h": 86,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1099
  },
  "dc21dd701da185c2c191a1029a44f8f225068771": {
   "group": "sprite",
@@ -6860,10 +6875,10 @@
   "masked": 1
  },
  "e0c55d375479e3aa25e77e3c70d16b3434f5947d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "a chrome car gearbox (manual transmission) seen from the side, with a tall gear lever and knob on top, the input shaft at the left and the bell housing at the right",
+  "keep": "the shape and all its details",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6883,10 +6898,10 @@
   "masked": 1
  },
  "e1cdf2d08391b9fac4c65632cc427bc6a5c45583": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 2,
+  "desc": "a chrome V6 car engine lying on its side, seen from above: two long cylinder heads with three spark plug holes each, a timing cover at the left, the oil pan and pipes below",
+  "keep": "the shape and all its details",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7013,10 +7028,10 @@
   "masked": 1
  },
  "e48a7fa1a781a6254ecbad252d0d366a39af65ad": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 2,
+  "desc": "the driver's arm in a grey leather jacket sleeve with a wristwatch, reaching in from the left, the hand gripping something",
+  "keep": "the sleeve, the watch and the hand",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7033,7 +7048,8 @@
   ],
   "w": 88,
   "h": 75,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1014
  },
  "e4db08a24e3b63d20ae5008337ea812867d1d532": {
   "group": "sprite",
@@ -7135,11 +7151,11 @@
   "masked": 1
  },
  "e6fcde752735d38dd5732cf7976bea012ed40570": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a tiny short spark plug with a red top",
+  "keep": "the shape",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -7155,7 +7171,8 @@
   ],
   "w": 8,
   "h": 11,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1089
  },
  "e76686ab8dc45cb2846e1c2827fc2a4c617d4178": {
   "group": "sprite",
@@ -7215,11 +7232,11 @@
   "masked": 1
  },
  "eb23ec1e91ca0a0ce9718b53b4a1d45e67c3ae0d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a tiny horizontal chrome bar",
+  "keep": "the shape",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -7238,11 +7255,11 @@
   "masked": 1
  },
  "eb5600fd42c2f28d56f6362d0e027c2124edb848": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a square chrome plate with an engraved slot for an automatic gearbox and the letters \"P R N D L\"",
+  "keep": "the pattern and the letters exactly",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -7360,11 +7377,11 @@
   "masked": 0
  },
  "efc0a2434053ce5291b03e2657487e6ce192913d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a small piece of a grey cracked windshield corner",
+  "keep": "the shape",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -7380,7 +7397,8 @@
   ],
   "w": 48,
   "h": 21,
-  "masked": 0
+  "masked": 0,
+  "pal_like": 1014
  },
  "efecfb2a6b8daae854fac4ad6d6b425454777c98": {
   "group": "sprite",
@@ -7661,11 +7679,11 @@
   "masked": 1
  },
  "f6f3342baf95ef335a85c5901ecee079299df3a1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 2,
+  "desc": "a flat chrome intake manifold for three carburettors, seen from the side in perspective",
+  "keep": "three carburettor pads",
+  "sheet": "engine-parts",
   "status": "new",
   "ids": {
    "main": [
@@ -7681,7 +7699,8 @@
   ],
   "w": 96,
   "h": 14,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1080
  },
  "f80ff7416d551cb25f14827fc1812cb4f64adf87": {
   "group": "sprite",
@@ -7814,11 +7833,11 @@
   "masked": 1
  },
  "fc0940f383c67d7aa3990e36f2b16d818554887a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 2,
+  "desc": "a square chrome plate with an engraved H gear-shift pattern for a three-speed gearbox",
+  "keep": "the pattern",
+  "sheet": "cockpit",
   "status": "new",
   "ids": {
    "main": [
@@ -7834,7 +7853,8 @@
   ],
   "w": 48,
   "h": 43,
-  "masked": 0
+  "masked": 0,
+  "pal_like": 1228
  },
  "fc73fc8797dcdea1aabc2731c026d09e821c6144": {
   "group": "sprite",

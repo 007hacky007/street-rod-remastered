@@ -29,7 +29,9 @@ typedef struct {
     u8 *rgba;                    /* 4w x 4h RGBA */
     u8 *idx;                     /* 4w x 4h indices */
     u32 ref[16];
-    bool logged;
+    u32 pal_hash, pal_logged;  /* SR_REMASTER_PALETTE_LOG: the palette seen, its frames, the one logged */
+    int pal_stable;
+    unsigned long pal_frame;
 } RmPic;
 
 bool rm_pack_open(const char *dir);

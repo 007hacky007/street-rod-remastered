@@ -202,10 +202,18 @@ static inline u32 mix(u32 a, u32 b, int alpha)
     return out;
 }
 
+static unsigned long compose_frame;
+
+/* A palette is logged for a picture once it has held for 30 frames (a fade never does), once per palette. */
 static void log_palette(RmPic *p, const u32 rgb[16])
 {
-    if (!palette_log || p->logged) return;
-    p->logged = true;
+    if (!palette_log || p->pal_frame == compose_frame) return;
+    p->pal_frame = compose_frame;
+    u32 h = 2166136261u;
+    for (int i = 0; i < 16; i++) h = (h ^ rgb[i]) * 16777619u;
+    if (h != p->pal_hash) { p->pal_hash = h; p->pal_stable = 0; }
+    if (++p->pal_stable != 30 || h == p->pal_logged) return;
+    p->pal_logged = h;
     fprintf(palette_log, "{\"sha1\":\"%s\",\"pal\":[", p->sha1);
     for (int i = 0; i < 16; i++) fprintf(palette_log, "%s\"%06X\"", i ? "," : "", (unsigned)rgb[i]);
     fprintf(palette_log, "]}\n");
@@ -244,6 +252,7 @@ void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_com
 {
     if (!active) return;
     int w = 320 * scale;
+    compose_frame++;
     for (int y = 0; y < 200; y++) {
         u16 row = y < line_compare ? (u16)(start + y * EGA_BYTES_PER_LINE) : (u16)((y - line_compare) * EGA_BYTES_PER_LINE);
         for (int x = 0; x < 320; x++) {
