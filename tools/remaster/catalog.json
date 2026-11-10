@@ -370,8 +370,8 @@
  "0a5faa756e9145646556e17880c1eba0ac5d006e": {
   "group": "race",
   "batch": 2,
-  "desc": "the view from the driver's seat of a 1940s hot rod at night: the windshield frame and pillars, the rear-view mirror at the top right, the bright green hood seen through the windshield, a chrome steering wheel in front of two round gauges (RPM x1000 with a red zone, and MPH), the dashboard with chrome trim and buttons, and the door at the left",
-  "keep": "the windshield area and the rear-view mirror stay plain black (the road and the view behind are drawn there by the game); the gauges keep all their numbers and the words \"RPM\", \"x1000\" and \"MPH\" exactly and have no needles (the game draws them); the hood stays bright green",
+  "desc": "the view from the driver's seat of a 1940s hot rod at night: the windshield frame and pillars, the rear-view mirror at the top right, the bright green hood seen through the windshield, a chrome steering wheel in front of two round gauges (RPM and MPH), the dashboard with chrome trim and buttons, and the door at the left",
+  "keep": "the windshield area and the rear-view mirror stay plain black (the road and the view behind are drawn there by the game); the gauges have no needles (the game draws them); the left gauge reads 0 10 20 30 40 50 60 with \"RPM\" and \"x100\" under its centre and a red zone from 50 to 60; the right gauge reads 10 20 30 40 50 60 70 80 90 100 110 120 130 (the last one \"130\", three digits, at the bottom right) with \"MPH\" and a small dotted odometer strip under its centre; the little gauge between them keeps its red mark; the hood stays bright green",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7257,9 +7257,9 @@
  "eb5600fd42c2f28d56f6362d0e027c2124edb848": {
   "group": "race",
   "batch": 2,
-  "desc": "a square chrome plate with an engraved slot for an automatic gearbox and the letters \"P R N D L\"",
-  "keep": "the pattern and the letters exactly",
-  "sheet": "cockpit",
+  "desc": "a square chrome plate with an engraved slot for an automatic gearbox and, down its right side, the letters \"P\", \"R\", \"N\", \"L\", \"D\" in that order from top to bottom",
+  "keep": "the letters P R N L D in exactly that order (L before D)",
+  "sheet": "cockpit-2",
   "status": "new",
   "ids": {
    "main": [
@@ -7379,9 +7379,9 @@
  "efc0a2434053ce5291b03e2657487e6ce192913d": {
   "group": "race",
   "batch": 2,
-  "desc": "a small piece of a grey cracked windshield corner",
+  "desc": "a small corner of a car dashboard: a chrome edge at the left, a grey perforated speaker grille at the top and a diagonal chrome trim strip across the bottom right",
   "keep": "the shape",
-  "sheet": "cockpit",
+  "sheet": "cockpit-2",
   "status": "new",
   "ids": {
    "main": [
