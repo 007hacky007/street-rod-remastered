@@ -5,6 +5,7 @@ from PIL import Image
 
 SCALE = 4
 MAX_COLOURS = 64
+KEY = np.array([255, 0, 128])   # rmlib.jobs.KEY
 
 
 def _up(a):
@@ -28,6 +29,10 @@ def cleanup(orig_idx, transparent, result, rect, ref):
     rgb = big[..., :3]
     q = Image.fromarray(rgb).quantize(MAX_COLOURS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     rgb = np.asarray(q.convert('RGB')).copy()
+    # the generation's background key (hot pink) bleeding inside the outline: the original colour there
+    pal0 = np.array([[c >> 16, c >> 8 & 255, c & 255] for c in ref], np.uint8)
+    bleed = (np.abs(rgb.astype(np.int32) - KEY).sum(-1) < 120) & _up(~transparent)
+    rgb[bleed] = pal0[_up(orig_idx)][bleed]
     opaque = _up(~transparent).astype(np.float32)
     alpha = opaque * np.clip(_box3(opaque) * 1.5 - 0.5, 0, 1)      # soft only inside the outline
     if big.shape[2] == 4:

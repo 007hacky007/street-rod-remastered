@@ -1040,7 +1040,7 @@
   "group": "screen",
   "batch": 1,
   "desc": "a newspaper strip with the headline \"GM, Ford Laugh at Cars from Japan\" and small columns of article text below",
-  "keep": "the headline exactly",
+  "keep": "the headline exactly; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1132,7 +1132,7 @@
   "group": "ui",
   "batch": 1,
   "desc": "an empty white speech bubble with a teal outline and a tail pointing down",
-  "keep": "empty inside",
+  "keep": "empty inside; a crisp solid teal outline exactly as thick as in the original all the way round, including the tail and the right end; flat white inside",
   "sheet": "bubbles",
   "status": "new",
   "ids": {
@@ -1448,8 +1448,8 @@
  "24e04213de87bdc0f2a7cb63e22570b89366fbab": {
   "group": "screen",
   "batch": 1,
-  "desc": "a newspaper strip with the headline \"President insists! \\\"No U.S. Soldiers in Viet Nam\\\".\" and small columns of article text below",
-  "keep": "the headline exactly",
+  "desc": "a newspaper strip with the two-line headline \"President insists:\" and \"\\\"No U.S. Soldiers in Viet Nam\\\".\" and small columns of article text below",
+  "keep": "the headline exactly, with a colon after \"insists\"; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1490,8 +1490,8 @@
  "2736eda7239b285eb659ce07e77a0b1957732df1": {
   "group": "screen",
   "batch": 1,
-  "desc": "Gus' gas station at night: a red brick and grey roofed station building with an \"OFFICE\" door and arrow, a Coca-Cola machine, windows, a \"GUS' GAS\" neon sign with an arrow on the roof, red gas pumps on the left, trees and a chain link fence on the right, a grey forecourt with a green bucket and a rag",
-  "keep": "the lettering GUS' GAS and OFFICE; no car and no people",
+  "desc": "Gus' gas station at night: a red building with a brown shingled roof, a chimney and a grey eave with posts; a door on the left, an \"OFFICE\" sign with an arrow, a red Coca-Cola machine, two big windows; a \"GUS' GAS\" sign in magenta letters on teal with a yellow arrow on the roof; two red and white gas pumps on the left; a white crate and a stack of yellow oil cans by the wall; a gas station attendant in a green uniform dozing in a deck chair; a chain link fence, green trees and red rocky hills on the right; a grey forecourt and pavement, a pump island, a green bucket with a brush and a rag",
+  "keep": "the lettering GUS' GAS, OFFICE and Coca-Cola; the dozing attendant stays where he is; no car",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3646,7 +3646,7 @@
   "group": "screen",
   "batch": 1,
   "desc": "the side column of a newspaper classifieds page: rows of tiny car ads with prices separated by lines, and at the bottom a small framed picture of a green car",
-  "keep": "the layout of the rows and lines; the small car picture",
+  "keep": "the layout of the rows and lines; the small car picture; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3730,7 +3730,7 @@
   "group": "screen",
   "batch": 1,
   "desc": "a newspaper strip with two headlines \"Youth Killed Drag Racing\" and \"Cops Vow Speeding Crackdown\" and small columns of article text below",
-  "keep": "the headlines exactly",
+  "keep": "the headlines exactly; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5200,7 +5200,7 @@
   "group": "ui",
   "batch": 1,
   "desc": "a wide empty white speech bubble with a teal outline and a tail pointing down right",
-  "keep": "empty inside",
+  "keep": "empty inside; a crisp solid teal outline exactly as thick as in the original all the way round, including the tail and the right end; flat white inside",
   "sheet": "bubbles",
   "status": "new",
   "ids": {
@@ -5280,7 +5280,7 @@
   "group": "screen",
   "batch": 1,
   "desc": "a newspaper strip with two headlines \"Oscar Nominations Announced\" and \"Atlas Rocket Explodes On Launch\" and small columns of article text below",
-  "keep": "the headlines exactly",
+  "keep": "the headlines exactly; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5580,7 +5580,7 @@
   "group": "screen",
   "batch": 1,
   "desc": "a newspaper strip with two headlines \"DODGERS Win 5-2\" and \"Tidal Wave Wrecks Malibu\" and small columns of article text below",
-  "keep": "the headlines exactly; small grey article text under them",
+  "keep": "the headlines exactly; small grey article text under them; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6798,7 +6798,7 @@
   "group": "screen",
   "batch": 1,
   "desc": "the top of the newspaper: two stacked paper tabs \"AUTO PARTS\" (with a wheel, a spark plug and an engine block) and \"USED CARS\" (with an old red sedan and a red sports car), then the \"Los Angeles News\" masthead in black gothic letters and \"10 cents\" on the right",
-  "keep": "all the lettering exactly; the paper stays white",
+  "keep": "all the lettering exactly; the paper stays white; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7523,7 +7523,7 @@
   "group": "ui",
   "batch": 1,
   "desc": "a wide empty white speech bubble with a teal outline and a tail pointing down right",
-  "keep": "empty inside",
+  "keep": "empty inside; a crisp solid teal outline exactly as thick as in the original all the way round, including the tail and the right end; flat white inside",
   "sheet": "bubbles",
   "status": "new",
   "ids": {

@@ -140,7 +140,7 @@ def review_sheet(name, rows):
     sheet.save(os.path.join(ART, 'review', name + '.png'))
 
 
-def cmd_repair(name, only=None):
+def cmd_repair(name, only=None, whole=False):
     """The hue lock on the tiles that failed for colour (or only those containing a point of `only`, a list
     of (x, y) original pixels), then the checks again."""
     pal, pr = palettes(), progress()
@@ -154,6 +154,8 @@ def cmd_repair(name, only=None):
         res = np.asarray(Image.open(m['raw']).convert('RGBA'))     # from the generated image again
         rgba, ix = cleanup(p.idx, p.transparent, res, m['rect'], ref)
         tiles = tiles_of(check(orig, ~p.transparent, rgba)[1])
+        if whole and tiles:                      # the whole picture: no seams between locked and unlocked tiles
+            tiles = [(0, p.w - 1, 0, p.h - 1)]
         if only:
             tiles = [t for t in tiles if any(t[0] <= x <= t[1] and t[2] <= y <= t[3] for x, y in only)]
         if tiles:
@@ -182,11 +184,11 @@ def set_review(sha1, verdict, note):
     json.dump(m, open(path, 'w'), indent=1)
     pr = progress()
     job = pr.jobs[m['job']]
-    if verdict == 'accept':
+    if verdict in ('accept', 'original'):
         settled = []
         for s in job['sha1s']:
             mm = json.load(open(os.path.join(ART, 'art', 'pics', s + '.json')))
-            settled.append(mm['ok'] or (mm.get('review') or {}).get('verdict') == 'accept')
+            settled.append(mm['ok'] or (mm.get('review') or {}).get('verdict') in ('accept', 'original'))
         if all(settled):
             job['status'] = 'done'
             pr.save()
@@ -207,7 +209,7 @@ def cmd_pack(out):
         s = f[:-5]
         m = json.load(open(os.path.join(src, f)))
         rv = (m.get('review') or {}).get('verdict')
-        if rv == 'reject' or (not m['ok'] and rv != 'accept'):
+        if rv in ('reject', 'original') or (not m['ok'] and rv != 'accept'):
             continue
         for ext in ('.png', '.idx.png'):
             shutil.copyfile(os.path.join(src, s + ext), os.path.join(out, 'pics', s + ext))
@@ -246,13 +248,14 @@ def main():
     g.add_argument('name')
     g.add_argument('result')
     g.add_argument('--again', action='store_true', help='an earlier raw result again, not a new try')
-    for v in ('accept', 'reject'):
+    for v in ('accept', 'reject', 'original'):
         r = sub.add_parser(v)
         r.add_argument('sha1')
         r.add_argument('note', nargs='?', default='')
     rp = sub.add_parser('repair')
     rp.add_argument('name')
     rp.add_argument('--at', nargs='*', default=None, help='only the tiles containing these X,Y original pixels')
+    rp.add_argument('--all', action='store_true', help='lock the whole picture (no seams)')
     sub.add_parser('pack').add_argument('out')
     sub.add_parser('status')
     a = ap.parse_args()
@@ -275,10 +278,10 @@ def main():
         print(progress().next() or '')
     elif a.cmd == 'ingest':
         cmd_ingest(a.name, a.result, a.again)
-    elif a.cmd in ('accept', 'reject'):
+    elif a.cmd in ('accept', 'reject', 'original'):
         set_review(a.sha1, a.cmd, a.note)
     elif a.cmd == 'repair':
-        cmd_repair(a.name, [tuple(int(v) for v in p.split(',')) for p in a.at] if a.at else None)
+        cmd_repair(a.name, [tuple(int(v) for v in p.split(',')) for p in a.at] if a.at else None, a.all)
     elif a.cmd == 'pack':
         cmd_pack(a.out)
     elif a.cmd == 'status':
