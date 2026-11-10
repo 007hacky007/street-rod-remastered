@@ -1,11 +1,177 @@
 #!/usr/bin/env python3
 """Street Rod Enhanced remaster pipeline. See tools/remaster/README.md."""
-import argparse, os, sys
+import argparse, collections, json, os, shutil, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from rmlib import catalog, pack  # noqa: E402
+import numpy as np  # noqa: E402
+from PIL import Image, ImageDraw  # noqa: E402
+
+from rmlib import catalog, jobs, pack  # noqa: E402
+from rmlib.check import check  # noqa: E402
+from rmlib.cleanup import cleanup  # noqa: E402
+from rmlib.images import unique_pictures  # noqa: E402
+from rmlib.progress import Progress  # noqa: E402
+from rmlib.register import register  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.dirname(os.path.dirname(HERE))
+ART = os.path.join(REPO, 'remaster-art')
+CATALOG = os.path.join(HERE, 'catalog.json')
+DUMPS = [os.path.join(ART, 'dump', 'main'), os.path.join(ART, 'dump', 'datadisk')]
+MIN_SCORE = 0.3
+
+
+def load_catalog():
+    return json.load(open(CATALOG))
+
+
+def palettes():
+    p = os.path.join(ART, 'palettes.json')
+    if not os.path.exists(p):
+        return {}
+    return {k: [int(c, 16) for c in v] for k, v in json.load(open(p)).items()}
+
+
+def progress():
+    return Progress(os.path.join(ART, 'progress.json'))
+
+
+def cmd_palettes(logs):
+    """Merge SR_REMASTER_PALETTE_LOG files: per picture the palette it was first shown with; 'default' =
+    the most common one (for pictures never seen)."""
+    path = os.path.join(ART, 'palettes.json')
+    out = json.load(open(path)) if os.path.exists(path) else {}
+    out.pop('default', None)
+    for log in logs:
+        for line in open(log):
+            if line.strip():
+                r = json.loads(line)
+                out.setdefault(r['sha1'], r['pal'])
+    common = collections.Counter(tuple(v) for v in out.values()).most_common(1)
+    if common:
+        out['default'] = list(common[0][0])
+    json.dump(out, open(path, 'w'), indent=1)
+    print(len(out) - (1 if common else 0), 'pictures with a palette')
+
+
+def cmd_jobs(batch):
+    """Jobs for every catalogue entry of the batch: one per sheet name, else one per picture."""
+    cat, pr = load_catalog(), progress()
+    sheets = collections.OrderedDict()
+    for s, e in cat.items():
+        if e.get('batch') != batch:
+            continue
+        sheets.setdefault(e.get('sheet') or s, []).append(s)
+    for name, shas in sheets.items():
+        pr.add(name, shas)
+    print(len(sheets), 'jobs for batch', batch)
+
+
+def cmd_job(name):
+    pr = progress()
+    d = jobs.build(name, pr.jobs[name]['sha1s'], load_catalog(), DUMPS, palettes(), os.path.join(ART, 'jobs'))
+    print(d)
+
+
+def cmd_ingest(name, result):
+    cat, pal, pr = load_catalog(), palettes(), progress()
+    meta = json.load(open(os.path.join(ART, 'jobs', name, 'job.json')))
+    raw = os.path.join(ART, 'raw')
+    os.makedirs(raw, exist_ok=True)
+    tries = pr.jobs[name]['tries']
+    kept = os.path.join(raw, '%s.%d.png' % (name, tries + 1))
+    shutil.copyfile(result, kept)
+    res = np.asarray(Image.open(kept).convert('RGBA'))
+    sx, sy = res.shape[1] / meta['canvas'][0], res.shape[0] / meta['canvas'][1]
+    pics = unique_pictures(DUMPS)
+    os.makedirs(os.path.join(ART, 'art'), exist_ok=True)
+    all_ok, reasons, rows = True, [], []
+    for cell in meta['cells']:
+        s = cell['sha1']
+        p = pics[s]
+        ref = jobs.palette_of(s, pal)
+        orig = jobs.picture_rgb(p, ref)
+        x, y, w, h = cell['rect']
+        rect = register(orig, res[..., :3], (x * sx, y * sy, w * sx, h * sy))
+        ok, why = rect[4] >= MIN_SCORE, [] if rect[4] >= MIN_SCORE else ['not found (score %.2f)' % rect[4]]
+        rgba, ix = cleanup(p.idx, p.transparent, res, rect[:4], ref)
+        if ok:
+            ok, why = check(orig, ~p.transparent, rgba)
+        pack.write_entry(os.path.join(ART, 'art'), s, rgba, ix, ref)
+        json.dump({'ok': ok, 'reasons': why, 'rect': rect[:4], 'score': rect[4], 'job': name, 'raw': kept,
+                   'review': None}, open(os.path.join(ART, 'art', 'pics', s + '.json'), 'w'), indent=1)
+        all_ok &= ok
+        reasons += ['%s: %s' % (s[:8], r) for r in why]
+        rows.append((orig, rgba, why))
+    review_sheet(name, rows)
+    pr.result(name, all_ok, reasons)
+    print(name, 'ok' if all_ok else 'FAILED', pr.jobs[name]['status'])
+    for r in reasons[:12]:
+        print('  ', r)
+
+
+def review_sheet(name, rows):
+    """remaster-art/review/<job>.png: each original (4x, hard pixels) beside its cleaned-up art."""
+    tiles = []
+    for orig, rgba, why in rows:
+        h, w = orig.shape[:2]
+        a = Image.fromarray(orig).resize((w * 4, h * 4), Image.NEAREST)
+        bg = Image.new('RGB', (w * 4, h * 4), (40, 40, 40))
+        bg.paste(Image.fromarray(rgba[..., :3]), (0, 0), Image.fromarray(rgba[..., 3]))
+        t = Image.new('RGB', (w * 8 + 8, h * 4), (255, 0, 0) if why else (0, 160, 0))
+        t.paste(a, (0, 0))
+        t.paste(bg, (w * 4 + 8, 0))
+        tiles.append(t)
+    W = max(t.width for t in tiles)
+    sheet = Image.new('RGB', (W, sum(t.height + 8 for t in tiles)), (20, 20, 20))
+    y = 0
+    for t in tiles:
+        sheet.paste(t, (0, y))
+        y += t.height + 8
+    os.makedirs(os.path.join(ART, 'review'), exist_ok=True)
+    sheet.save(os.path.join(ART, 'review', name + '.png'))
+
+
+def set_review(sha1, verdict, note):
+    path = os.path.join(ART, 'art', 'pics', sha1 + '.json')
+    m = json.load(open(path))
+    m['review'] = {'verdict': verdict, 'note': note}
+    json.dump(m, open(path, 'w'), indent=1)
+    pr = progress()
+    job = pr.jobs[m['job']]
+    if verdict == 'reject' and job['status'] == 'done':
+        job['status'] = 'failed'
+        job['reasons'] = ['%s: rejected on review: %s' % (sha1[:8], note)]
+        pr.save()
+
+
+def cmd_pack(out):
+    """The art that passed the checks and was not rejected on review (or was accepted on review)."""
+    src = os.path.join(ART, 'art', 'pics')
+    refs = {}
+    os.makedirs(os.path.join(out, 'pics'), exist_ok=True)
+    for f in sorted(os.listdir(src)):
+        if not f.endswith('.json'):
+            continue
+        s = f[:-5]
+        m = json.load(open(os.path.join(src, f)))
+        rv = (m.get('review') or {}).get('verdict')
+        if rv == 'reject' or (not m['ok'] and rv != 'accept'):
+            continue
+        for ext in ('.png', '.idx.png'):
+            shutil.copyfile(os.path.join(src, s + ext), os.path.join(out, 'pics', s + ext))
+        refs[s] = jobs.palette_of(s, palettes())
+    pack.write_meta(out, refs)
+    print(len(refs), 'pictures in', out)
+
+
+def cmd_status():
+    pr, cat = progress(), load_catalog()
+    c = collections.Counter(j['status'] for j in pr.jobs.values())
+    print(dict(c), 'jobs;', sum(1 for e in cat.values() if e.get('batch')), 'of', len(cat), 'pictures in a batch')
+    for n, j in pr.jobs.items():
+        if j['status'] == 'attention':
+            print('  attention', n, '; '.join(j['reasons'][:3]))
 
 
 def main():
@@ -20,9 +186,22 @@ def main():
     i = sub.add_parser('install')
     i.add_argument('pack')
     i.add_argument('dest')
+    sub.add_parser('palettes').add_argument('logs', nargs='+')
+    sub.add_parser('jobs').add_argument('batch', type=int)
+    sub.add_parser('job').add_argument('name')
+    sub.add_parser('next')
+    g = sub.add_parser('ingest')
+    g.add_argument('name')
+    g.add_argument('result')
+    for v in ('accept', 'reject'):
+        r = sub.add_parser(v)
+        r.add_argument('sha1')
+        r.add_argument('note', nargs='?', default='')
+    sub.add_parser('pack').add_argument('out')
+    sub.add_parser('status')
     a = ap.parse_args()
     if a.cmd == 'catalog':
-        cat = catalog.merge(os.path.join(HERE, 'catalog.json'), [tuple(d.split('=', 1)) for d in a.dumps])
+        cat = catalog.merge(CATALOG, [tuple(d.split('=', 1)) for d in a.dumps])
         print(len(cat), 'pictures')
     elif a.cmd == 'identity-pack':
         print(pack.identity_pack(a.dumps, a.out), 'pictures')
@@ -30,6 +209,22 @@ def main():
         print(pack.marker_pack(a.dumps, a.out), 'pictures')
     elif a.cmd == 'install':
         pack.install(a.pack, a.dest)
+    elif a.cmd == 'palettes':
+        cmd_palettes(a.logs)
+    elif a.cmd == 'jobs':
+        cmd_jobs(a.batch)
+    elif a.cmd == 'job':
+        cmd_job(a.name)
+    elif a.cmd == 'next':
+        print(progress().next() or '')
+    elif a.cmd == 'ingest':
+        cmd_ingest(a.name, a.result)
+    elif a.cmd in ('accept', 'reject'):
+        set_review(a.sha1, a.cmd, a.note)
+    elif a.cmd == 'pack':
+        cmd_pack(a.out)
+    elif a.cmd == 'status':
+        cmd_status()
 
 
 if __name__ == '__main__':
