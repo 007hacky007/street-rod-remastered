@@ -11,6 +11,7 @@ not included; the game is free from the copyright owner: https://www.streetrodon
 * The game is otherwise the original: garage, opponents, physics, police and screens.
 * The Street Rod SE data disk's 25 cars.
 * A launcher for cars, switches, picture and sound options.
+* A Mac app for Apple Silicon that downloads the game for you.
 
 ## How to play (Windows)
 
@@ -31,6 +32,26 @@ not included; the game is free from the copyright owner: https://www.streetrodon
 * Alt+Enter: full screen.
 * Launcher settings: `%APPDATA%\Street Rod Enhanced\settings.ini`.
 
+## How to play (Mac)
+
+1. Download `Street-Rod-Enhanced.dmg` from the [Releases page](https://github.com/007hacky007/streetrod-enhanced/releases)
+   and open it.
+2. Drag **Street Rod Enhanced** to **Applications**, then open it from there.
+3. The app is free and open source but not signed by Apple, so macOS asks once before it opens:
+   * macOS 15 or newer: macOS says it cannot be opened, click **Done**. Open **System Settings** >
+     **Privacy & Security**, scroll down and click **Open Anyway**.
+   * macOS 14 or older: right-click the app and choose **Open**.
+4. The launcher offers to download the game from streetrodonline.com, the official site (Street Rod and the
+   Street Rod SE data disk, about 1 MB). Click **Download**, or **Choose Folder...** if you have the files.
+5. Press **Play**.
+
+* Needs a Mac with Apple Silicon (M1 or later) and macOS 12 or newer.
+* The game, saved games, the hall of fame and the launcher settings are in
+  `~/Library/Application Support/Street Rod Enhanced`.
+* Ctrl+Cmd+F, the green window button or Option+Return: full screen. Cmd+Q quits.
+* Mac keyboards have no Ins or keypad: Space clicks and shifts gear. On a Mac, Ctrl turns the sound on or off
+  when you let go of it.
+
 ## Requirements
 
 * Game files: `SR.EXE` (or `SRSE.EXE`), `LIB1`, `LIB2`, `HOT_DATA`.
@@ -50,6 +71,17 @@ cmake --build build
 
 * `-DSRE_LAUNCHER=OFF` builds the game only.
 * The build copies the DLLs both programs need beside them.
+
+On a Mac (Apple Silicon, Xcode command line tools, CMake, Ninja and Python 3):
+
+```bash
+tools/macos/build-deps.sh                  # SDL3 and wxWidgets, static, into build-deps/prefix
+tools/macos/package.sh --version 0.3.0     # tests, then dist/Street Rod Enhanced.app
+tools/macos/make-dmg.sh --version 0.3.0    # dist/Street-Rod-Enhanced.dmg
+```
+
+* `-DSRE_TESTS=ON` builds the unit tests (`ctest --test-dir build-mac`); `package.sh` turns it on.
+* `tests/test_download` checks the download for real: `test_download <dir> ok` fetches the game into `<dir>`.
 
 ## Run
 

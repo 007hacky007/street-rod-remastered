@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0
+
+- macOS app for Apple Silicon (M1 or later, macOS 12 or newer), on a disk image from the Releases page.
+- On a Mac the launcher downloads the game from streetrodonline.com, the official site, on first launch (Street
+  Rod and the Street Rod SE data disk), checks it and keeps it with the saved games in
+  `~/Library/Application Support/Street Rod Enhanced`.
+- Sharp picture on Retina screens.
+- Mac keys: Cmd+Q quits, Ctrl+Cmd+F or the green window button switches full screen, and Cmd shortcuts no
+  longer reach the game. On a Mac, Ctrl turns the sound on or off when it is let go.
+- The launcher's About box credits 007hacky007 and links to this repository.
+
 ## 0.2.0
 
 - Separate music and sound effects volumes (`--music-volume`, `--sfx-volume`).

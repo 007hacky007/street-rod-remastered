@@ -7,7 +7,8 @@ like the Street Rod and Test Drive III launchers it is modelled on.
 ## The window
 
 * **Game files**
-  * **Folder**: the folder with the original game's files (default `Game` beside the launcher).
+  * **Folder**: the folder with the original game's files (default `Game` beside the launcher; on a Mac
+    `~/Library/Application Support/Street Rod Enhanced/Game`).
   * **Program**: `streetrod-enhanced.exe` (default: beside the launcher).
   * The line below says whether the folder holds Street Rod or Street Rod SE and how many saved games it has,
     or which file is missing (`SR.EXE` or `SRSE.EXE`, `LIB1`, `LIB2`, `HOT_DATA`). **Play** stays greyed out
@@ -27,6 +28,16 @@ like the Street Rod and Test Drive III launchers it is modelled on.
   (`--town`). The last three are greyed out with the original graphics.
 * **Play** starts the game; the launcher stays open.
 
+## On a Mac
+
+* When the game folder is empty or missing, the launcher offers to download the game from streetrodonline.com,
+  the official site, on start and with a **Download game** button: Street Rod into the folder and Street Rod SE
+  into its `datadisk` folder. Both downloads are checked against known SHA-256 checksums and unpacked into
+  `<folder>.partial` first, so a failed download leaves nothing behind. A folder that holds anything (saved
+  games, say) is never written to.
+* `SRE_DOWNLOAD_BASE=<url>` (a developer aid) downloads `sr1pc.zip` and `srsepc.zip` from there instead.
+* About, Preferences and Quit are in the application menu.
+
 ## Menus
 
 * **File**: **Preferences** (**Always on top** keeps the launcher above other windows) and **Exit**.
@@ -34,7 +45,8 @@ like the Street Rod and Test Drive III launchers it is modelled on.
   each a slider and a number field. **Default**, **Apply**, **Cancel**.
 * **About**: version, author and links.
 
-Everything is remembered in `%APPDATA%\Street Rod Enhanced\settings.ini` (`~/.config/street-rod-enhanced` on Linux), the volumes
+Everything is remembered in `%APPDATA%\Street Rod Enhanced\settings.ini` (`~/Library/Application Support/Street Rod Enhanced`
+on a Mac, `~/.config/street-rod-enhanced` on Linux), the volumes
 under `[Sound]`. A folder or program left at its default is stored empty, so it follows the launcher if the whole
 folder moves. Delete the file to go back to the defaults.
 
@@ -55,6 +67,9 @@ launcher itself is linked in.
 * `launcher.h`, `launcher.cpp`: the window, its menus, the Sounds page and the About box.
 * `game.h`, `game.cpp`: the file checks, the data disk, saved games and starting the game.
 * `settings.h`, `settings.cpp`: `settings.ini`.
+* `gamefiles.h`, `gamefiles.cpp`, `sha256.h`, `sha256.cpp`: the official game files, their checksums and the
+  installer; `download.h`, `download.cpp`: fetching them (wxWebRequest).
+* `macos/`: the app bundle's `Info.plist.in` and `AppIcon.icns` (written by `make_icon.py` on a Mac).
 * `icon.h`, `icon.cpp`: the app icon, Street Rod's night road drawn in code. `make_icon.py` (Pillow) writes the
   same drawing to `app.ico` for Explorer.
 * `app.rc`, `app.manifest`, `app.ico`, `version.h`: icon, visual styles, DPI awareness, version info.
