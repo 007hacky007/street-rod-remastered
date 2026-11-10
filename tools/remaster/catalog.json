@@ -1,0 +1,7957 @@
+{
+ "007e822a024862bcb72a1401a5cf8c99f7de752a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1166
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 40,
+  "h": 15,
+  "masked": 1
+ },
+ "0081d72694dec17705f958cea4b7e9bda5615554": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1176
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 13,
+  "masked": 1
+ },
+ "00864913f9fb1da243bc5d2db2c6f5ae25cef647": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1056
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 13,
+  "masked": 1
+ },
+ "00d45462d1d4ea802ec7edc4729a6fd74deeab06": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1259
+   ],
+   "datadisk": [
+    1259
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 108,
+  "masked": 1
+ },
+ "010100a90b77150b991fabfe03abca085c10d0d0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1064
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 13,
+  "masked": 1
+ },
+ "012525258e47c3bff0aa68ae15888dba8066e06c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1122
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 17,
+  "masked": 1
+ },
+ "012ed1610273a5d0a14239df1db16b5d16a8100b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1261
+   ],
+   "datadisk": [
+    1261
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 43,
+  "masked": 0
+ },
+ "01b09d3618179dbfcb39c861d41081a8a33fef83": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1039
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 240,
+  "h": 64,
+  "masked": 1
+ },
+ "01e420c7deea083218cf04fcecdc6799fb8249dd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1190
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 48,
+  "h": 22,
+  "masked": 1
+ },
+ "0212f7fd1e41711003881a7cea41de36c162e729": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1176
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "03319b5265a3d2aca8a1204da73d26b814c88881": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1245
+   ],
+   "datadisk": [
+    1245
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 96,
+  "h": 88,
+  "masked": 1
+ },
+ "044fc6400469b69defa4ef89fc7b209b15be974c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1223
+   ],
+   "datadisk": [
+    1223
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 22,
+  "masked": 1
+ },
+ "063e22f390c536d64f266f04df7a2d8dddf181fc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1205
+   ],
+   "datadisk": [
+    1205
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "06ccf90eef7e9a7b15d7bfddafb5c56eed1a88cb": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1118
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 192,
+  "h": 67,
+  "masked": 1
+ },
+ "0788dfe2a9f1466a18ee0d0a5d9cdb6c40813dfd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1097
+   ],
+   "datadisk": [
+    1097
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 16,
+  "h": 70,
+  "masked": 0
+ },
+ "08e081571fdfd9c72555232769269f0fd0ae1745": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1149
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 54,
+  "masked": 1
+ },
+ "0945762f0656b66b642c790c45d1bc572ad0fcb6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1193
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 56,
+  "h": 22,
+  "masked": 1
+ },
+ "09ce8bbd2bb59fb67bb3150ef8a888f584ba32fd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1060
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 55,
+  "masked": 1
+ },
+ "0a5faa756e9145646556e17880c1eba0ac5d006e": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1014
+   ],
+   "datadisk": [
+    1014
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 190,
+  "masked": 0
+ },
+ "0a630a705b212a931635347e754a4bd59dbba5ad": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1156
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 55,
+  "masked": 1
+ },
+ "0a6f37254f3674397687dda5f86218203eaab27c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    8
+   ],
+   "datadisk": [
+    8
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 296,
+  "h": 189,
+  "masked": 0
+ },
+ "0a87b6be1de896333c7f813f98e57840c0b22cbc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1143
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 21,
+  "masked": 1
+ },
+ "0b0ee248a03c73328b29d32c9e1287b3cbe7e315": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1159
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 20,
+  "masked": 1
+ },
+ "0b8ac48bd5609e4a6b7ec3898b484c872a872081": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1169
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 11,
+  "masked": 1
+ },
+ "0b9905337f6f7761a5710f8eec82d110c1373e3f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1167
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 10,
+  "masked": 1
+ },
+ "0bb68f6f22de056ae0a7bbe896addcc0056bb13d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1164
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 54,
+  "masked": 1
+ },
+ "0c3d8b72b0c8b55a976462ecdefba8b6d91e55c2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1129
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 15,
+  "masked": 1
+ },
+ "0c3f50e34843e5b358c64afd8d88f8647b15f335": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1121
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 11,
+  "masked": 1
+ },
+ "0d39d76a136bcea91c7813433e4f38419bb1f796": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1246
+   ],
+   "datadisk": [
+    1246
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 24,
+  "masked": 1
+ },
+ "0ebfcb69b7fdd004fc73f8d7f5257c5c34fac67d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1057
+   ],
+   "datadisk": [
+    1057
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 64,
+  "masked": 1
+ },
+ "0fbe837446d1478985757f7b0dc81dd05f852404": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1054
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 232,
+  "h": 58,
+  "masked": 1
+ },
+ "0fbed16f8cf7c8db418a97399733f16e7dba346f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1094
+   ],
+   "datadisk": [
+    1094
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 11,
+  "masked": 1
+ },
+ "107c8b8a287cd8962890f2bfa9618cb273a1cfe6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1163
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 120,
+  "h": 20,
+  "masked": 1
+ },
+ "11fb5534e457f771aa3db9d60e5aec24856f8454": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    3
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 97,
+  "masked": 0
+ },
+ "128ee94b57781e478e14e441e9c2ad529fd47e6b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1215
+   ],
+   "datadisk": [
+    1215
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 1
+ },
+ "12bb2bf7812ab7bb39b754acbe4da1d012240d31": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1113
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 52,
+  "masked": 1
+ },
+ "130421ccb530255d2d8fa15d146e362a2f4c2c47": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1049
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 14,
+  "masked": 1
+ },
+ "1349c7e723ed8f55c0f1de92e14c4914ff75659b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1162
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 16,
+  "masked": 1
+ },
+ "13504b27990a50e12a6fc66bf1d1d1f5a603a580": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1199
+   ],
+   "datadisk": [
+    1199
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "1374137a59172960100e54d8b16e3db4743e6dbc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1222
+   ],
+   "datadisk": [
+    1222
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 200,
+  "h": 36,
+  "masked": 1
+ },
+ "13a691b9d2fe20dba946cb304cd1aa720d3ed30a": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    9
+   ],
+   "datadisk": [
+    9
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 304,
+  "h": 157,
+  "masked": 0
+ },
+ "14ffe4949f1af4374fde0f5210381e5f1abe7665": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1172
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 55,
+  "masked": 1
+ },
+ "1504e30e869eb3c0ea8002e17afcc8275d14c891": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1161
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
+ "152f727b5dcbda7581a8de37de47cd2f3e5bd8ad": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1153
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 14,
+  "masked": 1
+ },
+ "1566f195b1e8ff612bd049af5619be84af5de9e6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1253
+   ],
+   "datadisk": [
+    1253
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 48,
+  "masked": 1
+ },
+ "163bebfd0ca194c5c509eae8fe511841a250afca": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1132
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 16,
+  "masked": 1
+ },
+ "17817ae2e5a86f9352d81b4ea8e318412313d112": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1157
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 240,
+  "h": 64,
+  "masked": 1
+ },
+ "17b2a38368f7bb65e3cd62822e2b544f243c10d4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1172
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 256,
+  "h": 56,
+  "masked": 1
+ },
+ "17bb08c02fbc55c3dd02c95bdce7215a973a2acf": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1196
+   ],
+   "datadisk": [
+    1196
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "180ba63d1ff5422ae909df537c21506bc00f3e3e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1174
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 14,
+  "masked": 1
+ },
+ "18bf1244beb71db26df125754146c09275464e3e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1055
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 15,
+  "masked": 1
+ },
+ "19403c7ae00ec5320f619ad8090b7808e700e2f6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1024
+   ],
+   "datadisk": [
+    1024
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 54,
+  "masked": 0
+ },
+ "194d8e8d5f29d5597cfcf17239fa42dac635c66f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1231
+   ],
+   "datadisk": [
+    1231
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 1
+ },
+ "198a48590d44871954aa24acd1e9d49f663c56a0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1000
+   ],
+   "datadisk": [
+    1000
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 184,
+  "h": 26,
+  "masked": 0
+ },
+ "1a3c497bb84110b6d0719fb675be72dfd6e130a5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1102
+   ],
+   "datadisk": [
+    1102
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 128,
+  "h": 81,
+  "masked": 1
+ },
+ "1a5e48ddf330c6d732953b5b0c65a70289bc55f4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1072
+   ],
+   "datadisk": [
+    1072
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 152,
+  "h": 37,
+  "masked": 1
+ },
+ "1a808ccbe9d7aca18be6dc48541661513388d7cf": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1065
+   ],
+   "datadisk": [
+    1065
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "1c8f8991b4ddce977d3b4e20947e1bd8375a60cf": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1198
+   ],
+   "datadisk": [
+    1198
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 1
+ },
+ "1d4f837dcc3ac52b30d6e80e92771a3f33bd3a96": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1085
+   ],
+   "datadisk": [
+    1085
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 18,
+  "masked": 1
+ },
+ "1d6abbf692a15a8328e4317ad09e56829cd39a34": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1048
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 60,
+  "masked": 1
+ },
+ "1db8142ddd998f9a74fb7e89b7528d8d9d434cf2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1013
+   ],
+   "datadisk": [
+    1013
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 48,
+  "h": 32,
+  "masked": 1
+ },
+ "1e870f4f54d5cc73f80746a419f57f8eee9e86fc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1144
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 19,
+  "masked": 1
+ },
+ "1ea03773f77892634c297170892aa8966aefb91d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1186
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 48,
+  "h": 22,
+  "masked": 1
+ },
+ "1f5814c9afdc109c78f9afccf312c341b26b2890": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1187
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 48,
+  "h": 23,
+  "masked": 1
+ },
+ "20b979b79bc1d619cfd5a1bacb38472d92618473": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1160
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 16,
+  "masked": 1
+ },
+ "237afab6d3a72107a396f6b600d23bee8724e287": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1082
+   ],
+   "datadisk": [
+    1082
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 15,
+  "masked": 1
+ },
+ "23cfa9dd0c6855e9cfc32c8d7410647735501ef5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1226
+   ],
+   "datadisk": [
+    1226
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 16,
+  "h": 70,
+  "masked": 2
+ },
+ "23d952260d9c977585dad423b9a9539e6f27d2df": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1106
+   ],
+   "datadisk": [
+    1106
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "2469e8b907a45a194794415f2aa789539beffbd6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1174
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 15,
+  "masked": 1
+ },
+ "24aae294d973d11b1d8a0259cad8092ec097428a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1157
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 248,
+  "h": 56,
+  "masked": 1
+ },
+ "24e04213de87bdc0f2a7cb63e22570b89366fbab": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1026
+   ],
+   "datadisk": [
+    1026
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 54,
+  "masked": 0
+ },
+ "265973daf5f8c0dede5af7020c5e83fd1e9e557f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1047
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 60,
+  "masked": 1
+ },
+ "2736eda7239b285eb659ce07e77a0b1957732df1": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1090
+   ],
+   "datadisk": [
+    1090
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 190,
+  "masked": 0
+ },
+ "285ba91be70ad30ecadf026e9ffbaf0dde9d9e89": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1178
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 104,
+  "h": 16,
+  "masked": 1
+ },
+ "28c8f1c8c89309486d2df56f80bf5bb0bd600d42": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1160
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 112,
+  "h": 18,
+  "masked": 1
+ },
+ "2a12611731bc3f40d6cd8f3d227c7b6a7b947ab4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1134
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 120,
+  "h": 19,
+  "masked": 1
+ },
+ "2d2069cf63557bb7b934585eceac2693b45c54b7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1033
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 16,
+  "masked": 1
+ },
+ "2e0c7fc6e54829b23a03173662ee3b18eecebe23": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1202
+   ],
+   "datadisk": [
+    1202
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "2e67a56f07a048bf9c9281a31bad3860b0cf965e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1075
+   ],
+   "datadisk": [
+    1075
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 94,
+  "masked": 0
+ },
+ "30258d3e8615515f6177c468fec713cf73d5e6e5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1005
+   ],
+   "datadisk": [
+    1005
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 52,
+  "masked": 0
+ },
+ "3146e93247d3dce4111bd94d9009faafb8a01da5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1179
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 53,
+  "masked": 1
+ },
+ "3422b8972979ae8252457a8c79aaed276eecdb88": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1056
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 22,
+  "masked": 1
+ },
+ "345423e0fdcb5186c56bea02e652433de23be38b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1247
+   ],
+   "datadisk": [
+    1247
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 128,
+  "h": 53,
+  "masked": 1
+ },
+ "3479817ab40be2fae2c19ce6e50d98d490b6fc3b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1200
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 69,
+  "masked": 0
+ },
+ "349bbf8ef14160de32a5b956bd84af47ba71ae9a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1045
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 18,
+  "masked": 1
+ },
+ "357f4924f7df24423c703159ccaf860736fa45e5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1162
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 18,
+  "masked": 1
+ },
+ "362192d4571a2694b7d7f448114737425e92719e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1128
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 8,
+  "h": 20,
+  "masked": 1
+ },
+ "367397c4277ae868f2f9fdee20dcefe721f2ecc8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    3
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 256,
+  "h": 97,
+  "masked": 0
+ },
+ "3689b90384e83640837c841e70fb319787fa44c4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1149
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 272,
+  "h": 58,
+  "masked": 1
+ },
+ "36999d3ed08962788dac5792c26b5075bb99a78b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1133
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 14,
+  "masked": 1
+ },
+ "38d4f1638b66372e8009c3d71da640d6c2cf04a6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1035
+   ],
+   "datadisk": [
+    1035
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 29,
+  "masked": 1
+ },
+ "394b0ca8219d061f199a9c000758e0f7ae1685c8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1251
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 24,
+  "masked": 1
+ },
+ "3a07e1e06e5aab992ae795e3be04e5f5a6a261da": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1117
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 16,
+  "masked": 1
+ },
+ "3b71e64002178fbc373a3b8c36671d916e1e3619": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1127
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 232,
+  "h": 67,
+  "masked": 1
+ },
+ "3c9859f6158278f1eaf498a962e602c77ce818e9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1017
+   ],
+   "datadisk": [
+    1017
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 168,
+  "h": 18,
+  "masked": 0
+ },
+ "3dfb16ee96cefe553c58588c57783ac311d4758e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1131
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 248,
+  "h": 62,
+  "masked": 1
+ },
+ "3e5acd69022877906f12b3583863828ba3cc776f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1136
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 13,
+  "masked": 1
+ },
+ "3e9889c539b80f62bf441067328f7396df345a6e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1100
+   ],
+   "datadisk": [
+    1100
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 86,
+  "masked": 1
+ },
+ "3ed921b26b5825ed2f73b6b83a4d4e9a7ace6043": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1124
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "40fb691a6dc48b56a4139716f2bd7ff4232ee1ae": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1126
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 256,
+  "h": 61,
+  "masked": 1
+ },
+ "414c0695471b6be8ed1f09e1b7d77b75dab3b48a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1125
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 128,
+  "h": 17,
+  "masked": 1
+ },
+ "41d89fb55eaa403dd09efcf50c4e30b38be76a13": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1250
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 88,
+  "h": 64,
+  "masked": 1
+ },
+ "426fed316d4a174e1a36063019a5a15d605bd807": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1142
+   ],
+   "datadisk": [
+    1142
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 240,
+  "h": 82,
+  "masked": 1
+ },
+ "42b9890de93b7ba726f326bf9376c9ce4692ea52": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1062
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 96,
+  "h": 20,
+  "masked": 1
+ },
+ "4353aeeaa0372db37c2f0c3f108e2db1fd4cd461": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1167
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 17,
+  "masked": 1
+ },
+ "450d3b0dc2d70e6c58bd7ddf26d9c839526acd61": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1043
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 144,
+  "h": 20,
+  "masked": 1
+ },
+ "4577fe4a74ddb0c5529706c2f4c88cc5a57ac8bc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1066
+   ],
+   "datadisk": [
+    1066
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "46c924dc26c645d2c06ccddd5d94850c5e5f866c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1230
+   ],
+   "datadisk": [
+    1230
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 1
+ },
+ "472073d6b3d5ed4c19114e2aa5764c89fc1c7112": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    5
+   ],
+   "datadisk": [
+    5
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 200,
+  "masked": 0
+ },
+ "472af1422905ab9600af0d21f3e1c8dc61ffe3b4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1192
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 22,
+  "masked": 1
+ },
+ "47ceed5703afec32b978e9b16c15bd102073a41c": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1032
+   ],
+   "datadisk": [
+    1032
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 190,
+  "masked": 0
+ },
+ "4821562d5a42bc80bf6df8036919c9ced523e7a2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1217
+   ],
+   "datadisk": [
+    1217
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 1
+ },
+ "488a284015694de689492ba9719f32a29f75b98d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1052
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 16,
+  "h": 15,
+  "masked": 1
+ },
+ "490df0a3db9f5c3bf8cd153225b3b382a6c39bd6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1220
+   ],
+   "datadisk": [
+    1220
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 9,
+  "masked": 1
+ },
+ "4953b80cd035f97260c72a64820e2607f77b020b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1116
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 128,
+  "h": 18,
+  "masked": 1
+ },
+ "4a537bc5493009d3a906acc850c814c59a25bf6f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1238
+   ],
+   "datadisk": [
+    1238
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 43,
+  "masked": 0
+ },
+ "4a87159733805d803f05d92724a1f6ce789db338": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1001
+   ],
+   "datadisk": [
+    1001
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 184,
+  "h": 26,
+  "masked": 0
+ },
+ "4b3c2e7560f1a7573e313fca7b9939268a88f098": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1193
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 14,
+  "masked": 1
+ },
+ "4b8c01e26ebd8ed46e2fe900c9478ca9ee65b1fe": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1119
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 56,
+  "masked": 1
+ },
+ "4d69ec017d16bf4d63c7f61774b4008b95ce43cb": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1195
+   ],
+   "datadisk": [
+    1195
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "4f3e361f02174ed27121a68210c082246eeb9791": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1119
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 240,
+  "h": 67,
+  "masked": 1
+ },
+ "4f58cebdaa222d53e1c477534504a264f378a8d5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1084
+   ],
+   "datadisk": [
+    1084
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 18,
+  "masked": 1
+ },
+ "50790e9962f32f1fc28de062b4e08416181530c6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1115
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
+ "51d030f99df82ef68efb968d766830e8fb0d013c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1219
+   ],
+   "datadisk": [
+    1219
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 168,
+  "h": 150,
+  "masked": 0
+ },
+ "5311693fa31a41c27adcbae46a8f3d9cb3fd246f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1089
+   ],
+   "datadisk": [
+    1089
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 8,
+  "h": 11,
+  "masked": 1
+ },
+ "538e3914de3a9b73a3544a9c21f06278819395d1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1239
+   ],
+   "datadisk": [
+    1239
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 24,
+  "masked": 1
+ },
+ "547f0bffed3b9ba206c50da60b88b2eb98e2b7a2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1121
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 14,
+  "masked": 1
+ },
+ "54a0c2a54370e1777b9e74c3c1c6a82e3b463a14": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1034
+   ],
+   "datadisk": [
+    1034
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 29,
+  "masked": 1
+ },
+ "54eddcb68b27bb09dd6027557f61ce5af4afb2ee": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1002
+   ],
+   "datadisk": [
+    1002
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 184,
+  "h": 26,
+  "masked": 0
+ },
+ "5516c2cef08a91665c956b8b7188a561f5353a11": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1114
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 16,
+  "h": 20,
+  "masked": 1
+ },
+ "563f9434cce11963d4d4e3ea3cdcd62c73c32e5f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1133
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 24,
+  "masked": 1
+ },
+ "56a18c0b7b35251ebe177c301875e99257d58c26": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1047
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 240,
+  "h": 68,
+  "masked": 1
+ },
+ "56d262df573e5dfa7564619f394989aa1c61c90d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1081
+   ],
+   "datadisk": [
+    1081
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 14,
+  "masked": 1
+ },
+ "56f2e619fbb04527e24c9da0414239c8f5781902": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1173
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 11,
+  "masked": 1
+ },
+ "57b737c53c28c5c9c99718a4ff5f94a9d1c0e751": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1015
+   ],
+   "datadisk": [
+    1015
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 312,
+  "h": 185,
+  "masked": 0
+ },
+ "583fd9ff3e9332f94a32b05500d86a15389348f0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1029
+   ],
+   "datadisk": [
+    1029
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "58ab30c6b95a2c50479635ed1d2b5aaefa1af2f5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1037
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 18,
+  "masked": 1
+ },
+ "59016bb1970c908d6adaae54b35ed39ab4677e6a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1114
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
+ "598a1967d73ae2306caa93165a1881fb21b15f86": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1068
+   ],
+   "datadisk": [
+    1068
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "59f7e0c88d20ff520bb9a65e8c13e183d82a52ac": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1123
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 16,
+  "masked": 1
+ },
+ "5b6a628dbe322857058882950d301d234a1f819f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1175
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 120,
+  "h": 18,
+  "masked": 1
+ },
+ "5bb3d2ddbb40f3f399f37b8ab6897abf1356f08e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1033
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 24,
+  "masked": 1
+ },
+ "5bcc34a7c2387871439f5f0f273e63eff4e8f04f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1008
+   ],
+   "datadisk": [
+    1008
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 184,
+  "h": 4,
+  "masked": 1
+ },
+ "5cf362c98648dc2085fdb20a13d86e54fdfd8f4f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1168
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 16,
+  "h": 19,
+  "masked": 1
+ },
+ "5e2a788cdaab2925f3576e1a2748d62db0051c65": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1111
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 128,
+  "h": 18,
+  "masked": 1
+ },
+ "5eed1171e33f5850db272d8eacbb187a94f617eb": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1067
+   ],
+   "datadisk": [
+    1067
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "5f4cd6ce19da00112bc7429e35b5127317766895": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1061
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 216,
+  "h": 68,
+  "masked": 1
+ },
+ "619d4ad1ad379fabbedf63b8feff115ea6602e9c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1078
+   ],
+   "datadisk": [
+    1078
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 176,
+  "h": 56,
+  "masked": 1
+ },
+ "6265fe423c7c258a9e89cb5958dc19f48b8511e1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1243
+   ],
+   "datadisk": [
+    1243
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 80,
+  "h": 11,
+  "masked": 0
+ },
+ "62b63494cf6315c663a39632329257806575b2e5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1155
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 136,
+  "h": 25,
+  "masked": 1
+ },
+ "63e3b12bb91c9650b6d113d99d48153c36c7a159": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1083
+   ],
+   "datadisk": [
+    1083
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 15,
+  "masked": 1
+ },
+ "647213bf3bf86a44428dbb9eaed5277ff26738b4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1063
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 13,
+  "masked": 1
+ },
+ "647e89aa049c8bc480d85f55dd8d12be831f384d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1134
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 19,
+  "masked": 1
+ },
+ "651f99f2c91a40e19d6c5d819495903cbfd3d43a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1128
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "656bf0b62ca73dd94c10e9fb8e5c98c0db433dc3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1154
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 18,
+  "masked": 1
+ },
+ "6739eb58f033ecc73b6c35a83e1b00e105302b01": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1055
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 14,
+  "masked": 1
+ },
+ "68bff67158adf8413cdadd17f7839f97d04fca25": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1004
+   ],
+   "datadisk": [
+    1004
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 128,
+  "h": 51,
+  "masked": 1
+ },
+ "6a670c202446626bed4f8003e270a243d39c5878": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1136
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 15,
+  "masked": 1
+ },
+ "6a6dee8fdb190b4991a5e4c133bcd7f179e138b0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1228
+   ],
+   "datadisk": [
+    1228
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 48,
+  "h": 43,
+  "masked": 0
+ },
+ "6ae519067909e19e645c3627c0774046331ddc2a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1145
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 240,
+  "h": 60,
+  "masked": 1
+ },
+ "6b1c419ac6b234dde64c68d3a980d1f39eb2a11e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1164
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 256,
+  "h": 63,
+  "masked": 1
+ },
+ "6b88b3dd14b617c1906cf0560fa1cb1235795069": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1038
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 112,
+  "h": 21,
+  "masked": 1
+ },
+ "6bd14a0106476c32ead8cfe526d46415873097f8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1191
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 48,
+  "h": 23,
+  "masked": 1
+ },
+ "6bf9c556bd0aa381294824e5b34140b8dcddec43": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1091
+   ],
+   "datadisk": [
+    1091
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 24,
+  "masked": 1
+ },
+ "6d06b93b10f6234f33259c153894b2656d14f101": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1059
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 16,
+  "masked": 1
+ },
+ "6d98eb256352e64efff4823be4ac5b12b6baa1a6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1250
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 88,
+  "h": 64,
+  "masked": 1
+ },
+ "70a35df055026c4a749f10f89577fcb5677859a4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1188
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 23,
+  "masked": 1
+ },
+ "70ade126a87e5b3c83ccf8ca112c4aeafd35c3fc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1216
+   ],
+   "datadisk": [
+    1216
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "70c204914976c671663b6c6b752e0ea1a5a00dc3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1187
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 56,
+  "h": 23,
+  "masked": 1
+ },
+ "71382873d6ece7e7ad4a1f294e2c89ba04a04cdb": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1113
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 256,
+  "h": 55,
+  "masked": 1
+ },
+ "714790f0434efdf70f6bedc9ff4be497c2960642": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1137
+   ],
+   "datadisk": [
+    1137
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
+ "73d5e6151dc49a57b6274288443035b5c8022eb3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1054
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 248,
+  "h": 59,
+  "masked": 1
+ },
+ "7642dcfa4b6533e18936b57c1cab90ca403cdc10": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1120
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 13,
+  "masked": 1
+ },
+ "76b9deae45566c4922006174d45081fea9630c45": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1040
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 240,
+  "h": 66,
+  "masked": 1
+ },
+ "76cef277a7415beea71003a7b1b8a6fc4d1e9aea": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1039
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 248,
+  "h": 67,
+  "masked": 1
+ },
+ "779dc4a67c62b2b79ac9717aceee581f27d2ff79": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1069
+   ],
+   "datadisk": [
+    1069
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 200,
+  "h": 143,
+  "masked": 0
+ },
+ "78671c730249379f41e0b2cb711d4787e1f7437e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1255
+   ],
+   "datadisk": [
+    1255
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 64,
+  "h": 149,
+  "masked": 0
+ },
+ "79ad9be710261740af7285244dcf07a15e4b363f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1027
+   ],
+   "datadisk": [
+    1027
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 128,
+  "h": 190,
+  "masked": 0
+ },
+ "79f563d0ffd14e43a34a292ce9f4c733975a1009": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1063
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 17,
+  "masked": 1
+ },
+ "7b1d3463758fdc3de4ae289117a696ed9595ffd6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1208
+   ],
+   "datadisk": [
+    1208
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 16,
+  "masked": 1
+ },
+ "7bae6b912bc81c8ea88bd7a52f1c919da4116728": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1061
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 272,
+  "h": 55,
+  "masked": 1
+ },
+ "7c6d1b5dbdcfbe51fcc59afd19cf25b99ff1febd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1023
+   ],
+   "datadisk": [
+    1023
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 54,
+  "masked": 0
+ },
+ "7cbc8d09cb62165b9a8f8cc025c98c825bee2992": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1070
+   ],
+   "datadisk": [
+    1070
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 200,
+  "h": 175,
+  "masked": 0
+ },
+ "7ce632d75277389f9eadd0a424ac37340e33dbea": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1224
+   ],
+   "datadisk": [
+    1224
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 16,
+  "h": 70,
+  "masked": 0
+ },
+ "7d4ca6d5cb451313143c2647c9758f664b6d26ff": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1011
+   ],
+   "datadisk": [
+    1011
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 64,
+  "masked": 1
+ },
+ "7df41106dfae2a92e1694f4f4b3ced043c18c6d1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1009
+   ],
+   "datadisk": [
+    1009
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 80,
+  "h": 27,
+  "masked": 0
+ },
+ "7eb554af211fd87eec76b73625a98023a8d5b4c5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1177
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 15,
+  "masked": 1
+ },
+ "7f5ddca24e0e123f0ceade957f62ae18d6b8734a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1126
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 216,
+  "h": 67,
+  "masked": 1
+ },
+ "7fc92e8902531976c78fe6747aad0a17805acf08": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1170
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 112,
+  "h": 20,
+  "masked": 1
+ },
+ "7fceb607515187aa7317936001f1e14f623af1f5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1007
+   ],
+   "datadisk": [
+    1007
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 232,
+  "h": 5,
+  "masked": 1
+ },
+ "816096145f1a12f3e85169b8de64c0bfddcd18fc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1138
+   ],
+   "datadisk": [
+    1138
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 8,
+  "h": 7,
+  "masked": 1
+ },
+ "8175da6aeb62cb33169167fb9dc9769e7008c4bc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1242
+   ],
+   "datadisk": [
+    1242
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 104,
+  "h": 64,
+  "masked": 1
+ },
+ "8231a5627b4a157d034de0835e7bebe1f7d3fa9c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1236
+   ],
+   "datadisk": [
+    1236
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 43,
+  "masked": 0
+ },
+ "823435891f5058d1d5b9387d1d13b993f6c10dc3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1158
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 14,
+  "masked": 1
+ },
+ "824653fb1c8fa1d64060aa841a960a14132707cd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1098
+   ],
+   "datadisk": [
+    1098
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 16,
+  "h": 70,
+  "masked": 2
+ },
+ "82ec493735b4d1efce45bcf0d71dab962f276c1f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    7
+   ],
+   "datadisk": [
+    7
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 272,
+  "h": 199,
+  "masked": 1
+ },
+ "82ec907176954472d98df543d3837fee11b96d65": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1207
+   ],
+   "datadisk": [
+    1207
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "84f49f6604005b501ba66768902ccee5aeb64178": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1104
+   ],
+   "datadisk": [
+    1104
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 16,
+  "masked": 1
+ },
+ "84fa44ec81c36bc88f3f23e21b149ec29150b083": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1146
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 12,
+  "masked": 1
+ },
+ "8586d96448487cf5d73dcb328cfe6e47ab25329a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1233
+   ],
+   "datadisk": [
+    1233
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 144,
+  "h": 64,
+  "masked": 0
+ },
+ "85e7b5e900dc58e93efcb293ad09343727bcbf3f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1159
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 16,
+  "masked": 1
+ },
+ "8635a0f8f5df704d85c717aea44083dadf6578bc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1252
+   ],
+   "datadisk": [
+    1252
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 96,
+  "h": 64,
+  "masked": 1
+ },
+ "876fac61f133aa60398e5e7835556eac3b7164aa": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1171
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 56,
+  "masked": 1
+ },
+ "8873cee435967d68bc60d9915fcab2a03ee56096": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1151
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
+ "88f4bb7de33f83e28b2e9c368484aabdcf2905e7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    2
+   ],
+   "datadisk": [
+    2
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 64,
+  "masked": 1
+ },
+ "891fbd1a42e6d99b17ef0875e7931ddf533d1066": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1213
+   ],
+   "datadisk": [
+    1213
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "892967b3cc5e510f96e9db73d77e01d652e7e0c7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1163
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 17,
+  "masked": 1
+ },
+ "895e09012285a71b36daa90dd113b2ad5f0b91a6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1019
+   ],
+   "datadisk": [
+    1019
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 39,
+  "masked": 0
+ },
+ "8a2a4defe1aa3e3ccdada07a9e4c978be2ecea65": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1051
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "8ab8303356f16303c992d4b6d9b53aae586760be": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1189
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 22,
+  "masked": 1
+ },
+ "8ac47d4f1c2abfaaff41d7300f176482d143bac8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1049
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 15,
+  "masked": 1
+ },
+ "8c9c64b5bb0bebebd78f679bef773c6e7546fd80": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1173
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 15,
+  "masked": 1
+ },
+ "8e097f5fb1d3ed585d6c44773270116020b8d3c0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1180
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 18,
+  "masked": 1
+ },
+ "8e2cd0b5b57de93e174d8650f6f26de2f9f2230f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1110
+   ],
+   "datadisk": [
+    1110
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 136,
+  "h": 141,
+  "masked": 1
+ },
+ "8f5b6f06d7f159e458d88e69ccfc47dc6b23615a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1184
+   ],
+   "datadisk": [
+    1184
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 11,
+  "masked": 1
+ },
+ "8fec6259f22b7b3b71666b3f267f67d0dee35209": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1010
+   ],
+   "datadisk": [
+    1010
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 96,
+  "h": 88,
+  "masked": 1
+ },
+ "8ff20fd0b838374ec60620a36290b9228df8b6f4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1116
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 104,
+  "h": 15,
+  "masked": 1
+ },
+ "9267a60f4a867aa252dfe69c8d9d99f2cff01f3f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1118
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 272,
+  "h": 56,
+  "masked": 1
+ },
+ "93ec8d682a21f195b607b516369805fe28d54bb8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1155
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 17,
+  "masked": 1
+ },
+ "942a0871766e54f814c831112a9bc2770cb51a39": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1264
+   ],
+   "datadisk": [
+    1264
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 80,
+  "masked": 1
+ },
+ "94aab2711b187f0d10777fd629b8baf56e92df3c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1096
+   ],
+   "datadisk": [
+    1096
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 80,
+  "masked": 2
+ },
+ "94ded5c6ef272ca3de90569a52959a615d5b9b50": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1185
+   ],
+   "datadisk": [
+    1185
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 10,
+  "masked": 1
+ },
+ "952a127f2aeba31f4a94fd214fbfdba005d0982a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1177
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 16,
+  "masked": 1
+ },
+ "968652c00c87f0e5bfa46bc7c3702cc1d3a39ffc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1266
+   ],
+   "datadisk": [
+    1266
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 32,
+  "masked": 1
+ },
+ "96a4b48a187abadd8718763860aef629b4f4c0aa": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1267
+   ],
+   "datadisk": [
+    1267
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 37,
+  "masked": 0
+ },
+ "96bc11058318e386f9b3b8f88308c178267f6066": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1145
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 58,
+  "masked": 1
+ },
+ "96cb3b54cfbe712c1ca4d485109eda40e7d8f1de": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1249
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 104,
+  "h": 62,
+  "masked": 1
+ },
+ "97d130fc3f699786035278f772b332f1a96b5e2e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1064
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 152,
+  "h": 19,
+  "masked": 1
+ },
+ "9a57f622ccdd6f8f78ab30d7c61a3ec6d32d61d1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1132
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
+ "9ac1470bf02a10a880243a03720250285096e5d8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1020
+   ],
+   "datadisk": [
+    1020
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 39,
+  "masked": 0
+ },
+ "9d1a381e7312f81b5da0886f1973cc99d203f2b9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1038
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 18,
+  "masked": 1
+ },
+ "9d5eeed4b4203ead293571d5177dbcc1718ecf51": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1183
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 17,
+  "masked": 1
+ },
+ "9e8c2dc16ec83a86792c2d0e65adcf0d7dfe8bb4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1117
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 104,
+  "h": 24,
+  "masked": 1
+ },
+ "9f2b10961d178525dc0998af3f82a7c02382f350": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1212
+   ],
+   "datadisk": [
+    1212
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "9fda9a449c715727ab752abc98a50fde3c88ff11": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1125
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 136,
+  "h": 20,
+  "masked": 1
+ },
+ "a03faab669828ce28c01edabaf39895bd2f8c7c8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1044
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 1
+ },
+ "a1dbf3075a5f1d0c4fb35ae2040cc7603814878e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1139
+   ],
+   "datadisk": [
+    1139
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 12,
+  "masked": 1
+ },
+ "a1f76e28e8da0d5dd97e6f0f7d141c0522b8e8d7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1115
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 16,
+  "masked": 1
+ },
+ "a1fae587c51a3a5b4ba0a8cc5a887273f21476be": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1161
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 16,
+  "h": 24,
+  "masked": 1
+ },
+ "a2f434e80291da6ccc7d2440a4862ae2b19b8445": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1107
+   ],
+   "datadisk": [
+    1107
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "a3e8aad553b14d3919899a0057c6758c0c6ca852": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1086
+   ],
+   "datadisk": [
+    1086
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 18,
+  "masked": 1
+ },
+ "a56dd2c1835ec36639c7825e5de8091c4fa276fe": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1130
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 104,
+  "h": 20,
+  "masked": 1
+ },
+ "a5908edbfde0bd8171bd261b3b8ca82550c1e523": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1135
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 264,
+  "h": 64,
+  "masked": 1
+ },
+ "a5c9bb2215a6e139eac1fb589c43aa5f196ac826": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1256
+   ],
+   "datadisk": [
+    1256
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 41,
+  "masked": 0
+ },
+ "a638fa04b6119ffee9d9d06772d071c79057dd86": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1124
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 18,
+  "masked": 1
+ },
+ "a6d32c2bff1a272d8131c13bb787ffc2a14c8169": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1006
+   ],
+   "datadisk": [
+    1006
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 88,
+  "h": 82,
+  "masked": 1
+ },
+ "a6f41edaf4725ed73b3b221d7e990f504ece8978": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1189
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 56,
+  "h": 22,
+  "masked": 1
+ },
+ "a71bbca79002889d44627e320ff2ae163eda76ae": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1141
+   ],
+   "datadisk": [
+    1141
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 240,
+  "h": 82,
+  "masked": 1
+ },
+ "a72cb4048b146eda4de8cd1dc8ab990b6d026893": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1043
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 112,
+  "h": 23,
+  "masked": 1
+ },
+ "aa99f2667f6aa6a477773e8695ad51e38f281bc6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1192
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 56,
+  "h": 17,
+  "masked": 1
+ },
+ "ac340402756144b54fadd4be6e5169a8031a94ea": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1030
+   ],
+   "datadisk": [
+    1030
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "ae2c99858dc521e5d66b4a9622767c05a56b827f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1074
+   ],
+   "datadisk": [
+    1074
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 232,
+  "h": 46,
+  "masked": 1
+ },
+ "ae38689bf5dd10b94d39e43706be9ad1ee164621": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1037
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "af2373188d0257b15f631ae216153f02382e404d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1053
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 58,
+  "masked": 1
+ },
+ "b09608e734d6eb9bf4ff2f2e10bbf4203fc27fbd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1059
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 128,
+  "h": 18,
+  "masked": 1
+ },
+ "b0aab01fedb9db1f8af28aca29a4f75ca8fe3289": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1025
+   ],
+   "datadisk": [
+    1025
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 54,
+  "masked": 0
+ },
+ "b1c2825cd212a15989e80cd5a700a4e60197429e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1178
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 120,
+  "h": 21,
+  "masked": 1
+ },
+ "b1f6cce52cf9636df1210f228a5614cd398fd543": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1108
+   ],
+   "datadisk": [
+    1108
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "b2d36a9f629c09b132a9987f45c5bf77f732a5fd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1201
+   ],
+   "datadisk": [
+    1201
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 248,
+  "h": 59,
+  "masked": 1
+ },
+ "b3c4a0ecf76ef5c51a86da4bc7f675ed1da94b95": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1058
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 12,
+  "masked": 1
+ },
+ "b4710f0b14984a63bff1359d1813c7b08d1541a0": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1093
+   ],
+   "datadisk": [
+    1093
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 190,
+  "masked": 0
+ },
+ "b4bd555e128a20d736bd200a3fe4fb4d08f894b6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    6
+   ],
+   "datadisk": [
+    6
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 200,
+  "h": 200,
+  "masked": 1
+ },
+ "b4c06e275ef57b0a1c8380595a3d1e492bc1e788": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1244
+   ],
+   "datadisk": [
+    1244
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 19,
+  "masked": 1
+ },
+ "b5fd9feb55546d7e2543e4a7f29ff902fd13181b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1180
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 20,
+  "masked": 1
+ },
+ "b62ca3be2b2aec8bed84dacf161086d4b309ddde": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1003
+   ],
+   "datadisk": [
+    1003
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 96,
+  "h": 88,
+  "masked": 1
+ },
+ "b69e1c5a0e72adf9d6abcfd4d37ccf450a6df2e0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1150
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 15,
+  "masked": 1
+ },
+ "b72bc9bf5ed868ab47f24613b31cb305eae5516a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1080,
+    1105
+   ],
+   "datadisk": [
+    1080,
+    1105
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 96,
+  "h": 14,
+  "masked": 1
+ },
+ "b8181a0b72ca0d9dce14d5d04213ace2819bc3e6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1188
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 40,
+  "h": 21,
+  "masked": 1
+ },
+ "b9a1735973f4ab3d2637636e0d932b8238b81860": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1175
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 16,
+  "masked": 1
+ },
+ "ba2cb4ac261d4debab11882ef8d8635827e1b413": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1022
+   ],
+   "datadisk": [
+    1022
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 54,
+  "masked": 0
+ },
+ "bab972bc7eb3da5d42b90c23c4063d094b962e59": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1048
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 216,
+  "h": 55,
+  "masked": 1
+ },
+ "bb01f7ddccf80fea319a9f65afc71383eeb547fc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1103
+   ],
+   "datadisk": [
+    1103
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 80,
+  "h": 6,
+  "masked": 1
+ },
+ "bb1d7b722854d64c626f482781743d10e3ea2470": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1031
+   ],
+   "datadisk": [
+    1031
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "bb4bd942bd86a269f38654a8f47607da6ae1faaa": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1042
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 17,
+  "masked": 1
+ },
+ "bba70119288ad6f39ef268d0d362b6ba8ae15ef8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1053
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 224,
+  "h": 53,
+  "masked": 1
+ },
+ "bbaa8a0c63649fabd0945f6807395cb5587a2ac4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1028
+   ],
+   "datadisk": [
+    1028
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "bc4eacb1c1ea390929dfe5bafcd771cdc8d2d3be": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1214
+   ],
+   "datadisk": [
+    1214
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "bc61ea423f6784789055089e61aea38e76a02b11": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1258
+   ],
+   "datadisk": [
+    1258
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 43,
+  "masked": 0
+ },
+ "bc96986c83dc7f462622ba9ab82b2170616be69e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1248
+   ],
+   "datadisk": [
+    1248
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 104,
+  "h": 64,
+  "masked": 1
+ },
+ "be102373f36c45c30300e4560f9da456f962a226": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1012
+   ],
+   "datadisk": [
+    1012
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 136,
+  "h": 55,
+  "masked": 1
+ },
+ "befad056bcfb7063f78c760343d825929e91fd4c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1050
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 21,
+  "masked": 1
+ },
+ "bfd986deb465205e2ab421e69e5d87014a53e03f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1221
+   ],
+   "datadisk": [
+    1221
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 168,
+  "h": 150,
+  "masked": 0
+ },
+ "c04e3a144665fee08260c6f6e7c0e561bbb93745": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1046
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 112,
+  "h": 25,
+  "masked": 1
+ },
+ "c0b72e6632c3f1eaa512add7316c028afbf2226a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1182
+   ],
+   "datadisk": [
+    1182
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 11,
+  "masked": 1
+ },
+ "c145810a1b060dac275135c7e5e3b374b178e27c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1200
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 264,
+  "h": 69,
+  "masked": 0
+ },
+ "c21fafc0ab8757fff8383cedef92891ab2eebc7f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1123
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 8,
+  "h": 16,
+  "masked": 1
+ },
+ "c303a8ff61fcc2b6e9474dde2b356cf0509eb716": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1071
+   ],
+   "datadisk": [
+    1071
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 200,
+  "h": 175,
+  "masked": 0
+ },
+ "c39dd1dc74255b8e358cd75c936cde34718713cc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1127
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 264,
+  "h": 61,
+  "masked": 1
+ },
+ "c467d27d1150e0aa063c27c7d6c17bbae1d8cf97": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1235
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 104,
+  "h": 21,
+  "masked": 1
+ },
+ "c586a1ee89f431f0b18050c7bb3802110e1ea84d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1036
+   ],
+   "datadisk": [
+    1036
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 29,
+  "masked": 1
+ },
+ "c63dba3c71226829bd5a380729cd27c456e96cad": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1197
+   ],
+   "datadisk": [
+    1197
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "c6487265c910713cbba511887aba52a0f063de9c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1120
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 16,
+  "h": 22,
+  "masked": 1
+ },
+ "c6ab4a9824737cf0e330ef0fa98548df9d653023": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1209
+   ],
+   "datadisk": [
+    1209
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "c75766f1b42e1f7b5e7333d37e408a88c9076130": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1169
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
+ "c7a2eb433cb10b702704e312ef087296bf4b05fd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1165
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 240,
+  "h": 63,
+  "masked": 1
+ },
+ "c90f9addeffa5b5ce3b1cc3baaddb687d663b543": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1225
+   ],
+   "datadisk": [
+    1225
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 280,
+  "h": 100,
+  "masked": 1
+ },
+ "c9cd2644a2e9daabc740e4e0150e845fb51e3ec1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1183
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 10,
+  "masked": 1
+ },
+ "ca9b02f0550b5acebb2baafcc1a5d1ff578380e2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1194
+   ],
+   "datadisk": [
+    1194
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "cb563f83ef23f6ef1f254b7efda143e379c73b7d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1140
+   ],
+   "datadisk": [
+    1140
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 256,
+  "h": 41,
+  "masked": 2
+ },
+ "cc91b80a1c08a537dce8d261731dd7a6854492c9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1147
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 40,
+  "h": 21,
+  "masked": 1
+ },
+ "cdb3a745bd8dd3b108d0bc608fe4df2253d92d6e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1087
+   ],
+   "datadisk": [
+    1087
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 8,
+  "h": 11,
+  "masked": 1
+ },
+ "ce4759360007047d4c16360245b2ad1bd6aa72ad": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1135
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 63,
+  "masked": 1
+ },
+ "cf4ef0e355be0f62a68969ac50571deef6c4c9c3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1050
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 16,
+  "masked": 1
+ },
+ "cf9580fab26c804254d311e7d64d962647503623": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1181
+   ],
+   "datadisk": [
+    1181
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 152,
+  "h": 6,
+  "masked": 1
+ },
+ "d038219f78d07f45bc79c19322ec957609d38375": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1190
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 56,
+  "h": 14,
+  "masked": 1
+ },
+ "d05293d0a0cd038d2448f2a69b459a097d7d498f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1016
+   ],
+   "datadisk": [
+    1016
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 288,
+  "h": 150,
+  "masked": 0
+ },
+ "d07c0037411415b90870a3b9e054a117a954cb37": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1077
+   ],
+   "datadisk": [
+    1077
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 160,
+  "h": 49,
+  "masked": 1
+ },
+ "d1cc092dd1b98e29668e83ac644fbfae212e6244": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    4
+   ],
+   "datadisk": [
+    4
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 174,
+  "masked": 0
+ },
+ "d301fbad67fe99904a3c37e893e7d2c560a65442": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1218
+   ],
+   "datadisk": [
+    1218
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 8,
+  "h": 25,
+  "masked": 1
+ },
+ "d34c933107f315f23f79c03a6355f9e2779616ca": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1240
+   ],
+   "datadisk": [
+    1240
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 39,
+  "masked": 0
+ },
+ "d3b87380fafa9ae2f175c90a3ec56c78c4fdf569": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1257
+   ],
+   "datadisk": [
+    1257
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 16,
+  "h": 149,
+  "masked": 0
+ },
+ "d4760611a9e2d87821285a90132068300a0101f7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1210
+   ],
+   "datadisk": [
+    1210
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 1
+ },
+ "d478d530c8134eef925d9cac13f160a06dc93c40": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1153
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 10,
+  "masked": 1
+ },
+ "d7d2bf994cc5a9092c05b46628971e5db9951f6f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1262
+   ],
+   "datadisk": [
+    1262
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 43,
+  "masked": 0
+ },
+ "d7ea19db3518e6a7709a52ba715db61a4247f902": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1170
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 17,
+  "masked": 1
+ },
+ "d811fe62d9c2322e18914ef1cd5c02724fe4014e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1041
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 96,
+  "h": 17,
+  "masked": 1
+ },
+ "d87ff3781b8761d00fab4ab9bb67488efcbee632": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1111
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 120,
+  "h": 18,
+  "masked": 1
+ },
+ "d8ab747fa0de7d3e247aab4114fa925c778e1554": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1168
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
+ "d996387b82684e3b98ecb996b3b2b67474440adb": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1046
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 17,
+  "masked": 1
+ },
+ "d9f4a203b7803f93b21d371135ffc6913a13abbc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1130
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 136,
+  "h": 18,
+  "masked": 1
+ },
+ "da87045ded39aa592cb72e82867ede2322f48a6e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1143
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 16,
+  "masked": 1
+ },
+ "da990aa429871615fc161580ef07d95af8c5cd06": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1101
+   ],
+   "datadisk": [
+    1101
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 86,
+  "masked": 1
+ },
+ "dc21dd701da185c2c191a1029a44f8f225068771": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1152
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 128,
+  "h": 18,
+  "masked": 1
+ },
+ "dc7a72a15219023b4a5ccb4a247e2105f68ff27b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1165
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 248,
+  "h": 59,
+  "masked": 1
+ },
+ "dd69cc95ba1446b9f24a838ab36f6f96d37cabaf": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1265
+   ],
+   "datadisk": [
+    1265
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 23,
+  "masked": 1
+ },
+ "de2c3b1b353bc28a9389d10b2cf6fca6367e90d3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1171
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 248,
+  "h": 61,
+  "masked": 1
+ },
+ "df0c29654ed64b6fd5beb85f9323e4c5edf30522": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1148
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 17,
+  "masked": 1
+ },
+ "df62d0d88e7b46eb6d068ecab612ed515456c320": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1021
+   ],
+   "datadisk": [
+    1021
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 136,
+  "masked": 0
+ },
+ "dfd8e3115e5d60c8d4fb3aaedb5f5bb098820d56": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1241
+   ],
+   "datadisk": [
+    1241
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 128,
+  "h": 63,
+  "masked": 1
+ },
+ "dfd97be295fe0bc8bf8d3ca1424bd278ff7bfd68": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1179
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 264,
+  "h": 64,
+  "masked": 1
+ },
+ "e0c55d375479e3aa25e77e3c70d16b3434f5947d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1099
+   ],
+   "datadisk": [
+    1099
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 136,
+  "h": 83,
+  "masked": 1
+ },
+ "e1cdf2d08391b9fac4c65632cc427bc6a5c45583": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1076
+   ],
+   "datadisk": [
+    1076
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 152,
+  "h": 51,
+  "masked": 1
+ },
+ "e25979fb8a2073fee8ca5ae00202bc6be58a4891": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1
+   ],
+   "datadisk": [
+    1
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 320,
+  "h": 200,
+  "masked": 0
+ },
+ "e2c97c4aaddb4dfd8289e91c9939fc5dc3e9aea8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1109
+   ],
+   "datadisk": [
+    1109
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 28,
+  "masked": 1
+ },
+ "e2d843b65a58e6afffd6cf8be819ada2d8512f8b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1060
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 256,
+  "h": 61,
+  "masked": 1
+ },
+ "e2f696e72176d4f2e85b19aee42115d7fc2f6b19": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1095
+   ],
+   "datadisk": [
+    1095
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 16,
+  "h": 18,
+  "masked": 1
+ },
+ "e390e05db4313d31c24c6d876afd3fb0897e6c22": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1041
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 40,
+  "h": 17,
+  "masked": 1
+ },
+ "e48a7fa1a781a6254ecbad252d0d366a39af65ad": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1263
+   ],
+   "datadisk": [
+    1263
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 88,
+  "h": 75,
+  "masked": 1
+ },
+ "e4db08a24e3b63d20ae5008337ea812867d1d532": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1129
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 40,
+  "h": 19,
+  "masked": 1
+ },
+ "e56f79e409fb51c51f3827cec7269050469ab0fa": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1131
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 264,
+  "h": 61,
+  "masked": 1
+ },
+ "e6690f30742c1e0002bc71416f2132d68ea70c2a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1052
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 16,
+  "masked": 1
+ },
+ "e692c6c56942feb8ff50808cc783901742f29d5f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1018
+   ],
+   "datadisk": [
+    1018
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 39,
+  "masked": 0
+ },
+ "e698f4d0828b340a8569aac42570be1ac8878b8b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1062
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 120,
+  "h": 15,
+  "masked": 1
+ },
+ "e6fcde752735d38dd5732cf7976bea012ed40570": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1088
+   ],
+   "datadisk": [
+    1088
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 8,
+  "h": 11,
+  "masked": 1
+ },
+ "e76686ab8dc45cb2846e1c2827fc2a4c617d4178": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1148
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 112,
+  "h": 19,
+  "masked": 1
+ },
+ "eae0dc09d15cb25a8ac8e30e4700cf6e8cfa5798": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1112
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 256,
+  "h": 55,
+  "masked": 1
+ },
+ "eb1efb5ae543968542c35b5d3b5242e2a865b8d8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1042
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 88,
+  "h": 24,
+  "masked": 1
+ },
+ "eb23ec1e91ca0a0ce9718b53b4a1d45e67c3ae0d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1232
+   ],
+   "datadisk": [
+    1232
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 8,
+  "masked": 1
+ },
+ "eb5600fd42c2f28d56f6362d0e027c2124edb848": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1229
+   ],
+   "datadisk": [
+    1229
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 48,
+  "h": 43,
+  "masked": 0
+ },
+ "eb850c768ba8bcf8d442a7cb7db2847cd68d1ed9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1186
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 56,
+  "h": 25,
+  "masked": 1
+ },
+ "ebc761b861cc13e458548d46cd91e86734c56123": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1058
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
+ "ec84101cdc0f05d7b7fbe051896f234b5eddd9d9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1144
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 120,
+  "h": 19,
+  "masked": 1
+ },
+ "ec8aa35543824739301efd72064a6a1d8672ae7b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1112
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 61,
+  "masked": 1
+ },
+ "ec8ce2a7b5920906a978ee258e429a5c8b57dd90": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1237
+   ],
+   "datadisk": [
+    1237
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 264,
+  "h": 43,
+  "masked": 0
+ },
+ "efc0a2434053ce5291b03e2657487e6ce192913d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1260
+   ],
+   "datadisk": [
+    1260
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 48,
+  "h": 21,
+  "masked": 0
+ },
+ "efecfb2a6b8daae854fac4ad6d6b425454777c98": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1147
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 12,
+  "masked": 1
+ },
+ "f13308f77a9e38e444b99d69719659f00508e71d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1249
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 104,
+  "h": 62,
+  "masked": 1
+ },
+ "f13e5ad135e057c449fc3c50ee87746c700b0b15": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1166
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 20,
+  "masked": 1
+ },
+ "f14b31bc2b7450174b5513221456474dcbe03d78": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1150
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 19,
+  "masked": 1
+ },
+ "f241382aceaa6b1d2448868928d6204d4dc4bf2b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1204
+   ],
+   "datadisk": [
+    1204
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "f2a4d7fbbd70809898e9d6445b2350ac94124867": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1045
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 16,
+  "masked": 1
+ },
+ "f2d63093bac9afeb79bd5657b463eea1ee27368b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1122
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 112,
+  "h": 22,
+  "masked": 1
+ },
+ "f310dd3c0b626c0686f759d5c5ba6cdc743ac66f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1073
+   ],
+   "datadisk": [
+    1073
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 232,
+  "h": 37,
+  "masked": 1
+ },
+ "f32612cdd261578e67c175a53128d50e0a448b20": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1152
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 104,
+  "h": 17,
+  "masked": 1
+ },
+ "f33305bf303320d747eb1e930adc358f8a28ef49": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1040
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 248,
+  "h": 67,
+  "masked": 1
+ },
+ "f3df0fcecd203f5a968075fdac3692f1b03b8713": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1051
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 17,
+  "masked": 1
+ },
+ "f4ecc61fa2b135742f1a2356be2515d4db2f160f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1203
+   ],
+   "datadisk": [
+    1203
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "f576dfb187b2eb5938b658fd18ab6172522c74ef": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1044
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
+ "f61705c63d0f76732fedb8fb328105f3da78be3c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1156
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 240,
+  "h": 65,
+  "masked": 1
+ },
+ "f6f3342baf95ef335a85c5901ecee079299df3a1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1079
+   ],
+   "datadisk": [
+    1079
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 96,
+  "h": 14,
+  "masked": 1
+ },
+ "f80ff7416d551cb25f14827fc1812cb4f64adf87": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1092
+   ],
+   "datadisk": [
+    1092
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 40,
+  "h": 24,
+  "masked": 1
+ },
+ "f883c86e85a142ef0ae978905c4159bed0f8b78c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1235
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 112,
+  "h": 19,
+  "masked": 1
+ },
+ "f964387c50a5f0ed7309f03f06672a146b0aecbf": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1251
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 24,
+  "masked": 1
+ },
+ "fa3a1cd9c33a87cad9641bfa858b4b02033dd832": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1206
+   ],
+   "datadisk": [
+    1206
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 16,
+  "masked": 1
+ },
+ "faab2c3eebc69ea333a58dda871dca68e36d96ba": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1211
+   ],
+   "datadisk": [
+    1211
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "fc014fd4f32ac5203d4857e9d9fb51e32afe66d0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1254
+   ],
+   "datadisk": [
+    1254
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 24,
+  "masked": 1
+ },
+ "fc0940f383c67d7aa3990e36f2b16d818554887a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1227
+   ],
+   "datadisk": [
+    1227
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 48,
+  "h": 43,
+  "masked": 0
+ },
+ "fc73fc8797dcdea1aabc2731c026d09e821c6144": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1154
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
+ "fe37ace475686184df94230017fb4973a3e41849": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1151
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 32,
+  "h": 18,
+  "masked": 1
+ },
+ "fe71eed020f9d1988b6a025cd2929224c0688b50": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1158
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 16,
+  "masked": 1
+ },
+ "fe920e497645ba76a48f6680c5bfedabcbd4044d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1234
+   ],
+   "datadisk": [
+    1234
+   ]
+  },
+  "games": [
+   "main",
+   "datadisk"
+  ],
+  "w": 32,
+  "h": 4,
+  "masked": 1
+ },
+ "fecf49cdbf1739cfe7974e0c24b6edf2f6856467": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "main": [
+    1146
+   ]
+  },
+  "games": [
+   "main"
+  ],
+  "w": 24,
+  "h": 11,
+  "masked": 1
+ },
+ "ff2a525a173207b9588a0fc2a2bcaf5a4088f43f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "datadisk": [
+    1191
+   ]
+  },
+  "games": [
+   "datadisk"
+  ],
+  "w": 56,
+  "h": 18,
+  "masked": 1
+ }
+}
