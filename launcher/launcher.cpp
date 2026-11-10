@@ -28,6 +28,7 @@
 #include <shellapi.h>
 #endif
 
+#include "gamefiles.h"
 #include "icon.h"
 #include "settings.h"
 #include "version.h"
@@ -170,6 +171,12 @@ LauncherFrame::LauncherFrame()
 
     FitPage();
     if (!settings::RestoreWindowPosition(SECTION, this)) Centre();
+#ifdef __WXOSX__
+    // First launch: no game yet, so offer to fetch it.
+    CallAfter([this] {
+        if (gamefiles::FolderIsFree(folder_->GetValue())) OfferDownload();
+    });
+#endif
 }
 
 wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
@@ -181,16 +188,21 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     wxWindow* fb = filesBox->GetStaticBox();
     auto* filesGrid = new wxFlexGridSizer(2, gap, gap);
     filesGrid->AddGrowableCol(1);
-    wxButton* browseFolder = nullptr;
-    wxButton* browseProgram = nullptr;
     folder_ = PathRow(fb, filesGrid, "&Folder:",
-                      "The folder with the original game's files (SR.EXE, LIB1, LIB2, HOT_DATA ...).", &browseFolder);
-    program_ = PathRow(fb, filesGrid, "&Program:", "streetrod-enhanced, the game.", &browseProgram);
+                      "The folder with the original game's files (SR.EXE, LIB1, LIB2, HOT_DATA ...).", &browseFolder_);
+    program_ = PathRow(fb, filesGrid, "&Program:", "streetrod-enhanced, the game.", &browseProgram_);
     auto* statusRow = new wxBoxSizer(wxHORIZONTAL);
     statusIcon_ = new wxStaticBitmap(fb, wxID_ANY, wxArtProvider::GetBitmapBundle(wxART_WARNING, wxART_MENU));
     statusNote_ = new wxStaticText(fb, wxID_ANY, wxEmptyString);
     statusRow->Add(statusIcon_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, small);
     statusRow->Add(statusNote_, 1, wxALIGN_CENTER_VERTICAL);
+#ifdef __WXOSX__
+    download_ = new wxButton(fb, wxID_ANY, "Download game");
+    download_->SetToolTip("Downloads Street Rod and the Street Rod SE data disk from streetrodonline.com, the "
+                          "official site, into this folder.");
+    download_->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { StartDownload(); });
+    statusRow->Add(download_, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, gap);
+#endif
     filesBox->Add(filesGrid, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, gap);
     filesBox->Add(statusRow, 0, wxEXPAND | wxALL, gap);
     folder_->Bind(wxEVT_TEXT, [this](wxCommandEvent&) {
@@ -199,8 +211,8 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     program_->Bind(wxEVT_TEXT, [this](wxCommandEvent&) {
         if (!loading_) UpdateState();
     });
-    browseFolder->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { BrowseFolder(); });
-    browseProgram->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { BrowseProgram(); });
+    browseFolder_->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { BrowseFolder(); });
+    browseProgram_->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { BrowseProgram(); });
 
     // Start
     auto* startBox = new wxStaticBoxSizer(wxVERTICAL, page, "Start");
@@ -481,8 +493,17 @@ void LauncherFrame::UpdateState() {
         note = wxString::Format("%s isn't there.", wxFileName(program).GetFullName());
     else
         note = wxString::Format("Found %s, %s.", game_.se ? "Street Rod SE" : "Street Rod", SavesText(game_.saves));
-    const bool ok = haveProgram && game_.missing.empty();
-    statusIcon_->Show(!ok);
+    bool ok = haveProgram && game_.missing.empty();
+    const bool downloading = downloader_.Running();
+    if (downloading) {
+        note = downloadNote_;
+        ok = false;
+    }
+    if (download_) download_->Show(!downloading && gamefiles::FolderIsFree(dir));
+    folder_->Enable(!downloading);
+    browseFolder_->Enable(!downloading);
+    browseProgram_->Enable(!downloading);
+    statusIcon_->Show(!ok && !downloading);
     statusNote_->SetLabel(note);
     play_->Enable(ok);
     const bool enhanced = graphics_->GetSelection() == 0;
@@ -509,6 +530,41 @@ void LauncherFrame::BrowseProgram() {
     wxFileDialog dialog(this, "Choose streetrod-enhanced", current.GetPath(), current.GetFullName(), filter,
                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (dialog.ShowModal() == wxID_OK) program_->SetValue(dialog.GetPath());  // raises wxEVT_TEXT
+}
+
+void LauncherFrame::OfferDownload() {
+    wxMessageDialog dialog(this,
+                           "Street Rod Enhanced needs the original game. Download Street Rod and the Street Rod SE "
+                           "data disk (about 1 MB) from streetrodonline.com, the official site?",
+                           APP_TITLE, wxYES_NO | wxCANCEL | wxICON_QUESTION);
+    dialog.SetYesNoCancelLabels("Download", wxString::FromUTF8("Choose Folder…"), "Not Now");
+    const int answer = dialog.ShowModal();
+    if (answer == wxID_YES) StartDownload();
+    else if (answer == wxID_NO) BrowseFolder();
+}
+
+void LauncherFrame::StartDownload() {
+    if (downloader_.Running() || !gamefiles::FolderIsFree(folder_->GetValue())) return;
+    downloadNote_ = "Downloading...";
+    downloader_.Start(
+        [this](const wxString& text) {
+            downloadNote_ = text;
+            UpdateState();
+        },
+        [this](bool ok, std::vector<gamefiles::Download> downloads, wxString error) {
+            const bool installed = ok && gamefiles::Install(folder_->GetValue(), downloads, error);
+            UpdateState();
+            if (!installed) DownloadFailed(error);
+        });
+    UpdateState();
+}
+
+void LauncherFrame::DownloadFailed(const wxString& error) {
+    wxMessageDialog dialog(this, error, APP_TITLE, wxYES_NO | wxCANCEL | wxICON_WARNING);
+    dialog.SetYesNoCancelLabels("Try Again", wxString::FromUTF8("Choose Folder…"), "Cancel");
+    const int answer = dialog.ShowModal();
+    if (answer == wxID_YES) StartDownload();
+    else if (answer == wxID_NO) BrowseFolder();
 }
 
 void LauncherFrame::Play() {

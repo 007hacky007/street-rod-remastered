@@ -5,6 +5,7 @@
 
 #include <wx/frame.h>
 
+#include "download.h"
 #include "game.h"
 
 class wxButton;
@@ -35,6 +36,10 @@ private:
     void UpdateState();
     void BrowseFolder();
     void BrowseProgram();
+    // macOS: the official game files into the folder when it's free (gamefiles.h).
+    void OfferDownload();
+    void StartDownload();
+    void DownloadFailed(const wxString& error);
     void Play();
     void About();
     void Preferences();
@@ -54,6 +59,11 @@ private:
     wxSimplebook* book_ = nullptr;
     wxTextCtrl* folder_ = nullptr;
     wxTextCtrl* program_ = nullptr;
+    wxButton* browseFolder_ = nullptr;
+    wxButton* browseProgram_ = nullptr;
+    wxButton* download_ = nullptr;  // macOS only
+    GameDownload downloader_;
+    wxString downloadNote_;         // the download's progress, shown while it runs
     wxStaticBitmap* statusIcon_ = nullptr;
     wxStaticText* statusNote_ = nullptr;
     wxChoice* cars_ = nullptr;     // the original cars / the data disk's

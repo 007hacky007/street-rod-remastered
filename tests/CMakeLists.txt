@@ -22,3 +22,18 @@ if(TARGET srelauncher)
     endif()
     add_test(NAME gamefiles COMMAND test_gamefiles)
 endif()
+
+# The downloader for real (see the file): run by hand, not by ctest.
+if(TARGET srelauncher)
+    find_package(wxWidgets 3.2 CONFIG QUIET COMPONENTS net base)
+    add_executable(test_download test_download.cpp ../launcher/download.cpp ../launcher/gamefiles.cpp
+                   ../launcher/sha256.cpp)
+    target_include_directories(test_download PRIVATE ../launcher)
+    target_compile_features(test_download PRIVATE cxx_std_17)
+    if(TARGET wx::wxnet)
+        target_link_libraries(test_download PRIVATE wx::wxnet wx::wxbase)
+    else()
+        find_package(wxWidgets 3.2 REQUIRED COMPONENTS net base)
+        target_link_libraries(test_download PRIVATE ${wxWidgets_LIBRARIES})
+    endif()
+endif()
