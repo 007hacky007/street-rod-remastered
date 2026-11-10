@@ -170,6 +170,7 @@ bool enh_compose(u32 *xrgb, const u32 rgb[16])
     if (!active || !presented || ega_start() != shown_start) return false;
     EnhView v;
     if (!enh_view_at(SDL_GetTicksNS(), &v)) return false;
+    enh_cur_rgb = rgb;
     Uint64 t0 = SDL_GetTicksNS();
     enh_draw_road(&v);
     int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());

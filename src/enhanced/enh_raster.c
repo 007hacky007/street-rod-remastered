@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "platform/ega.h"
+#include "remaster/rm_pack.h"
 
 EnhBuf enh_buf;
 
@@ -18,6 +19,8 @@ void enh_buf_setup(void)
     if (enh_buf.px && enh_buf.sa == sa) return;
     SDL_free(enh_buf.px);
     enh_buf.px = SDL_malloc((size_t)w * h);
+    SDL_free(enh_buf.rgb);
+    enh_buf.rgb = rm_pack_active() ? SDL_malloc((size_t)w * h * sizeof *enh_buf.rgb) : NULL;
     enh_buf.w = w;
     enh_buf.h = h;
     enh_buf.sa = sa;
@@ -122,6 +125,7 @@ void enh_resolve(u32 *xrgb, const u32 *pal, int npal, u16 page, int y_end)
             int Y = y * S + oy;
             u32 *out = xrgb + (size_t)Y * W;
             const u8 *src = b->px + (size_t)((y - ENH_VIEW_Y0) * S + oy) * aa * b->w;
+            const u32 *srgb = b->rgb ? b->rgb + (size_t)((y - ENH_VIEW_Y0) * S + oy) * aa * b->w : NULL;
             for (int x = 0; x < 320; x++) {
                 u16 o = (u16)(row + (x >> 3));
                 u8 bit = (u8)(0x80 >> (x & 7));
@@ -131,7 +135,12 @@ void enh_resolve(u32 *xrgb, const u32 *pal, int npal, u16 page, int y_end)
                     float r = 0, g = 0, bl = 0;
                     for (int j = 0; j < aa; j++) {
                         const u8 *s = src + (size_t)j * b->w + X * aa;
-                        for (int i = 0; i < aa; i++) { r += lr[s[i]]; g += lg[s[i]]; bl += lb[s[i]]; }
+                        for (int i = 0; i < aa; i++) {
+                            if (s[i] == ENH_RGB && srgb) {           /* ENH: remastered art */
+                                u32 c = srgb[(size_t)j * b->w + X * aa + i];
+                                r += to_lin[c >> 16 & 0xFF]; g += to_lin[c >> 8 & 0xFF]; bl += to_lin[c & 0xFF];
+                            } else { r += lr[s[i]]; g += lg[s[i]]; bl += lb[s[i]]; }
+                        }
                     }
                     out[X] = (u32)to_srgb[(int)(r * inv)] << 16 | (u32)to_srgb[(int)(g * inv)] << 8 |
                              to_srgb[(int)(bl * inv)];

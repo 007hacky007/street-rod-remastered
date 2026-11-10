@@ -34,7 +34,8 @@ bool enh_view_at(Uint64 now_ns, EnhView *v);
 /* enh_raster.c: samples of the view rows ENH_VIEW_Y0..Y1, sa = res scale x aa per original pixel. */
 typedef struct {
     int w, h, sa;
-    u8 *px;                    /* palette indices */
+    u8 *px;                    /* palette indices; ENH_RGB = the colour in rgb[] (remastered art) */
+    u32 *rgb;                  /* ENH: remaster: allocated only with an art pack */
     int cx0, cy0, cx1, cy1;    /* clip rectangle, samples */
 } EnhBuf;
 extern EnhBuf enh_buf;
@@ -53,7 +54,10 @@ void enh_draw_road(const EnhView *v);
 
 /* enh_sprite.c: palette-index images, ENH_CLEAR = transparent. */
 #define ENH_CLEAR 0xFF
-typedef struct { int w, h; u8 *px; } EnhImage;
+#define ENH_RGB   0xFE
+/* rm: NULL or w * h remaster tags (rm_tags.h), one per pixel: which art pixel it shows, 0 = none. */
+typedef struct { int w, h; u8 *px; u32 *rm; } EnhImage;
+extern const u32 *enh_cur_rgb;     /* the palette of the frame being drawn (enh_compose) */
 void enh_images_reset(void);
 const EnhImage *enh_image_bitmap(u16 seg, u16 off);
 const EnhImage *enh_image_vram(u16 page, int x, int y, int w, int h);

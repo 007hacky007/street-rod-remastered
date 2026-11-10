@@ -21,7 +21,7 @@ static int nentries;
 static RmPic pics[RM_MAX_SLOTS];
 static int selftest;
 static FILE *palette_log;
-static unsigned long long st_frames, st_replaced, st_mismatched;
+static unsigned long long st_frames, st_replaced, st_mismatched, st_race;
 
 /* ------------------------------------------------------------------ pack.json */
 
@@ -55,6 +55,7 @@ static bool parse_meta(const char *s)
             u32 v = 0;
             int d = 0;
             for (c++; hexval(*c) >= 0; c++, d++) v = v << 4 | (u32)hexval(*c);
+            if (!*c) break;                              /* the file ends inside the string */
             if (d == 6) e.ref[k++] = v;
         }
         if (k != 16) continue;
@@ -252,6 +253,16 @@ void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_com
 void rm_pack_report(void)
 {
     if (selftest)
-        fprintf(stderr, "remaster selftest: frames %llu replaced %llu mismatched %llu\n", st_frames, st_replaced,
-                st_mismatched);
+        fprintf(stderr, "remaster selftest: frames %llu replaced %llu mismatched %llu race %llu\n", st_frames,
+                st_replaced, st_mismatched, st_race);
 }
+
+int rm_selftest(void) { return selftest; }
+
+void rm_selftest_race(bool differs)
+{
+    st_race++;
+    if (differs) st_mismatched++;
+}
+
+u32 rm_texel(const RmPic *p, int tu, int tv, const u32 rgb[16], int *alpha) { return texel(p, tu, tv, rgb, alpha); }

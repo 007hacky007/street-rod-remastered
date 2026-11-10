@@ -40,5 +40,9 @@ RmPic *rm_pic(int slot);
 /* compose (ega.c): replaces verified tagged pixels of the S x S output frame. */
 void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_compare, u8 *const planes[4]);
 void rm_pack_report(void);       /* the self-test line (at exit) */
+int  rm_selftest(void);          /* SR_REMASTER_SELFTEST */
+void rm_selftest_race(bool differs);   /* a race-view sample drawn from the art */
+/* Art texel (tu, tv) (4x coordinates) through the palette-relative colour; *alpha its alpha. */
+u32  rm_texel(const RmPic *p, int tu, int tv, const u32 rgb[16], int *alpha);
 
 #endif

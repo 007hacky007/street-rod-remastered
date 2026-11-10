@@ -111,6 +111,8 @@ void  host_free(void *p);
 _Noreturn void host_fatal(const char *fmt, ...);
 
 /* ---- Developer aids (environment variables):
+ *   SR_SEED=n             the random generator seeded with n instead of the clock (lib.c rnd): a
+ *                         repeatable demo
  *   SR_SNAPSHOT_DIR=dir   every presented frame >= 2 s (SR_SNAPSHOT_MS=n: n ms) after the previous
  *                         one is saved as snapNNNN.bmp
  *                         (works with SDL_VIDEO_DRIVER=dummy)

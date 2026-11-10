@@ -10,6 +10,8 @@
  *     sy = 4 (Y + z dy - 76Ch) / z + 60
  * A band between two rows takes the flags of its far row (road_draw_band_front). */
 #include "enhanced/enh_internal.h"
+#include "remaster/rm_pack.h"
+#include "remaster/rm_tags.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -116,9 +118,11 @@ static void edges_at(double s, double *xl, double *xr)
 /* ---------------------------------------------------------------- sky and horizon */
 
 static u8 src_rows[0xB8][320];     /* page 1 rows 66h..B7h: the sky and horizon sheets */
+static RmTag src_tags[0xB8][320];  /* ENH: their remaster tags (verified), 0 = original */
 
 static void read_sheets(void)
 {
+    bool rm = rm_pack_active();
     for (int y = 0x66; y < 0xB8; y++) {
         u16 o = (u16)(0x2000 + y * EGA_BYTES_PER_LINE);
         for (int x = 0; x < 320; x++) {
@@ -126,22 +130,40 @@ static void read_sheets(void)
             int bit = 7 - (x & 7), c = 0;
             for (int k = 0; k < 4; k++) c |= (ega_plane(k)[b] >> bit & 1) << k;
             src_rows[y][x] = (u8)c;
+            RmTag t = rm ? rm_vtag(b, bit) : 0;
+            RmPic *p = t ? rm_pic(rm_tag_slot(t)) : NULL;
+            if (p && (rm_tag_u(t) >= p->w || rm_tag_v(t) >= p->h || p->orig[rm_tag_v(t) * p->w + rm_tag_u(t)] != c)) p = NULL;
+            src_tags[y][x] = p ? t : 0;
         }
     }
 }
 
-/* one sample row from sheet row sy, scrolled so that screen x shows sheet column x - shift */
-static void sheet_row(int j, int sy, double shift)
+/* one sample row from sheet row syf (fraction: the row within the remastered art), scrolled so that screen
+ * x shows sheet column x - shift */
+static void sheet_row(int j, double syf, double shift)
 {
     EnhBuf *b = &enh_buf;
+    int sy = (int)floor(syf), fv = (int)((syf - floor(syf)) * RM_ART_SCALE);
     if (sy < 0x66) sy = 0x66;
     if (sy > 0xB7) sy = 0xB7;
     u8 *out = b->px + (size_t)j * b->w;
+    u32 *orgb = b->rgb && enh_cur_rgb ? b->rgb + (size_t)j * b->w : NULL;
+    int st_mode = orgb ? rm_selftest() : 0;
     for (int i = 0; i < b->w; i++) {
         double x = (i + 0.5) / b->sa - shift;
         int col = (int)floor(x) % 320;
         if (col < 0) col += 320;
         out[i] = src_rows[sy][col];
+        RmTag t = orgb ? src_tags[sy][col] : 0;
+        if (!t) continue;
+        int a, fu = (int)((x - floor(x)) * RM_ART_SCALE);
+        u32 c = rm_texel(rm_pic(rm_tag_slot(t)), rm_tag_u(t) * RM_ART_SCALE + fu, rm_tag_v(t) * RM_ART_SCALE + fv,
+                         enh_cur_rgb, &a);
+        if (st_mode) rm_selftest_race(a < 128 || c != enh_cur_rgb[src_rows[sy][col]]);
+        if (a < 128) continue;
+        if (st_mode == 2) c = (c >> 1 & 0x7F7F7F) + 0x400060;
+        out[i] = ENH_RGB;
+        orgb[i] = c;
     }
 }
 
@@ -160,8 +182,8 @@ static void draw_sky(const Cam *c, bool town, double *ground_y)
     if (town) {                    /* fixed: sky 1Dh rows from 66h, skyline 10h rows from A3h at 2Fh */
         for (int j = 0; j < b->h; j++) {
             double y = ENH_VIEW_Y0 + (j + 0.5) / b->sa;
-            if (y < 0x2F) sheet_row(j, 0x66 + (int)floor(y - 0x12), 0);
-            else if (y < 0x3F) sheet_row(j, 0xA3 + (int)floor(y - 0x2F), 0);
+            if (y < 0x2F) sheet_row(j, 0x66 + (y - 0x12), 0);
+            else if (y < 0x3F) sheet_row(j, 0xA3 + (y - 0x2F), 0);
             else { enh_fill_rows(y - 0.5 / b->sa, ENH_VIEW_Y1, COL_ROAD); break; }
         }
         *ground_y = 0x3F;
@@ -172,8 +194,8 @@ static void draw_sky(const Cam *c, bool town, double *ground_y)
     double heading = (s16)trk(TRK_YAW, c->base) + c->hv;
     for (int j = 0; j < b->h; j++) {
         double y = ENH_VIEW_Y0 + (j + 0.5) / b->sa;
-        if (y < hy - 12) sheet_row(j, (int)floor(y + 0xA6 - hy), 2.0 * SKY_SCROLL * heading);
-        else if (y < hy + 8) sheet_row(j, 0xA3 + (int)floor(y - (hy - 12)), 4.0 * SKY_SCROLL * heading);
+        if (y < hy - 12) sheet_row(j, y + 0xA6 - hy, 2.0 * SKY_SCROLL * heading);
+        else if (y < hy + 8) sheet_row(j, 0xA3 + (y - (hy - 12)), 4.0 * SKY_SCROLL * heading);
         else { enh_fill_rows(y - 0.5 / b->sa, ENH_VIEW_Y1, COL_GRASS); break; }
     }
     *ground_y = hy + 8;
@@ -577,7 +599,7 @@ static void draw_mirror(const Cam *c, const EnhView *v)
     p = ds_far(DS_pic_mirror_sky);
     const EnhImage *sky = enh_image_bitmap(p.seg, p.off);
     if (sky && sky->h >= 2) {
-        EnhImage strip = { sky->w, 2, sky->px };              /* its first 2 rows over the horizon */
+        EnhImage strip = { sky->w, 2, sky->px, sky->rm };      /* its first 2 rows over the horizon */
         enh_draw_image(&strip, 0xF0, y7 - 2, 0xF0 + sky->w, y7);
     }
     enh_clip(MIR_X0, MIR_Y0, MIR_X1, MIR_Y1);
