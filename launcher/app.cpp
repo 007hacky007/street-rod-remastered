@@ -8,7 +8,7 @@ class LauncherApp : public wxApp {
 public:
     bool OnInit() override {
         SetAppName("Street Rod Enhanced");
-        SetVendorName("Krzysztof Kania");
+        SetVendorName("007hacky007");
         if (!wxApp::OnInit()) return false;
         auto* frame = new LauncherFrame;
         SetTopWindow(frame);

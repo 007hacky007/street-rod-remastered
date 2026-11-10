@@ -25,7 +25,7 @@ BEGIN
       VALUE "ProductName", "Street Rod Enhanced"
       VALUE "FileVersion", APP_VERSION_TEXT
       VALUE "ProductVersion", APP_VERSION_TEXT
-      VALUE "CompanyName", "Krzysztof Kania"
+      VALUE "CompanyName", "007hacky007"
       VALUE "InternalName", "Street Rod Enhanced"
       VALUE "OriginalFilename", "Street Rod Enhanced.exe"
     END

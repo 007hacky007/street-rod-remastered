@@ -87,7 +87,3 @@ cmake --build build
 ## License
 
 MIT (`LICENSE`). *Street Rod* is © California Dreams / Logical Design Works; its files are not included.
-
-## Support
-
-https://buymeacoffee.com/krzysztofkania
