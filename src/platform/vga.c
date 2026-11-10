@@ -5,6 +5,7 @@
 
 #include "host.h"
 #include "platform/ega.h"
+#include "remaster/rm_tags.h"
 
 VgaRegs vga;
 
@@ -120,6 +121,7 @@ void vga_wait_blank_then_retrace(void)
 u8 vga_rd(u16 off)
 {
     for (int k = 0; k < 4; k++) vga.latch[k] = ega_plane(k)[off];
+    if (rm_tags_active) rm_on_vram_read(off);           /* ENH: remaster tags */
     if (vga.mode & 0x08) {                               /* read mode 1: colour compare */
         u8 differ = 0;
         for (int k = 0; k < 4; k++) {
@@ -170,16 +172,24 @@ void vga_wr(u16 off, u8 v)
         for (int k = 0; k < 4; k++) changed |= (u8)(before[k] ^ ega_plane(k)[off]);
         ega_mark_written(off, (vga.mode & 3) == 1 ? 0xFF : (vga.mode & 3) == 3 ? (u8)(vga.bit_mask & v) : vga.bit_mask,
                          changed);
+        if (rm_tags_active) {                            /* ENH: remaster tags */
+            int mode = vga.mode & 3;
+            u8 cpu = mode == 1 ? 0 : mode == 3 ? (u8)(vga.bit_mask & v) : vga.bit_mask;
+            bool data = mode == 0 && !(vga.enable_sr & vga.map_mask) && (vga.func >> 3 & 3) == 0;
+            rm_on_vram_write(off, cpu, data);
+        }
     }
     ega_touch();
 }
 
 void vmovedata(u16 sseg, u16 soff, u16 dseg, u16 doff, u16 n)
 {
+    rm_copy_begin();                                     /* ENH: a copy carries the remaster tags */
     while (n--) {
         u8 b = vrd(sseg, soff);
         vwr(dseg, doff, b);
         soff++;
         doff++;
     }
+    rm_copy_end();
 }

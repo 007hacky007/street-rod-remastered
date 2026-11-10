@@ -63,11 +63,23 @@ static inline bool is_vram(u16 seg) { return seg >= 0xA000 && seg < 0xB000; }
 static inline u16  vram_off(u16 seg, u16 off) { return (u16)(((seg - 0xA000u) << 4) + off); }
 
 /* Byte access through seg:off: video memory goes through the register model, anything else is mem[]. */
-static inline u8 vrd(u16 seg, u16 off) { return is_vram(seg) ? vga_rd(vram_off(seg, off)) : rd8(seg, off); }
+/* ENH: the remaster's tags follow RAM bytes too (rm_tags.h). */
+extern bool rm_tags_active;
+void rm_on_ram_read(u32 lin);
+void rm_on_ram_write(u32 lin);
+static inline u8 vrd(u16 seg, u16 off)
+{
+    if (is_vram(seg)) return vga_rd(vram_off(seg, off));
+    if (rm_tags_active) rm_on_ram_read(lin(seg, off));
+    return rd8(seg, off);
+}
 static inline void vwr(u16 seg, u16 off, u8 v)
 {
     if (is_vram(seg)) vga_wr(vram_off(seg, off), v);
-    else wr8(seg, off, v);
+    else {
+        if (rm_tags_active) rm_on_ram_write(lin(seg, off));
+        wr8(seg, off, v);
+    }
 }
 /* x86 word access = two byte cycles, low byte first (each loads the latches on VRAM). */
 static inline u16 vrd16(u16 seg, u16 off) { u8 lo = vrd(seg, off); return (u16)(lo | vrd(seg, (u16)(off + 1)) << 8); }

@@ -14,6 +14,7 @@
 #include "platform/platform.h"
 #include "platform/vga.h"
 #include "platform/video.h"
+#include "remaster/rm_tags.h"
 
 /* DGROUP globals without a symbols.h name. */
 #define DS_tile_x 0x539A   /* s16 pairs {x, w} at 539A + 4i (6 entries): jail bars for anim_step */
@@ -451,10 +452,12 @@ void ega_save_rect(FarPtr src, s16 w, s16 h, FarPtr dst, s16 sstride)
 {
     if (h < 1) return;
     out(0x3CE, 5); out(0x3CF, 1);
+    rm_copy_begin();                                     /* ENH: a copy carries the remaster tags */
     for (s16 y = 0; y < h; y++, src.off = (u16)(src.off + sstride)) {
         u16 p = src.off;
         for (s16 x = 0; x < w; x++) vwr(dst.seg, dst.off++, vrd(src.seg, p++));
     }
+    rm_copy_end();
     out(0x3CE, 5); out(0x3CF, 0);
 }
 
@@ -552,7 +555,14 @@ void ega_blit_shifted(FarPtr s, FarPtr d, const Rect *r)
                 if (i < sizeof buf) buf[i] = v;
             }
         }
+        rm_suspend();                                     /* ENH: remaster tags, pixel by pixel */
         ega_put_shifted_row(dp, buf, w, bit, shift);
+        rm_resume();
+        if (rm_tags_on())
+            for (s16 j = 0; j < w; j++) {
+                int dx = bit + j, sx = (r->sx & 7) + j;
+                rm_copy_px(dp.seg, (u16)(dp.off + dx / 8), 7 - (dx & 7), sp.seg, (u16)(sp.off + sx / 8), 7 - (sx & 7));
+            }
         sp.off = (u16)(sp.off + desc_stride(s));
         dp.off = (u16)(dp.off + desc_stride(d));
         if (--n == 0) break;

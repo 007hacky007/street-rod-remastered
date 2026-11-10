@@ -10,6 +10,7 @@
 #include "platform/video.h"
 #include "platform/vga.h"
 #include "modules.h"
+#include "remaster/rm_tags.h"
 
 #include <string.h>
 #include <time.h>
@@ -248,6 +249,8 @@ FarPtr pic_decode(s16 id, FarPtr dst)
     } else {
         pic_unpack(src, !far_is_null(data) ? data : mask, n, tokens, 0x10);
     }
+    if (!far_is_null(data))                                      /* ENH: remaster tags */
+        rm_seed_bitmap(data, (s16)desc_w(dst), (s16)desc_h(dst), (s16)desc_stride(dst), pic_index(id) + 1);
     if (rd8(e.seg, (u16)(e.off + PE_PLANE)) != 0xFF) {
         out(0x3C4, 2);
         out(0x3C5, 0x0F);

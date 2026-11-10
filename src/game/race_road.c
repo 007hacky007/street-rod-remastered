@@ -20,6 +20,7 @@
 #include "platform/video.h"
 #include "host.h"
 #include "enhanced/enhanced.h"
+#include "remaster/rm_tags.h"
 
 /* ================================================================================ DGROUP names */
 
@@ -530,6 +531,9 @@ static FarPtr pic_shrink_planar(FarPtr src, u8 ymask, u8 xmask)
     }
     if (!far_is_null(desc_mask(src)))
         make_mask_plane(desc_planes(d), desc_mask(d), desc_size(d));   /* 2634:00c1 */
+    if (rm_tags_on())                                       /* ENH: written directly: no remaster tags */
+        for (u16 i = 0; i < desc_size(d); i++)
+            for (int bit = 0; bit < 8; bit++) rm_clear_px(dbase.seg, (u16)(dbase.off + i), bit);
     return d;
 }
 
