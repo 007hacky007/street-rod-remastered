@@ -61,6 +61,11 @@ def outlines(orig_rgb, rgba):
     big = lambda a, b: np.abs(a - b).sum(-1) > 120
     eo[:, 1:] |= big(o[:, 1:], o[:, :-1])
     eo[1:, :] |= big(o[1:, :], o[:-1, :])
+    # dithering is a texture, not an outline: pixels differing from 3 or 4 of their neighbours
+    p = np.pad(o, ((1, 1), (1, 1), (0, 0)), mode='edge')
+    nd = sum(big(o, p[1 + dy:1 + dy + o.shape[0], 1 + dx:1 + dx + o.shape[1]]).astype(np.int32)
+             for dy, dx in ((0, 1), (0, -1), (1, 0), (-1, 0)))
+    eo &= ~_dilate(nd >= 3)
     g = _down(rgba) @ np.array([0.299, 0.587, 0.114], np.float32)
     gr = np.zeros_like(g)
     gr[:, 1:] = np.maximum(gr[:, 1:], np.abs(g[:, 1:] - g[:, :-1]))

@@ -12,6 +12,7 @@ from rmlib.cleanup import cleanup  # noqa: E402
 from rmlib.images import unique_pictures  # noqa: E402
 from rmlib.progress import Progress  # noqa: E402
 from rmlib.register import register  # noqa: E402
+from rmlib.repair import hue_lock, tiles_of  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
@@ -73,14 +74,15 @@ def cmd_job(name):
     print(d)
 
 
-def cmd_ingest(name, result):
+def cmd_ingest(name, result, again=False):
     cat, pal, pr = load_catalog(), palettes(), progress()
     meta = json.load(open(os.path.join(ART, 'jobs', name, 'job.json')))
     raw = os.path.join(ART, 'raw')
     os.makedirs(raw, exist_ok=True)
     tries = pr.jobs[name]['tries']
-    kept = os.path.join(raw, '%s.%d.png' % (name, tries + 1))
-    shutil.copyfile(result, kept)
+    kept = result if again else os.path.join(raw, '%s.%d.png' % (name, tries + 1))
+    if not again:
+        shutil.copyfile(result, kept)
     res = np.asarray(Image.open(kept).convert('RGBA'))
     sx, sy = res.shape[1] / meta['canvas'][0], res.shape[0] / meta['canvas'][1]
     pics = unique_pictures(DUMPS)
@@ -104,7 +106,12 @@ def cmd_ingest(name, result):
         reasons += ['%s: %s' % (s[:8], r) for r in why]
         rows.append((orig, rgba, why))
     review_sheet(name, rows)
-    pr.result(name, all_ok, reasons)
+    if again:                                    # an earlier result again: not a new try
+        j = pr.jobs[name]
+        j['status'], j['reasons'] = ('done' if all_ok else j['status']), reasons
+        pr.save()
+    else:
+        pr.result(name, all_ok, reasons)
     print(name, 'ok' if all_ok else 'FAILED', pr.jobs[name]['status'])
     for r in reasons[:12]:
         print('  ', r)
@@ -132,6 +139,41 @@ def review_sheet(name, rows):
     sheet.save(os.path.join(ART, 'review', name + '.png'))
 
 
+def cmd_repair(name, only=None):
+    """The hue lock on the tiles that failed for colour (or only those containing a point of `only`, a list
+    of (x, y) original pixels), then the checks again."""
+    pal, pr = palettes(), progress()
+    pics = unique_pictures(DUMPS)
+    src = os.path.join(ART, 'art', 'pics')
+    all_ok, reasons, rows = True, [], []
+    for s in pr.jobs[name]['sha1s']:
+        m = json.load(open(os.path.join(src, s + '.json')))
+        p, ref = pics[s], jobs.palette_of(s, pal)
+        orig = jobs.picture_rgb(p, ref)
+        res = np.asarray(Image.open(m['raw']).convert('RGBA'))     # from the generated image again
+        rgba, ix = cleanup(p.idx, p.transparent, res, m['rect'], ref)
+        tiles = tiles_of(check(orig, ~p.transparent, rgba)[1])
+        if only:
+            tiles = [t for t in tiles if any(t[0] <= x <= t[1] and t[2] <= y <= t[3] for x, y in only)]
+        if tiles:
+            rgba, ix = hue_lock(rgba, ix, ref, tiles, p.idx)
+            ok, why = check(orig, ~p.transparent, rgba)
+            pack.write_entry(os.path.join(ART, 'art'), s, rgba, ix, ref)
+            m.update(ok=ok, reasons=why, repaired='hue lock: %d tiles' % len(tiles))
+            json.dump(m, open(os.path.join(src, s + '.json'), 'w'), indent=1)
+        all_ok &= m['ok']
+        reasons += ['%s: %s' % (s[:8], r) for r in m['reasons']]
+        rows.append((jobs.picture_rgb(p, ref), rgba, m['reasons']))
+    review_sheet(name, rows)
+    j = pr.jobs[name]
+    j['reasons'] = reasons
+    j['status'] = 'done' if all_ok else 'attention'
+    pr.save()
+    print(name, 'repaired' if all_ok else 'still failing', j['status'])
+    for r in reasons[:12]:
+        print('  ', r)
+
+
 def set_review(sha1, verdict, note):
     path = os.path.join(ART, 'art', 'pics', sha1 + '.json')
     m = json.load(open(path))
@@ -139,6 +181,14 @@ def set_review(sha1, verdict, note):
     json.dump(m, open(path, 'w'), indent=1)
     pr = progress()
     job = pr.jobs[m['job']]
+    if verdict == 'accept':
+        settled = []
+        for s in job['sha1s']:
+            mm = json.load(open(os.path.join(ART, 'art', 'pics', s + '.json')))
+            settled.append(mm['ok'] or (mm.get('review') or {}).get('verdict') == 'accept')
+        if all(settled):
+            job['status'] = 'done'
+            pr.save()
     if verdict == 'reject' and job['status'] == 'done':
         job['status'] = 'failed'
         job['reasons'] = ['%s: rejected on review: %s' % (sha1[:8], note)]
@@ -193,10 +243,14 @@ def main():
     g = sub.add_parser('ingest')
     g.add_argument('name')
     g.add_argument('result')
+    g.add_argument('--again', action='store_true', help='an earlier raw result again, not a new try')
     for v in ('accept', 'reject'):
         r = sub.add_parser(v)
         r.add_argument('sha1')
         r.add_argument('note', nargs='?', default='')
+    rp = sub.add_parser('repair')
+    rp.add_argument('name')
+    rp.add_argument('--at', nargs='*', default=None, help='only the tiles containing these X,Y original pixels')
     sub.add_parser('pack').add_argument('out')
     sub.add_parser('status')
     a = ap.parse_args()
@@ -218,9 +272,11 @@ def main():
     elif a.cmd == 'next':
         print(progress().next() or '')
     elif a.cmd == 'ingest':
-        cmd_ingest(a.name, a.result)
+        cmd_ingest(a.name, a.result, a.again)
     elif a.cmd in ('accept', 'reject'):
         set_review(a.sha1, a.cmd, a.note)
+    elif a.cmd == 'repair':
+        cmd_repair(a.name, [tuple(int(v) for v in p.split(',')) for p in a.at] if a.at else None)
     elif a.cmd == 'pack':
         cmd_pack(a.out)
     elif a.cmd == 'status':

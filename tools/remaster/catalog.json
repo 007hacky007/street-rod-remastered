@@ -2259,9 +2259,9 @@
  },
  "47ceed5703afec32b978e9b16c15bd102073a41c": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 1,
+  "desc": "the empty garage of a 1950s hot rod builder at night: on the left the open roll-up door with a starry night sky, a wooden fence and green bushes outside and the door's steel track; a brown wooden ceiling; a grey back wall with a long empty white name plate banner at the top; a shelf with cans, a box and a spray nozzle; a yellow gas cylinder with a gauge; coiled black hoses and a cyan hose hanging on pegs; a framed clipboard; a funnel on the shelf; a small wall vent grille; an octagonal wall clock; a green power drill on its cord; a lug wrench cross on the wall; a shelf with paint cans and brushes and a turquoise radio with a tuning dial and an antenna; a shelf with red boxes; wrenches and tools hanging below it; a calendar with a car picture on the right side wall; a long brown wooden workbench with a book on it, a grey can and boxes underneath; an electric outlet; a grey concrete floor with dark oil stains; along the bottom a green beer bottle, a folded newspaper, a green floor jack, a purple spray gun with its hose and a green jerry can. No car in the garage.",
+  "keep": "the radio on the right shelf stays a radio with a tuning dial; the name plate banner stays empty and white; nothing hangs on the wall where nothing is; the floor stays empty where the car is parked; the gas cylinder on the left is lemon yellow (not orange); the spray gun at the bottom has a purple paint cup (not silver)",
   "sheet": null,
   "status": "new",
   "ids": {
