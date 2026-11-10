@@ -1,4 +1,7 @@
 #include "host.h"
+#ifdef __APPLE__
+#include "host_mackeys.h"
+#endif
 
 #include <SDL3/SDL.h>
 #include <stdarg.h>
@@ -15,6 +18,9 @@ static SDL_Texture *texture;
 static SDL_AudioStream *audio;
 static SDL_Gamepad *gamepad;
 static char *game_dir;
+#ifdef __APPLE__
+static MacKeyFilter mac_keys;              /* ENH: Cmd shortcuts stay the Mac's (host_mackeys.h) */
+#endif
 
 static void (*tick_handler)(void);
 static void (*kbd_handler)(u8);
@@ -56,7 +62,8 @@ bool host_init(const char *dir, int window_scale, bool fullscreen)
     game_dir = SDL_strdup(dir);
     if (window_scale < 1) window_scale = 3;
     if (!SDL_CreateWindowAndRenderer("Street Rod Enhanced", 320 * window_scale, 240 * window_scale,
-                                     SDL_WINDOW_RESIZABLE, &window, &renderer)) {
+                                     SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY,  /* ENH: Retina */
+                                     &window, &renderer)) {
         fprintf(stderr, "window/renderer failed: %s\n", SDL_GetError());
         return false;
     }
@@ -676,6 +683,19 @@ static void key_event(SDL_Scancode sc, bool down)
     feed(seq, n);
 }
 
+/* ENH: on macOS through the key filter (host_mackeys.h); elsewhere straight to the game. */
+static void mac_key_event(SDL_Scancode sc, bool down, SDL_Keymod mod)
+{
+#ifdef __APPLE__
+    MacKey out[2];
+    int n = mac_keys_filter(&mac_keys, sc, down, (mod & SDL_KMOD_GUI) != 0, out);
+    for (int i = 0; i < n; i++) key_event((SDL_Scancode)out[i].scancode, out[i].down);
+#else
+    (void)mod;
+    key_event(sc, down);
+#endif
+}
+
 static void process_events(void)
 {
     SDL_Event ev;
@@ -691,12 +711,15 @@ static void process_events(void)
                     SDL_SetWindowFullscreen(window, !(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN));
                 break;
             }
-            key_event(ev.key.scancode, true);
+            mac_key_event(ev.key.scancode, true, ev.key.mod);
             break;
         case SDL_EVENT_KEY_UP:
-            key_event(ev.key.scancode, false);
+            mac_key_event(ev.key.scancode, false, ev.key.mod);
             break;
         case SDL_EVENT_WINDOW_FOCUS_LOST:
+#ifdef __APPLE__
+            mac_keys_reset(&mac_keys);
+#endif
             if (focus_lost_handler) focus_lost_handler();
             break;
         case SDL_EVENT_MOUSE_MOTION:

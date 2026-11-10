@@ -41,6 +41,12 @@ if(WIN32)
                 -DCMAKE_OBJDUMP=${CMAKE_OBJDUMP} -P ${CMAKE_CURRENT_SOURCE_DIR}/launcher/copy_dlls.cmake)
 endif()
 
+option(SRE_TESTS "Also build the unit tests (ctest)" OFF)
+if(SRE_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
 # The launcher ("Street Rod Enhanced"): the game folder, the original or the data disk's cars, the
 # game's own switches and the display options; built beside streetrod-enhanced.exe. It needs
 # wxWidgets 3.2 (MSYS2: mingw-w64-x86_64-wxwidgets3.2-msw) and a C++17 compiler.

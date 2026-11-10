@@ -18,7 +18,7 @@ mkdir -p "$src" "$prefix"
 
 common="-G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64
         -DCMAKE_OSX_DEPLOYMENT_TARGET=$TARGET -DCMAKE_INSTALL_PREFIX=$prefix
-        -DCMAKE_PREFIX_PATH=$prefix -DCMAKE_FIND_USE_CMAKE_SYSTEM_PATH=OFF"
+        -DCMAKE_PREFIX_PATH=$prefix -DCMAKE_IGNORE_PREFIX_PATH=/opt/homebrew;/usr/local"
 
 fetch() {  # name tag url [extra git args]
     if [ ! -d "$src/$1" ]; then
