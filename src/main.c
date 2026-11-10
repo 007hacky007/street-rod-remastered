@@ -35,13 +35,14 @@
 #include "enhanced/enhanced.h"
 #include "remaster/rm_dump.h"
 #include "remaster/rm_pack.h"
+#include "sound/music_rm.h"
 
 #define MAX_GAME_ARGS 16
 
 static int usage(const char *prog)
 {
     fprintf(stderr, "usage: %s [--game-dir DIR] [--scale N] [--fullscreen] [--check] "
-                    "[--music-volume N] [--sfx-volume N] "
+                    "[--music-volume N] [--sfx-volume N] [--music original|remastered] "
                     "[1] [nomouse] [demo] [auto] [nouemem]\n", prog);
     return 2;
 }
@@ -73,7 +74,7 @@ int main(int argc, char **argv)
     int scale = 3;
     bool check = false, fullscreen = false;
     const char *dump_dir = NULL, *remaster_dir = NULL;
-    bool classic = false, town = true;
+    bool classic = false, town = true, music_rm = false;
     int music_volume = 100, sfx_volume = 100;
     int res_scale = -1, aa = ENH_DEFAULT_AA, motion_delay = ENH_DEFAULT_MOTION_DELAY;
     char *game_argv[MAX_GAME_ARGS + 1] = { argv[0] };
@@ -88,6 +89,7 @@ int main(int argc, char **argv)
         else if (!strcmp(a, "--remaster-dir") && v) { remaster_dir = v; i++; }
         else if (!strcmp(a, "--music-volume") && v) { music_volume = atoi(v); i++; }
         else if (!strcmp(a, "--sfx-volume") && v) { sfx_volume = atoi(v); i++; }
+        else if (!strcmp(a, "--music") && v) { music_rm = !strcmp(v, "remastered"); i++; }
         else if (!strcmp(a, "--classic")) classic = true;
         else if (!strcmp(a, "--res-scale") && v) { res_scale = atoi(v); i++; }
         else if (!strcmp(a, "--aa") && v) { aa = atoi(v); i++; }
@@ -122,6 +124,7 @@ int main(int argc, char **argv)
     enh_init(!classic, res_scale, aa, motion_delay, town);
     if (!host_init(dir, scale, fullscreen)) return 1;
     host_set_volumes(music_volume, sfx_volume);
+    if (music_rm && !music_rm_enable(true)) fprintf(stderr, "remastered music: the tune was not found\n");
     ega_init();                     /* 16-colour planar display: frame source, planes */
     modules_init();                 /* hooks into subsystems ported separately (modules.h) */
     platform_main_init(game_argc, game_argv);   /* main 0000:066f up to the game loop */

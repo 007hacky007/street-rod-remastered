@@ -44,7 +44,8 @@ like the Street Rod and Test Drive III launchers it is modelled on.
 
 * **File**: **Preferences** (**Always on top** keeps the launcher above other windows) and **Exit**.
 * **Game settings > Sounds**: **Music** (`--music-volume`) and **Sound effects** (`--sfx-volume`), 0 - 100 %,
-  each a slider and a number field. **Default**, **Apply**, **Cancel**.
+  each a slider and a number field, and **Music**: Remastered (`--music remastered`, the default) or Original
+  (the PC speaker). **Default**, **Apply**, **Cancel**.
 * **About**: version, author and links.
 
 Everything is remembered in `%APPDATA%\Street Rod Enhanced\settings.ini` (`~/Library/Application Support/Street Rod Enhanced`

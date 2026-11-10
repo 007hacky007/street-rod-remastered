@@ -3,6 +3,7 @@
 #include "sound/sound.h"
 #include "platform/platform.h"
 #include "sound/snd_int.h"
+#include "sound/music_rm.h"
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -89,6 +90,7 @@ static void music_tick(u16 s)
         u16 div = (u16)((u16)((s32)w * DSS(DS_vib_amount)) + note);   /* imul: low word */
         DSW(DS_vib_last_div) = div;
         pit2_div(div);
+        if (s == DS_bg_song) music_rm_bend(div);              /* ENH: the remastered music */
         DSW(DS_vib_countdown) = DSW(rec + VR_STEP);
         return;
     }
@@ -125,6 +127,10 @@ static void music_tick(u16 s)
     }
     u16 note = song_rd(s);
     DSW(s + SS_NOTE) = note;
+    if (s == DS_bg_song) {                                    /* ENH: the remastered music */
+        if (note) music_rm_note((u16)(ds_far(s + SS_CUR).off - 4), note);
+        else music_rm_rest();
+    }
     if (note == 0) {                                          /* 2225: rest (divisor kept) */
         DSB(s + SS_REGATE) = 1;
         spk_gate_off();
@@ -146,6 +152,7 @@ static void music_tick(u16 s)
 
 void snd_music_tick(void)
 {
+    music_rm_tick();                                          /* ENH: the remastered music */
     u16 s = DSW(DS_music_cur);
     if (!DSB(s + SS_PLAYING)) return;
     snd_music_writing = s == DS_bg_song;                      /* PORT: the music volume */

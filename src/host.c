@@ -71,11 +71,11 @@ bool host_init(const char *dir, int window_scale, bool fullscreen)
     if (fullscreen) SDL_SetWindowFullscreen(window, true);
     host_set_frame_source(NULL, 320, 200);
 
-    SDL_AudioSpec spec = { SDL_AUDIO_S16, 1, AUDIO_RATE };
+    SDL_AudioSpec spec = { SDL_AUDIO_S16, 2, AUDIO_RATE };          /* ENH: stereo for the remastered music */
     audio = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, NULL, NULL);
     if (audio) {
         SDL_ResumeAudioStreamDevice(audio);
-        static s16 silence[AUDIO_RATE / 20 * 2];           /* 50 ms of lead-in against underruns */
+        static s16 silence[AUDIO_RATE / 20 * 2 * 2];       /* 50 ms of lead-in against underruns */
         SDL_PutAudioStreamData(audio, silence, sizeof silence);
     } else {
         fprintf(stderr, "audio unavailable: %s\n", SDL_GetError());
@@ -152,7 +152,8 @@ void host_set_pit_divisor(u16 divisor)
 #define HP_R  0.99715       /* 1 - 2*pi*20/44100: ~20 Hz DC blocker */
 #define LP_A  0.7603        /* 1 - exp(-2*pi*10000/44100): ~10 kHz one-pole low-pass */
 #define SPEAKER_GAIN (SPEAKER_AMPLITUDE * 2.0)   /* a full square swings +-SPEAKER_AMPLITUDE */
-#define AUDIO_MAX_QUEUED  (AUDIO_RATE / 4)       /* samples; beyond that output is dropped */
+#define MUSIC_GAIN   36000.0                   /* the band's full scale (its peaks stay near the speaker's) */
+#define AUDIO_MAX_QUEUED  (AUDIO_RATE / 4)       /* frames; beyond that output is dropped */
 #define AUDIO_LEAD_IN     (AUDIO_RATE / 25)      /* 40 ms of silence after an underrun */
 
 static Uint64 tl_tick, tl_now;          /* PIT clocks */
@@ -169,8 +170,9 @@ static Uint64 r_pos;                    /* rendered up to, in clock * AUDIO_RATE
 static Uint64 r_sample_end = PIT_HZ;    /* end of the sample being integrated (same units) */
 static Uint64 r_acc;                    /* high time x volume (percent) inside that sample (same units) */
 static double hp_x1, hp_y1, lp_z;
-static s16 r_buf[2048];
-static int r_n;
+static s16 r_buf[4096];                 /* stereo: L, R */
+static int r_n;                         /* samples (2 per frame) */
+static void (*music_synth)(float *lr, int frames);   /* ENH: the remastered music, mixed in */
 static FILE *dump_f;
 static u32 dump_samples;
 /* Volumes in percent (--music-volume / --sfx-volume) and the one that applies to the level now: the
@@ -190,14 +192,14 @@ static void put_le(u8 *p, u32 v, int n)
     for (int i = 0; i < n; i++) p[i] = (u8)(v >> (8 * i));
 }
 
-static void wav_header(FILE *f, u32 samples)     /* 16-bit mono PCM at AUDIO_RATE */
+static void wav_header(FILE *f, u32 samples)     /* 16-bit stereo PCM at AUDIO_RATE; samples = frames * 2 */
 {
     u8 h[44];
     memcpy(h, "RIFF", 4);           put_le(h + 4, 36 + samples * 2, 4);
     memcpy(h + 8, "WAVEfmt ", 8);   put_le(h + 16, 16, 4);
-    put_le(h + 20, 1, 2);           put_le(h + 22, 1, 2);
-    put_le(h + 24, AUDIO_RATE, 4);  put_le(h + 28, AUDIO_RATE * 2, 4);
-    put_le(h + 32, 2, 2);           put_le(h + 34, 16, 2);
+    put_le(h + 20, 1, 2);           put_le(h + 22, 2, 2);
+    put_le(h + 24, AUDIO_RATE, 4);  put_le(h + 28, AUDIO_RATE * 4, 4);
+    put_le(h + 32, 4, 2);           put_le(h + 34, 16, 2);
     memcpy(h + 36, "data", 4);      put_le(h + 40, samples * 2, 4);
     fseek(f, 0, SEEK_SET);
     fwrite(h, 1, sizeof h, f);
@@ -209,11 +211,11 @@ static void audio_flush(void)
     if (r_n == 0) return;
     if (dump_f) { fwrite(r_buf, sizeof(s16), (size_t)r_n, dump_f); dump_samples += (u32)r_n; }
     if (audio) {
-        int queued = SDL_GetAudioStreamQueued(audio) / (int)sizeof(s16);
+        int queued = SDL_GetAudioStreamQueued(audio) / (int)(2 * sizeof(s16));     /* frames */
         /* Drop output if the device is far behind (e.g. after a stall) instead of building latency. */
         if (queued <= AUDIO_MAX_QUEUED) {
             if (queued == 0) {                      /* underrun: rebuild a little latency */
-                static const s16 silence[AUDIO_LEAD_IN];
+                static const s16 silence[AUDIO_LEAD_IN * 2];
                 SDL_PutAudioStreamData(audio, silence, sizeof silence);
             }
             SDL_PutAudioStreamData(audio, r_buf, r_n * (int)sizeof(s16));
@@ -228,9 +230,16 @@ static void emit_sample(double x)
     hp_x1 = x;
     hp_y1 = y;
     lp_z += LP_A * (y - lp_z);
-    double s = lp_z * SPEAKER_GAIN;
-    r_buf[r_n++] = (s16)(s > 32767 ? 32767 : s < -32767 ? -32767 : s);
-    if (r_n == (int)SDL_arraysize(r_buf)) audio_flush();
+    double s = lp_z * SPEAKER_GAIN, l = s, r = s;
+    if (music_synth) {                              /* ENH: the band, at the music volume */
+        float lr[2];
+        music_synth(lr, 1);
+        l += lr[0] * MUSIC_GAIN * vol_music / 100;
+        r += lr[1] * MUSIC_GAIN * vol_music / 100;
+    }
+    r_buf[r_n++] = (s16)(l > 32767 ? 32767 : l < -32767 ? -32767 : l);
+    r_buf[r_n++] = (s16)(r > 32767 ? 32767 : r < -32767 ? -32767 : r);
+    if (r_n >= (int)SDL_arraysize(r_buf)) audio_flush();
 }
 
 /* Renders the speaker output up to PIT clock clk (exclusive). */
@@ -306,7 +315,7 @@ void host_set_volumes(int music, int effects)
     render_to(tl_now);
     vol_music = SDL_clamp(music, 0, 100);
     vol_effects = SDL_clamp(effects, 0, 100);
-    vol_now = src_music ? vol_music : vol_effects;
+    vol_now = src_music ? (music_synth ? 0 : vol_music) : vol_effects;
 }
 
 void host_speaker_source(bool music)
@@ -314,8 +323,20 @@ void host_speaker_source(bool music)
     if (music == src_music) return;
     render_to(tl_now);                              /* what sounded so far keeps its volume */
     src_music = music;
-    vol_now = music ? vol_music : vol_effects;
+    vol_now = music ? (music_synth ? 0 : vol_music) : vol_effects;
 }
+
+/* ENH: the remastered music: the speaker's music stretches go silent and render() is mixed in. */
+void host_set_music_synth(void (*render)(float *lr, int frames))
+{
+    render_to(tl_now);
+    music_synth = render;
+    vol_now = src_music ? (music_synth ? 0 : vol_music) : vol_effects;
+}
+
+void host_audio_sync(void) { render_to(tl_now); }
+
+int host_audio_rate(void) { return AUDIO_RATE; }
 
 void host_speaker(u16 divisor, bool on)
 {

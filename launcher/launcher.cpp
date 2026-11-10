@@ -127,6 +127,7 @@ LauncherFrame::LauncherFrame()
     if (topmost_) SetWindowStyleFlag(GetWindowStyleFlag() | wxSTAY_ON_TOP);
     sounds_.music = wxMax(0, wxMin(100, settings::GetInt(SOUND, "MusicVolume", sounds_.music)));
     sounds_.effects = wxMax(0, wxMin(100, settings::GetInt(SOUND, "EffectsVolume", sounds_.effects)));
+    sounds_.remasteredMusic = settings::GetInt(SOUND, "Music", sounds_.remasteredMusic ? 1 : 0) != 0;
 
     // The launcher and, in its place while one is open, a settings page (PAGE_*).
     book_ = new wxSimplebook(this);
@@ -374,13 +375,22 @@ wxWindow* LauncherFrame::CreateSoundsPage(wxWindow* parent) {
               0, 100, 10, &effectsSlider_, &effectsField_);
     volumeBox->Add(grid, 0, wxEXPAND | wxALL, gap);
 
+    auto* musicBox = new wxStaticBoxSizer(wxVERTICAL, page, "Music");
+    wxWindow* mb = musicBox->GetStaticBox();
+    music_ = new wxChoice(mb, wxID_ANY);
+    music_->Append("Remastered: the tune played by a small band (default)");
+    music_->Append("Original: the PC speaker");
+    music_->SetToolTip("Remastered plays the game's own tune, note for note, with bass, guitar or piano, and "
+                       "drums. The sound effects stay the PC speaker's either way.");
+    musicBox->Add(music_, 0, wxALL, gap);
+
     auto* buttons = new wxBoxSizer(wxHORIZONTAL);
     auto* defaults = new wxButton(page, wxID_ANY, "&Default");
-    defaults->SetToolTip("Put both volumes back to 100 %.");
+    defaults->SetToolTip("Put both volumes back to 100 % and the music to Remastered.");
     auto* apply = new wxButton(page, wxID_APPLY, "&Apply");
-    apply->SetToolTip("Keep these volumes and go back.");
+    apply->SetToolTip("Keep these settings and go back.");
     auto* cancel = new wxButton(page, wxID_CANCEL, "Cancel");
-    cancel->SetToolTip("Go back without changing the volumes.");
+    cancel->SetToolTip("Go back without changing anything.");
     buttons->Add(defaults);
     buttons->AddStretchSpacer();
     buttons->Add(apply, 0, wxRIGHT, gap);
@@ -390,12 +400,14 @@ wxWindow* LauncherFrame::CreateSoundsPage(wxWindow* parent) {
         sounds_ = EditedSounds();
         settings::SetInt(SOUND, "MusicVolume", sounds_.music);
         settings::SetInt(SOUND, "EffectsVolume", sounds_.effects);
+        settings::SetInt(SOUND, "Music", sounds_.remasteredMusic ? 1 : 0);
         ClosePage();
     });
     cancel->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { ClosePage(); });
 
     auto* all = new wxBoxSizer(wxVERTICAL);
-    all->Add(volumeBox, 1, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, margin);
+    all->Add(volumeBox, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, margin);
+    all->Add(musicBox, 1, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, margin);
     all->Add(buttons, 0, wxEXPAND | wxALL, margin);
     page->SetSizer(all);
     return page;
@@ -406,6 +418,7 @@ void LauncherFrame::ShowSounds(const Sounds& s) {
     musicSlider_->SetValue(s.music);
     effectsField_->SetValue(s.effects);
     effectsSlider_->SetValue(s.effects);
+    music_->SetSelection(s.remasteredMusic ? 0 : 1);
 }
 
 Sounds LauncherFrame::EditedSounds() const {
@@ -413,6 +426,7 @@ Sounds LauncherFrame::EditedSounds() const {
     Sounds s;
     s.music = musicSlider_->GetValue();
     s.effects = effectsSlider_->GetValue();
+    s.remasteredMusic = music_->GetSelection() == 0;
     return s;
 }
 

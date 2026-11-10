@@ -16,6 +16,7 @@ std::vector<wxString> GameArgs(const GameOptions& o) {
     // The volumes only when turned down, so the default command line stays as it was.
     if (o.sounds.music != 100) args.insert(args.end(), {"--music-volume", wxString::Format("%d", o.sounds.music)});
     if (o.sounds.effects != 100) args.insert(args.end(), {"--sfx-volume", wxString::Format("%d", o.sounds.effects)});
+    if (o.sounds.remasteredMusic) args.insert(args.end(), {"--music", "remastered"});
     // The original's own command-line switches, passed on as the port receives them.
     if (o.noMouse) args.push_back("nomouse");
     if (o.demo) args.push_back("demo");

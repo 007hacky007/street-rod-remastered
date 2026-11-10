@@ -9,6 +9,7 @@
 struct Sounds {
     int music = 100;        // --music-volume: the background tune
     int effects = 100;      // --sfx-volume: the effects, the engine and the garage's loop sounds
+    bool remasteredMusic = true;  // --music remastered: the tune played by a small band, not the speaker
 };
 
 struct GameOptions {

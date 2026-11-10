@@ -7,7 +7,8 @@ not included; the game is free from the copyright owner: https://www.streetrodon
 
 * Smooth road view in races and drives through town, at your display's refresh rate.
 * High resolution (up to 2560 × 1600) with anti-aliasing.
-* Separate music and sound effects volumes.
+* Separate music and sound effects volumes, and the tune remastered for a small band (bass, guitar or
+  piano, drums), note for note from the original.
 * The game is otherwise the original: garage, opponents, physics, police and screens.
 * The Street Rod SE data disk's 25 cars.
 * A launcher for cars, switches, picture and sound options.
@@ -100,6 +101,7 @@ tools/macos/make-dmg.sh --version 0.3.0    # dist/Street-Rod-Enhanced.dmg
 | `--town on\|off` | Enhanced drives through town (default on) |
 | `--music-volume P` | Music volume, % (default 100) |
 | `--sfx-volume P` | Sound effects volume, % (default 100) |
+| `--music original\|remastered` | The tune on the PC speaker or played by a small band (default original; the launcher defaults to remastered) |
 | `--classic` | Original picture only |
 | `--remaster-dir DIR` | Remastered pictures from the art pack in DIR (see `tools/remaster/README.md`) |
 | `--check` | Check that `SR.EXE` loads, then exit |

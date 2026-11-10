@@ -39,10 +39,22 @@ static void args_classic_remastered() {
     CHECK(has(a, "--classic") && has(a, "--remaster-dir") && !has(a, "--res-scale"));
 }
 
+static void args_music_remastered() {
+    GameOptions o;
+    o.program = "/p/streetrod-enhanced";
+    o.gameDir = "/g";
+    auto a = GameArgs(o);                          // the default: the band
+    auto it = std::find(a.begin(), a.end(), wxString("--music"));
+    CHECK(it != a.end() && it + 1 != a.end() && *(it + 1) == "remastered");
+    o.sounds.remasteredMusic = false;
+    CHECK(!has(GameArgs(o), "--music"));
+}
+
 int main() {
 #define RUN(t) do { int b = failures; t(); std::printf("%s %s\n", failures == b ? "ok  " : "FAIL", #t); } while (0)
     RUN(args_remastered_adds_dir);
     RUN(args_original_has_no_dir);
     RUN(args_classic_remastered);
+    RUN(args_music_remastered);
     return failures != 0;
 }

@@ -151,6 +151,33 @@ stays local: `remaster-art/` is git-ignored, nothing of it is committed, attache
 except to ChatGPT for generation. The code, tools and catalogue are committed as usual; without a pack the game
 behaves exactly as today.
 
+## Remastered music (owner's request after batch 1)
+
+The owner asked for the music to be remastered: "based on the original, but more advanced than PC speaker".
+
+Facts from the game: there is one background tune (both games), 1163 events of (duration in 72.8 Hz ticks,
+PIT divisor) in 18 sections with repeats, about 5.5 minutes: a short jingle that returns between five tunes,
+each with its own tempo. The speaker plays one note at a time, so the tunes fake several instruments by
+interleaving: short bass notes between chord and melody notes, octave pairs played alternately.
+
+Design (builder's calls, the owner may overrule):
+
+* **Played from the original data at run time.** The notes, timing, sections, repeats and vibrato are the
+  game's own, read from the program image; nothing derived from the tune is committed or shipped. Game
+  behaviour is unchanged: the sequencer runs exactly as before, its speaker output is only silenced.
+* **Voices separated again.** Per section, notes split by register into a bass voice and an upper voice (the
+  largest gap in the section's pitches, if there is a clear one). Each voice holds its notes as a real
+  instrument would instead of stopping at the next interleaved note, so the fake chords and octaves sound as
+  chords and octaves.
+* **A small band, synthesised** (no samples): plucked electric bass and twangy guitar (Karplus-Strong), an
+  electric piano and vibraphone (FM), and light drums that follow the original's own note onsets (the timing
+  is irregular in two tunes, so a fixed drum grid would drift): kick and snare on the bass notes, brushes on
+  every onset. Stereo with a short spring-like reverb, in the spirit of an early-1960s rock'n'roll combo.
+* **Effects stay PC speaker** (engine, tyres, tools); only the background tune is remastered. The loop
+  sounds that replace the tune while they play stay as they are.
+* **Options:** `--music original|remastered` in the game (default original); the launcher gets
+  "Music: Original / Remastered" (default Remastered). The music volume applies to both.
+
 ## Later stage (owner's request, after this one)
 
 The owner wants the things the game draws with code remastered too, as a separate stage after the picture

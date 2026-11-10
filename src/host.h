@@ -89,6 +89,12 @@ void host_busy_wait_us(u32 us);
  * from then on is scaled by that source's volume. */
 void host_set_volumes(int music, int effects);
 void host_speaker_source(bool music);
+/* ENH: the remastered music. render (NULL: none) is called for every output frame and mixed in at the
+ * music volume; meanwhile the speaker's music is silent. host_audio_sync renders the output up to now,
+ * so a change made next sounds from the current emulated time. */
+void host_set_music_synth(void (*render)(float *lr, int frames));
+void host_audio_sync(void);
+int host_audio_rate(void);
 /* Old interface: host_pit2_divisor(divisor); port 61h bits 0-1 = on ? 3 : 0. */
 void host_speaker(u16 divisor, bool on);
 
