@@ -1,7 +1,11 @@
-"""Writes app.ico: the night road drawn in icon.cpp, for Explorer. Needs Pillow.
+"""Writes app.ico: the night road drawn in icon.cpp, for Explorer, and on macOS (iconutil)
+macos/AppIcon.icns for the app bundle. Needs Pillow.
 
     python make_icon.py
 """
+import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 
 from PIL import Image
@@ -35,3 +39,15 @@ for y in (8, 11, 12, 15):  # the centre line's dashes, longer nearer
 sizes = [16, 20, 24, 32, 48, 64, 256]
 big = tile.resize((256, 256), Image.NEAREST)
 big.save(Path(__file__).with_name("app.ico"), sizes=[(s, s) for s in sizes])
+
+# macOS: an iconset of nearest-neighbour sizes, 16 to 1024, made into AppIcon.icns.
+if shutil.which("iconutil"):
+    with tempfile.TemporaryDirectory() as tmp:
+        iconset = Path(tmp) / "AppIcon.iconset"
+        iconset.mkdir()
+        for size in (16, 32, 128, 256, 512):
+            tile.resize((size, size), Image.NEAREST).save(iconset / f"icon_{size}x{size}.png")
+            tile.resize((size * 2, size * 2), Image.NEAREST).save(iconset / f"icon_{size}x{size}@2x.png")
+        out = Path(__file__).with_name("macos") / "AppIcon.icns"
+        out.parent.mkdir(exist_ok=True)
+        subprocess.run(["iconutil", "-c", "icns", str(iconset), "-o", str(out)], check=True)
