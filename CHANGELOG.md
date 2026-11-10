@@ -9,6 +9,9 @@
   launcher: Music in Options, default Remastered). Sound effects stay as they were.
 - Launcher: the Graphics choice is now called Race view.
 - Tools for building the art pack in `tools/remaster/`.
+- Windows zip, built by the release workflow with the Mac disk image.
+- CI: every push and pull request builds and tests the Mac app and the Windows zip.
+- README rewritten for players, with screenshots.
 
 ## 0.3.0
 

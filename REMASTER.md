@@ -10,7 +10,8 @@ Design: `docs/superpowers/specs/2026-11-10-hd-remaster-design.md`. Pipeline deta
 
 The remastered pictures are redrawn from Street Rod's copyrighted art. Until the owner decides how (or whether)
 to distribute them, they stay local: `remaster-art/` is ignored by git, and no picture is committed, attached to
-a release or uploaded anywhere except to ChatGPT for generation. The code, the tools and the catalogue (sizes,
+a release or uploaded anywhere except to ChatGPT for generation. The only remastered images in the repository
+are the README's screenshots in `docs/screenshots/`. The code, the tools and the catalogue (sizes,
 ids and descriptions, no pixels) are committed. Without a pack the game runs exactly as before.
 
 ## Using it
