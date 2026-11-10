@@ -151,6 +151,14 @@ stays local: `remaster-art/` is git-ignored, nothing of it is committed, attache
 except to ChatGPT for generation. The code, tools and catalogue are committed as usual; without a pack the game
 behaves exactly as today.
 
+## Later stage (owner's request, after this one)
+
+The owner wants the things the game draws with code remastered too, as a separate stage after the picture
+remaster: the printed text (a new font for the car names, "Bankroll", dialogs and menus), the lines (gauge
+needles, clock hands, frames and boxes) and, as the builder's reading of "everything", the road surface of the
+race view. This needs new drawing code in the engine, not more pictures; it is planned on its own when this
+stage is done.
+
 ## Calls made by the builder (owner may overrule)
 
 * **Lettering inside pictures** (logos, "AD 1989", the newspaper masthead, shop headers, button labels, signs,
