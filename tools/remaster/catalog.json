@@ -244,11 +244,11 @@
   "masked": 1
  },
  "063e22f390c536d64f266f04df7a2d8dddf181fc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -286,11 +286,11 @@
   "masked": 1
  },
  "0788dfe2a9f1466a18ee0d0a5d9cdb6c40813dfd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 1,
+  "desc": "a narrow vertical strip of a gas pump: grey and black panels with a red edge",
+  "keep": "the shape",
+  "sheet": "ui",
   "status": "new",
   "ids": {
    "main": [
@@ -629,11 +629,11 @@
   "masked": 1
  },
  "0fbed16f8cf7c8db418a97399733f16e7dba346f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 1,
+  "desc": "a thin red-pink gas hose line with a small green nozzle at its left end",
+  "keep": "the line path",
+  "sheet": "ui",
   "status": "new",
   "ids": {
    "main": [
@@ -690,11 +690,11 @@
   "masked": 0
  },
  "128ee94b57781e478e14e441e9c2ad529fd47e6b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -770,11 +770,11 @@
   "masked": 1
  },
  "13504b27990a50e12a6fc66bf1d1d1f5a603a580": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -793,10 +793,10 @@
   "masked": 1
  },
  "1374137a59172960100e54d8b16e3db4743e6dbc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "ui",
+  "batch": 1,
+  "desc": "a chrome button bar with three red buttons labelled \"TUNE\", \"PARTS\" and \"DONE\"",
+  "keep": "the three labels exactly",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -976,11 +976,11 @@
   "masked": 1
  },
  "17bb08c02fbc55c3dd02c95bdce7215a973a2acf": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -1037,10 +1037,10 @@
   "masked": 1
  },
  "19403c7ae00ec5320f619ad8090b7808e700e2f6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a newspaper strip with the headline \"GM, Ford Laugh at Cars from Japan\" and small columns of article text below",
+  "keep": "the headline exactly",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1129,11 +1129,11 @@
   "masked": 1
  },
  "1a5e48ddf330c6d732953b5b0c65a70289bc55f4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "an empty white speech bubble with a teal outline and a tail pointing down",
+  "keep": "empty inside",
+  "sheet": "bubbles",
   "status": "new",
   "ids": {
    "main": [
@@ -1175,11 +1175,11 @@
   "masked": 1
  },
  "1c8f8991b4ddce977d3b4e20947e1bd8375a60cf": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -1446,10 +1446,10 @@
   "masked": 1
  },
  "24e04213de87bdc0f2a7cb63e22570b89366fbab": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a newspaper strip with the headline \"President insists! \\\"No U.S. Soldiers in Viet Nam\\\".\" and small columns of article text below",
+  "keep": "the headline exactly",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1489,9 +1489,9 @@
  },
  "2736eda7239b285eb659ce07e77a0b1957732df1": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 1,
+  "desc": "Gus' gas station at night: a red brick and grey roofed station building with an \"OFFICE\" door and arrow, a Coca-Cola machine, windows, a \"GUS' GAS\" neon sign with an arrow on the roof, red gas pumps on the left, trees and a chain link fence on the right, a grey forecourt with a green bucket and a rag",
+  "keep": "the lettering GUS' GAS and OFFICE; no car and no people",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1587,11 +1587,11 @@
   "masked": 1
  },
  "2e0c7fc6e54829b23a03173662ee3b18eecebe23": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -1793,10 +1793,10 @@
   "masked": 1
  },
  "367397c4277ae868f2f9fdee20dcefe721f2ecc8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "the \"California Dreams presents\" logo: \"CALIFORNIA\" in yellow outlined letters between green lines, \"Dreams\" in red script below and \"presents\" in white, with a \"TM\" mark, on black",
+  "keep": "the lettering exactly; black background",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1850,11 +1850,11 @@
   "masked": 1
  },
  "38d4f1638b66372e8009c3d71da640d6c2cf04a6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 1,
+  "desc": "a green floor jack seen from the side with its handle level",
+  "keep": "the shape and position",
+  "sheet": "jack",
   "status": "new",
   "ids": {
    "main": [
@@ -1930,11 +1930,11 @@
   "masked": 1
  },
  "3c9859f6158278f1eaf498a962e602c77ce818e9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a plain yellow horizontal strip with a tiny dark red corner at the bottom left",
+  "keep": "flat yellow",
+  "sheet": "ui",
   "status": "new",
   "ids": {
    "main": [
@@ -2090,10 +2090,10 @@
   "masked": 1
  },
  "426fed316d4a174e1a36063019a5a15d605bd807": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a sprite sheet of 12 animation frames of a blonde drive-in waitress on roller skates carrying a tray, in two rows of six",
+  "keep": "every figure stays in its own place in the grid, the same size and pose, so the frames still line up",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -2281,11 +2281,11 @@
   "masked": 0
  },
  "4821562d5a42bc80bf6df8036919c9ced523e7a2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -2323,11 +2323,11 @@
   "masked": 1
  },
  "490df0a3db9f5c3bf8cd153225b3b382a6c39bd6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a small red rectangular frame",
+  "keep": "the shape",
+  "sheet": "ui",
   "status": "new",
   "ids": {
    "main": [
@@ -2449,11 +2449,11 @@
   "masked": 1
  },
  "4d69ec017d16bf4d63c7f61774b4008b95ce43cb": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -2533,10 +2533,10 @@
   "masked": 1
  },
  "51d030f99df82ef68efb968d766830e8fb0d013c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a wall calendar page: June 1963 at the top, a picture of a red 1940 coupe on a beach in the middle and July 1963 at the bottom, Sundays in red, one date circled",
+  "keep": "all the numbers and month names exactly, the circled date",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -2621,11 +2621,11 @@
   "masked": 1
  },
  "54a0c2a54370e1777b9e74c3c1c6a82e3b463a14": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 1,
+  "desc": "a green floor jack seen from the side with its handle raised high",
+  "keep": "the shape and position",
+  "sheet": "jack",
   "status": "new",
   "ids": {
    "main": [
@@ -2767,9 +2767,9 @@
  },
  "57b737c53c28c5c9c99718a4ff5f94a9d1c0e751": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 1,
+  "desc": "an open California Highway Patrol book: the left page shows a column of names cut off at the edge, the right page is headed \"CALIFORNIA HIGHWAY PATROL\" with the text \"POLICE ARE ALREADY ON THE LOOKOUT FOR THE FOLLOWING LICENSED DRIVERS:\" and is otherwise blank",
+  "keep": "all the lettering exactly; the right page stays blank below the text",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3437,11 +3437,11 @@
   "masked": 1
  },
  "70ade126a87e5b3c83ccf8ca112c4aeafd35c3fc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -3643,10 +3643,10 @@
   "masked": 0
  },
  "79ad9be710261740af7285244dcf07a15e4b363f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "the side column of a newspaper classifieds page: rows of tiny car ads with prices separated by lines, and at the bottom a small framed picture of a green car",
+  "keep": "the layout of the rows and lines; the small car picture",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3685,11 +3685,11 @@
   "masked": 1
  },
  "7b1d3463758fdc3de4ae289117a696ed9595ffd6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -3727,10 +3727,10 @@
   "masked": 1
  },
  "7c6d1b5dbdcfbe51fcc59afd19cf25b99ff1febd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a newspaper strip with two headlines \"Youth Killed Drag Racing\" and \"Cops Vow Speeding Crackdown\" and small columns of article text below",
+  "keep": "the headlines exactly",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4010,11 +4010,11 @@
   "masked": 1
  },
  "824653fb1c8fa1d64060aa841a960a14132707cd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 1,
+  "desc": "a narrow vertical yellow and black strip",
+  "keep": "the shape",
+  "sheet": "ui",
   "status": "new",
   "ids": {
    "main": [
@@ -4056,11 +4056,11 @@
   "masked": 1
  },
  "82ec907176954472d98df543d3837fee11b96d65": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -4121,10 +4121,10 @@
   "masked": 1
  },
  "8586d96448487cf5d73dcb328cfe6e47ab25329a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "two gas station attendants in green uniforms and caps, one lounging in a chair, one getting up from a chair, and a third standing with a chair beside him, against a chain link fence and grey pavement",
+  "keep": "the three figures and chairs where they are",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4224,10 +4224,10 @@
   "masked": 1
  },
  "88f4bb7de33f83e28b2e9c368484aabdcf2905e7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "pointer",
+  "batch": 1,
+  "desc": "four mouse pointer icons stacked vertically, each 24 x 16 pixels: a red wrench, a white pointing hand, a grey fuel pump nozzle and a red paint brush, on a flat background",
+  "keep": "each icon stays in its own 16-pixel row, the same size, pointing the same way; the tip of each pointer stays at the top left",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4247,11 +4247,11 @@
   "masked": 1
  },
  "891fbd1a42e6d99b17ef0875e7931ddf533d1066": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -4289,11 +4289,11 @@
   "masked": 1
  },
  "895e09012285a71b36daa90dd113b2ad5f0b91a6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a yellow sticky note with a red border and a curled bottom left corner, the word \"save\" handwritten in red",
+  "keep": "the word save",
+  "sheet": "notes",
   "status": "new",
   "ids": {
    "main": [
@@ -4407,10 +4407,10 @@
   "masked": 1
  },
  "8e2cd0b5b57de93e174d8650f6f26de2f9f2230f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a speeding ticket form: \"SPEEDING TICKET\", \"CITY OF LOS ANGELES\", two \"OFFICIAL NOTICE\" boxes with a seal, blank \"NAME:\" and \"VEHICLE: YEAR MAKE\" fields, \"Violation : 22349110\", \"Location : Main Street, Los Angeles, Calif.\", \"ISSUING OFFICER:\" with a scribble and \"SIGNATURE : X\"",
+  "keep": "all the lettering exactly; the blank fields stay blank",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4743,11 +4743,11 @@
   "masked": 1
  },
  "9ac1470bf02a10a880243a03720250285096e5d8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a yellow sticky note with a red border and a curled bottom left corner, the words \"forget it\" handwritten in red on two lines",
+  "keep": "the words forget it",
+  "sheet": "notes",
   "status": "new",
   "ids": {
    "main": [
@@ -4823,11 +4823,11 @@
   "masked": 1
  },
  "9f2b10961d178525dc0998af3f82a7c02382f350": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -5113,10 +5113,10 @@
   "masked": 1
  },
  "a71bbca79002889d44627e320ff2ae163eda76ae": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a sprite sheet of 12 animation frames of a blonde drive-in waitress on roller skates carrying a tray, in two rows of six",
+  "keep": "every figure stays in its own place in the grid, the same size and pose, so the frames still line up",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5197,11 +5197,11 @@
   "masked": 1
  },
  "ae2c99858dc521e5d66b4a9622767c05a56b827f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a wide empty white speech bubble with a teal outline and a tail pointing down right",
+  "keep": "empty inside",
+  "sheet": "bubbles",
   "status": "new",
   "ids": {
    "main": [
@@ -5277,10 +5277,10 @@
   "masked": 1
  },
  "b0aab01fedb9db1f8af28aca29a4f75ca8fe3289": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a newspaper strip with two headlines \"Oscar Nominations Announced\" and \"Atlas Rocket Explodes On Launch\" and small columns of article text below",
+  "keep": "the headlines exactly",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5342,11 +5342,11 @@
   "masked": 1
  },
  "b2d36a9f629c09b132a9987f45c5bf77f732a5fd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -5385,9 +5385,9 @@
  },
  "b4710f0b14984a63bff1359d1813c7b08d1541a0": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 1,
+  "desc": "Bob's Drive-In at night: a long red and white diner with \"BOB'S DRIVE-IN\" in neon letters on the roof, lit windows with people inside and an \"ORDER\" sign, a green car parked on the left, a man in a white shirt standing in the middle, a red car on the right, a dark parking lot and a kerb with a round drain in front",
+  "keep": "the lettering BOB'S DRIVE-IN and ORDER",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5430,11 +5430,11 @@
   "masked": 1
  },
  "b4c06e275ef57b0a1c8380595a3d1e492bc1e788": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny portrait of a couple: a woman with a green headband and a man with dark hair and sunglasses smoking",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -5577,10 +5577,10 @@
   "masked": 1
  },
  "ba2cb4ac261d4debab11882ef8d8635827e1b413": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a newspaper strip with two headlines \"DODGERS Win 5-2\" and \"Tidal Wave Wrecks Malibu\" and small columns of article text below",
+  "keep": "the headlines exactly; small grey article text under them",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5726,11 +5726,11 @@
   "masked": 1
  },
  "bc4eacb1c1ea390929dfe5bafcd771cdc8d2d3be": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -5837,10 +5837,10 @@
   "masked": 1
  },
  "bfd986deb465205e2ab421e69e5d87014a53e03f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a wall calendar page: August 1963 at the top, a picture of a cream and black 1950s sedan in the middle and September 1963 at the bottom, Sundays in red, one date circled",
+  "keep": "all the numbers and month names exactly, the circled date",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5902,11 +5902,11 @@
   "masked": 1
  },
  "c145810a1b060dac275135c7e5e3b374b178e27c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -6001,11 +6001,11 @@
   "masked": 1
  },
  "c586a1ee89f431f0b18050c7bb3802110e1ea84d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 1,
+  "desc": "a green floor jack seen from the side with its handle lowered",
+  "keep": "the shape and position",
+  "sheet": "jack",
   "status": "new",
   "ids": {
    "main": [
@@ -6024,11 +6024,11 @@
   "masked": 1
  },
  "c63dba3c71226829bd5a380729cd27c456e96cad": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -6066,11 +6066,11 @@
   "masked": 1
  },
  "c6ab4a9824737cf0e330ef0fa98548df9d653023": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -6127,10 +6127,10 @@
   "masked": 1
  },
  "c90f9addeffa5b5ce3b1cc3baaddb687d663b543": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a sprite sheet of 14 animation frames of a man in a white T-shirt and teal trousers in front of a speckled grey wall, in two rows of seven",
+  "keep": "every figure stays in its own place in the grid, the same size and pose",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6169,11 +6169,11 @@
   "masked": 1
  },
  "ca9b02f0550b5acebb2baafcc1a5d1ff578380e2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -6337,10 +6337,10 @@
   "masked": 1
  },
  "d05293d0a0cd038d2448f2a69b459a097d7d498f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 1,
+  "desc": "a 1960s California driver licence card: the blue \"DMV\" and \"CALIFORNIA\" header with a state seal, \"DRIVER LICENSE F8819329\", \"EXPIRES ON BIRTHDAY 1965\", a fingerprint box on the left, \"NAME:\" and \"CLASS 3\" with blank lines, a signature line with a scribble and the date 11-16-61",
+  "keep": "all the lettering exactly; the name line stays blank",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6384,9 +6384,9 @@
  },
  "d1cc092dd1b98e29668e83ac644fbfae212e6244": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 1,
+  "desc": "the credits screen as a blue California licence plate with four screws: \"CALIFORNIA Dreams\" at the top, small credit text columns left and right, a big yellow \"AD 1989\" and small copyright lines at the bottom",
+  "keep": "all the lettering and credit text exactly; the plate shape and screws",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6475,11 +6475,11 @@
   "masked": 0
  },
  "d4760611a9e2d87821285a90132068300a0101f7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -6796,9 +6796,9 @@
  },
  "df62d0d88e7b46eb6d068ecab612ed515456c320": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 1,
+  "desc": "the top of the newspaper: two stacked paper tabs \"AUTO PARTS\" (with a wheel, a spark plug and an engine block) and \"USED CARS\" (with an old red sedan and a red sports car), then the \"Los Angeles News\" masthead in black gothic letters and \"10 cents\" on the right",
+  "keep": "all the lettering exactly; the paper stays white",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6907,9 +6907,9 @@
  },
  "e25979fb8a2073fee8ca5ae00202bc6be58a4891": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 1,
+  "desc": "the title screen: a cartoon blonde girl with a pink bow and a dark-haired guy with glasses riding in a red and white 1950s convertible coming toward the viewer, chrome grille and bumper, yellow headlight cones, the big pink and yellow \"STREET ROD\" logo across the front with a \"TM\" mark, a small \"California Dreams\" plate below, on a black background",
+  "keep": "the lettering STREET ROD and California Dreams exactly; black background",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6971,11 +6971,11 @@
   "masked": 1
  },
  "e2f696e72176d4f2e85b19aee42115d7fc2f6b19": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 1,
+  "desc": "a thin red-pink gas hose line curving down with a small green nozzle at the top left",
+  "keep": "the line path",
+  "sheet": "ui",
   "status": "new",
   "ids": {
    "main": [
@@ -7093,11 +7093,11 @@
   "masked": 1
  },
  "e692c6c56942feb8ff50808cc783901742f29d5f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a yellow sticky note with a red border and a curled bottom left corner, the word \"load\" handwritten in red",
+  "keep": "the word load",
+  "sheet": "notes",
   "status": "new",
   "ids": {
    "main": [
@@ -7459,11 +7459,11 @@
   "masked": 1
  },
  "f241382aceaa6b1d2448868928d6204d4dc4bf2b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -7520,11 +7520,11 @@
   "masked": 1
  },
  "f310dd3c0b626c0686f759d5c5ba6cdc743ac66f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a wide empty white speech bubble with a teal outline and a tail pointing down right",
+  "keep": "empty inside",
+  "sheet": "bubbles",
   "status": "new",
   "ids": {
    "main": [
@@ -7600,11 +7600,11 @@
   "masked": 1
  },
  "f4ecc61fa2b135742f1a2356be2515d4db2f160f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-1",
   "status": "new",
   "ids": {
    "main": [
@@ -7745,11 +7745,11 @@
   "masked": 1
  },
  "fa3a1cd9c33a87cad9641bfa858b4b02033dd832": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
@@ -7768,11 +7768,11 @@
   "masked": 1
  },
  "faab2c3eebc69ea333a58dda871dca68e36d96ba": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 1,
+  "desc": "a tiny head-and-shoulders portrait of a 1950s street racer",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "faces-2",
   "status": "new",
   "ids": {
    "main": [
