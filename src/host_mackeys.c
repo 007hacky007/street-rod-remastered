@@ -32,6 +32,7 @@ int mac_keys_filter(MacKeyFilter *f, int scancode, bool down, bool gui_held, Mac
             f->sent_ctrl = f->pending_ctrl;
             f->pending_ctrl = 0;
         }
+        f->suppressed[scancode] = false;   /* a break the Mac ate (pressed with Cmd) is not owed now */
         out[n++] = (MacKey){ scancode, true };
         return n;
     }

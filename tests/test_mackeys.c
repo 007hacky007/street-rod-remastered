@@ -68,6 +68,17 @@ static void plain_keys_pass(void)
     CHECK(out[0].scancode == A && !out[0].down);
 }
 
+/* A key whose break was eaten by the Mac (pressed with Cmd) must not lose its next, ordinary break. */
+static void suppressed_flag_cleared_by_plain_press(void)
+{
+    CHECK(ev(LGUI, true, true) == 0);
+    CHECK(ev(UP, true, true) == 0);
+    CHECK(ev(LGUI, false, false) == 0);
+    CHECK(ev(UP, true, false) == 1);
+    CHECK(ev(UP, false, false) == 1);
+    CHECK(out[0].scancode == UP && !out[0].down);
+}
+
 static void reset_drops_pending_ctrl(void)
 {
     CHECK(ev(LCTRL, true, false) == 0);
@@ -86,5 +97,6 @@ int main(void)
     RUN(suppressed_release_after_gui_up);
     RUN(plain_keys_pass);
     RUN(reset_drops_pending_ctrl);
+    RUN(suppressed_flag_cleared_by_plain_press);
     return failures != 0;
 }
