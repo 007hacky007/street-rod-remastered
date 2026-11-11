@@ -12,14 +12,20 @@ find_package(SDL3 REQUIRED CONFIG)
 file(GLOB_RECURSE SR_SOURCES CONFIGURE_DEPENDS src/*.c)
 file(GLOB_RECURSE SR_ENHANCED_SOURCES CONFIGURE_DEPENDS src/enhanced/*.c)
 
+# The host and what else both games share (common/README.md).
+file(GLOB SR_HOST_SOURCES CONFIGURE_DEPENDS common/*.c)
+add_library(sre_host STATIC ${SR_HOST_SOURCES})
+target_include_directories(sre_host PUBLIC common)
+target_link_libraries(sre_host PUBLIC SDL3::SDL3)
+
 # Everything but main.c in an object library, so the unit tests can link the engine.
 list(FILTER SR_SOURCES EXCLUDE REGEX "/src/main\\.c$")
 add_library(sre_core OBJECT ${SR_SOURCES})
 target_include_directories(sre_core PUBLIC src)
-target_link_libraries(sre_core PUBLIC SDL3::SDL3)
+target_link_libraries(sre_core PUBLIC sre_host SDL3::SDL3)
 add_executable(streetrod-enhanced src/main.c)
 target_link_libraries(streetrod-enhanced PRIVATE sre_core)
-foreach(t sre_core streetrod-enhanced)
+foreach(t sre_host sre_core streetrod-enhanced)
 if(MSVC)
     target_compile_options(${t} PRIVATE /W3)
 else()

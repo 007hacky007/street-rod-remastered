@@ -6,7 +6,7 @@
  * the road view and the rear-view mirror again on the host at a higher resolution for every displayed frame,
  * with the motion carried smoothly between the game's frames, and lays the result over the EGA picture. The
  * hooks below are called from the engine at the places marked `ENH:`. */
-#include "../types.h"
+#include "types.h"
 
 #define ENH_DEFAULT_RES_SCALE 4        /* output = 320x200 times this */
 #define ENH_MAX_RES_SCALE     8

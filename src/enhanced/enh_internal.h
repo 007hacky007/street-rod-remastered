@@ -2,7 +2,7 @@
 /* Shared declarations of src/enhanced. */
 #include <SDL3/SDL_stdinc.h>
 
-#include "../types.h"
+#include "types.h"
 
 /* The road view on screen (race_road.c clip DS:5E4E..: rows 12h..65h), the split below it. */
 #define ENH_VIEW_Y0 0x12
