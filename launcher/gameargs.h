@@ -5,6 +5,29 @@
 
 #include <wx/string.h>
 
+// The two games the launcher starts.
+enum class Game { SR1 = 1, SR2 = 2 };
+
+// The value of [Launcher] Game: 2 is Street Rod 2, anything else Street Rod.
+Game GameFromSetting(int value);
+
+// What a game is called, where it lives and which of the launcher's options it takes.
+struct GameTraits {
+    const char* name;       // "Street Rod", "Street Rod 2"
+    const char* program;    // the port, without .exe
+    const char* folder;     // its game folder's default name
+    const char* section;    // the settings section of its own keys
+    bool cars;              // the Street Rod SE data disk's cars
+    bool autoDrive;         // the "auto" switch
+    bool soundDevice;       // AdLib or the PC speaker ("adlib", "speaker")
+    bool enhanced;          // the enhanced race view (--classic, --res-scale, --aa, --town)
+    bool art;               // the remastered pictures (--remaster-dir)
+    bool remasteredMusic;   // the band (--music remastered)
+    bool gearKeys;          // the port's A / Z gear keys
+};
+
+const GameTraits& Traits(Game game);
+
 // Game settings > Sounds: the volumes in percent, 0..100.
 struct Sounds {
     int music = 100;        // --music-volume: the background tune
@@ -13,6 +36,7 @@ struct Sounds {
 };
 
 struct GameOptions {
+    Game game = Game::SR1;
     wxString program;       // streetrod-enhanced(.exe)
     wxString gameDir;       // --game-dir
     bool demo = false;      // the game's "demo" switch: it plays itself
@@ -25,8 +49,10 @@ struct GameOptions {
     int aa = 2;             // --aa: anti-aliasing, aa x aa samples per pixel
     bool town = true;       // --town on|off: the drives through town enhanced too
     wxString remasterDir;   // --remaster-dir: the remastered art pack, empty = the original art
+    bool speaker = false;   // Street Rod 2: "speaker" (the PC speaker) instead of "adlib"
     Sounds sounds;
 };
 
-// The command line for `options`: the program first, then its arguments.
+// The command line for `options`: the program first, then its arguments. Options the game doesn't take
+// (Traits) are left out: Street Rod 2 stops at an option it doesn't know.
 std::vector<wxString> GameArgs(const GameOptions& options);
