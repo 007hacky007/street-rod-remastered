@@ -17,6 +17,10 @@ What differs from upstream:
   Street Rod 2: window title "Street Rod 2 Enhanced", 49716 Hz (the OPL2 rate), the AdLib chip on.
 * The executable is `streetrod2-enhanced`. Upstream's launcher is not imported; the one in `launcher/` serves
   both games.
+* Port fix: the host writes to the AdLib chip through its write buffer (`common/host.c` `host_opl_write`), two
+  chip samples apart, as the PC's driver waits did. Upstream wrote them at once, so the key-off that starts each
+  note of the songs fell into the same chip sample as the key-on, the notes were never restarted and the
+  songs' bass and guitar went silent after their first seconds.
 * The remastered music, `--music remastered` (default `original`): Street Rod 1's small band (`common/band`)
   plays the music as the game's own sequencers play it (`src2/sound/band.c`). The AdLib songs go note for note
   from `mus.c` (hooks at each `adlib_*` call of a note, timbre or bend event and at `mus_play`, `mus_stop` and
