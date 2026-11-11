@@ -101,6 +101,14 @@ if(SRE_TEST_GAME2_DIR)
     add_test(NAME sr2_volumes COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_volumes.sh
              $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR})
     set_tests_properties(sr2_volumes PROPERTIES TIMEOUT 120)
+    # The 15 smoke paths of upstream (title, demo tour, every race kind, jail, garage, save/load, endings).
+    find_package(Python3 COMPONENTS Interpreter)
+    if(Python3_FOUND)
+        add_test(NAME sr2_smoke COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/sr2_smoke.py
+                 --exe $<TARGET_FILE:streetrod2-enhanced> --game ${SRE_TEST_GAME2_DIR}
+                 --work ${CMAKE_CURRENT_BINARY_DIR}/sr2_smoke --jobs 4)
+        set_tests_properties(sr2_smoke PROPERTIES TIMEOUT 1800 LABELS slow)
+    endif()
     if(SRE_TEST_GAME_DIR)
         add_test(NAME sr2_check COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_check.sh
                  $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR} $<TARGET_FILE:streetrod-enhanced>
