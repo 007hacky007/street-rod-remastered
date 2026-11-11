@@ -92,6 +92,6 @@ add_test(NAME compose COMMAND test_compose)
 # The shared host: Street Rod 1's audio pinned, the AdLib chip, voice volumes, the mouse space.
 add_executable(test_host test_host.c)
 target_link_libraries(test_host PRIVATE sre_host)
-foreach(t sr1_audio_unchanged)
+foreach(t sr1_audio_unchanged opl_renders opl_voice_gain mouse_space mouse_space_set)
     add_test(NAME host_${t} COMMAND test_host ${t})
 endforeach()

@@ -1,4 +1,5 @@
-/* test_host.c -- the shared host (common/host.c): Street Rod 1's audio pinned bit for bit.
+/* test_host.c -- the shared host (common/host.c): Street Rod 1's audio pinned bit for bit, Street Rod 2's
+ * AdLib chip and voice volumes, the mouse space.
  *   test_host <test name>   (each test in its own process: host_init runs once per process)
  * Runs headless with the SDL dummy drivers. */
 #include <SDL3/SDL.h>
@@ -113,10 +114,133 @@ static void sr1_audio_unchanged(void)
     SDL_free(wav);
 }
 
+
+/* ---- Street Rod 2's AdLib chip and voice volumes */
+
+static void opl(u8 reg, u8 value) { host_opl_write(reg, value); }
+
+/* A plain sine note on melodic voice v (operators from the OPL2 slot layout). */
+static void opl_note(int v)
+{
+    static const u8 mod_off[9] = { 0x00, 0x01, 0x02, 0x08, 0x09, 0x0A, 0x10, 0x11, 0x12 };
+    u8 m = mod_off[v], c = (u8)(m + 3);
+    opl((u8)(0x20 + m), 0x01); opl((u8)(0x20 + c), 0x01);
+    opl((u8)(0x40 + m), 0x10); opl((u8)(0x40 + c), 0x00);
+    opl((u8)(0x60 + m), 0xF0); opl((u8)(0x60 + c), 0xF0);
+    opl((u8)(0x80 + m), 0x77); opl((u8)(0x80 + c), 0x77);
+    opl((u8)(0xE0 + m), 0x00); opl((u8)(0xE0 + c), 0x00);
+    opl((u8)(0xC0 + v), 0x00);
+    opl((u8)(0xA0 + v), 0x98);
+    opl((u8)(0xB0 + v), 0x31);
+}
+
+static bool start_sr2(void)
+{
+    host_configure(&(HostConfig){ "test", 49716, true });
+    if (!start()) return false;
+    host_opl_enable(true);
+    return true;
+}
+
+/* RMS of the second half of a stereo s16 WAV (the output lags the timeline by a tick); *same = every
+ * frame has left == right. */
+static double rms_tail(const unsigned char *wav, size_t len, bool *same)
+{
+    size_t frames = (len - 44) / 4, from = frames / 2;
+    double sum = 0;
+    if (same) *same = true;
+    for (size_t i = from; i < frames; i++) {
+        short l = (short)le(wav + 44 + 4 * i, 2), r = (short)le(wav + 46 + 4 * i, 2);
+        if (same && l != r) *same = false;
+        sum += (double)l * l;
+    }
+    return frames > from ? SDL_sqrt(sum / (double)(frames - from)) : 0;
+}
+
+static void opl_renders(void)
+{
+    if (!start_sr2()) { failures++; return; }
+    opl_note(0);
+    host_busy_wait_us(100000);
+    size_t len = 0;
+    unsigned char *wav = finish(&len);
+    host_shutdown();
+    CHECK(wav && len > 44);
+    if (!wav) return;
+    CHECK(le(wav + 22, 2) == 2);
+    CHECK(le(wav + 24, 4) == 49716);
+    bool same = false;
+    double r = rms_tail(wav, len, &same);
+    printf("  rms %.1f\n", r);
+    CHECK(r > 500);
+    CHECK(same);
+    SDL_free(wav);
+}
+
+static void opl_voice_gain(void)
+{
+    if (!start_sr2()) { failures++; return; }
+    host_set_volumes(0, 100);
+    host_opl_voice_music(0, true);
+    host_opl_voice_music(3, false);
+    opl_note(0);
+    opl_note(3);
+    host_busy_wait_us(100000);
+    size_t len = 0;
+    unsigned char *wav = finish(&len);
+    double effect = wav ? rms_tail(wav, len, NULL) : 0;
+    SDL_free(wav);
+    host_audio_dump_begin(wav_path());
+    host_opl_voice_music(3, true);              /* now both are music, at volume 0 */
+    host_busy_wait_us(100000);
+    wav = finish(&len);
+    double music = wav ? rms_tail(wav, len, NULL) : 1e9;
+    SDL_free(wav);
+    host_shutdown();
+    printf("  effect rms %.1f, music rms %.1f\n", effect, music);
+    CHECK(effect > 500);
+    CHECK(music < 5);
+}
+
+/* ---- The mouse space */
+
+static bool compose(u32 *xrgb) { (void)xrgb; return false; }
+
+static void mouse_space(void)
+{
+    SDL_setenv_unsafe("SDL_VIDEO_DRIVER", "dummy", 1);
+    SDL_setenv_unsafe("SDL_AUDIO_DRIVER", "dummy", 1);
+    if (!host_init(".", 1, false)) { failures++; return; }
+    host_set_frame_source(compose, 640, 400);   /* SR1's enhanced view at scale 2 */
+    s16 x = -1, y = -1;
+    host_window_to_screen(0, 0, &x, &y);
+    CHECK(x == 0 && y == 0);
+    host_window_to_screen(1e6f, 1e6f, &x, &y);
+    CHECK(x == 319 && y == 199);
+    host_shutdown();
+}
+
+static void mouse_space_set(void)
+{
+    SDL_setenv_unsafe("SDL_VIDEO_DRIVER", "dummy", 1);
+    SDL_setenv_unsafe("SDL_AUDIO_DRIVER", "dummy", 1);
+    if (!host_init(".", 1, false)) { failures++; return; }
+    host_set_frame_source(compose, 640, 200);   /* SR2's text menus */
+    host_set_mouse_space(640, 200);
+    s16 x = -1, y = -1;
+    host_window_to_screen(1e6f, 1e6f, &x, &y);
+    CHECK(x == 639 && y == 199);
+    host_shutdown();
+}
+
 int main(int argc, char **argv)
 {
     static const struct { const char *name; void (*fn)(void); } tests[] = {
         { "sr1_audio_unchanged", sr1_audio_unchanged },
+        { "opl_renders", opl_renders },
+        { "opl_voice_gain", opl_voice_gain },
+        { "mouse_space", mouse_space },
+        { "mouse_space_set", mouse_space_set },
     };
     if (argc != 2) { fprintf(stderr, "usage: %s <test>\n", argv[0]); return 2; }
     for (size_t i = 0; i < SDL_arraysize(tests); i++)

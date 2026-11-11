@@ -9,7 +9,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define AUDIO_RATE 44100
+#include "opl3.h"
+
+/* The game's host settings (host_configure); the defaults are Street Rod 1's. */
+static HostConfig cfg = { "Street Rod Enhanced", 44100, false };
+#define AUDIO_RATE cfg.audio_rate
+#define AUDIO_RATE_MAX 49716            /* the largest rate host_configure takes (static buffer sizes) */
 #define SPEAKER_AMPLITUDE 5000
 
 static SDL_Window *window;
@@ -28,6 +33,7 @@ static void (*focus_lost_handler)(void);
 static bool (*frame_source)(u32 *);
 static u32 *frame;                      /* frame_w x frame_h */
 static int frame_w = 320, frame_h = 200;
+static int mouse_w = 320, mouse_h = 200;    /* the screen the mouse reports in (host_set_mouse_space) */
 #define VIEW_W(w) (w)                   /* logical presentation: frame width x 3/4 of it (4:3) */
 #define VIEW_H(w) ((w) * 3 / 4)
 
@@ -61,7 +67,7 @@ bool host_init(const char *dir, int window_scale, bool fullscreen)
     }
     game_dir = SDL_strdup(dir);
     if (window_scale < 1) window_scale = 3;
-    if (!SDL_CreateWindowAndRenderer("Street Rod Enhanced", 320 * window_scale, 240 * window_scale,
+    if (!SDL_CreateWindowAndRenderer(cfg.title, 320 * window_scale, 240 * window_scale,
                                      SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY,  /* ENH: Retina */
                                      &window, &renderer)) {
         fprintf(stderr, "window/renderer failed: %s\n", SDL_GetError());
@@ -75,8 +81,8 @@ bool host_init(const char *dir, int window_scale, bool fullscreen)
     audio = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, NULL, NULL);
     if (audio) {
         SDL_ResumeAudioStreamDevice(audio);
-        static s16 silence[AUDIO_RATE / 20 * 2 * 2];       /* 50 ms of lead-in against underruns */
-        SDL_PutAudioStreamData(audio, silence, sizeof silence);
+        static s16 silence[AUDIO_RATE_MAX / 20 * 2 * 2];   /* 50 ms of lead-in against underruns */
+        SDL_PutAudioStreamData(audio, silence, AUDIO_RATE / 20 * 2 * 2 * (int)sizeof(s16));
     } else {
         fprintf(stderr, "audio unavailable: %s\n", SDL_GetError());
     }
@@ -149,8 +155,15 @@ void host_set_pit_divisor(u16 divisor)
  * and a one-pole low-pass (~10 kHz). Samples are rendered lazily: up to the stamp of each write, and
  * up to each tick boundary (so the device gets one tick of audio per tick, behind the timeline). */
 
-#define HP_R  0.99715       /* 1 - 2*pi*20/44100: ~20 Hz DC blocker */
-#define LP_A  0.7603        /* 1 - exp(-2*pi*10000/44100): ~10 kHz one-pole low-pass */
+/* The filters per output rate (host_configure): a ~20 Hz DC blocker, 1 - 2*pi*20/rate, and a ~10 kHz
+ * one-pole low-pass, 1 - exp(-2*pi*10000/rate). Kept as written so each game's output stays exact. */
+static const struct { int rate; double hp_r, lp_a; } filters[] = {
+    { 44100, 0.99715, 0.7603 },         /* Street Rod 1 */
+    { 49716, 0.99747, 0.7175 },         /* PORT: Street Rod 2, the OPL2 sample rate (14.318 MHz / 288) */
+};
+static double hp_r = 0.99715, lp_a = 0.7603;
+#define HP_R  hp_r
+#define LP_A  lp_a
 #define SPEAKER_GAIN (SPEAKER_AMPLITUDE * 2.0)   /* a full square swings +-SPEAKER_AMPLITUDE */
 #define MUSIC_GAIN   36000.0                   /* the band's full scale (its peaks stay near the speaker's) */
 #define AUDIO_MAX_QUEUED  (AUDIO_RATE / 4)       /* frames; beyond that output is dropped */
@@ -180,6 +193,17 @@ static u32 dump_samples;
 static int vol_music = 100, vol_effects = 100;
 static bool src_music;
 static int vol_now = 100;
+/* PORT: the AdLib chip (Street Rod 2): Nuked-OPL3, OPL2 mode, mono (left channel) into both channels. */
+static opl3_chip opl;
+static bool opl_on;
+/* ENH: which melodic voice (0..8) plays music now; the others play effects (each at its volume). */
+static bool voice_music[9] = { true, true, true, true, true, true, true, true, true };
+
+static void opl_apply_gains(void)
+{
+    for (int v = 0; v < 9; v++)
+        OPL3_SetChannelGain(&opl, v, (voice_music[v] ? vol_music : vol_effects) * 65536 / 100);
+}
 
 static u32 half_period(u32 count, bool high)
 {
@@ -215,8 +239,8 @@ static void audio_flush(void)
         /* Drop output if the device is far behind (e.g. after a stall) instead of building latency. */
         if (queued <= AUDIO_MAX_QUEUED) {
             if (queued == 0) {                      /* underrun: rebuild a little latency */
-                static const s16 silence[AUDIO_LEAD_IN * 2];
-                SDL_PutAudioStreamData(audio, silence, sizeof silence);
+                static const s16 silence[AUDIO_RATE_MAX / 25 * 2];
+                SDL_PutAudioStreamData(audio, silence, AUDIO_LEAD_IN * 2 * (int)sizeof(s16));
             }
             SDL_PutAudioStreamData(audio, r_buf, r_n * (int)sizeof(s16));
         }
@@ -230,7 +254,13 @@ static void emit_sample(double x)
     hp_x1 = x;
     hp_y1 = y;
     lp_z += LP_A * (y - lp_z);
-    double s = lp_z * SPEAKER_GAIN, l = s, r = s;
+    double s = lp_z * SPEAKER_GAIN;
+    if (opl_on) {                                   /* PORT: one OPL sample per output sample (same rate) */
+        int16_t o[2];
+        OPL3_Generate(&opl, o);
+        s += o[0];
+    }
+    double l = s, r = s;
     if (music_synth) {                              /* ENH: the band, at the music volume */
         float lr[2];
         music_synth(lr, 1);
@@ -316,6 +346,7 @@ void host_set_volumes(int music, int effects)
     vol_music = SDL_clamp(music, 0, 100);
     vol_effects = SDL_clamp(effects, 0, 100);
     vol_now = src_music ? (music_synth ? 0 : vol_music) : vol_effects;
+    if (opl_on) opl_apply_gains();
 }
 
 void host_speaker_source(bool music)
@@ -337,6 +368,47 @@ void host_set_music_synth(void (*render)(float *lr, int frames))
 void host_audio_sync(void) { render_to(tl_now); }
 
 int host_audio_rate(void) { return AUDIO_RATE; }
+
+void host_configure(const HostConfig *c)
+{
+    for (size_t i = 0; i < SDL_arraysize(filters); i++)
+        if (filters[i].rate == c->audio_rate) {
+            cfg = *c;
+            hp_r = filters[i].hp_r;
+            lp_a = filters[i].lp_a;
+            return;
+        }
+    host_fatal("unsupported audio rate %d", c->audio_rate);
+}
+
+/* PORT: the AdLib chip. A register write is stamped at the emulated time of the writer, like the speaker
+ * ports: audio is rendered up to it first, so music is sample-accurate to the PIT timeline. */
+void host_opl_enable(bool on)
+{
+    if (!cfg.opl) return;
+    render_to(tl_now);
+    if (on && !opl_on) {
+        OPL3_Reset(&opl, (uint32_t)AUDIO_RATE);
+        opl_on = true;
+        opl_apply_gains();
+    }
+    opl_on = on;
+}
+
+void host_opl_write(u8 reg, u8 value)
+{
+    if (!opl_on) return;
+    render_to(tl_now);
+    OPL3_WriteReg(&opl, reg, value);
+}
+
+void host_opl_voice_music(int voice, bool music)
+{
+    if (voice < 0 || voice >= 9 || voice_music[voice] == music) return;
+    render_to(tl_now);                              /* what sounded so far keeps its volume */
+    voice_music[voice] = music;
+    if (opl_on) opl_apply_gains();
+}
 
 void host_speaker(u16 divisor, bool on)
 {
@@ -393,7 +465,8 @@ static void audio_dump_close(void)
 
 static void audio_dump_from_env(void)
 {
-    const char *path = SDL_getenv("SR_AUDIO_DUMP");
+    const char *path = SDL_getenv("SR_AUDIO_WAV");      /* PORT: upstream SR2's name, same as SR_AUDIO_DUMP */
+    if (!path || !*path) path = SDL_getenv("SR_AUDIO_DUMP");
     if (path && *path && !host_audio_dump_begin(path)) fprintf(stderr, "cannot write %s\n", path);
 }
 
@@ -753,8 +826,8 @@ static void process_events(void)
                 float vw = (float)ww, vh = (float)wh;
                 if (vw * 3 > vh * 4) vw = vh * 4 / 3; else vh = vw * 3 / 4;
                 if (vw >= 1 && vh >= 1) {
-                    mickey_x += ev.motion.xrel * 2.0f * 320.0f / vw;
-                    mickey_y += ev.motion.yrel * 2.0f * 200.0f / vh;
+                    mickey_x += ev.motion.xrel * 2.0f * (float)mouse_w / vw;
+                    mickey_y += ev.motion.yrel * 2.0f * (float)mouse_h / vh;
                 }
             }
             SDL_ConvertEventToRenderCoordinates(renderer, &ev);
@@ -778,14 +851,25 @@ static void process_events(void)
 
 /* ---------------------------------------------------------------- mouse, joystick */
 
+void host_set_mouse_space(int w, int h)
+{
+    mouse_w = SDL_max(w, 1);
+    mouse_h = SDL_max(h, 1);
+}
+
+void host_window_to_screen(float wx, float wy, s16 *x, s16 *y)
+{
+    /* Logical presentation is the frame width x 3/4 of it (4:3); the game's screen is mouse_w x mouse_h. */
+    float px = SDL_clamp(wx, 0.0f, (float)VIEW_W(frame_w) - 1);
+    float py = SDL_clamp(wy, 0.0f, (float)VIEW_H(frame_w) - 1);
+    if (x) *x = (s16)(px * mouse_w / VIEW_W(frame_w));
+    if (y) *y = (s16)(py * mouse_h / VIEW_H(frame_w));
+}
+
 void host_mouse_read(s16 *x, s16 *y, u8 *buttons)
 {
     process_events();
-    /* Logical presentation is 320 x 240 (4:3); the game's screen is 320 x 200. */
-    float px = SDL_clamp(mouse_x, 0.0f, (float)VIEW_W(frame_w) - 1);
-    float py = SDL_clamp(mouse_y, 0.0f, (float)VIEW_H(frame_w) - 1);
-    if (x) *x = (s16)(px * 320 / VIEW_W(frame_w));
-    if (y) *y = (s16)(py * 200 / VIEW_H(frame_w));
+    host_window_to_screen(mouse_x, mouse_y, x, y);
     SDL_MouseButtonFlags b = SDL_GetMouseState(NULL, NULL);
     if (buttons) *buttons = (u8)(((b & SDL_BUTTON_LMASK) ? 1 : 0) | ((b & SDL_BUTTON_RMASK) ? 2 : 0) | script_buttons);
 }
@@ -869,7 +953,7 @@ _Noreturn void host_fatal(const char *fmt, ...)
     vsnprintf(msg, sizeof msg, fmt, ap);
     va_end(ap);
     fprintf(stderr, "fatal: %s\n", msg);
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Street Rod Enhanced", msg, window);
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, cfg.title, msg, window);
     host_shutdown();
     exit(3);
 }

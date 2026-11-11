@@ -7,6 +7,15 @@
 #define PIT_HZ        1193182u
 #define PIT_DIV_GAME  0x4000u        /* 16384 -> 72.82 Hz, timer install 0000:1111 (RE_GUIDE.md) */
 
+/* The game's host settings. Without a host_configure call (Street Rod 1) the defaults apply:
+ * "Street Rod Enhanced", 44100 Hz, no AdLib chip. Call it before host_init. */
+typedef struct HostConfig {
+    const char *title;      /* window and message box title */
+    int audio_rate;         /* output frames per second: 44100, or 49716 (the OPL2 rate, Street Rod 2) */
+    bool opl;               /* an AdLib chip is rendered into the output (host_opl_*) */
+} HostConfig;
+void host_configure(const HostConfig *cfg);
+
 bool host_init(const char *game_dir, int window_scale, bool fullscreen);
 void host_shutdown(void);
 
@@ -46,9 +55,12 @@ void host_set_kbd_handler(void (*handler)(u8 byte));
 /* Called when the window loses keyboard focus (keys released outside it never send their break). */
 void host_set_focus_lost_handler(void (*handler)(void));
 
-/* ---- Mouse (INT 33h replacement): position in 320x200 screen pixels, buttons bit0 left, bit1 right.
+/* ---- Mouse (INT 33h replacement): position in screen pixels (320x200 unless host_set_mouse_space), buttons bit0 left, bit1 right.
  * Motion in mickeys since the last call (for the driver's relative reads). */
 void host_mouse_read(s16 *x, s16 *y, u8 *buttons);
+/* The screen the mouse reports in (default 320x200); a window point (SDL window coordinates) in it. */
+void host_set_mouse_space(int w, int h);
+void host_window_to_screen(float wx, float wy, s16 *x, s16 *y);
 void host_mouse_motion(s16 *dx, s16 *dy);
 /* Mickeys since the last call as the INT 33h driver counts them at its default ratio (8 mickeys per 8
  * pixels, 2 mickeys per game pixel at 320x200): relative host motion scaled by the size of the game
@@ -95,13 +107,20 @@ void host_speaker_source(bool music);
 void host_set_music_synth(void (*render)(float *lr, int frames));
 void host_audio_sync(void);
 int host_audio_rate(void);
+/* ---- AdLib (OPL2, ports 388h/389h), with HostConfig.opl: Nuked-OPL3 mixed into the same output, one
+ * chip sample per output frame (49716 Hz). host_opl_write is stamped at the emulated time of the caller.
+ * ENH: each melodic voice (0..8) sounds at the music volume (the default) or, after
+ * host_opl_voice_music(v, false), at the effects volume. */
+void host_opl_enable(bool on);              /* reset the chip and start rendering it */
+void host_opl_write(u8 reg, u8 value);
+void host_opl_voice_music(int voice, bool music);
 /* Old interface: host_pit2_divisor(divisor); port 61h bits 0-1 = on ? 3 : 0. */
 void host_speaker(u16 divisor, bool on);
 
 /* Developer aids for offline rendering (tools/snd_dump.c): with realtime off, busy waits never wait
  * for real time; host_run_tick_now() runs the next timer tick at once (handler + audio). A WAV dump
- * receives every rendered sample (44.1 kHz mono s16), with or without an audio device; the
- * environment variable SR_AUDIO_DUMP=file.wav starts one in host_init. */
+ * receives every rendered sample (stereo s16 at host_audio_rate()), with or without an audio device;
+ * the environment variable SR_AUDIO_DUMP=file.wav (or SR_AUDIO_WAV) starts one in host_init. */
 void host_set_realtime(bool on);
 void host_run_tick_now(void);
 uint64_t host_audio_clock(void);            /* current emulated time, PIT clocks */

@@ -12,11 +12,15 @@ find_package(SDL3 REQUIRED CONFIG)
 file(GLOB_RECURSE SR_SOURCES CONFIGURE_DEPENDS src/*.c)
 file(GLOB_RECURSE SR_ENHANCED_SOURCES CONFIGURE_DEPENDS src/enhanced/*.c)
 
+# Nuked-OPL3 (LGPL-2.1+, third_party/nuked-opl3/LICENSE): Street Rod 2's AdLib chip, in the shared host.
+add_library(nuked_opl3 STATIC third_party/nuked-opl3/opl3.c)
+target_include_directories(nuked_opl3 PUBLIC third_party/nuked-opl3)
+
 # The host and what else both games share (common/README.md).
 file(GLOB SR_HOST_SOURCES CONFIGURE_DEPENDS common/*.c)
 add_library(sre_host STATIC ${SR_HOST_SOURCES})
 target_include_directories(sre_host PUBLIC common)
-target_link_libraries(sre_host PUBLIC SDL3::SDL3)
+target_link_libraries(sre_host PUBLIC SDL3::SDL3 nuked_opl3)
 
 # Everything but main.c in an object library, so the unit tests can link the engine.
 list(FILTER SR_SOURCES EXCLUDE REGEX "/src/main\\.c$")
