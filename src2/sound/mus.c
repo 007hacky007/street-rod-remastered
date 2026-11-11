@@ -295,6 +295,7 @@ static int mus_tick(void)
                     if (vel == 0) adlib_voice_off(v);
                     else {
                         if (v < 11 && vel_cache[v] != vel) { vel_cache[v] = vel; adlib_set_volume(v, vel, 1); }
+                        host_opl_voice_music(v, true);   /* ENH: a music note: the music volume (after an effect too) */
                         adlib_note_on(v, note);
                     }
                     break;

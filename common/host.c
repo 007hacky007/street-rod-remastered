@@ -402,6 +402,8 @@ void host_opl_write(u8 reg, u8 value)
     OPL3_WriteReg(&opl, reg, value);
 }
 
+bool host_opl_voice_is_music(int voice) { return voice >= 0 && voice < 9 && voice_music[voice]; }
+
 void host_opl_voice_music(int voice, bool music)
 {
     if (voice < 0 || voice >= 9 || voice_music[voice] == music) return;

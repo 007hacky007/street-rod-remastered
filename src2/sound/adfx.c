@@ -19,6 +19,7 @@ static void key_fx(int on, int v, int vol, int note)
 {
     GUARD();
     if (on) {
+        host_opl_voice_music(v, false);             /* ENH: an effect's note: the effects volume */
         adlib_set_volume(v, (u16)vol, 1);
         adlib_voice_off(v);
         adlib_note_on(v, note);

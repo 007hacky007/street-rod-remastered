@@ -114,6 +114,7 @@ int host_audio_rate(void);
 void host_opl_enable(bool on);              /* reset the chip and start rendering it */
 void host_opl_write(u8 reg, u8 value);
 void host_opl_voice_music(int voice, bool music);
+bool host_opl_voice_is_music(int voice);   /* which volume voice 0..8 takes now (tests) */
 /* Old interface: host_pit2_divisor(divisor); port 61h bits 0-1 = on ? 3 : 0. */
 void host_speaker(u16 divisor, bool on);
 
