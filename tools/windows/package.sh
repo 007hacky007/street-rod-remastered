@@ -26,7 +26,7 @@ cp "$build/Street Rod Enhanced.exe" "$build/streetrod-enhanced.exe" "$build"/*.d
 strip "$out"/*.exe
 cp "$root/LICENSE" "$out/LICENSE.txt"
 cp "$root/tools/windows/Read me.txt" "$out/"
-[ -z "$pack" ] || cp -R "$pack" "$out/Remaster"
+[ -z "$pack" ] || { mkdir -p "$out/Remaster"; cp "$pack/pack.json" "$out/Remaster/"; cp -R "$pack/pics" "$out/Remaster/"; }
 (cd "$root/dist" && zip -qr Street-Rod-Enhanced-windows.zip "Street Rod Enhanced")
 (cd "$root/dist" && sha256sum Street-Rod-Enhanced-windows.zip > Street-Rod-Enhanced-windows.zip.sha256)
 echo "built $root/dist/Street-Rod-Enhanced-windows.zip"

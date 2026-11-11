@@ -48,6 +48,9 @@ Needs Python 3 with Pillow and numpy (tests: pytest).
 
 6. `pack OUT` collects the art that passed (and was not rejected) with each picture's palette; `install` it
    where the launcher looks (`~/Library/Application Support/Street Rod Enhanced/Remaster` on a Mac).
+   To publish it, `pack art-pack` writes into the submodule (it adds and overwrites, it never deletes: a
+   picture taken out of the pack is removed there with `git rm`), then commit and push in `art-pack` and
+   commit the moved submodule here.
 
 In the game, `SR_REMASTER_SELFTEST=2` tints every remastered pixel, and `SR_REMASTER_TAGMAP=DIR` writes
 every 25th frame with a map of which picture each pixel shows (`tagsNNNN.bmp`: R + 256 G = the picture's

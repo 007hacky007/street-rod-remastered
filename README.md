@@ -117,11 +117,16 @@ All with the remastered pictures.
 
 ### Build
 
+The remastered pictures are a git submodule (`art-pack`, from
+[street-rod-remastered-art](https://github.com/007hacky007/street-rod-remastered-art)): clone with
+`git clone --recursive`, or run `git submodule update --init` in an existing clone. The packaging scripts
+put it in the zip and the app with `--pack art-pack`; without it the game shows the original pictures.
+
 Windows, in an MSYS2 UCRT64 shell with `mingw-w64-ucrt-x86_64-{gcc,cmake,ninja,sdl3,wxwidgets3.2-msw}` and
 `zip`:
 
 ```bash
-tools/windows/package.sh     # tests, then dist/Street-Rod-Enhanced-windows.zip
+tools/windows/package.sh --pack art-pack     # tests, then dist/Street-Rod-Enhanced-windows.zip
 ```
 
 Or by hand:
@@ -135,8 +140,8 @@ Mac (Apple Silicon, Xcode command line tools, CMake, Ninja and Python 3):
 
 ```bash
 tools/macos/build-deps.sh                  # SDL3 and wxWidgets, static, into build-deps/prefix
-tools/macos/package.sh --version 0.4.0     # tests, then dist/Street Rod Enhanced.app
-tools/macos/make-dmg.sh --version 0.4.0    # dist/Street-Rod-Enhanced.dmg
+tools/macos/package.sh --version 0.4.1 --pack art-pack     # tests, then dist/Street Rod Enhanced.app
+tools/macos/make-dmg.sh --version 0.4.1                    # dist/Street-Rod-Enhanced.dmg
 ```
 
 * Needs CMake 3.24+, a C11 compiler and SDL 3; the launcher needs C++17 and wxWidgets 3.2.

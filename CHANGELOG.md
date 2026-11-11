@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- The repository is now called street-rod-remastered.
+- The art pack lives in its own repository, street-rod-remastered-art, included as the git submodule
+  `art-pack`; the builds take it from there instead of the v0.4.0 release.
+
 ## 0.4.1
 
 - The remastered pictures come with the download: in the Windows zip and inside the Mac app. No separate

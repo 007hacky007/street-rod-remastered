@@ -1,0 +1,3 @@
+[submodule "art-pack"]
+	path = art-pack
+	url = https://github.com/007hacky007/street-rod-remastered-art.git

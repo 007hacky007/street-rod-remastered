@@ -9,11 +9,12 @@ Design: `docs/superpowers/specs/2026-11-10-hd-remaster-design.md`. Pipeline deta
 ## The art pack
 
 The pack comes with the downloads on the Releases page: in the Windows zip as `Remaster` next to the
-launcher, and inside the Mac app (`Contents/Resources/Remaster`). The builds take it from the
-`Street-Rod-Enhanced-remaster-pack.zip` attached to the v0.4.0 release (`tools/remaster/fetch-pack.sh`, which
-checks its SHA-256); a new pack is attached to a release and the script pointed at it. It is not kept in the
-repository: `remaster-art/`, where it is made, is ignored by git,
-and the only remastered images committed are the README's screenshots in `docs/screenshots/`. The code, the
+launcher, and inside the Mac app (`Contents/Resources/Remaster`). It lives in its own repository,
+[street-rod-remastered-art](https://github.com/007hacky007/street-rod-remastered-art), included here as the
+git submodule `art-pack`; the builds copy it from there (`package.sh --pack art-pack`). A new or redone
+picture is a commit in that repository, then the submodule is moved forward here. `remaster-art/`, where the
+art is made, is ignored by git, and the only remastered images in this repository are the README's
+screenshots in `docs/screenshots/`. The code, the
 tools and the catalogue (sizes, ids and descriptions, no pixels) are committed. The pictures are redrawn from
 Street Rod's art, which belongs to its copyright owner. Without a pack the game runs exactly as before.
 

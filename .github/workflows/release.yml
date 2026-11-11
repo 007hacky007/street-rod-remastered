@@ -1,7 +1,7 @@
 name: Release
 
-# A v* tag builds the macOS disk image and the Windows zip, both with the art pack inside
-# (tools/remaster/fetch-pack.sh), and attaches them to a draft release; a manual run builds them as
+# A v* tag builds the macOS disk image and the Windows zip, both with the art pack inside (the art-pack
+# submodule), and attaches them to a draft release; a manual run builds them as
 # artifacts only.
 on:
   push:
@@ -20,6 +20,8 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: true
 
       - uses: actions/setup-python@v7
         with:
@@ -48,11 +50,8 @@ jobs:
           fi
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 
-      - name: Art pack
-        run: tools/remaster/fetch-pack.sh build-art
-
       - name: App
-        run: tools/macos/package.sh --version "$VERSION" --pack build-art/Remaster
+        run: tools/macos/package.sh --version "$VERSION" --pack art-pack
 
       - name: Disk image
         run: tools/macos/make-dmg.sh --version "$VERSION"
@@ -71,6 +70,8 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: true
 
       - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
         with:
@@ -86,8 +87,7 @@ jobs:
 
       - name: Zip
         run: |
-          tools/remaster/fetch-pack.sh build-art
-          tools/windows/package.sh --pack build-art/Remaster
+          tools/windows/package.sh --pack art-pack
 
       - uses: actions/upload-artifact@v7
         with:

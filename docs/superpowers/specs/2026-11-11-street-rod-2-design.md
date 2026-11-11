@@ -130,8 +130,9 @@ Acceptance as for SR1: with time stopped, the enhanced view scaled down to 320x2
 * The rest go through the pipeline exactly as SR1's did: palettes from play logs, jobs, generation in ChatGPT
   through Claude in Chrome in the owner's browser, ingest, checks, the builder's review, the owner's in-game
   review in batches, repairs.
-* The pack format does not change. One pack holds both games' art. It is published as a new release asset
-  and `tools/remaster/fetch-pack.sh` points at it (new URL and SHA-256); the v0.4.0 asset stays.
+* The pack format does not change. One pack holds both games' art, in the art repository
+  (`github.com/007hacky007/street-rod-remastered-art`, the `art-pack` submodule): new pictures are commits
+  there and the submodule moves forward here.
 * The race-view shapes are in scope, as they were for Street Rod 1 (its `shape-<sha1>` entries). SR2 keeps
   them in `SR2_SHP`: 26 sets of coloured line shapes in a format other than SR1's. Sets 0..19 are the same
   objects as SR1's and reuse SR1's art by matching the drawing, not the bytes; sets 23..25 are the Aqueduct's,

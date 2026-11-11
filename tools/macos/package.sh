@@ -34,7 +34,7 @@ mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$build/Street Rod Enhanced" "$app/Contents/MacOS/"
 cp "$build/streetrod-enhanced" "$app/Contents/MacOS/"
 cp "$root/launcher/macos/AppIcon.icns" "$root/LICENSE" "$app/Contents/Resources/"
-[ -z "$pack" ] || cp -R "$pack" "$app/Contents/Resources/Remaster"
+[ -z "$pack" ] || { mkdir -p "$app/Contents/Resources/Remaster"; cp "$pack/pack.json" "$app/Contents/Resources/Remaster/"; cp -R "$pack/pics" "$app/Contents/Resources/Remaster/"; }
 sed "s/@VERSION@/$version/g" "$root/launcher/macos/Info.plist.in" > "$app/Contents/Info.plist"
 plutil -lint "$app/Contents/Info.plist" >/dev/null
 strip -x "$app/Contents/MacOS/Street Rod Enhanced" "$app/Contents/MacOS/streetrod-enhanced"
