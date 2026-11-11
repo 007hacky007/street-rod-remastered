@@ -240,6 +240,32 @@ static void opl_music_muted_by_synth(void)
     CHECK(back > 100);
 }
 
+/* A key-off and a key-on written at the same moment restart the note, as on the PC, where the driver's own
+ * waits between writes let the chip see the key-off. (Street Rod 2's songs end and start each note so.) */
+static void opl_key_retrigger(void)
+{
+    if (!start_sr2()) { failures++; return; }
+    host_audio_dump_end();
+    host_set_volumes(100, 100);
+    /* voice 0: a note that dies away within a second (attack 15, decay 4, not sustained) */
+    opl(0x20, 0x01); opl(0x23, 0x01);
+    opl(0x40, 0x10); opl(0x43, 0x00);
+    opl(0x60, 0xF4); opl(0x63, 0xF4);
+    opl(0x80, 0x77); opl(0x83, 0x77);
+    opl(0xC0, 0x00);
+    opl(0xA0, 0x98);
+    opl(0xB0, 0x31);
+    host_busy_wait_us(2000000);
+    double faded = opl_segment();
+    opl(0xB0, 0x11);                                /* key off and on again, at once */
+    opl(0xB0, 0x31);
+    double again = opl_segment();
+    host_shutdown();
+    printf("  faded %.1f, restarted %.1f\n", faded, again);
+    CHECK(faded >= 0 && faded < 50);
+    CHECK(again > 500);
+}
+
 /* ---- The mouse space */
 
 static bool compose(u32 *xrgb) { (void)xrgb; return false; }
@@ -278,6 +304,7 @@ int main(int argc, char **argv)
         { "opl_renders", opl_renders },
         { "opl_voice_gain", opl_voice_gain },
         { "opl_music_muted_by_synth", opl_music_muted_by_synth },
+        { "opl_key_retrigger", opl_key_retrigger },
         { "mouse_space", mouse_space },
         { "mouse_space_set", mouse_space_set },
     };

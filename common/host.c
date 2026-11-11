@@ -397,11 +397,15 @@ void host_opl_enable(bool on)
     opl_on = on;
 }
 
+/* PORT: through the chip's write buffer, which applies each write two chip samples (40 us) after the one
+ * before, as the AdLib's own waits between writes did on the PC. Written at once, a key-off and the key-on
+ * after it would fall into one sample and the chip would never restart the note: Street Rod 2's songs end
+ * and start each note so, and their bass and guitar went silent once their first notes had faded. */
 void host_opl_write(u8 reg, u8 value)
 {
     if (!opl_on) return;
     render_to(tl_now);
-    OPL3_WriteReg(&opl, reg, value);
+    OPL3_WriteRegBuffered(&opl, reg, value);
 }
 
 bool host_opl_voice_is_music(int voice) { return voice >= 0 && voice < 9 && voice_music[voice]; }
