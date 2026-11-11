@@ -37,7 +37,7 @@ const char* const APP_TITLE = "Street Rod Enhanced";
 
 namespace {
 
-const char* const WEBSITE = "https://github.com/007hacky007/streetrod-enhanced";
+const char* const WEBSITE = "https://github.com/007hacky007/street-rod-remastered";
 const char* const SECTION = "Game";
 const char* const SOUND = "Sound";
 
@@ -702,7 +702,7 @@ void LauncherFrame::About() {
     const wxString content = wxString::Format(
         "%s\n\n"
         "Author: 007hacky007\n"
-        "Website: <a href=\"%s\">github.com/007hacky007/streetrod-enhanced</a>",
+        "Website: <a href=\"%s\">github.com/007hacky007/street-rod-remastered</a>",
         blurb, WEBSITE);
     wxIcon icon;
     icon.CopyFromBitmap(AppBitmap(FromDIP(32)));
@@ -729,7 +729,7 @@ void LauncherFrame::About() {
     text->Add(headingText, 0, wxBOTTOM, dialog.FromDIP(8));
     text->Add(new wxStaticText(&dialog, wxID_ANY, blurb), 0, wxBOTTOM, dialog.FromDIP(12));
     text->Add(new wxStaticText(&dialog, wxID_ANY, "Author: 007hacky007"));
-    AddLink(&dialog, text, "Website:", "github.com/007hacky007/streetrod-enhanced", WEBSITE);
+    AddLink(&dialog, text, "Website:", "github.com/007hacky007/street-rod-remastered", WEBSITE);
     body->Add(text, 1, wxTOP | wxRIGHT | wxBOTTOM, dialog.FromDIP(12));
 
     auto* all = new wxBoxSizer(wxVERTICAL);

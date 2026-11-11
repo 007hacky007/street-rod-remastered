@@ -8,4 +8,4 @@ Street Rod Enhanced
 3. Run "Street Rod Enhanced.exe", pick your options and press Play.
 
 Keep this folder somewhere you can write to (not Program Files): saved games are stored in Game.
-Alt+Enter switches full screen. More: https://github.com/007hacky007/streetrod-enhanced
+Alt+Enter switches full screen. More: https://github.com/007hacky007/street-rod-remastered

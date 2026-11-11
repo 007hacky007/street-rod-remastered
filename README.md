@@ -33,7 +33,7 @@ and on Windows you unzip it into a folder (see below).
 ### Windows
 
 1. Download `Street-Rod-Enhanced-windows.zip` from the
-   [Releases page](https://github.com/007hacky007/streetrod-enhanced/releases) and unzip it somewhere you can
+   [Releases page](https://github.com/007hacky007/street-rod-remastered/releases) and unzip it somewhere you can
    write to, for example your Documents folder (not Program Files: saved games are kept next to the game).
 2. Download the game from the official site, <https://www.streetrodonline.com/downloads/>:
    * **Street Rod** (`sr1pc.zip`): copy the files from its `SR1` folder into the `Game` folder of Street Rod
@@ -54,7 +54,7 @@ Street Rod Enhanced\
 ### Mac
 
 1. Download `Street-Rod-Enhanced.dmg` from the
-   [Releases page](https://github.com/007hacky007/streetrod-enhanced/releases) and open it.
+   [Releases page](https://github.com/007hacky007/street-rod-remastered/releases) and open it.
 2. Drag **Street Rod Enhanced** to **Applications**, then open it from there.
 3. The app is free and open source but not signed by Apple, so macOS asks once before it opens it:
    * macOS 15 or newer: macOS says it cannot be opened, click **Done**. Open **System Settings** >

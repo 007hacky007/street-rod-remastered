@@ -5,7 +5,7 @@
 #   tools/remaster/fetch-pack.sh DIR
 set -eu
 
-url=https://github.com/007hacky007/streetrod-enhanced/releases/download/v0.4.0/Street-Rod-Enhanced-remaster-pack.zip
+url=https://github.com/007hacky007/street-rod-remastered/releases/download/v0.4.0/Street-Rod-Enhanced-remaster-pack.zip
 sha256=40de8200f22a588cd468ba22b6868224835295a7b152cb0208777c78c525587e
 
 dir=$1
