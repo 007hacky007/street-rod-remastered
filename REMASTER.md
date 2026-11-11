@@ -8,16 +8,20 @@ Design: `docs/superpowers/specs/2026-11-10-hd-remaster-design.md`. Pipeline deta
 
 ## The art pack
 
-The pack is a separate download from the Releases page, `Street-Rod-Enhanced-remaster-pack.zip`; the README
-says where to put it. It is not kept in the repository: `remaster-art/`, where it is made, is ignored by git,
+The pack comes with the downloads on the Releases page: in the Windows zip as `Remaster` next to the
+launcher, and inside the Mac app (`Contents/Resources/Remaster`). The builds take it from the
+`Street-Rod-Enhanced-remaster-pack.zip` attached to the v0.4.0 release (`tools/remaster/fetch-pack.sh`, which
+checks its SHA-256); a new pack is attached to a release and the script pointed at it. It is not kept in the
+repository: `remaster-art/`, where it is made, is ignored by git,
 and the only remastered images committed are the README's screenshots in `docs/screenshots/`. The code, the
 tools and the catalogue (sizes, ids and descriptions, no pixels) are committed. The pictures are redrawn from
 Street Rod's art, which belongs to its copyright owner. Without a pack the game runs exactly as before.
 
 ## Using it
 
-* Launcher: **Art: Remastered** (enabled when a pack is found in the launcher's settings folder, `Remaster/`;
-  on a Mac `~/Library/Application Support/Street Rod Enhanced/Remaster`, on Windows next to the launcher).
+* Launcher: **Art: Remastered**, the default when a pack is found: on Windows `Remaster` next to the
+  launcher; on a Mac `~/Library/Application Support/Street Rod Enhanced/Remaster` if there is one there (a
+  pack of your own), else the one inside the app.
   **Race view** (Enhanced / Original) is a separate choice. **Music** in the main window's Options picks the
   remastered or the original tune (default Remastered).
 * Game: `--remaster-dir DIR` shows the pack in DIR; `--music remastered` plays the band (default original).

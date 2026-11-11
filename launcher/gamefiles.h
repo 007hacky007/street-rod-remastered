@@ -38,4 +38,7 @@ bool FolderIsFree(const wxString& dir);
 // Either everything is installed or nothing is: on failure `folder` is left as it was and `error` says why.
 bool Install(const wxString& folder, const std::vector<Download>& downloads, wxString& error);
 
+// The first of `dirs` that holds an art pack (a pack.json), or empty if none does.
+wxString FirstArtPack(const std::vector<wxString>& dirs);
+
 }  // namespace gamefiles

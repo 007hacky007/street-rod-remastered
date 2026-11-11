@@ -16,9 +16,9 @@ and on Windows you unzip it into a folder (see below).
   the same, played from the original game files.
 * **A smooth road.** Races and drives through town are drawn at your display's refresh rate, up to
   2560 × 1600, with anti-aliasing.
-* **Remastered pictures (optional).** Every picture of the game redrawn as modern pixel art at four times the
+* **Remastered pictures** (on by default, one click to the original). Every picture of the game redrawn as modern pixel art at four times the
   resolution. Painting your car, fades and the flashing signs still work on the new art.
-* **Remastered music (optional).** The game's own tune, note for note, played by a small band (bass, guitar
+* **Remastered music** (on by default). The game's own tune, note for note, played by a small band (bass, guitar
   or piano, drums) in stereo instead of the PC speaker.
 * **Separate music and sound effects volumes.**
 * **The Street Rod SE data disk's 25 cars**, one click away.
@@ -45,6 +45,7 @@ and on Windows you unzip it into a folder (see below).
 ```text
 Street Rod Enhanced\
 ├── Game\                        <- SR.EXE, LIB1, LIB2, HOT_DATA (and datadisk\ for Street Rod SE)
+├── Remaster\                    <- the remastered pictures
 ├── Street Rod Enhanced.exe      <- the launcher: start here
 ├── streetrod-enhanced.exe       <- the game
 └── the DLLs
@@ -84,18 +85,9 @@ Every choice is remembered. More in [launcher/README.md](launcher/README.md).
 
 ### The remastered pictures
 
-The redrawn pictures are a separate download, `Street-Rod-Enhanced-remaster-pack.zip` on the
-[Releases page](https://github.com/007hacky007/streetrod-enhanced/releases) (about 27 MB). It holds one
-folder, `Remaster`:
-
-* **Windows**: unzip it into the Street Rod Enhanced folder, so that `Remaster` sits next to
-  `Street Rod Enhanced.exe`.
-* **Mac**: in Finder choose **Go** > **Go to Folder...**, enter `~/Library/Application Support/Street Rod Enhanced`
-  and put the `Remaster` folder there.
-
-Then start the launcher again and choose **Art: Remastered**. Without the pack, **Art** stays on Original and
-the game shows its original pictures; everything else, including the smooth road and the remastered music,
-works the same. How the pictures were made: [REMASTER.md](REMASTER.md).
+The redrawn pictures come with the download (the `Remaster` folder next to the launcher on Windows, inside
+the app on a Mac) and are on by default. **Art: Original** brings back the game's own pictures. How the
+pictures were made: [REMASTER.md](REMASTER.md).
 
 ## Screenshots
 

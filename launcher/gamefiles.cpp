@@ -151,4 +151,10 @@ bool Install(const wxString& folder, const std::vector<Download>& downloads, wxS
     return true;
 }
 
+wxString FirstArtPack(const std::vector<wxString>& dirs) {
+    for (const wxString& dir : dirs)
+        if (!dir.empty() && wxFileName::FileExists(wxFileName(dir, "pack.json").GetFullPath())) return dir;
+    return wxString();
+}
+
 }  // namespace gamefiles

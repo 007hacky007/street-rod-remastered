@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include "gamefiles.h"
 #include "settings.h"
 
 namespace {
@@ -83,7 +84,14 @@ wxString DefaultRemasterDir() {
 #ifdef __WXMSW__
     return LauncherDir() + "\\Remaster";
 #else
-    return settings::Folder() + "/Remaster";
+    const wxString user = settings::Folder() + "/Remaster";
+#ifdef __WXOSX__
+    // The pack inside the app, unless the player put one in the settings folder.
+    const wxString found =
+        gamefiles::FirstArtPack({user, wxStandardPaths::Get().GetResourcesDir() + "/Remaster"});
+    if (!found.empty()) return found;
+#endif
+    return user;
 #endif
 }
 

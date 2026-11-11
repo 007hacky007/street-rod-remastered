@@ -153,7 +153,7 @@ LauncherFrame::LauncherFrame()
         wxMax(MIN_SCALE, wxMin(MAX_SCALE, settings::GetInt(SECTION, "Scale", DEFAULT_SCALE))) - MIN_SCALE);
     fullscreen_->SetValue(settings::GetInt(SECTION, "Fullscreen", 0) != 0);
     graphics_->SetSelection(settings::GetInt(SECTION, "Classic", 0) != 0 ? 1 : 0);
-    art_->SetSelection(settings::GetInt(SECTION, "Art", 0) != 0 && IsArtPack(DefaultRemasterDir()) ? 1 : 0);
+    art_->SetSelection(settings::GetInt(SECTION, "Art", 1) != 0 && IsArtPack(DefaultRemasterDir()) ? 1 : 0);
     resolution_->SetSelection(
         wxMax(MIN_RES, wxMin(MAX_RES, settings::GetInt(SECTION, "ResScale", DEFAULT_RES))) - MIN_RES);
     aa_->SetSelection(wxMax(1, wxMin(MAX_AA, settings::GetInt(SECTION, "AA", DEFAULT_AA))) - 1);
@@ -309,8 +309,8 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     auto* pgrid = new wxFlexGridSizer(2, gap, gap);
     pgrid->Add(new wxStaticText(pb, wxID_ANY, "A&rt:"), 0, wxALIGN_CENTER_VERTICAL);
     art_ = new wxChoice(pb, wxID_ANY);
-    art_->Append("Original: the game's pictures (default)");
-    art_->Append("Remastered: every picture redrawn");
+    art_->Append("Original: the game's pictures");
+    art_->Append("Remastered: every picture redrawn (default)");
     art_->SetToolTip("Remastered shows the redrawn pictures of the art pack in " + DefaultRemasterDir() +
                      ". Without a pack only Original is available.");
     pgrid->Add(art_, 0, wxALIGN_CENTER_VERTICAL);

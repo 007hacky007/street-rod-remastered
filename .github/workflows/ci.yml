@@ -44,7 +44,8 @@ jobs:
         run: |
           set -euo pipefail
           VERSION=$(sed -n 's/^#define APP_VERSION_TEXT "\(.*\)"/\1/p' launcher/version.h)
-          tools/macos/package.sh --version "$VERSION"
+          tools/remaster/fetch-pack.sh build-art
+          tools/macos/package.sh --version "$VERSION" --pack build-art/Remaster
           tools/macos/make-dmg.sh --version "$VERSION"
 
       - uses: actions/upload-artifact@v7
@@ -66,7 +67,7 @@ jobs:
         with:
           msystem: UCRT64
           update: true
-          install: zip
+          install: zip unzip curl
           pacboy: >-
             gcc:p
             cmake:p
@@ -75,7 +76,9 @@ jobs:
             wxwidgets3.2-msw:p
 
       - name: Build and test
-        run: tools/windows/package.sh
+        run: |
+          tools/remaster/fetch-pack.sh build-art
+          tools/windows/package.sh --pack build-art/Remaster
 
       - uses: actions/upload-artifact@v7
         with:

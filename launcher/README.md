@@ -24,10 +24,10 @@ like the Street Rod and Test Drive III launchers it is modelled on.
   played by a small band) or Original (the PC speaker), and **Start in full screen** (`--fullscreen`;
   Alt+Enter switches).
 * **Keys in the game**: a reminder of the game's keys, including the port's A / Z gear keys.
-* **Picture**: **Art** original (the default) or remastered (`--remaster-dir`: every picture redrawn, from the
-  art pack in `Remaster` in the settings folder, or beside the launcher on Windows; only available when a pack
-  is there; the pack is a download on the Releases page, see the README); **Race view** enhanced (the smooth, high-resolution road view, the
-  default) or original (`--classic`); **Resolution** of the picture, 640 × 400 to 2560 × 1600 (`--res-scale`, default 1280 × 800);
+* **Picture**: **Art** remastered (`--remaster-dir`: every picture redrawn, the default) or original. The art
+  pack is `Remaster` beside the launcher on Windows; on a Mac `Remaster` in the settings folder if there is
+  one, else the one inside the app. Without a pack only Original is available. **Race view** enhanced (the
+  smooth, high-resolution road view, the default) or original (`--classic`); **Resolution** of the picture, 640 × 400 to 2560 × 1600 (`--res-scale`, default 1280 × 800);
   **Anti-aliasing** off, 2 × 2 (default), 3 × 3 or 4 × 4 (`--aa`); **Drives through town enhanced too**
   (`--town`). The last three are greyed out with the original graphics.
 * **Play** starts the game; the launcher stays open.

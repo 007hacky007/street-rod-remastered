@@ -202,6 +202,22 @@ void rejects_zip_slip() {
     CHECK(!Exists(game + ".partial"));
 }
 
+// The art pack the launcher uses: the first of its folders that holds a pack.json (on a Mac, one the player
+// put in the settings folder before the one in the app).
+void first_art_pack() {
+    const wxString root = TempDir();
+    const wxString user = root + "/user", bundled = root + "/bundled", empty = root + "/empty";
+    wxFileName::Mkdir(user);
+    wxFileName::Mkdir(bundled);
+    wxFileName::Mkdir(empty);
+    WriteFile(bundled + "/pack.json", "{}");
+    CHECK(gamefiles::FirstArtPack({user, bundled}) == bundled);
+    CHECK(gamefiles::FirstArtPack({root + "/missing", empty}).empty());
+    CHECK(gamefiles::FirstArtPack({}).empty());
+    WriteFile(user + "/pack.json", "{}");
+    CHECK(gamefiles::FirstArtPack({user, bundled}) == user);
+}
+
 #define RUN(t)                                                                         \
     do {                                                                               \
         int before = failures;                                                         \
@@ -224,5 +240,6 @@ int main(int argc, char** argv) {
     RUN(rejects_checksum_mismatch);
     RUN(refuses_nonfree_folder);
     RUN(rejects_zip_slip);
+    RUN(first_art_pack);
     return failures != 0;
 }

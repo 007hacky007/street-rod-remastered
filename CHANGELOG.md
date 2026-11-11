@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1
+
+- The remastered pictures come with the download: in the Windows zip and inside the Mac app. No separate
+  art pack to install.
+- Launcher: Art defaults to Remastered when the pack is there.
+
 ## 0.4.0
 
 - HD remaster: with an art pack, every picture can be shown redrawn as pixel art at four times the resolution
