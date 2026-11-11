@@ -57,6 +57,34 @@ if(WIN32)
                 -DCMAKE_OBJDUMP=${CMAKE_OBJDUMP} -P ${CMAKE_CURRENT_SOURCE_DIR}/launcher/copy_dlls.cmake)
 endif()
 
+# Street Rod 2: The Next Generation, its own engine (src2/, ENGINE2.md) on the shared host.
+file(GLOB_RECURSE SR2_SOURCES CONFIGURE_DEPENDS src2/*.c)
+list(FILTER SR2_SOURCES EXCLUDE REGEX "/src2/main\\.c$")
+add_library(sr2_core OBJECT ${SR2_SOURCES})
+target_include_directories(sr2_core PUBLIC src2)
+target_link_libraries(sr2_core PUBLIC sre_host SDL3::SDL3)
+add_executable(streetrod2-enhanced src2/main.c)
+target_link_libraries(streetrod2-enhanced PRIVATE sr2_core sre_host)
+foreach(t sr2_core streetrod2-enhanced)
+if(MSVC)
+    target_compile_options(${t} PRIVATE /W3)
+else()
+    target_compile_options(${t} PRIVATE -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing)
+    if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+        target_compile_options(${t} PRIVATE -Wno-format-truncation)
+    endif()
+endif()
+endforeach()
+if(WIN32)
+    add_custom_command(TARGET streetrod2-enhanced POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:streetrod2-enhanced>
+                $<TARGET_FILE_DIR:streetrod2-enhanced>
+        COMMAND_EXPAND_LISTS)
+    add_custom_command(TARGET streetrod2-enhanced POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -DEXE=$<TARGET_FILE:streetrod2-enhanced> "-DSEARCH=${SR_DLL_DIR}"
+                -DCMAKE_OBJDUMP=${CMAKE_OBJDUMP} -P ${CMAKE_CURRENT_SOURCE_DIR}/launcher/copy_dlls.cmake)
+endif()
+
 # The launcher ("Street Rod Enhanced"): the game folder, the original or the data disk's cars, the
 # game's own switches and the display options; built beside streetrod-enhanced.exe. It needs
 # wxWidgets 3.2 (MSYS2: mingw-w64-ucrt-x86_64-wxwidgets3.2-msw) and a C++17 compiler.

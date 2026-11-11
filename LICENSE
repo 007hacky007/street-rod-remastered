@@ -23,3 +23,7 @@ SOFTWARE.
 
 Street Rod is (c) 1989 California Dreams. This license covers only the code and
 documentation in this repository, not the original game or its data.
+
+Street Rod 2 is (c) 1991 California Dreams; its game and data are not covered either.
+third_party/nuked-opl3 is Nuked-OPL3 by Nuke.YKT under the GNU LGPL 2.1 or later
+(third_party/nuked-opl3/LICENSE), not under this license.

@@ -95,3 +95,15 @@ target_link_libraries(test_host PRIVATE sre_host)
 foreach(t sr1_audio_unchanged opl_renders opl_voice_gain mouse_space mouse_space_set)
     add_test(NAME host_${t} COMMAND test_host ${t})
 endforeach()
+
+# Street Rod 2; needs its game files: -DSRE_TEST_GAME2_DIR=<folder with SR2's SR.EXE>.
+if(SRE_TEST_GAME2_DIR)
+    if(SRE_TEST_GAME_DIR)
+        add_test(NAME sr2_check COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_check.sh
+                 $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR} $<TARGET_FILE:streetrod-enhanced>
+                 ${SRE_TEST_GAME_DIR})
+    else()
+        add_test(NAME sr2_check COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_check.sh
+                 $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR})
+    endif()
+endif()
