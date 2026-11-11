@@ -1,0 +1,47 @@
+#pragma once
+/* The enhanced view's drawing core (common/enhanced: enh_raster.c, enh_sprite.c), shared by both games. Each
+ * game builds it into its own core with its own mem.h, platform/ and remaster/ headers. */
+#include <SDL3/SDL_stdinc.h>
+
+#include "types.h"
+
+/* The road view on screen (race_road.c clip DS:5E4E..: rows 12h..65h), the split below it. */
+#define ENH_VIEW_Y0 0x12
+#define ENH_VIEW_Y1 0x66
+
+typedef struct {
+    bool enabled;
+    int res_scale, aa, motion_delay;
+    bool town;
+} EnhOptions;
+extern EnhOptions enh_opt;
+
+/* enh_raster.c: samples of the view rows ENH_VIEW_Y0..Y1, sa = res scale x aa per original pixel. */
+typedef struct {
+    int w, h, sa;
+    u8 *px;                    /* palette indices; ENH_RGB = the colour in rgb[] (remastered art) */
+    u32 *rgb;                  /* ENH: remaster: allocated only with an art pack */
+    int cx0, cy0, cx1, cy1;    /* clip rectangle, samples */
+} EnhBuf;
+extern EnhBuf enh_buf;
+void enh_buf_setup(void);
+/* Drawing is clipped to [x0, x1) x [y0, y1) of the original screen; enh_clip_view() = the whole view. */
+void enh_clip(double x0, double y0, double x1, double y1);
+void enh_clip_view(void);
+void enh_fill_rows(double y0, double y1, u8 c);                  /* original screen rows [y0, y1) */
+void enh_fill_poly(const double *xs, const double *ys, int n, u8 c);
+/* Output rows ENH_VIEW_Y0..y_end of xrgb (320*S wide): the samples resolved through pal, except where the
+ * EGA page at plane offset `page` has written or foreground pixels. */
+void enh_resolve(u32 *xrgb, const u32 *pal, int npal, u16 page, int y_end);
+
+/* enh_sprite.c: palette-index images, ENH_CLEAR = transparent. */
+#define ENH_CLEAR 0xFF
+#define ENH_RGB   0xFE
+/* rm: NULL or w * h remaster tags (rm_tags.h), one per pixel: which art pixel it shows, 0 = none. */
+typedef struct { int w, h; u8 *px; u32 *rm; } EnhImage;
+extern const u32 *enh_cur_rgb;     /* the palette of the frame being drawn (enh_compose) */
+void enh_images_reset(void);
+const EnhImage *enh_image_bitmap(u16 seg, u16 off);
+const EnhImage *enh_image_vram(u16 page, int x, int y, int w, int h);
+void enh_draw_image(const EnhImage *img, double x0, double y0, double x1, double y1);
+void enh_fill_rect(double x0, double y0, double x1, double y1, u8 c);

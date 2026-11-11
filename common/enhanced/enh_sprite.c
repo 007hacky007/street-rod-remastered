@@ -1,7 +1,7 @@
 /* Pictures of the road view for the enhanced renderer: the game's planar bitmaps (the opponent's and the
  * police car's views) and rectangles of the off-screen sheets in video memory (signs, billboards), decoded
  * to palette-index images, and drawn scaled into the sample buffer. */
-#include "enhanced/enh_internal.h"
+#include "enh_draw.h"
 
 #include <SDL3/SDL.h>
 #include <math.h>

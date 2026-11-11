@@ -1,7 +1,7 @@
 /* Sample buffer of the enhanced road view: palette-index samples at (res scale x aa) per original pixel,
  * convex polygon fill at sample centres, and the resolve (linear-light average of each output pixel's
  * samples through the current palette) laid over the scaled EGA picture where the coverage allows. */
-#include "enhanced/enh_internal.h"
+#include "enh_draw.h"
 
 #include <SDL3/SDL.h>
 #include <math.h>

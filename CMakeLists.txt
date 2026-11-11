@@ -11,6 +11,9 @@ find_package(SDL3 REQUIRED CONFIG)
 
 file(GLOB_RECURSE SR_SOURCES CONFIGURE_DEPENDS src/*.c)
 file(GLOB_RECURSE SR_ENHANCED_SOURCES CONFIGURE_DEPENDS src/enhanced/*.c)
+# The enhanced view's drawing core (common/enhanced): built into each game's core, like the band.
+file(GLOB SR_ENH_CORE_SOURCES CONFIGURE_DEPENDS common/enhanced/*.c)
+list(APPEND SR_ENHANCED_SOURCES ${SR_ENH_CORE_SOURCES})
 
 # Nuked-OPL3 (LGPL-2.1+, third_party/nuked-opl3/LICENSE): Street Rod 2's AdLib chip, in the shared host.
 add_library(nuked_opl3 STATIC third_party/nuked-opl3/opl3.c)
@@ -28,8 +31,8 @@ file(GLOB SR_BAND_SOURCES CONFIGURE_DEPENDS common/band/*.c)
 
 # Everything but main.c in an object library, so the unit tests can link the engine.
 list(FILTER SR_SOURCES EXCLUDE REGEX "/src/main\\.c$")
-add_library(sre_core OBJECT ${SR_SOURCES} ${SR_BAND_SOURCES})
-target_include_directories(sre_core PUBLIC src common/band)
+add_library(sre_core OBJECT ${SR_SOURCES} ${SR_BAND_SOURCES} ${SR_ENH_CORE_SOURCES})
+target_include_directories(sre_core PUBLIC src common/band common/enhanced)
 target_link_libraries(sre_core PUBLIC sre_host SDL3::SDL3)
 add_executable(streetrod-enhanced src/main.c)
 target_link_libraries(streetrod-enhanced PRIVATE sre_core)
