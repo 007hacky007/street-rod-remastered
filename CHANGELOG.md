@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Street Rod 2 (work in progress): the faithful port of Street Rod 2: The Next Generation by Krzysztof Kania
+  builds beside Street Rod 1 as `streetrod2-enhanced`, on the same host: window size, full screen, sharp
+  Retina picture, Mac keys, and separate music and sound effects volumes (`--music-volume`, `--sfx-volume`)
+  for AdLib and PC speaker. Not in the launcher or the downloads yet.
+- The host is shared by both games (`common/`); Street Rod 1's compiled game code is unchanged.
+
 ## 0.4.2
 
 - The remastered pictures are no longer inside the downloads: the launcher offers to download them (26 MB)

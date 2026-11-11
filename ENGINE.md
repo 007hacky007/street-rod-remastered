@@ -7,6 +7,9 @@ Rod reverse-engineering repository, `../StreetRod`, https://github.com/kylofon/s
 `src/symbols.h`), the disassembly and data tools and the headless test runner (`tools/srrun.py`). Paths below
 that start with `../port`, `../tools`, `../work` or `../FORMATS.md` refer to that repository.
 
+The host (`host.h/.c`, `host_mackeys.*`, `types.h`) now lives in `common/` and is shared with Street Rod 2
+(`ENGINE2.md`); paths in the layout below are as they were in `src/`.
+
 The engine still follows the porting rules below, so that the game keeps behaving like the original.
 Deliberate changes for the enhanced version are marked `ENH:` in the engine code and listed in `ENHANCED.md`.
 `src/enhanced/` is not bound by these rules.

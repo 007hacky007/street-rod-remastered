@@ -151,7 +151,10 @@ tools/macos/make-dmg.sh --version 0.4.2    # dist/Street-Rod-Enhanced.dmg
 * `-DSRE_LAUNCHER=OFF` builds the game only. On Windows the build copies the DLLs both programs need beside
   them.
 * `-DSRE_TESTS=ON` builds the unit tests (`ctest --test-dir build`). With `-DSRE_TEST_GAME_DIR=<folder>` the
-  remaster's picture tests run against the original game files too.
+  remaster's picture tests run against the original game files too; with `-DSRE_TEST_GAME2_DIR=<folder>`
+  (Street Rod 2's files) its checks, volumes and the 15 smoke paths (`ctest -L slow`, about 15 minutes) run.
+* `tools/sr1-codecheck.sh BASE [HEAD]` builds Street Rod 1 at two commits and compares the compiled code of
+  every file: a change meant only for Street Rod 2 must leave it the same.
 * `tests/test_download` checks the download for real: `test_download <dir> ok` fetches the game into `<dir>`.
 
 ### Continuous integration
@@ -185,9 +188,23 @@ tools/macos/make-dmg.sh --version 0.4.2    # dist/Street-Rod-Enhanced.dmg
 | `--check` | Check that `SR.EXE` loads, then exit |
 | `demo`, `auto`, `nomouse` | The original's switches: self-playing demo, races drive themselves, no mouse |
 
+Street Rod 2 (work in progress, not in the downloads yet) builds beside it as `streetrod2-enhanced`. Its game
+files come from the official `sr2pc.zip` (streetrodonline.com); unpack them into a folder of their own:
+
+```bash
+./build/streetrod2-enhanced --game-dir Game2 v adlib
+```
+
+It takes `--game-dir`, `--scale`, `--fullscreen`, `--check`, `--music-volume` and `--sfx-volume` as above,
+and the original's switches: `v` (VGA) and `adlib` or `speaker` skip its start-up menus, `demo` plays by
+itself, `nomouse`. See [ENGINE2.md](ENGINE2.md).
+
 ### Layout
 
 * `src/`: the game ([ENGINE.md](ENGINE.md)).
+* `src2/`: Street Rod 2 ([ENGINE2.md](ENGINE2.md)).
+* `common/`: the host both games run on (window, sound, input, files); `third_party/nuked-opl3/`: the AdLib
+  chip of Street Rod 2.
 * `src/enhanced/`: the enhanced road view ([ENHANCED.md](ENHANCED.md)).
 * `src/remaster/`, `tools/remaster/`: the remastered pictures and the tools that build the art pack
   ([REMASTER.md](REMASTER.md)).
@@ -196,5 +213,6 @@ tools/macos/make-dmg.sh --version 0.4.2    # dist/Street-Rod-Enhanced.dmg
 
 ## License
 
-MIT ([LICENSE](LICENSE)). *Street Rod* is © California Dreams / Logical Design Works; its files are not
-included.
+MIT ([LICENSE](LICENSE)). *Street Rod* is © California Dreams / Logical Design Works and *Street Rod 2* ©
+California Dreams; their files are not included. Nuked-OPL3 (`third_party/nuked-opl3`) is under the GNU LGPL
+2.1 or later.
