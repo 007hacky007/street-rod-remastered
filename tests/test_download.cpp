@@ -1,12 +1,13 @@
 // test_download.cpp -- runs GameDownload (launcher/download.cpp) and gamefiles::Install for real, without the
 // launcher's window. Not part of ctest: it needs a network or a local server.
 //
-//   test_download <game dir> ok|fail|cancel [download base URL]
+//   test_download <game dir> ok|fail|cancel|sr2 [download base URL]
 //   test_download <pack dir> art [art base URL]
 //
 // The base URL goes into SRE_DOWNLOAD_BASE (omit it for the official site). "ok" expects the game installed
 // in <game dir>; "fail" expects an error and nothing installed; "cancel" cancels after half a second (use a
-// server that never answers) and expects the download to end as cancelled, with nothing installed. "art"
+// server that never answers) and expects the download to end as cancelled, with nothing installed. "sr2"
+// downloads Street Rod 2 and expects it installed in <game dir>. "art"
 // fetches the art pack's manifest and zip (SRE_ART_BASE, omit it for the art repository's latest release)
 // with WebFetch and installs them into <pack dir> with artpack::Install.
 #include <wx/app.h>
@@ -24,7 +25,7 @@ class TestApp : public wxAppConsole {
 public:
     bool OnInit() override {
         if (argc < 3) {
-            std::fprintf(stderr, "usage: test_download <game dir> ok|fail [base URL]\n");
+            std::fprintf(stderr, "usage: test_download <game dir> ok|fail|cancel|sr2|art [base URL]\n");
             return false;
         }
         dir_ = argv[1];
@@ -33,15 +34,16 @@ public:
             Art();
             return true;
         }
-        expectOk_ = argv[2] == "ok";
+        sr2_ = argv[2] == "sr2";
+        expectOk_ = argv[2] == "ok" || sr2_;
         cancel_ = argv[2] == "cancel";
         if (argc > 3) wxSetEnv("SRE_DOWNLOAD_BASE", argv[3]);
-        download_.Start([](const wxString& text) { std::printf("%s\n", static_cast<const char*>(text.utf8_str())); },
+        download_.Start(sr2_ ? Game::SR2 : Game::SR1, [](const wxString& text) { std::printf("%s\n", static_cast<const char*>(text.utf8_str())); },
                         [this](bool ok, std::vector<gamefiles::Download> downloads, wxString error) {
                             const bool installed = ok && gamefiles::Install(dir_, downloads, error);
                             if (!installed) std::printf("error: %s\n", static_cast<const char*>(error.utf8_str()));
                             const bool game = wxFileName::FileExists(dir_ + "/SR.EXE") &&
-                                              wxFileName::FileExists(dir_ + "/datadisk/SRSE.EXE");
+                                              wxFileName::FileExists(dir_ + (sr2_ ? "/SR2_DATA" : "/datadisk/SRSE.EXE"));
                             const bool partial = wxFileName::DirExists(dir_ + ".partial");
                             bool pass = expectOk_ ? installed && game && !partial
                                                   : !installed && !error.empty() && !game && !partial;
@@ -89,6 +91,7 @@ private:
     wxString dir_;
     bool expectOk_ = false;
     bool cancel_ = false;
+    bool sr2_ = false;
     wxTimer timer_;
     int exitCode_ = 1;
 };

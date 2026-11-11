@@ -26,8 +26,13 @@ bool EntryPath(const wxString& name, const wxString& top, wxString& rest, bool& 
     if (n.StartsWith("/") || n.Contains(":")) { unsafe = true; return false; }
     for (const wxString& part : wxSplit(n, '/', 0))
         if (part == "..") { unsafe = true; return false; }
-    if (n.StartsWith("__MACOSX/") || !n.StartsWith(top + "/") || n.EndsWith("/")) return false;
-    rest = n.Mid(top.length() + 1);
+    if (n.StartsWith("__MACOSX/") || n.EndsWith("/")) return false;
+    if (top.empty()) {
+        rest = n;
+    } else {
+        if (!n.StartsWith(top + "/")) return false;
+        rest = n.Mid(top.length() + 1);
+    }
     if (rest.empty() || wxFileName(rest, wxPATH_UNIX).GetFullName() == ".DS_Store") return false;
     return true;
 }
@@ -82,7 +87,12 @@ bool Unzip(const void* data, size_t size, const wxString& top, const wxString& d
     return true;
 }
 
-const std::vector<Archive>& Official() {
+const std::vector<Archive>& Official(Game game) {
+    static const std::vector<Archive> sr2 = {
+        {"Street Rod 2", "sr2pc.zip", "https://www.streetrodonline.com/wp-content/uploads/2017/05/sr2pc.zip",
+         "e2d503bf5e8438d85d3ebb297121b783dbbd44f62424ac8ecfd5361e4fd0eaac", 716452, "", ""},
+    };
+    if (game == Game::SR2) return sr2;
     static const std::vector<Archive> archives = {
         {"Street Rod", "sr1pc.zip", "https://www.streetrodonline.com/wp-content/uploads/2017/05/sr1pc.zip",
          "74bbf38bea126cdfd6085e44827e9c193f9f27829619f38f8dbfe353ac7354d9", 415994, "SR1", ""},

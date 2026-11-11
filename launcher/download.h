@@ -1,4 +1,4 @@
-// download.h -- fetches the official game files (gamefiles::Official()) one after the other, in memory; and
+// download.h -- fetches a game's official files (gamefiles::Official) one after the other, in memory; and
 // WebFetch, one file in memory (the art pack's manifest and zip).
 #pragma once
 
@@ -16,8 +16,8 @@ public:
     using Progress = std::function<void(const wxString& text)>;  // "Downloading Street Rod SE (2 of 2)..."
 
     GameDownload();
-    // Starts the downloads; `done` is called once, at the end, from the event loop.
-    void Start(Progress progress, Done done);
+    // Starts the downloads of `game`'s files; `done` is called once, at the end, from the event loop.
+    void Start(Game game, Progress progress, Done done);
     bool Running() const { return running_; }
     // Stops a running download; `done` is then called with ok = false ("... was cancelled.").
     void Cancel();
@@ -27,6 +27,7 @@ private:
     void OnState(wxWebRequestEvent& event);
     void Finish(bool ok, const wxString& error);
 
+    Game game_ = Game::SR1;
     Progress progress_;
     Done done_;
     std::vector<gamefiles::Download> got_;

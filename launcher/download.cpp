@@ -7,8 +7,9 @@
 
 GameDownload::GameDownload() { Bind(wxEVT_WEBREQUEST_STATE, &GameDownload::OnState, this); }
 
-void GameDownload::Start(Progress progress, Done done) {
+void GameDownload::Start(Game game, Progress progress, Done done) {
     if (running_) return;
+    game_ = game;
     progress_ = std::move(progress);
     done_ = std::move(done);
     got_.clear();
@@ -25,7 +26,7 @@ void GameDownload::Cancel() {
 }
 
 void GameDownload::Next() {
-    const auto& all = gamefiles::Official();
+    const auto& all = gamefiles::Official(game_);
     if (cancelled_) {
         Finish(false, wxString::Format("The download of %s was cancelled.", all[got_.size() % all.size()].label));
         return;
@@ -36,7 +37,9 @@ void GameDownload::Next() {
     }
     const gamefiles::Archive& a = all[got_.size()];
     if (progress_)
-        progress_(wxString::Format("Downloading %s (%d of %d)...", a.label, int(got_.size()) + 1, int(all.size())));
+        progress_(all.size() == 1 ? wxString::Format("Downloading %s...", a.label)
+                                  : wxString::Format("Downloading %s (%d of %d)...", a.label, int(got_.size()) + 1,
+                                                     int(all.size())));
     request_ = wxWebSession::GetDefault().CreateRequest(this, gamefiles::Url(a));
     if (!request_.IsOk()) {
         Finish(false, wxString::Format("Couldn't start the download of %s.", a.label));
@@ -49,7 +52,7 @@ void GameDownload::Next() {
 
 void GameDownload::OnState(wxWebRequestEvent& event) {
     if (!running_) return;
-    const gamefiles::Archive& a = gamefiles::Official()[got_.size()];
+    const gamefiles::Archive& a = gamefiles::Official(game_)[got_.size()];
     switch (event.GetState()) {
     case wxWebRequest::State_Completed: {
         if (cancelled_) {

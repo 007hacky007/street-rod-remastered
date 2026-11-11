@@ -606,7 +606,7 @@ void LauncherFrame::OfferDownload() {
 void LauncherFrame::StartDownload() {
     if (downloader_.Running() || !gamefiles::FolderIsFree(folder_->GetValue())) return;
     downloadNote_ = "Downloading...";
-    downloader_.Start(
+    downloader_.Start(Game::SR1,
         [this](const wxString& text) {
             downloadNote_ = text;
             UpdateState();

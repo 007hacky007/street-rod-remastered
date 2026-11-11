@@ -84,7 +84,7 @@ void sha256_vectors() {
 }
 
 void official_table() {
-    const auto& a = gamefiles::Official();
+    const auto& a = gamefiles::Official(Game::SR1);
     CHECK(a.size() == 2);
     if (a.size() != 2) return;
     CHECK(std::string(a[0].url) == "https://www.streetrodonline.com/wp-content/uploads/2017/05/sr1pc.zip");
@@ -99,10 +99,57 @@ void official_table() {
     CHECK(std::string(a[1].file) == "srsepc.zip");
     CHECK(std::string(a[1].top) == "SRSE");
     CHECK(std::string(a[1].subdir) == "datadisk");
+    const auto& b = gamefiles::Official(Game::SR2);
+    CHECK(b.size() == 1);
+    if (b.size() != 1) return;
+    CHECK(std::string(b[0].label) == "Street Rod 2");
+    CHECK(std::string(b[0].file) == "sr2pc.zip");
+    CHECK(std::string(b[0].url) == "https://www.streetrodonline.com/wp-content/uploads/2017/05/sr2pc.zip");
+    CHECK(std::string(b[0].sha256) == "e2d503bf5e8438d85d3ebb297121b783dbbd44f62424ac8ecfd5361e4fd0eaac");
+    CHECK(b[0].size == 716452);
+    CHECK(std::string(b[0].top) == "");
+    CHECK(std::string(b[0].subdir) == "");
+}
+
+void url_override_sr2() {
+    const auto& a = gamefiles::Official(Game::SR2)[0];
+    wxSetEnv("SRE_DOWNLOAD_BASE", "http://127.0.0.1:8765");
+    CHECK(gamefiles::Url(a) == "http://127.0.0.1:8765/sr2pc.zip");
+    wxUnsetEnv("SRE_DOWNLOAD_BASE");
+}
+
+// Street Rod 2's zip has its files at the top, beside macOS metadata.
+void installs_top_level() {
+    const wxString game = TempDir() + "/game";
+    const wxMemoryBuffer z = Zip({{"SR.EXE", "exe"}, {"LIB3", "lib3"}, {".DS_Store", "ds"}, {"__MACOSX/", ""},
+                                  {"__MACOSX/._SR.EXE", "junk"}});
+    TestArchive a("Street Rod 2", "", "", z);
+    wxString error;
+    const bool ok = gamefiles::Install(game, {{&a.archive, z}}, error);
+    CHECK(ok);
+    if (!ok) std::printf("  error: %s\n", static_cast<const char*>(error.utf8_str()));
+    CHECK(ReadFile(game + "/SR.EXE") == "exe");
+    CHECK(ReadFile(game + "/LIB3") == "lib3");
+    CHECK(!Exists(game + "/.DS_Store"));
+    CHECK(!Exists(game + "/__MACOSX"));
+    CHECK(!Exists(game + ".partial"));
+}
+
+void rejects_zip_slip_top_level() {
+    const wxString root = TempDir();
+    const wxString game = root + "/game";
+    const wxMemoryBuffer z = Zip({{"SR.EXE", "exe"}, {"../evil", "evil"}});
+    TestArchive a("Street Rod 2", "", "", z);
+    wxString error;
+    CHECK(!gamefiles::Install(game, {{&a.archive, z}}, error));
+    CHECK(error.Contains("outside its folder"));
+    CHECK(!Exists(root + "/evil"));
+    CHECK(!Exists(game));
+    CHECK(!Exists(game + ".partial"));
 }
 
 void url_override() {
-    const auto& a = gamefiles::Official()[0];
+    const auto& a = gamefiles::Official(Game::SR1)[0];
     wxSetEnv("SRE_DOWNLOAD_BASE", "http://127.0.0.1:8765");
     CHECK(gamefiles::Url(a) == "http://127.0.0.1:8765/sr1pc.zip");
     wxUnsetEnv("SRE_DOWNLOAD_BASE");
@@ -233,6 +280,7 @@ int main(int argc, char** argv) {
     RUN(sha256_vectors);
     RUN(official_table);
     RUN(url_override);
+    RUN(url_override_sr2);
     RUN(free_folder_rules);
     RUN(installs_layout);
     RUN(installs_into_path_with_trailing_slash);
@@ -240,6 +288,8 @@ int main(int argc, char** argv) {
     RUN(rejects_checksum_mismatch);
     RUN(refuses_nonfree_folder);
     RUN(rejects_zip_slip);
+    RUN(installs_top_level);
+    RUN(rejects_zip_slip_top_level);
     RUN(first_art_pack);
     return failures != 0;
 }
