@@ -32,6 +32,9 @@ mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$build/Street Rod Enhanced" "$app/Contents/MacOS/"
 cp "$build/streetrod-enhanced" "$app/Contents/MacOS/"
 cp "$root/launcher/macos/AppIcon.icns" "$root/LICENSE" "$app/Contents/Resources/"
+cat "$root/third_party/nuked-opl3/NOTICE" "$root/third_party/nuked-opl3/LICENSE" \
+    > "$app/Contents/Resources/LICENSE-Nuked-OPL3.txt"
+sh "$root/tools/check-notices.sh" "$app/Contents/Resources"
 sed "s/@VERSION@/$version/g" "$root/launcher/macos/Info.plist.in" > "$app/Contents/Info.plist"
 plutil -lint "$app/Contents/Info.plist" >/dev/null
 strip -x "$app/Contents/MacOS/Street Rod Enhanced" "$app/Contents/MacOS/streetrod-enhanced"

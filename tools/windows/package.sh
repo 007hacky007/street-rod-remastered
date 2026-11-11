@@ -21,6 +21,8 @@ mkdir -p "$out/Game"
 cp "$build/Street Rod Enhanced.exe" "$build/streetrod-enhanced.exe" "$build"/*.dll "$out/"
 strip "$out"/*.exe
 cp "$root/LICENSE" "$out/LICENSE.txt"
+cat "$root/third_party/nuked-opl3/NOTICE" "$root/third_party/nuked-opl3/LICENSE" > "$out/LICENSE-Nuked-OPL3.txt"
+sh "$root/tools/check-notices.sh" "$out"
 cp "$root/tools/windows/Read me.txt" "$out/"
 (cd "$root/dist" && zip -qr Street-Rod-Enhanced-windows.zip "Street Rod Enhanced")
 (cd "$root/dist" && sha256sum Street-Rod-Enhanced-windows.zip > Street-Rod-Enhanced-windows.zip.sha256)
