@@ -1,6 +1,6 @@
-// launcher.h -- the launcher window: choose the game folder and the cars (the original ones or the
-// Street Rod SE data disk's), the game's own switches and the display options, then Play. Game settings >
-// Sounds shows its page in the window.
+// launcher.h -- the launcher window: choose the game (Street Rod or Street Rod 2), its folder and, for Street
+// Rod, the cars (the original ones or the Street Rod SE data disk's), the game's own switches and the display
+// options, then Play. Game settings > Sounds shows its page in the window.
 #pragma once
 
 #include <wx/frame.h>
@@ -56,6 +56,11 @@ private:
     void Preferences();
     void SetTopmost(bool on);
     void Save();
+    // The chosen game's own settings (Traits(game).section) from / to the controls.
+    void LoadGame();
+    void SaveGame();
+    // The Game choice changed.
+    void SwitchGame();
     // The folder the game runs in: the chosen folder, or its datadisk folder for the SE cars.
     wxString PlayFolder() const;
 
@@ -68,6 +73,9 @@ private:
     Sounds EditedSounds() const;
 
     wxSimplebook* book_ = nullptr;
+    wxChoice* gameChoice_ = nullptr;   // Street Rod / Street Rod 2
+    Game current_ = Game::SR1;
+    bool offered_[2] = {false, false};  // macOS: the download was offered this run, per game
     wxTextCtrl* folder_ = nullptr;
     wxTextCtrl* program_ = nullptr;
     wxButton* browseFolder_ = nullptr;
@@ -78,12 +86,17 @@ private:
     bool closing_ = false;          // closed mid-download: destroyed once the cancelled download ends
     wxStaticBitmap* statusIcon_ = nullptr;
     wxStaticText* statusNote_ = nullptr;
+    wxStaticText* carsLabel_ = nullptr;
     wxChoice* cars_ = nullptr;     // the original cars / the data disk's
     wxStaticText* carsNote_ = nullptr;
     wxCheckBox* demo_ = nullptr;
     wxCheckBox* autoDrive_ = nullptr;
     wxCheckBox* noMouse_ = nullptr;
     wxChoice* scale_ = nullptr;
+    wxStaticText* soundLabel_ = nullptr;
+    wxChoice* sound_ = nullptr;      // Street Rod 2: AdLib / PC speaker
+    wxStaticText* gearKeys_[2] = {nullptr, nullptr};  // the A / Z row of the keys
+    wxStaticText* pictureNote_ = nullptr;
     wxCheckBox* fullscreen_ = nullptr;
     wxChoice* graphics_ = nullptr;   // race view: enhanced / original
     wxChoice* art_ = nullptr;        // art: original / remastered (with an art pack)

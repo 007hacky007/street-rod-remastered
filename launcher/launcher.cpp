@@ -39,7 +39,8 @@ const char* const APP_TITLE = "Street Rod Enhanced";
 namespace {
 
 const char* const WEBSITE = "https://github.com/007hacky007/street-rod-remastered";
-const char* const SECTION = "Game";
+const char* const SECTION = "Game";  // Street Rod's own keys and the shared ones (Scale, Fullscreen, the picture)
+const char* const LAUNCHER = "Launcher";  // Game: 1 Street Rod, 2 Street Rod 2
 const char* const SOUND = "Sound";
 const char* const ART = "Art";  // Declined: the first offer was turned down; Skipped: the update turned down
 
@@ -142,27 +143,18 @@ LauncherFrame::LauncherFrame()
     SetSizer(all);
     CreateMenus();
 
-    // Settings from the last run.
-    wxString dir = settings::GetString(SECTION, "GameFolder", "");
-    wxString program = settings::GetString(SECTION, "Program", "");
-    folder_->ChangeValue(dir.empty() ? DefaultGameDir(Game::SR1) : dir);
-    program_->ChangeValue(program.empty() ? DefaultProgram(Game::SR1) : program);
-    // The data disk's cars are the default (key "Cars": 1 = data disk, 0 = original). Launchers before
-    // 0.1.0 stored DataDisk=0 without asking; that old key is no longer read.
-    cars_->SetSelection(settings::GetInt(SECTION, "Cars", 1) != 0 ? 1 : 0);
-    demo_->SetValue(settings::GetInt(SECTION, "Demo", 0) != 0);
-    autoDrive_->SetValue(settings::GetInt(SECTION, "Auto", 0) != 0);
-    noMouse_->SetValue(settings::GetInt(SECTION, "NoMouse", 0) != 0);
+    // Settings from the last run: the game and its own settings, then the shared ones.
+    current_ = GameFromSetting(settings::GetInt(LAUNCHER, "Game", 1));
+    gameChoice_->SetSelection(current_ == Game::SR2 ? 1 : 0);
+    LoadGame();
     scale_->SetSelection(
         wxMax(MIN_SCALE, wxMin(MAX_SCALE, settings::GetInt(SECTION, "Scale", DEFAULT_SCALE))) - MIN_SCALE);
     fullscreen_->SetValue(settings::GetInt(SECTION, "Fullscreen", 0) != 0);
     graphics_->SetSelection(settings::GetInt(SECTION, "Classic", 0) != 0 ? 1 : 0);
-    art_->SetSelection(settings::GetInt(SECTION, "Art", 1) != 0 && IsArtPack(DefaultRemasterDir()) ? 1 : 0);
     resolution_->SetSelection(
         wxMax(MIN_RES, wxMin(MAX_RES, settings::GetInt(SECTION, "ResScale", DEFAULT_RES))) - MIN_RES);
     aa_->SetSelection(wxMax(1, wxMin(MAX_AA, settings::GetInt(SECTION, "AA", DEFAULT_AA))) - 1);
     town_->SetValue(settings::GetInt(SECTION, "Town", 1) != 0);
-    music_->SetSelection(sounds_.remasteredMusic ? 0 : 1);
     ShowSounds(sounds_);
     loading_ = false;
     UpdateState();
@@ -199,7 +191,10 @@ LauncherFrame::LauncherFrame()
     CallAfter([this] {
 #ifdef __WXOSX__
         // First launch: no game yet, so offer to fetch it.
-        if (gamefiles::FolderIsFree(folder_->GetValue())) OfferDownload();
+        if (gamefiles::FolderIsFree(folder_->GetValue())) {
+            offered_[current_ == Game::SR2] = true;
+            OfferDownload();
+        }
 #endif
         CheckArt(true);
     });
@@ -208,6 +203,17 @@ LauncherFrame::LauncherFrame()
 wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     auto* page = new wxPanel(parent);
     const int margin = FromDIP(12), gap = FromDIP(8), small = FromDIP(4);
+
+    // The game
+    auto* gameRow = new wxBoxSizer(wxHORIZONTAL);
+    gameRow->Add(new wxStaticText(page, wxID_ANY, "&Game:"), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, gap);
+    gameChoice_ = new wxChoice(page, wxID_ANY);
+    gameChoice_->Append("Street Rod (1989)");
+    gameChoice_->Append("Street Rod 2: The Next Generation (1991)");
+    gameChoice_->SetToolTip("The game to play. Each keeps its own folder, program and switches; the window size "
+                            "and the volumes are shared.");
+    gameRow->Add(gameChoice_, 0, wxALIGN_CENTER_VERTICAL);
+    gameChoice_->Bind(wxEVT_CHOICE, [this](wxCommandEvent&) { SwitchGame(); });
 
     // Game files
     auto* filesBox = new wxStaticBoxSizer(wxVERTICAL, page, "Game files");
@@ -224,8 +230,6 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     statusRow->Add(statusNote_, 1, wxALIGN_CENTER_VERTICAL);
 #ifdef __WXOSX__
     download_ = new wxButton(fb, wxID_ANY, "Download game");
-    download_->SetToolTip("Downloads Street Rod and the Street Rod SE data disk from streetrodonline.com, the "
-                          "official site, into this folder.");
     download_->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { StartDownload(); });
     statusRow->Add(download_, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, gap);
 #endif
@@ -244,7 +248,8 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     auto* startBox = new wxStaticBoxSizer(wxVERTICAL, page, "Start");
     wxWindow* sb = startBox->GetStaticBox();
     auto* carsRow = new wxBoxSizer(wxHORIZONTAL);
-    carsRow->Add(new wxStaticText(sb, wxID_ANY, "&Cars:"), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, gap);
+    carsLabel_ = new wxStaticText(sb, wxID_ANY, "&Cars:");
+    carsRow->Add(carsLabel_, 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, gap);
     cars_ = new wxChoice(sb, wxID_ANY, wxDefaultPosition, wxSize(FromDIP(300), -1));
     cars_->Append("The original cars");
     cars_->Append("Street Rod SE: the data disk's 25 cars (default)");
@@ -287,6 +292,14 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
                        "drums. The sound effects stay the PC speaker's either way. The volumes are under "
                        "Game settings > Sounds.");
     grid->Add(music_, 0, wxALIGN_CENTER_VERTICAL);
+    soundLabel_ = new wxStaticText(ob, wxID_ANY, "&Sound:");
+    grid->Add(soundLabel_, 0, wxALIGN_CENTER_VERTICAL);
+    sound_ = new wxChoice(ob, wxID_ANY);
+    sound_->Append("AdLib: music and effects (default)");
+    sound_->Append("PC speaker");
+    sound_->SetToolTip("Street Rod 2's sound card: the AdLib plays its songs and effects, the PC speaker its own "
+                       "tune and beeps. The launcher answers the game's start-up menus with it and with VGA.");
+    grid->Add(sound_, 0, wxALIGN_CENTER_VERTICAL);
     optionsBox->Add(grid, 0, wxLEFT | wxRIGHT | wxTOP, gap);
     fullscreen_ = new wxCheckBox(ob, wxID_ANY, "Start in f&ull screen (Alt+Enter switches)");
     optionsBox->Add(fullscreen_, 0, wxALL, gap);
@@ -314,8 +327,14 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
         {"Alt+Enter", "full screen"},
     };
     for (const auto& k : KEYS) {
-        keys->Add(new wxStaticText(kb, wxID_ANY, k[0]));
-        keys->Add(GreyText(kb, k[1]));
+        auto* key = new wxStaticText(kb, wxID_ANY, k[0]);
+        auto* what = GreyText(kb, k[1]);
+        keys->Add(key);
+        keys->Add(what);
+        if (wxString(k[0]) == "A  Z") {   // Street Rod's port only
+            gearKeys_[0] = key;
+            gearKeys_[1] = what;
+        }
     }
     keysBox->Add(keys, 0, wxALL, gap);
 
@@ -358,6 +377,8 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     pictureBox->Add(pgrid, 0, wxLEFT | wxRIGHT | wxTOP, gap);
     town_ = new wxCheckBox(pb, wxID_ANY, "Drives through &town enhanced too");
     pictureBox->Add(town_, 0, wxALL, gap);
+    pictureNote_ = GreyText(pb, "Street Rod 2 shows its original picture for now.");
+    pictureBox->Add(pictureNote_, 0, wxLEFT | wxRIGHT | wxBOTTOM, gap);
     graphics_->Bind(wxEVT_CHOICE, [this](wxCommandEvent&) { UpdateState(); });
 
     // Buttons
@@ -383,6 +404,7 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     columns->Add(left, 0, wxEXPAND);
     columns->Add(right, 0, wxEXPAND | wxLEFT, margin);
     auto* all = new wxBoxSizer(wxVERTICAL);
+    all->Add(gameRow, 0, wxLEFT | wxRIGHT | wxTOP, margin);
     all->Add(columns, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, margin);
     all->Add(buttons, 0, wxEXPAND | wxALL, margin);
     page->SetSizer(all);
@@ -505,18 +527,22 @@ WXLRESULT LauncherFrame::MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lPa
 #endif
 
 wxString LauncherFrame::PlayFolder() const {
-    if (cars_->GetSelection() == 1 && !game_.dataDisk.empty()) return game_.dataDisk;
+    if (Traits(current_).cars && cars_->GetSelection() == 1 && !game_.dataDisk.empty()) return game_.dataDisk;
     return folder_->GetValue();
 }
 
 void LauncherFrame::UpdateState() {
+    const GameTraits& t = Traits(current_);
     const wxString dir = folder_->GetValue(), program = program_->GetValue();
-    game_ = ReadGameFolder(dir, Game::SR1);
+    game_ = ReadGameFolder(dir, current_);
     const bool dosProgram = IsDosProgram(program);
     const bool haveProgram = wxFileName::FileExists(program) && !dosProgram;
 
-    // The data disk choice: only when the folder has a complete datadisk folder.
-    const bool diskChoice = game_.missing.empty() && !game_.dataDisk.empty();
+    // Street Rod: the data disk choice, only when the folder has a complete datadisk folder.
+    carsLabel_->Show(t.cars);
+    cars_->Show(t.cars);
+    carsNote_->Show(t.cars);
+    const bool diskChoice = t.cars && game_.missing.empty() && !game_.dataDisk.empty();
     cars_->Enable(diskChoice);
     const bool useDisk = diskChoice && cars_->GetSelection() == 1;
     const GameFolder played = useDisk ? ReadGameFolder(game_.dataDisk, Game::SR1) : game_;
@@ -531,47 +557,137 @@ void LauncherFrame::UpdateState() {
         carsNote_->SetLabel("No datadisk folder with Street Rod SE here: the original cars are used.");
     else
         carsNote_->SetLabel(wxEmptyString);
+    autoDrive_->Show(t.autoDrive);
+    soundLabel_->Show(t.soundDevice);
+    sound_->Show(t.soundDevice);
+    for (wxStaticText* k : gearKeys_) k->Show(t.gearKeys);
 
     wxString note;
-    if (!game_.missing.empty())
+    const char* const other = Traits(current_ == Game::SR2 ? Game::SR1 : Game::SR2).name;
+    if (game_.otherGame)
+        note = wxString::Format("This folder holds %s, not %s.", other, t.name);
+    else if (!game_.missing.empty())
         note = wxString::Format("This folder needs the game's files: %s is missing.", game_.missing);
     else if (dosProgram)
-        note = wxString::Format("%s is the original DOS game. Program should be streetrod-enhanced.exe.",
-                                wxFileName(program).GetFullName());
+        note = wxString::Format("%s is the original DOS game. Program should be %s.exe.",
+                                wxFileName(program).GetFullName(), t.program);
     else if (!haveProgram)
         note = wxString::Format("%s isn't there.", wxFileName(program).GetFullName());
     else
-        note = wxString::Format("Found %s, %s.", game_.se ? "Street Rod SE" : "Street Rod", SavesText(game_.saves));
-    bool ok = haveProgram && game_.missing.empty();
+        note = wxString::Format("Found %s, %s.", game_.se ? "Street Rod SE" : t.name, SavesText(game_.saves));
+    bool ok = haveProgram && game_.missing.empty() && !game_.otherGame;
     const bool downloading = downloader_.Running();
     if (downloading) {
         note = downloadNote_;
         ok = false;
     }
-    if (download_) download_->Show(!downloading && gamefiles::FolderIsFree(dir));
+    if (download_) {
+        download_->Show(!downloading && gamefiles::FolderIsFree(dir));
+        download_->SetToolTip(current_ == Game::SR2
+                                  ? "Downloads Street Rod 2 from streetrodonline.com, the official site, into this folder."
+                                  : "Downloads Street Rod and the Street Rod SE data disk from streetrodonline.com, the "
+                                    "official site, into this folder.");
+    }
+    gameChoice_->Enable(!downloading);   // the download lands in the folder it started for
     folder_->Enable(!downloading);
     browseFolder_->Enable(!downloading);
     browseProgram_->Enable(!downloading);
     statusIcon_->Show(!ok && !downloading);
     statusNote_->SetLabel(note);
     play_->Enable(ok);
-    const bool enhanced = graphics_->GetSelection() == 0;
+
+    // The options the game takes (Traits); the others are greyed and left as they were for the other game.
+    music_->Enable(t.remasteredMusic);
+    if (!t.remasteredMusic) music_->SetSelection(1);
+    music_->SetString(1, t.soundDevice ? "Original: as chosen under Sound" : "Original: the PC speaker");
+    graphics_->Enable(t.enhanced);
+    const bool enhanced = t.enhanced && graphics_->GetSelection() == 0;
     const bool pack = IsArtPack(DefaultRemasterDir());
-    if (!pack) art_->SetSelection(0);
-    art_->Enable(pack);
+    if (!pack || !t.art) art_->SetSelection(0);
+    art_->Enable(pack && t.art);
     if (!artDownloading_) {
         const bool update = pack && artKnown_ &&
             artpack::Offer(true, artpack::Installed(DefaultRemasterDir()), artLatest_, false, wxString()) ==
                 artpack::OFFER_UPDATE;
         artButton_->SetLabel(wxString::FromUTF8(update ? "Update Pictures…" : "Download Pictures…"));
-        artButton_->Show(!pack || update);
+        artButton_->Show(t.art && (!pack || update));
         artButton_->Enable(!artFetch_.Running());
     }
     resolution_->Enable(enhanced);
     aa_->Enable(enhanced);
     town_->Enable(enhanced);
+    pictureNote_->Show(!t.enhanced);
     book_->GetPage(PAGE_MAIN)->Layout();
     if (book_->GetSelection() == PAGE_MAIN) FitPage();  // the notes change the page's size
+}
+
+void LauncherFrame::LoadGame() {
+    const GameTraits& t = Traits(current_);
+    const bool was = loading_;
+    loading_ = true;
+    const wxString dir = settings::GetString(t.section, "GameFolder", "");
+    const wxString program = settings::GetString(t.section, "Program", "");
+    folder_->ChangeValue(dir.empty() ? DefaultGameDir(current_) : dir);
+    program_->ChangeValue(program.empty() ? DefaultProgram(current_) : program);
+    folder_->SetToolTip(current_ == Game::SR2
+                            ? "The folder with Street Rod 2's files (SR.EXE, LIB1, LIB2, LIB3, SR2_DATA ...)."
+                            : "The folder with the original game's files (SR.EXE, LIB1, LIB2, HOT_DATA ...).");
+    program_->SetToolTip(wxString(t.program) + ", the game.");
+    demo_->SetValue(settings::GetInt(t.section, "Demo", 0) != 0);
+    noMouse_->SetValue(settings::GetInt(t.section, "NoMouse", 0) != 0);
+    if (t.cars) {
+        // The data disk's cars are the default (key "Cars": 1 = data disk, 0 = original). Launchers before
+        // 0.1.0 stored DataDisk=0 without asking; that old key is no longer read.
+        cars_->SetSelection(settings::GetInt(t.section, "Cars", 1) != 0 ? 1 : 0);
+    }
+    if (t.autoDrive) autoDrive_->SetValue(settings::GetInt(t.section, "Auto", 0) != 0);
+    if (t.soundDevice) sound_->SetSelection(settings::GetInt(t.section, "Sound", 0) == 1 ? 1 : 0);
+    if (t.art) art_->SetSelection(settings::GetInt(t.section, "Art", 1) != 0 && IsArtPack(DefaultRemasterDir()) ? 1 : 0);
+    if (t.remasteredMusic) {
+        sounds_.remasteredMusic = settings::GetInt(SOUND, "Music", 1) != 0;
+        music_->SetSelection(sounds_.remasteredMusic ? 0 : 1);
+    }
+    loading_ = was;
+}
+
+void LauncherFrame::SaveGame() {
+    const GameTraits& t = Traits(current_);
+    // A folder or program left at its default is stored empty, so it follows the launcher if it moves.
+    const wxString dir = folder_->GetValue(), program = program_->GetValue();
+    settings::SetString(t.section, "GameFolder",
+                        wxFileName(dir).SameAs(wxFileName(DefaultGameDir(current_))) ? wxString() : dir);
+    settings::SetString(t.section, "Program",
+                        wxFileName(program).SameAs(wxFileName(DefaultProgram(current_))) ? wxString() : program);
+    settings::SetInt(t.section, "Demo", demo_->GetValue() ? 1 : 0);
+    settings::SetInt(t.section, "NoMouse", noMouse_->GetValue() ? 1 : 0);
+    if (t.cars) settings::SetInt(t.section, "Cars", cars_->GetSelection() == 1 ? 1 : 0);
+    if (t.autoDrive) settings::SetInt(t.section, "Auto", autoDrive_->GetValue() ? 1 : 0);
+    if (t.soundDevice) settings::SetInt(t.section, "Sound", sound_->GetSelection() == 1 ? 1 : 0);
+    if (t.art) settings::SetInt(t.section, "Art", art_->GetSelection() == 1 ? 1 : 0);
+    if (t.remasteredMusic) {
+        sounds_.remasteredMusic = music_->GetSelection() == 0;
+        settings::SetInt(SOUND, "Music", sounds_.remasteredMusic ? 1 : 0);   // the key the Sounds page used
+    }
+}
+
+void LauncherFrame::SwitchGame() {
+    const Game next = gameChoice_->GetSelection() == 1 ? Game::SR2 : Game::SR1;
+    if (next == current_ || downloader_.Running()) {
+        gameChoice_->SetSelection(current_ == Game::SR2 ? 1 : 0);
+        return;
+    }
+    SaveGame();
+    current_ = next;
+    settings::SetInt(LAUNCHER, "Game", static_cast<int>(next));
+    LoadGame();
+    UpdateState();
+#ifdef __WXOSX__
+    // The first time in a run that this game's folder is found empty: offer its download, as at start.
+    if (!offered_[next == Game::SR2] && gamefiles::FolderIsFree(folder_->GetValue())) {
+        offered_[next == Game::SR2] = true;
+        CallAfter([this] { OfferDownload(); });
+    }
+#endif
 }
 
 void LauncherFrame::BrowseFolder() {
@@ -587,15 +703,18 @@ void LauncherFrame::BrowseProgram() {
 #else
     const char* const filter = "All files|*";
 #endif
-    wxFileDialog dialog(this, "Choose streetrod-enhanced", current.GetPath(), current.GetFullName(), filter,
+    wxFileDialog dialog(this, wxString("Choose ") + Traits(current_).program, current.GetPath(), current.GetFullName(), filter,
                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (dialog.ShowModal() == wxID_OK) program_->SetValue(dialog.GetPath());  // raises wxEVT_TEXT
 }
 
 void LauncherFrame::OfferDownload() {
     wxMessageDialog dialog(this,
-                           "Street Rod Enhanced needs the original game. Download Street Rod and the Street Rod SE "
-                           "data disk (about 1 MB) from streetrodonline.com, the official site?",
+                           current_ == Game::SR2
+                               ? "Street Rod 2 needs the original game. Download Street Rod 2: The Next Generation "
+                                 "(about 1 MB) from streetrodonline.com, the official site?"
+                               : "Street Rod Enhanced needs the original game. Download Street Rod and the Street Rod "
+                                 "SE data disk (about 1 MB) from streetrodonline.com, the official site?",
                            APP_TITLE, wxYES_NO | wxCANCEL | wxICON_QUESTION);
     dialog.SetYesNoCancelLabels("Download", wxString::FromUTF8("Choose Folder…"), "Not Now");
     const int answer = dialog.ShowModal();
@@ -606,7 +725,7 @@ void LauncherFrame::OfferDownload() {
 void LauncherFrame::StartDownload() {
     if (downloader_.Running() || !gamefiles::FolderIsFree(folder_->GetValue())) return;
     downloadNote_ = "Downloading...";
-    downloader_.Start(Game::SR1,
+    downloader_.Start(current_,
         [this](const wxString& text) {
             downloadNote_ = text;
             UpdateState();
@@ -722,6 +841,8 @@ void LauncherFrame::ArtFailed(const wxString& error) {
 void LauncherFrame::Play() {
     Save();
     GameOptions options;
+    options.game = current_;
+    options.speaker = sound_->GetSelection() == 1;
     options.program = wxFileName(program_->GetValue()).GetFullPath();
     options.gameDir = wxFileName(PlayFolder()).GetFullPath();
     options.demo = demo_->GetValue();
@@ -730,7 +851,8 @@ void LauncherFrame::Play() {
     options.scale = scale_->GetSelection() + MIN_SCALE;
     options.fullscreen = fullscreen_->GetValue();
     options.classic = graphics_->GetSelection() == 1;
-    if (art_->GetSelection() == 1 && IsArtPack(DefaultRemasterDir())) options.remasterDir = DefaultRemasterDir();
+    if (Traits(current_).art && art_->GetSelection() == 1 && IsArtPack(DefaultRemasterDir()))
+        options.remasterDir = DefaultRemasterDir();
     options.resScale = resolution_->GetSelection() + MIN_RES;
     options.aa = aa_->GetSelection() + 1;
     options.town = town_->GetValue();
@@ -741,25 +863,14 @@ void LauncherFrame::Play() {
 }
 
 void LauncherFrame::Save() {
-    // A folder or program left at its default is stored empty, so it follows the launcher if it moves.
-    const wxString dir = folder_->GetValue(), program = program_->GetValue();
-    settings::SetString(SECTION, "GameFolder",
-                        wxFileName(dir).SameAs(wxFileName(DefaultGameDir(Game::SR1))) ? wxString() : dir);
-    settings::SetString(SECTION, "Program",
-                        wxFileName(program).SameAs(wxFileName(DefaultProgram(Game::SR1))) ? wxString() : program);
-    settings::SetInt(SECTION, "Cars", cars_->GetSelection() == 1 ? 1 : 0);
-    settings::SetInt(SECTION, "Demo", demo_->GetValue() ? 1 : 0);
-    settings::SetInt(SECTION, "Auto", autoDrive_->GetValue() ? 1 : 0);
-    settings::SetInt(SECTION, "NoMouse", noMouse_->GetValue() ? 1 : 0);
+    SaveGame();
+    settings::SetInt(LAUNCHER, "Game", static_cast<int>(current_));
     settings::SetInt(SECTION, "Scale", scale_->GetSelection() + MIN_SCALE);
     settings::SetInt(SECTION, "Fullscreen", fullscreen_->GetValue() ? 1 : 0);
     settings::SetInt(SECTION, "Classic", graphics_->GetSelection() == 1 ? 1 : 0);
-    settings::SetInt(SECTION, "Art", art_->GetSelection() == 1 ? 1 : 0);
     settings::SetInt(SECTION, "ResScale", resolution_->GetSelection() + MIN_RES);
     settings::SetInt(SECTION, "AA", aa_->GetSelection() + 1);
     settings::SetInt(SECTION, "Town", town_->GetValue() ? 1 : 0);
-    sounds_.remasteredMusic = music_->GetSelection() == 0;
-    settings::SetInt(SOUND, "Music", sounds_.remasteredMusic ? 1 : 0);   // the key the Sounds page used
     settings::SaveWindowPosition(SECTION, this);
 }
 
@@ -815,7 +926,8 @@ void LauncherFrame::ClosePage() {
 void LauncherFrame::About() {
     const wxString title = wxString("About ") + APP_TITLE;
     const wxString heading = wxString(APP_TITLE) + " " + APP_VERSION_TEXT;
-    const wxString blurb = "Starts streetrod-enhanced, Street Rod (California Dreams, 1989) on SDL3, enhanced.";
+    const wxString blurb = "Starts Street Rod (California Dreams, 1989) and Street Rod 2: The Next Generation (1991) "
+                           "on SDL3, enhanced.";
 #ifdef __WXMSW__
     // The Windows task dialog.
     const wxString content = wxString::Format(
