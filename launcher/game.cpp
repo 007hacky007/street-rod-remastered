@@ -1,4 +1,4 @@
-// game.cpp -- the files the game needs, the data disk, saved games and starting the game.
+// game.cpp -- the default folders and programs, and starting the game.
 #include "game.h"
 
 #include <wx/file.h>
@@ -13,56 +13,19 @@
 #include "gamefiles.h"
 #include "settings.h"
 
-namespace {
-
-// Whether `dir` holds the file `name` as written, in upper or in lower case (case matters outside
-// Windows; the port itself finds files whatever their case).
-bool FilePresent(const wxString& dir, const wxString& name) {
-    if (dir.empty()) return false;
-    for (const wxString& n : {name, name.Upper(), name.Lower()})
-        if (wxFileName::FileExists(wxFileName(dir, n).GetFullPath())) return true;
-    return false;
-}
-
-// The first file the port needs that `dir` lacks (SR.EXE or SRSE.EXE, LIB1, LIB2, HOT_DATA).
-wxString Missing(const wxString& dir, bool* se) {
-    *se = !FilePresent(dir, "SR.EXE") && FilePresent(dir, "SRSE.EXE");
-    if (!*se && !FilePresent(dir, "SR.EXE")) return "SR.EXE";
-    for (const char* name : {"LIB1", "LIB2", "HOT_DATA"})
-        if (!FilePresent(dir, name)) return name;
-    return wxString();
-}
-
-}  // namespace
-
-GameFolder ReadGameFolder(const wxString& dir) {
-    GameFolder f;
-    if (dir.empty()) {
-        f.missing = "SR.EXE";
-        return f;
-    }
-    f.missing = Missing(dir, &f.se);
-    for (int n = 1; n <= 15; ++n)
-        if (FilePresent(dir, wxString::Format("HOTROD%d.SAV", n))) ++f.saves;
-    const wxString disk = wxFileName(dir, "datadisk").GetFullPath();
-    bool se = false;
-    if (wxFileName::DirExists(disk) && Missing(disk, &se).empty()) f.dataDisk = disk;
-    return f;
-}
-
 wxString LauncherDir() { return wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(); }
 
-wxString DefaultGameDir() {
+wxString DefaultGameDir(Game game) {
 #ifdef __WXOSX__
     // The app bundle stays read-only: the game and its saved games live with the settings.
-    return wxFileName(settings::Folder(), "Game").GetFullPath();
+    return wxFileName(settings::Folder(), Traits(game).folder).GetFullPath();
 #else
-    return wxFileName(LauncherDir(), "Game").GetFullPath();
+    return wxFileName(LauncherDir(), Traits(game).folder).GetFullPath();
 #endif
 }
 
-wxString DefaultProgram() {
-    wxFileName name(LauncherDir(), "streetrod-enhanced");
+wxString DefaultProgram(Game game) {
+    wxFileName name(LauncherDir(), Traits(game).program);
 #ifdef __WXMSW__
     name.SetExt("exe");
 #endif
@@ -99,8 +62,8 @@ bool LaunchGame(const GameOptions& o, wxString& error) {
     }
     if (IsDosProgram(o.program)) {
         error = wxString::Format("%s is the original DOS game, which Windows can't run. The program to start "
-                                 "is streetrod-enhanced.exe:\n\n%s", wxFileName(o.program).GetFullName(),
-                                 DefaultProgram());
+                                 "is %s.exe:\n\n%s", wxFileName(o.program).GetFullName(), Traits(o.game).program,
+                                 DefaultProgram(o.game));
         return false;
     }
     const std::vector<wxString> args = GameArgs(o);

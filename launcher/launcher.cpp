@@ -145,8 +145,8 @@ LauncherFrame::LauncherFrame()
     // Settings from the last run.
     wxString dir = settings::GetString(SECTION, "GameFolder", "");
     wxString program = settings::GetString(SECTION, "Program", "");
-    folder_->ChangeValue(dir.empty() ? DefaultGameDir() : dir);
-    program_->ChangeValue(program.empty() ? DefaultProgram() : program);
+    folder_->ChangeValue(dir.empty() ? DefaultGameDir(Game::SR1) : dir);
+    program_->ChangeValue(program.empty() ? DefaultProgram(Game::SR1) : program);
     // The data disk's cars are the default (key "Cars": 1 = data disk, 0 = original). Launchers before
     // 0.1.0 stored DataDisk=0 without asking; that old key is no longer read.
     cars_->SetSelection(settings::GetInt(SECTION, "Cars", 1) != 0 ? 1 : 0);
@@ -511,7 +511,7 @@ wxString LauncherFrame::PlayFolder() const {
 
 void LauncherFrame::UpdateState() {
     const wxString dir = folder_->GetValue(), program = program_->GetValue();
-    game_ = ReadGameFolder(dir);
+    game_ = ReadGameFolder(dir, Game::SR1);
     const bool dosProgram = IsDosProgram(program);
     const bool haveProgram = wxFileName::FileExists(program) && !dosProgram;
 
@@ -519,7 +519,7 @@ void LauncherFrame::UpdateState() {
     const bool diskChoice = game_.missing.empty() && !game_.dataDisk.empty();
     cars_->Enable(diskChoice);
     const bool useDisk = diskChoice && cars_->GetSelection() == 1;
-    const GameFolder played = useDisk ? ReadGameFolder(game_.dataDisk) : game_;
+    const GameFolder played = useDisk ? ReadGameFolder(game_.dataDisk, Game::SR1) : game_;
     if (!game_.missing.empty())
         carsNote_->SetLabel(wxEmptyString);
     else if (useDisk)
@@ -744,9 +744,9 @@ void LauncherFrame::Save() {
     // A folder or program left at its default is stored empty, so it follows the launcher if it moves.
     const wxString dir = folder_->GetValue(), program = program_->GetValue();
     settings::SetString(SECTION, "GameFolder",
-                        wxFileName(dir).SameAs(wxFileName(DefaultGameDir())) ? wxString() : dir);
+                        wxFileName(dir).SameAs(wxFileName(DefaultGameDir(Game::SR1))) ? wxString() : dir);
     settings::SetString(SECTION, "Program",
-                        wxFileName(program).SameAs(wxFileName(DefaultProgram())) ? wxString() : program);
+                        wxFileName(program).SameAs(wxFileName(DefaultProgram(Game::SR1))) ? wxString() : program);
     settings::SetInt(SECTION, "Cars", cars_->GetSelection() == 1 ? 1 : 0);
     settings::SetInt(SECTION, "Demo", demo_->GetValue() ? 1 : 0);
     settings::SetInt(SECTION, "Auto", autoDrive_->GetValue() ? 1 : 0);

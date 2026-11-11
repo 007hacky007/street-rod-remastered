@@ -28,6 +28,7 @@ add_executable(srelauncher WIN32
     download.cpp
     game.cpp
     gameargs.cpp
+    gamefolder.cpp
     gamefiles.cpp
     sha256.cpp
     icon.cpp

@@ -50,6 +50,19 @@ if(TARGET srelauncher)
     add_test(NAME args COMMAND test_args)
 endif()
 
+# The launcher's check of a game folder, Street Rod's or Street Rod 2's: wxBase only.
+if(TARGET srelauncher)
+    add_executable(test_gamefolder test_gamefolder.cpp ../launcher/gamefolder.cpp ../launcher/gameargs.cpp)
+    target_include_directories(test_gamefolder PRIVATE ../launcher)
+    target_compile_features(test_gamefolder PRIVATE cxx_std_17)
+    if(TARGET wx::wxbase)
+        target_link_libraries(test_gamefolder PRIVATE wx::wxbase)
+    else()
+        target_link_libraries(test_gamefolder PRIVATE ${wxWidgets_LIBRARIES})
+    endif()
+    add_test(NAME gamefolder COMMAND test_gamefolder)
+endif()
+
 # The downloader for real (see the file): run by hand, not by ctest.
 if(TARGET srelauncher)
     find_package(wxWidgets 3.2 CONFIG QUIET COMPONENTS net base)

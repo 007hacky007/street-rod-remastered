@@ -1,27 +1,19 @@
-// game.h -- what a game folder holds (Street Rod, or the Street Rod SE data disk in its datadisk
-// folder), where streetrod-enhanced is, and starting it.
+// game.h -- where each game's folder and program are by default, and starting the game.
 #pragma once
 
 #include <wx/string.h>
 
 #include "gameargs.h"
-
-// A game folder as the launcher sees it.
-struct GameFolder {
-    wxString missing;       // the first of the game's files that isn't there, empty if all are
-    bool se = false;        // the program is SRSE.EXE (Street Rod SE, the data-disk edition)
-    int saves = 0;          // saved games (HOTROD1..15.SAV)
-    wxString dataDisk;      // <folder>/datadisk when it holds a complete Street Rod SE, else empty
-};
-
-GameFolder ReadGameFolder(const wxString& dir);
+#include "gamefolder.h"
 
 // The folder the launcher runs from.
 wxString LauncherDir();
 
-// Where things are by default: "Game" and streetrod-enhanced(.exe) beside the launcher.
-wxString DefaultGameDir();
-wxString DefaultProgram();
+// Where things are by default: the game's folder (Traits: "Game", "Game2") beside the launcher, in the
+// settings folder on a Mac, and its program (streetrod-enhanced(.exe), streetrod2-enhanced(.exe)) beside
+// the launcher.
+wxString DefaultGameDir(Game game);
+wxString DefaultProgram(Game game);
 
 // True if `path` is a DOS program (MZ without a Windows PE header), such as the original SR.EXE: Windows
 // can't start it, and it isn't the port.
