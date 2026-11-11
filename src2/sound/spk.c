@@ -16,12 +16,18 @@
 #define SND_TONE_OVERHEAD_NS  20000u    /* one fx_tone call besides its delay */
 #define SND_NOISE_OVERHEAD_NS 25000u    /* one fx_noise step besides its delay */
 
-static inline void pit2_div(u16 d) { host_pit2_divisor(d); }
+/* ENH: the volumes. While the sequencer plays the background tune (slots.c) its speaker writes take the
+ * music volume, all others (effects, loop sounds, jingles, the engine) the effects volume, as in SR1. */
+bool spk_music_writing;
+static inline void spk_pit2(u16 d) { host_speaker_source(spk_music_writing); host_pit2_divisor(d); }
+static inline void spk_port61(u8 v) { host_speaker_source(spk_music_writing); host_port61(v); }
+
+static inline void pit2_div(u16 d) { spk_pit2(d); }
 
 /* ---------------------------------------------------------------- gate (slots 23 / 24) */
 
-void spk_vec_off(int unused) { (void)unused; host_port61((u8)(host_port61_get() & 0xFC)); DSB(DS_sound_gate) = 0; }   /* 2c57:05ac */
-void spk_vec_on(int unused)  { (void)unused; host_port61((u8)(host_port61_get() | 3)); DSB(DS_sound_gate) = 1; }     /* 2c57:05ba (no 25 kHz) */
+void spk_vec_off(int unused) { (void)unused; spk_port61((u8)(host_port61_get() & 0xFC)); DSB(DS_sound_gate) = 0; }   /* 2c57:05ac */
+void spk_vec_on(int unused)  { (void)unused; spk_port61((u8)(host_port61_get() | 3)); DSB(DS_sound_gate) = 1; }     /* 2c57:05ba (no 25 kHz) */
 
 /* ---------------------------------------------------------------- delay and tone primitives */
 
@@ -90,7 +96,7 @@ static void fx_noise(s16 range, s16 ormask, s16 n)                       /* 2c57
     spk_vec_off(0);
     if (n <= 0) return;
     do {
-        host_port61((u8)(host_port61_get() ^ 2));
+        spk_port61((u8)(host_port61_get() ^ 2));
         host_busy_wait_ns(SND_NOISE_OVERHEAD_NS);
         delay((u16)(rnd(range) | ormask));
     } while (--n);
@@ -374,9 +380,9 @@ void speaker_race_tick(u8 phase)
             u16 div = (u16)(60000 - (u16)(u + (u >> 3) + (u >> 2)) - bonus);
             u16 old = DSW(DS_SPK_PULSE);
             if (DSS(DSW(DS_CUR_CAR_PTR) + 0x1E) == 0 && (DSW(DS_SPK_PULSE) = (u16)(old + 1), (s16)old < 1)) {
-                host_pit2_divisor((u16)((div & 0xFF) | 0xF000));   /* pulse: a very low tone */
+                spk_pit2((u16)((div & 0xFF) | 0xF000));   /* pulse: a very low tone */
             } else {
-                host_pit2_divisor(div);
+                spk_pit2(div);
                 DSW(DS_SPK_PULSE) = 0;
             }
         } else {                                             /* animation (garage) player */
@@ -387,9 +393,9 @@ void speaker_race_tick(u8 phase)
             u16 div = (u16)(60000 - t);
             u16 old = DSW(DS_SPK_PULSE);
             if (DSS(DS_ANIM_MUFFLER) == 0 && (DSW(DS_SPK_PULSE) = (u16)(old + 1), (s16)old < 2)) {
-                host_pit2_divisor((u16)((div & 0xFF) | 0xF000));
+                spk_pit2((u16)((div & 0xFF) | 0xF000));
             } else {
-                host_pit2_divisor(div);
+                spk_pit2(div);
                 DSW(DS_SPK_PULSE) = 0;
             }
         }

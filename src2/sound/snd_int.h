@@ -44,6 +44,7 @@
 
 /* ---- spk.c: speaker driver (slots, sequencer, effects) */
 void speaker_sound_init(void);
+extern bool spk_music_writing;       /* ENH: speaker writes now take the music volume (spk.c) */
 void speaker_music_tick(void);         /* timer_isr: one sequencer tick of the active song state */
 void speaker_race_tick(u8 phase);
 void spk_vec_off(int unused);          /* slot 23 */

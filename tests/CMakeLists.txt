@@ -98,6 +98,9 @@ endforeach()
 
 # Street Rod 2; needs its game files: -DSRE_TEST_GAME2_DIR=<folder with SR2's SR.EXE>.
 if(SRE_TEST_GAME2_DIR)
+    add_test(NAME sr2_volumes COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_volumes.sh
+             $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR})
+    set_tests_properties(sr2_volumes PROPERTIES TIMEOUT 120)
     if(SRE_TEST_GAME_DIR)
         add_test(NAME sr2_check COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_check.sh
                  $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR} $<TARGET_FILE:streetrod-enhanced>

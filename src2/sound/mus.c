@@ -304,6 +304,7 @@ static int mus_tick(void)
                 case 0xC0: {
                     int idx = *rd++;
                     u8 buf[56];
+                    host_opl_voice_music(v, true);  /* ENH: the music's timbre: the voice plays music again */
                     if (snd_timbre_lookup("", &idx, buf)) adlib_voice_timbre(v, buf);   /* else "Timbre not found: %d" on the console */
                     break;
                 }

@@ -258,6 +258,7 @@ void adlib_play_timbre(int v, int vol, const char *name)
 {
     u8 buf[56];
     int idx = 1;
+    host_opl_voice_music(v, false);               /* ENH: an effect takes the voice: the effects volume */
     adlib_set_volume(v, (u16)vol, 1);
     if (snd_timbre_lookup(name, &idx, buf)) adlib_voice_timbre(v, buf);
 }

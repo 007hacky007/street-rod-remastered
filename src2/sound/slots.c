@@ -98,7 +98,11 @@ void snd_exit(void) { sound_vec(21); }
 void snd_timer_tick(void)
 {
     if (DSB(DS_sound_on) == 0 && DSB(DS_sound_gate) != 0) sound_vec(23);   /* sound switched off: silence */
-    if (DSW(DS_snd_device) == 1 && DSW(DSW(DS_music_cur) + SS_PLAYING) != 0) speaker_music_tick();
+    if (DSW(DS_snd_device) == 1 && DSW(DSW(DS_music_cur) + SS_PLAYING) != 0) {
+        spk_music_writing = DSW(DS_music_cur) == DS_bg_song;   /* ENH: the music volume (spk.c) */
+        speaker_music_tick();
+        spk_music_writing = false;
+    }
     if (DSW(DS_snd_device) == 0 && DSB(DS_sound_on) != 0 && DSB(DS_sound_gate) == 0) sound_vec(24);
 }
 
