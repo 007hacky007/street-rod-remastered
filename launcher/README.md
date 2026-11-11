@@ -24,8 +24,9 @@ like the Street Rod and Test Drive III launchers it is modelled on.
     as in the usual GOG/eXoDOS copies; the game then runs in that folder and keeps its own saved games there.
   * The original's own command-line switches: **Demo** (`demo`: the game plays itself, Esc ends it), **Races
     drive themselves** (`auto`, Street Rod only) and **No mouse** (`nomouse`).
-* **Options**: **Window size** (`--scale`), **Music**: Remastered (`--music remastered`, the default: the tune
-  played by a small band) or Original (the PC speaker), **Sound** (Street Rod 2 only): AdLib (`adlib`, the
+* **Options**: **Window size** (`--scale`), **Music**: Remastered (`--music remastered`, the default: the tune,
+  for Street Rod 2 the songs, played by a small band) or Original (the PC speaker; for Street Rod 2 the AdLib or
+  the PC speaker as chosen under Sound; Street Rod 2's choice is `[Game2] Music`), **Sound** (Street Rod 2 only): AdLib (`adlib`, the
   default) or PC speaker (`speaker`), and **Start in full screen** (`--fullscreen`; Alt+Enter switches).
   Street Rod 2 always gets `v` too, so its start-up menus for the picture and the sound are answered.
 * **Keys in the game**: a reminder of the game's keys, including Street Rod's A / Z gear keys.
@@ -40,8 +41,7 @@ like the Street Rod and Test Drive III launchers it is modelled on.
   smooth, high-resolution road view, the default) or original (`--classic`); **Resolution** of the picture, 640 × 400 to 2560 × 1600 (`--res-scale`, default 1280 × 800);
   **Anti-aliasing** off, 2 × 2 (default), 3 × 3 or 4 × 4 (`--aa`); **Drives through town enhanced too**
   (`--town`). The last three are greyed out with the original graphics.
-* Street Rod 2 doesn't have the remastered music, art and race view yet: Music stays Original and the
-  Picture options are greyed for it.
+* Street Rod 2 doesn't have the remastered art and race view yet: the Picture options are greyed for it.
 * **Play** starts the game; the launcher stays open.
 
 ## On a Mac

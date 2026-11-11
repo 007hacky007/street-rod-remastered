@@ -81,7 +81,7 @@ static void traits_table() {
     CHECK(wxString(b.program) == "streetrod2-enhanced");
     CHECK(wxString(b.folder) == "Game2");
     CHECK(wxString(b.section) == "Game2");
-    CHECK(b.soundDevice && !b.cars && !b.autoDrive && !b.enhanced && !b.art && !b.remasteredMusic && !b.gearKeys);
+    CHECK(b.soundDevice && b.remasteredMusic && !b.cars && !b.autoDrive && !b.enhanced && !b.art && !b.gearKeys);
 }
 
 static void game_from_setting() {
@@ -98,7 +98,8 @@ static void args_sr2_minimal() {
     o.autoDrive = true;
     o.classic = false;
     o.sounds.remasteredMusic = true;
-    const std::vector<wxString> want{"/p/streetrod2-enhanced", "--game-dir", "/g2", "--scale", "3", "v", "adlib"};
+    const std::vector<wxString> want{"/p/streetrod2-enhanced", "--game-dir", "/g2", "--scale", "3", "--music",
+                                     "remastered", "v", "adlib"};
     CHECK(GameArgs(o) == want);
 }
 
@@ -122,6 +123,16 @@ static void args_sr2_speaker_switches_volumes() {
     CHECK(before(a, "v", "speaker"));
 }
 
+static void args_sr2_original_music() {
+    GameOptions o;
+    o.game = Game::SR2;
+    o.program = "/p/streetrod2-enhanced";
+    o.gameDir = "/g2";
+    o.sounds.remasteredMusic = false;
+    CHECK(!has(GameArgs(o), "--music"));
+    CHECK(has(GameArgs(o), "adlib"));
+}
+
 int main() {
 #define RUN(t) do { int b = failures; t(); std::printf("%s %s\n", failures == b ? "ok  " : "FAIL", #t); } while (0)
     RUN(args_remastered_adds_dir);
@@ -133,5 +144,6 @@ int main() {
     RUN(game_from_setting);
     RUN(args_sr2_minimal);
     RUN(args_sr2_speaker_switches_volumes);
+    RUN(args_sr2_original_music);
     return failures != 0;
 }

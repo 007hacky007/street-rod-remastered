@@ -6,8 +6,8 @@ Apple Silicon Macs, with a smooth high-resolution road, separate music and sound
 a small band, and the option to show every picture redrawn at four times the resolution.
 
 The sequel, *Street Rod 2: The Next Generation* (1991), comes with it: choose it under **Game** in the launcher.
-For now it plays as the original does, with the same window, full screen and volume comforts; the remastered
-pictures, the band and the smooth road are still to come for it.
+It has the same window, full screen and volume comforts, and its music played by the same small band; the
+remastered pictures and the smooth road are still to come for it.
 
 The games themselves are free from their copyright owner and are not included here: the Mac app downloads them
 for you, and on Windows you unzip them into a folder (see below).
@@ -27,7 +27,8 @@ for you, and on Windows you unzip them into a folder (see below).
   or piano, drums) in stereo instead of the PC speaker.
 * **Separate music and sound effects volumes.**
 * **The Street Rod SE data disk's 25 cars**, one click away.
-* **Street Rod 2: The Next Generation**, the sequel, with its AdLib music and sound effects or the PC speaker.
+* **Street Rod 2: The Next Generation**, the sequel, with its songs played by the band too, or its AdLib or PC
+  speaker music as it was.
 * **A launcher** for all of it, and a Mac app that downloads the games for you.
 
 ![Original and remastered, side by side](https://raw.githubusercontent.com/007hacky007/street-rod-remastered-art/main/screenshots/original-vs-remastered.png)
@@ -207,7 +208,8 @@ files come from the official `sr2pc.zip` (streetrodonline.com); unpack them into
 ./build/streetrod2-enhanced --game-dir Game2 v adlib
 ```
 
-It takes `--game-dir`, `--scale`, `--fullscreen`, `--check`, `--music-volume` and `--sfx-volume` as above,
+It takes `--game-dir`, `--scale`, `--fullscreen`, `--check`, `--music-volume`, `--sfx-volume` and
+`--music original|remastered` as above (the band plays its AdLib songs, or with `speaker` its PC speaker tune),
 and the original's switches: `v` (VGA) and `adlib` or `speaker` skip its start-up menus, `demo` plays by
 itself, `nomouse`. See [ENGINE2.md](ENGINE2.md).
 

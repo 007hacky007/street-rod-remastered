@@ -9,6 +9,9 @@
 - The launcher has a **Game** choice: Street Rod or Street Rod 2, each with its own folder (`Game2` for Street
   Rod 2), program and switches, and **Sound** (AdLib or PC speaker) for Street Rod 2. On a Mac it downloads
   Street Rod 2 from streetrodonline.com like Street Rod. The Mac app and the Windows zip carry both games.
+- Remastered music for Street Rod 2 (`--music remastered`, the launcher's default): the same small band plays
+  its AdLib songs note for note as the game's own sequencer plays them, or with the PC speaker its speaker
+  tune through Street Rod 1's arrangement. The sound effects stay AdLib or PC speaker.
 - The host is shared by both games (`common/`); Street Rod 1's compiled game code is unchanged.
 
 ## 0.4.2

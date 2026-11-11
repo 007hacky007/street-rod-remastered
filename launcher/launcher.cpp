@@ -599,7 +599,16 @@ void LauncherFrame::UpdateState() {
     // The options the game takes (Traits); the others are greyed and left as they were for the other game.
     music_->Enable(t.remasteredMusic);
     if (!t.remasteredMusic) music_->SetSelection(1);
-    music_->SetString(1, t.soundDevice ? "Original: as chosen under Sound" : "Original: the PC speaker");
+    const bool sr2 = current_ == Game::SR2;
+    music_->SetString(0, sr2 ? "Remastered: the songs played by a small band (default)"
+                             : "Remastered: the tune played by a small band (default)");
+    music_->SetString(1, sr2 ? "Original: as chosen under Sound" : "Original: the PC speaker");
+    music_->SetToolTip(sr2 ? "Remastered plays the game's own songs, note for note, with bass, guitar, piano and "
+                             "drums. The sound effects stay AdLib or PC speaker, as chosen under Sound. The "
+                             "volumes are under Game settings > Sounds."
+                           : "Remastered plays the game's own tune, note for note, with bass, guitar or piano, and "
+                             "drums. The sound effects stay the PC speaker's either way. The volumes are under "
+                             "Game settings > Sounds.");
     graphics_->Enable(t.enhanced);
     const bool enhanced = t.enhanced && graphics_->GetSelection() == 0;
     const bool pack = IsArtPack(DefaultRemasterDir());
@@ -644,7 +653,8 @@ void LauncherFrame::LoadGame() {
     if (t.soundDevice) sound_->SetSelection(settings::GetInt(t.section, "Sound", 0) == 1 ? 1 : 0);
     if (t.art) art_->SetSelection(settings::GetInt(t.section, "Art", 1) != 0 && IsArtPack(DefaultRemasterDir()) ? 1 : 0);
     if (t.remasteredMusic) {
-        sounds_.remasteredMusic = settings::GetInt(SOUND, "Music", 1) != 0;
+        // Street Rod's choice stays where the Sounds page kept it; Street Rod 2's is its own.
+        sounds_.remasteredMusic = settings::GetInt(current_ == Game::SR1 ? SOUND : t.section, "Music", 1) != 0;
         music_->SetSelection(sounds_.remasteredMusic ? 0 : 1);
     }
     loading_ = was;
@@ -666,7 +676,7 @@ void LauncherFrame::SaveGame() {
     if (t.art) settings::SetInt(t.section, "Art", art_->GetSelection() == 1 ? 1 : 0);
     if (t.remasteredMusic) {
         sounds_.remasteredMusic = music_->GetSelection() == 0;
-        settings::SetInt(SOUND, "Music", sounds_.remasteredMusic ? 1 : 0);   // the key the Sounds page used
+        settings::SetInt(current_ == Game::SR1 ? SOUND : t.section, "Music", sounds_.remasteredMusic ? 1 : 0);
     }
 }
 
