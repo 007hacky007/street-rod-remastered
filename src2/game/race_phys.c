@@ -9,6 +9,7 @@
  *   0001:d85c police_spawn      0001:d908 race_step
  *
  * All arithmetic is the original's 16 / 32-bit integer arithmetic (C truncation; `q_shr` = the cdq/xor/sar idiom). */
+#include "enhanced/enhanced.h"   /* ENH: the enhanced race view */
 #include "game/race_int.h"
 #include "game/race.h"
 
@@ -866,6 +867,7 @@ void race_step(void)
     }
     player_advance();
     opp_advance_steer();
+    enh_phys_step();                                        /* ENH: the cars' positions for the enhanced view */
     if (MODE & 6) {
         if (DSS(DS_cam_x) < (s16)((0xCE4 + 0x5DC) / 2 + 0x96)) goto lane;    /* crossed the centre line */
     }

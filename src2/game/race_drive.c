@@ -5,6 +5,7 @@
  *
  * Timing: road_frame ends with pace_ticks(8) (deadline metronome on DS:1D02); the player physics runs in the race ISR
  * (platform race_isr -> modules.race_phys_step) on every 12th tick (DS:1F76 / DS:1F77 dividers). */
+#include "enhanced/enhanced.h"   /* ENH: the enhanced race view */
 #include "game/race_int.h"
 #include "game/race.h"
 
@@ -356,6 +357,7 @@ s16 race_run(void)
     } else
         DSW(DS_split_row) = 0;
     if (MODE & 6) DSW(DS_start_lights) = MODE == 2 ? 0x88 : 0x92;
+    enh_race_begin();                                       /* ENH: the enhanced race view */
     road_pages_init();
     road_frame();
     drv_pal_normal();
@@ -394,6 +396,7 @@ s16 race_run(void)
         }
     }
     if (getenv("SR_TRACE")) fprintf(stderr, "trace: %ldms race_run end %d seg %d opp %d\n", (long)clock(), res, DSS(DS_seg), DSS(DS_opp_seg));   /* PORT: developer aid */
+    enh_race_end();                                         /* ENH */
     arena_reset();
     DSW(DS_arena2_used) = 0;
     FarPtr shown = DSS(DS_back_page) == 1 ? ds_far(DS_page2_ptr) : ds_far(DS_page1_ptr);

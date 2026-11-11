@@ -9,6 +9,7 @@
  * eleven row tables (shared by the front view and the mirror), the near row pointers DS:96B6..96E0 and DS:96EE, the
  * far flag pointers DS:96E2 / 96E6 / 96F0 / 96EA, the clip rectangle DS:7E12..7E18. 16-bit arithmetic as the
  * original (imul low word, sar, idiv). */
+#include "enhanced/enhanced.h"   /* ENH: the enhanced race view */
 #include "game/race_int.h"
 #include "game/race.h"
 
@@ -256,6 +257,7 @@ void road_page_flip(void)
         DSS(DS_shown_page) = t;
         DSW(DS_draw_seg) = DSS(DS_back_page) == 1 ? 0xA200 : 0xA400;
         ega_show_page(DSS(DS_shown_page));
+        enh_frame_presented();                              /* ENH */
     } else {                                                /* other drivers (parked) */
         Rect r;
         r.w = DSS(DS_view_copy_rect + 0);  r.h = DSS(DS_view_copy_rect + 2);
@@ -1269,6 +1271,7 @@ static void road_draw_front(void)
             }
     }
     clip_set_view();
+    enh_draw_begin();                                       /* ENH: the enhanced view replaces the background */
     if (MODE == 0x10) road_draw_sky_mulholland(); else road_draw_sky();
     road_fillmode_begin();
     s16 L16 = 0;
@@ -1280,16 +1283,20 @@ static void road_draw_front(void)
         if ((MODE & 0x10) && !(C & 0x80)) front_hillsides(row, L16);
         if (row <= DSS(DS_top_band_row)) road_draw_row_front(row);
         C = fw(DS_centre_ptr, 0);
+        enh_draw_fg(true);                                  /* ENH: the objects and the opponent stay original for now */
         if (!((C & 4) && (C & 1))) {
             if (row < 11) front_objects(row);
             if (!(C & 1) && MODE == 0x10) mulholland_extras_front(row);
         }
         if (sub16(DSS(DS_opp_seg), row) == DSS(DS_seg) && DSB(DS_racing)) opponent_draw();
+        enh_draw_fg(false);
         if (MODE & 6) road_draw_barrier_walls(DSS(DS_rail_phase_seg), 0xE, row);
         row_ptrs_step();
         flag_step(-2);
     }
+    enh_draw_fg(true);                                      /* ENH */
     if (DSS(DS_seg) == DSS(DS_opp_seg) && DSB(DS_racing)) opponent_draw();
+    enh_draw_fg(false);
 }
 
 /* ================================================================================ mirror */
@@ -1435,11 +1442,13 @@ void road_frame(void)
 {
     if (MODE == 8) aq_project_front();
     else { road_set_seg_ptrs(DSS(DS_seg)); road_project_front(); }
+    enh_frame_built();                                      /* ENH: the frame's state for the enhanced view */
     if (MODE == 8) {
         DSS(DS_aq_rows) = 14;
         ds_far_wr(DS_aq_flags_ptr, trk_ptr(TRK_AQ, DSS(DS_seg)));
         aq_draw_front();
     } else { road_set_seg_ptrs(DSS(DS_seg)); road_draw_front(); }
+    enh_draw_fg(true);                                      /* ENH: the mirror, the hood and the cockpit stay original */
     if (MODE == 8) aq_project_mirror();
     else { road_set_seg_ptrs(DSS(DS_seg)); road_project_mirror(); }
     if (MODE == 8) {

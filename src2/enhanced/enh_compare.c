@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static FILE *log_file;
+static bool log_rows;              /* SR_ENH_COMPARE_ROWS: the rows whose edges differ by more than 1 px */
+
 static bool is_road(u8 c, const u8 *road, int n)
 {
     for (int i = 0; i < n; i++)
@@ -35,12 +38,12 @@ void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, 
             c.edge_rows++;
             int d = SDL_max(abs(ol - el), abs(or_ - er));
             if (d > c.edge_err_max) c.edge_err_max = d;
+            if (log_rows && log_file && d > 1) fprintf(log_file, "  row %02X orig %d..%d enh %d..%d\n", y, ol, or_, el, er);
         }
     }
     *out = c;
 }
 
-static FILE *log_file;
 static int frames, worst_edge;
 static int *permille;              /* every frame's mismatch, for the median */
 static int permille_cap;
@@ -50,6 +53,7 @@ bool enh_compare_open(void)
     const char *p = SDL_getenv("SR_ENH_COMPARE");
     if (!p || !*p) return false;
     log_file = fopen(p, "w");
+    log_rows = SDL_getenv("SR_ENH_COMPARE_ROWS") != NULL;
     frames = worst_edge = 0;
     return log_file != NULL;
 }
