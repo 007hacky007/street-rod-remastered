@@ -9,6 +9,11 @@
  *   --music-volume N  ENH: volume of the music, percent 0..100 (default 100)
  *   --sfx-volume N    ENH: volume of the sound effects and the engine, 0..100 (default 100)
  *   --music original|remastered  ENH: the music as the game plays it (default), or played by a small band
+ *   --classic        ENH: the original's race picture only (else the enhanced race view, ENHANCED.md)
+ *   --res-scale N    ENH: the picture is 320x200 times N, 1..8 (default 4; 1 with --classic)
+ *   --aa N           ENH: anti-aliasing of the enhanced view, N x N samples per pixel, 1..4 (default 2)
+ *   --motion-delay P ENH: how far the smooth view runs behind the game, percent of a frame (default 100)
+ *   --town on|off    ENH: the drives through town enhanced too (default on)
  *   adlib | speaker  PORT (launcher): choose the sound card and skip the sound options menu
  *   the original's command-line switches are passed on as they are: 1, nomouse, demo, nouemem, e c v h t (force EGA / CGA / VGA / Hercules / Tandy: skips the video menu)
  */
@@ -23,6 +28,7 @@
 #include "host.h"
 #include "mem.h"
 #include "platform/ega.h"
+#include "enhanced/enhanced.h"
 #include "sound/band.h"
 
 #define APP_TITLE "Street Rod 2 Enhanced"
@@ -31,6 +37,7 @@ static int usage(const char *prog)
 {
     fprintf(stderr, "usage: %s [--game-dir DIR] [--scale N] [--fullscreen] [--check] [--run-ms N] "
                     "[--music-volume N] [--sfx-volume N] [--music original|remastered] "
+                    "[--classic] [--res-scale N] [--aa N] [--motion-delay P] [--town on|off] "
                     "[1] [nomouse] [demo] [nouemem] [e|c|v|h|t] [adlib|speaker]\n", prog);
     return 2;
 }
@@ -56,6 +63,8 @@ int main(int argc, char **argv)
     bool check = false, fullscreen = false;
     int music_volume = 100, sfx_volume = 100;
     bool band = false;
+    bool classic = false, town = true;                           /* ENH: the enhanced race view */
+    int res_scale = -1, aa = ENH_DEFAULT_AA, motion_delay = ENH_DEFAULT_MOTION_DELAY;
     for (int i = 1; i < argc; i++) {
         const char *a = argv[i], *v = i + 1 < argc ? argv[i + 1] : NULL;
         if (!strcmp(a, "--game-dir") && v) { dir = v; i++; }
@@ -69,6 +78,11 @@ int main(int argc, char **argv)
             band = !strcmp(v, "remastered");
             i++;
         }
+        else if (!strcmp(a, "--classic")) classic = true;                             /* ENH */
+        else if (!strcmp(a, "--res-scale") && v) { res_scale = atoi(v); i++; }        /* ENH */
+        else if (!strcmp(a, "--aa") && v) { aa = atoi(v); i++; }                      /* ENH */
+        else if (!strcmp(a, "--motion-delay") && v) { motion_delay = atoi(v); i++; }  /* ENH */
+        else if (!strcmp(a, "--town") && v) { town = strcmp(v, "off") != 0; i++; }   /* ENH */
         else if (a[0] == '-' && a[1] == '-') return usage(argv[0]);
         else if (game_argc < 63) game_argv[game_argc++] = argv[i];   /* a switch of SR.EXE */
     }
@@ -85,6 +99,8 @@ int main(int argc, char **argv)
         return 0;
     }
 
+    if (res_scale < 0) res_scale = classic ? 1 : ENH_DEFAULT_RES_SCALE;   /* ENH: as Street Rod 1 without art */
+    enh_init(!classic, res_scale, aa, motion_delay, town);
     host_configure(&(HostConfig){ APP_TITLE, 49716, true });   /* ENH: the shared host (common/host.h) */
     if (!host_init(dir, scale, fullscreen)) return 1;
     host_set_volumes(music_volume, sfx_volume);                  /* ENH */

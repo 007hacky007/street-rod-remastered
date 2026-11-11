@@ -19,6 +19,9 @@
 
 void ega_init(void);                         /* installs the frame source, clears the planes */
 void ega_show(void);                         /* makes the planes the displayed frame source (after text mode) */
+/* The frame source: the shown page at 320x200 times the enhanced view's scale, with the enhanced view over it
+ * (ENH: exported for the tests). False: nothing changed since the last call. */
+bool ega_compose(u32 *xrgb);
 u8  *ega_plane(int plane);                   /* plane 0..3, EGA_PLANE_SIZE bytes (vga.c, compose) */
 
 void ega_set_start(u16 offset);              /* CRTC start address (bytes) */
@@ -33,3 +36,18 @@ u8   ega_get_palette_reg(int reg);
 
 /* The 16 IRGB colours as XRGB8888. */
 extern const u32 ega_palette[16];
+
+/* ENH: which pixels the CPU wrote (vga_wr), for the enhanced view's coverage (enhanced.c). Byte o holds
+ * the 8 pixels of plane offset o, bit 7 = leftmost; set on every write whatever the value. `changed` = the
+ * pixels whose colour the write changed (the foreground layer takes only those). */
+void ega_mark_written(u16 offset, u8 pixels, u8 changed);
+const u8 *ega_written(void);
+void ega_clear_written(u16 offset, u16 n);
+/* ENH: layers of a road frame. While the layer is FG, written pixels are marked foreground; while BG, they
+ * are unmarked (a later background write covers an earlier foreground pixel). OFF leaves the marks. */
+enum { EGA_LAYER_OFF, EGA_LAYER_BG, EGA_LAYER_FG };
+void ega_set_layer(int layer);
+const u8 *ega_fg(void);
+void ega_clear_fg(u16 offset, u16 n);
+u16  ega_start(void);                        /* current CRTC start address */
+int  ega_line_compare(void);                 /* current first row from offset 0 (200 = off) */
