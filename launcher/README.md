@@ -26,7 +26,7 @@ like the Street Rod and Test Drive III launchers it is modelled on.
 * **Keys in the game**: a reminder of the game's keys, including the port's A / Z gear keys.
 * **Picture**: **Art** original (the default) or remastered (`--remaster-dir`: every picture redrawn, from the
   art pack in `Remaster` in the settings folder, or beside the launcher on Windows; only available when a pack
-  is there, see `tools/remaster/README.md`); **Race view** enhanced (the smooth, high-resolution road view, the
+  is there; the pack is a download on the Releases page, see the README); **Race view** enhanced (the smooth, high-resolution road view, the
   default) or original (`--classic`); **Resolution** of the picture, 640 × 400 to 2560 × 1600 (`--res-scale`, default 1280 × 800);
   **Anti-aliasing** off, 2 × 2 (default), 3 × 3 or 4 × 4 (`--aa`); **Drives through town enhanced too**
   (`--town`). The last three are greyed out with the original graphics.

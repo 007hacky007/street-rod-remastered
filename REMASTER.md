@@ -6,13 +6,13 @@ options; the original pictures and the original speaker tune stay one click away
 
 Design: `docs/superpowers/specs/2026-11-10-hd-remaster-design.md`. Pipeline details: `tools/remaster/README.md`.
 
-## The art pack is not distributed
+## The art pack
 
-The remastered pictures are redrawn from Street Rod's copyrighted art. Until the owner decides how (or whether)
-to distribute them, they stay local: `remaster-art/` is ignored by git, and no picture is committed, attached to
-a release or uploaded anywhere except to ChatGPT for generation. The only remastered images in the repository
-are the README's screenshots in `docs/screenshots/`. The code, the tools and the catalogue (sizes,
-ids and descriptions, no pixels) are committed. Without a pack the game runs exactly as before.
+The pack is a separate download from the Releases page, `Street-Rod-Enhanced-remaster-pack.zip`; the README
+says where to put it. It is not kept in the repository: `remaster-art/`, where it is made, is ignored by git,
+and the only remastered images committed are the README's screenshots in `docs/screenshots/`. The code, the
+tools and the catalogue (sizes, ids and descriptions, no pixels) are committed. The pictures are redrawn from
+Street Rod's art, which belongs to its copyright owner. Without a pack the game runs exactly as before.
 
 ## Using it
 

@@ -82,12 +82,20 @@ launcher's settings are kept in `~/Library/Application Support/Street Rod Enhanc
 
 Every choice is remembered. More in [launcher/README.md](launcher/README.md).
 
-### About the remastered pictures
+### The remastered pictures
 
-The remastered pictures come from an art pack that is not available for download yet: they are redrawn from
-the game's copyrighted art (see [REMASTER.md](REMASTER.md)). Without the pack, **Art** stays on Original and
+The redrawn pictures are a separate download, `Street-Rod-Enhanced-remaster-pack.zip` on the
+[Releases page](https://github.com/007hacky007/streetrod-enhanced/releases) (about 27 MB). It holds one
+folder, `Remaster`:
+
+* **Windows**: unzip it into the Street Rod Enhanced folder, so that `Remaster` sits next to
+  `Street Rod Enhanced.exe`.
+* **Mac**: in Finder choose **Go** > **Go to Folder...**, enter `~/Library/Application Support/Street Rod Enhanced`
+  and put the `Remaster` folder there.
+
+Then start the launcher again and choose **Art: Remastered**. Without the pack, **Art** stays on Original and
 the game shows its original pictures; everything else, including the smooth road and the remastered music,
-works the same.
+works the same. How the pictures were made: [REMASTER.md](REMASTER.md).
 
 ## Screenshots
 
@@ -135,8 +143,8 @@ Mac (Apple Silicon, Xcode command line tools, CMake, Ninja and Python 3):
 
 ```bash
 tools/macos/build-deps.sh                  # SDL3 and wxWidgets, static, into build-deps/prefix
-tools/macos/package.sh --version 0.3.0     # tests, then dist/Street Rod Enhanced.app
-tools/macos/make-dmg.sh --version 0.3.0    # dist/Street-Rod-Enhanced.dmg
+tools/macos/package.sh --version 0.4.0     # tests, then dist/Street Rod Enhanced.app
+tools/macos/make-dmg.sh --version 0.4.0    # dist/Street-Rod-Enhanced.dmg
 ```
 
 * Needs CMake 3.24+, a C11 compiler and SDL 3; the launcher needs C++17 and wxWidgets 3.2.

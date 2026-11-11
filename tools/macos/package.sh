@@ -2,7 +2,7 @@
 # Builds Street Rod Enhanced for macOS (arm64, macOS 12+) against build-deps/prefix (tools/macos/build-deps.sh),
 # runs the unit tests and assembles dist/Street Rod Enhanced.app, ad-hoc signed.
 #
-#   tools/macos/package.sh --version 0.3.0
+#   tools/macos/package.sh --version 0.4.0
 set -eu
 
 version=

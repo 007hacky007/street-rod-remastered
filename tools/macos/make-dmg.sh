@@ -2,7 +2,7 @@
 # Makes dist/Street-Rod-Enhanced.dmg (and its .sha256) from dist/Street Rod Enhanced.app (package.sh), with
 # dmgbuild in a private virtual environment under build-deps/venv.
 #
-#   tools/macos/make-dmg.sh --version 0.3.0
+#   tools/macos/make-dmg.sh --version 0.4.0
 set -eu
 
 version=
