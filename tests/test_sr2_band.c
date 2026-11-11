@@ -11,6 +11,7 @@
 #include "mem.h"
 #include "sound/band.h"
 #include "sound/snd_int.h"
+#include "sound/sound.h"
 #include "arrange.h"
 #include "synth.h"
 
@@ -134,6 +135,68 @@ static void sr2_band_speaker_tune(void)
     CHECK(song.n > 0);
 }
 
+/* A speaker tune event to play by hand: the first note of the tune. */
+static const SongEvent *first_note(void)
+{
+    static Song song;
+    if (!song_parse(DGROUP, DS_spk_bg_song, &song)) return NULL;
+    for (int i = 0; i < song.n; i++)
+        if (song.ev[i].note) return &song.ev[i];
+    return NULL;
+}
+
+/* Ctrl: the sound off. The speaker sequencer keeps running; the band stays silent. */
+static void sr2_band_speaker_sound_off(void)
+{
+    const SongEvent *e = first_note();
+    CHECK(e != NULL);
+    if (!e) return;
+    band_adlib_all_off();
+    band_rms(500);
+    DSB(DS_sound_on) = 0;
+    band_spk_note(e->off, e->note);
+    double off = band_rms(300);
+    DSB(DS_sound_on) = 1;
+    band_spk_note(e->off, e->note);
+    double on = band_rms(300);
+    printf("  rms sound off %.5f, on %.5f\n", off, on);
+    CHECK(off < 0.0005);
+    CHECK(on > 0.005);
+}
+
+/* A drive starts: the race ISR takes the timer, the speaker's tune stops at once, and so does the band. */
+static void sr2_band_speaker_race_enter(void)
+{
+    const SongEvent *e = first_note();
+    if (!e) { CHECK(e != NULL); return; }
+    band_adlib_all_off();
+    band_rms(500);
+    DSW(DS_snd_device) = 1;
+    band_spk_note(e->off, e->note);
+    snd_race_enter();
+    band_rms(400);                                  /* the reverb's tail of a note that had just started */
+    double r = band_rms(250);
+    snd_race_leave();
+    printf("  rms after the drive starts %.5f\n", r);
+    CHECK(r < 0.001);
+}
+
+/* In percussion mode a drum voice plays the drum its timbre is (MSR2 puts tom1 on voice 6). */
+static void sr2_band_perc_timbre(void)
+{
+    band_adlib_perc(true);
+    band_adlib_program(6, 2);                       /* tom1 */
+    band_adlib_note_on(6, 48, 95);
+    CHECK(band_last_drum() == DRUM_TOM);
+    band_adlib_program(6, 3);                       /* bdrum1 */
+    band_adlib_note_on(6, 48, 95);
+    CHECK(band_last_drum() == DRUM_KICK);
+    band_adlib_program(10, 9);                      /* turn1, an effect's timbre: the voice's own drum */
+    band_adlib_note_on(10, 24, 95);
+    CHECK(band_last_drum() == DRUM_BRUSH);
+    band_adlib_all_off();
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -152,6 +215,9 @@ int main(int argc, char **argv)
     RUN(sr2_band_stop_silences);
     RUN(sr2_band_retrigger);
     RUN(sr2_band_siren);
+    RUN(sr2_band_speaker_sound_off);
+    RUN(sr2_band_speaker_race_enter);
+    RUN(sr2_band_perc_timbre);
     host_shutdown();
     return failures ? 1 : 0;
 }

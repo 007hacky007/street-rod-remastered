@@ -38,10 +38,15 @@ void band_spk_note(u16 off, u16 divisor);
 void band_spk_rest(void);
 void band_spk_bend(u16 divisor);
 
+/* A drive starts (snd_race_enter): the race ISR takes the timer and the speaker's tune stops at once (AdLib
+ * stops its music there too); so does the band. */
+void band_race_enter(void);
+
 /* Every timer tick: all quiet while the sound is off; the speaker tune's notes end when their time is up and
  * everything ends when the tune stops. */
 void band_tick(void);
 
 int band_notes_started(void);                       /* tests */
+int band_last_drum(void);                           /* tests: the last DRUM_* hit, -1 none */
 
 #endif

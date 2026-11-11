@@ -123,6 +123,7 @@ void snd_race_tick(u8 phase)
 /* 0001:20a0 race_isr_enter, sound part (the vector swap is in timer.c) */
 void snd_race_enter(void)
 {
+    band_race_enter();                            /* ENH: the remastered music stops with the tune (band.c) */
     DSW(DS_RACE_FLAG_A2B2) = 1;                   /* the rest of race_isr_enter: no music toggle while driving */
     DSW(DS_ACT_WORD) = 1;
     DSW(0x1F78) = 0;

@@ -10,7 +10,7 @@
 
 bool band_on;
 static bool with_host;
-static int notes_started;
+static int notes_started, last_drum = -1;
 
 #define VOICES_ADLIB 11
 typedef struct {
@@ -115,6 +115,7 @@ static float level_of(int inst)
 static void drum_hit(int drum, int note, float vel)
 {
     static const float LEVEL[4] = { 0.55f, 0.35f, 0.16f, 0.45f };   /* KICK, SNARE, BRUSH, TOM */
+    last_drum = drum;
     float v = ADLIB_LEVEL * LEVEL[drum] * vel / 0.75f;               /* the songs' usual velocity 95 = SR1's level */
     if (drum == DRUM_TOM) synth_drum_pitched(DRUM_TOM, (float)note, v);
     else synth_drum(drum, v);
@@ -131,7 +132,8 @@ void band_adlib_note_on(int v, int note, int vel)
     if (!band_on || v < 0 || v >= VOICES_ADLIB || !DSB(DS_sound_on)) return;
     sync();
     float f = (float)vel / 127.0f;
-    BandPart p = perc && v >= 6 ? band_perc_part(v) : ad[v].part;
+    BandPart p = ad[v].part;                        /* in percussion mode a drum timbre (tom1 on voice 6) is that */
+    if (perc && v >= 6 && p.kind != BAND_DRUM) p = band_perc_part(v);   /* drum, anything else the voice's own */
     if (p.kind == BAND_DRUM) {
         drum_hit(p.drum, note, f);
         notes_started++;
@@ -175,7 +177,7 @@ void band_adlib_all_off(void)
 
 void band_spk_note(u16 off, u16 divisor)
 {
-    if (!band_on || !spk_ok) return;
+    if (!band_on || !spk_ok || !DSB(DS_sound_on)) return;   /* Ctrl: the speaker's gate stays shut, the band silent */
     int i = song_find(&song, off);
     if (i < 0 || song.ev[i].note != divisor) return;   /* not the tune that was read (cannot happen) */
     sync();
@@ -212,6 +214,8 @@ void band_spk_bend(u16 divisor)
     synth_bend(lead_voice, arr_midi(divisor));
 }
 
+void band_race_enter(void) { band_adlib_all_off(); }
+
 void band_tick(void)
 {
     static bool was_on = true;
@@ -228,3 +232,4 @@ void band_tick(void)
 }
 
 int band_notes_started(void) { return notes_started; }
+int band_last_drum(void) { return last_drum; }
