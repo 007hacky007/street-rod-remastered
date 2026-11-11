@@ -3,6 +3,9 @@
 #include "enhanced/enh_internal.h"
 
 #include <SDL3/SDL.h>
+#include <stdlib.h>
+
+#include "enhanced/enh_compare.h"
 
 EnhOptions enh_opt = { false, 1, ENH_DEFAULT_AA, ENH_DEFAULT_MOTION_DELAY, true };
 
@@ -15,6 +18,7 @@ void enh_init(bool enabled, int res_scale, int aa, int motion_delay, bool town)
     while (enh_opt.res_scale * enh_opt.aa > ENH_MAX_SAMPLES) enh_opt.aa--;
     enh_opt.motion_delay = SDL_clamp(motion_delay, 0, 100);
     enh_opt.town = town;
+    if (enabled && enh_compare_open()) atexit(enh_compare_close);   /* SR_ENH_COMPARE (enh_compare.h) */
 }
 
 bool enh_enabled(void) { return enh_opt.enabled; }
