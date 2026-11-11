@@ -30,6 +30,11 @@ What differs from upstream:
   Street Rod 1's sound.c). `band_tick` runs at the end of `snd_timer_tick` (slots.c). Meanwhile the host keeps
   the chip's music voices and the speaker's music silent; the effects sound as before. The songs are read from
   the game files at run time; nothing derived from them is stored.
+* The enhanced race view (`src2/enhanced`, ENHANCED.md section 9): hooks in `race_drive.c` (begin, end),
+  `race_road.c` (`road_frame`: the frame's state after `road_project_front`, the layers around the sky, the rows'
+  objects and the opponent, the foreground from the mirror on; `road_page_flip`: presented) and `race_phys.c`
+  (the physics step); the written / foreground / object layers in `platform/ega.c` and `vga.c`; the options in
+  `main.c`. `src2/remaster/` holds stand-ins until Street Rod 2 has remastered pictures.
 * Deliberate changes are marked `ENH:`, port fixes `PORT:` (as upstream marks its own).
 
 Developer aids kept from upstream: `SR_TRACE`, `SR_KEYS`, `SR_DEBUG_RACE`, `SR_DEBUG_END`, `SR_DEBUG_OPP`,

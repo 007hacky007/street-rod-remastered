@@ -6,8 +6,9 @@ Apple Silicon Macs, with a smooth high-resolution road, separate music and sound
 a small band, and the option to show every picture redrawn at four times the resolution.
 
 The sequel, *Street Rod 2: The Next Generation* (1991), comes with it: choose it under **Game** in the launcher.
-It has the same window, full screen and volume comforts, and its music played by the same small band; the
-remastered pictures and the smooth road are still to come for it.
+It has the same window, full screen and volume comforts, its music played by the same small band, and the
+smooth high-resolution road in town and in street drags; the remastered pictures, and the smooth road of its
+other race kinds, are still to come for it.
 
 The games themselves are free from their copyright owner and are not included here: the Mac app downloads them
 for you, and on Windows you unzip them into a folder (see below).

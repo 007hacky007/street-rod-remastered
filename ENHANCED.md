@@ -251,3 +251,32 @@ The road ahead exists in the table, so the geometry comes almost for free. The w
    original's colours step, e.g. a sky gradient, is allowed.
 3. The town cruise is enhanced in stage 1.
 4. Drag race after the finish: plain flat road with no objects.
+
+## 9. Street Rod 2
+
+`src2/enhanced/` gives Street Rod 2 the same stage 1: the same options (`--classic`, `--res-scale`, `--aa`,
+`--motion-delay`, `--town`), the same layers, and the drawing core shared with Street Rod 1 (`common/enhanced`:
+`enh_raster.c`, `enh_sprite.c`). Done: the town drive (road mode 0) and the street drag (mode 1). The Grudge drag
+strip (modes 2 and 4), Mulholland (10h), the Aqueduct (8) and the mirror are still the original picture, scaled.
+
+* **Road** (`enh_road2.c`): Street Rod 2's own 15 rows, row 0 at depth 4, row k at 8k + 4 - q, row 14 fixed at
+  116, with its projection (half Street Rod 1's height term, the moving eye `DS_cam_y`, `DS_view_bounce_y`), its
+  edges (the zero-width quirk of `edges_of`) and its bands drawn as the original draws them: straight from row
+  to row, walls and storeys filled inclusive of their last row, grass across a plain band after the walls, the
+  town walls' storey ends and side streets. Between frames the position within a segment moves smoothly; the
+  snapshot's position is quantised as the projection sees it (`substep >> 3`, 1/8 segment) and the heading kept
+  absolute, so at a game frame's own position the result is the original's geometry.
+* **Objects**: not drawn again from the flags. A third display layer (`EGA_LAYER_OBJ`) tags every pixel the game
+  draws for a row's objects with the row (and the opponent's with `ENH_OBJ_OPP`); nearer road drawn later clears
+  the tags. When the frame is shown, each row's pixels are cut out of the page and drawn again, moved and scaled
+  from the row's place in the frame to its smooth place (the opponent from its own position and lane). All of
+  Street Rod 2's object logic (shapes and their sizes, signs, billboards, banners, the start tree, the police)
+  stays the game's own.
+* **Check** (`enh_compare.c`): `SR_ENH_COMPARE=<file>` draws every enhanced frame again at scale 1, aa 1, from that
+  frame's state without interpolation and with the game's integer rounding, and compares it with the page shown:
+  the road's edges per row (from the ground down to the split; an edge under the original's foreground is not
+  measured) and the mismatched pixels (from 12h in town, from the horizon in a race, whose sky turns slower than
+  the original's as in Street Rod 1). `SR_ENH_COMPARE_ROWS=1` logs the rows that differ,
+  `SR_ENH_COMPARE_DUMP=<dir>` writes the original and the enhanced view side by side. The test
+  `sr2_enh_compare` (label `slow`) runs a drag and a town drive: road edges within 1 px in at least 95 % of the
+  frames, the median frame within 10 per mille of mismatched pixels.
