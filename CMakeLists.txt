@@ -22,10 +22,14 @@ add_library(sre_host STATIC ${SR_HOST_SOURCES})
 target_include_directories(sre_host PUBLIC common)
 target_link_libraries(sre_host PUBLIC SDL3::SDL3 nuked_opl3)
 
+# The remastered music's band (common/band): built into each game's core, because its score reader
+# (arrange.c) reads the game's memory through that game's mem.h.
+file(GLOB SR_BAND_SOURCES CONFIGURE_DEPENDS common/band/*.c)
+
 # Everything but main.c in an object library, so the unit tests can link the engine.
 list(FILTER SR_SOURCES EXCLUDE REGEX "/src/main\\.c$")
-add_library(sre_core OBJECT ${SR_SOURCES})
-target_include_directories(sre_core PUBLIC src)
+add_library(sre_core OBJECT ${SR_SOURCES} ${SR_BAND_SOURCES})
+target_include_directories(sre_core PUBLIC src common/band)
 target_link_libraries(sre_core PUBLIC sre_host SDL3::SDL3)
 add_executable(streetrod-enhanced src/main.c)
 target_link_libraries(streetrod-enhanced PRIVATE sre_core)
@@ -60,8 +64,8 @@ endif()
 # Street Rod 2: The Next Generation, its own engine (src2/, ENGINE2.md) on the shared host.
 file(GLOB_RECURSE SR2_SOURCES CONFIGURE_DEPENDS src2/*.c)
 list(FILTER SR2_SOURCES EXCLUDE REGEX "/src2/main\\.c$")
-add_library(sr2_core OBJECT ${SR2_SOURCES})
-target_include_directories(sr2_core PUBLIC src2)
+add_library(sr2_core OBJECT ${SR2_SOURCES} ${SR_BAND_SOURCES})
+target_include_directories(sr2_core PUBLIC src2 common/band)
 target_link_libraries(sr2_core PUBLIC sre_host SDL3::SDL3)
 add_executable(streetrod2-enhanced src2/main.c)
 target_link_libraries(streetrod2-enhanced PRIVATE sr2_core sre_host)

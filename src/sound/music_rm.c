@@ -2,9 +2,9 @@
 #include "sound/music_rm.h"
 
 #include "host.h"
-#include "sound/arrange.h"
+#include "arrange.h"
 #include "sound/snd_int.h"
-#include "sound/synth.h"
+#include "synth.h"
 
 bool music_rm_on;
 static bool with_host;

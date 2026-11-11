@@ -1,10 +1,10 @@
 /* The remastered music's synthesiser (synth.h). */
-#include "sound/synth.h"
+#include "synth.h"
 
 #include <math.h>
 #include <string.h>
 
-#include "sound/arrange.h"
+#include "arrange.h"
 
 #define VOICES   24
 #define DRUMS    8

@@ -5,8 +5,8 @@
 #include <string.h>
 
 #include "mem.h"
-#include "sound/arrange.h"
-#include "sound/synth.h"
+#include "arrange.h"
+#include "synth.h"
 #include "sound/music_rm.h"
 #include "sound/snd_int.h"
 #include "sound/sound.h"

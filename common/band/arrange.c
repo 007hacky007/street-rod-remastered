@@ -1,5 +1,5 @@
 /* The remastered music's score (arrange.h). */
-#include "sound/arrange.h"
+#include "arrange.h"
 
 #include <math.h>
 #include <string.h>
