@@ -8,6 +8,7 @@
  *   --run-ms N    developer aid: exit after N ms (headless snapshot runs)
  *   --music-volume N  ENH: volume of the music, percent 0..100 (default 100)
  *   --sfx-volume N    ENH: volume of the sound effects and the engine, 0..100 (default 100)
+ *   --music original|remastered  ENH: the music as the game plays it (default), or played by a small band
  *   adlib | speaker  PORT (launcher): choose the sound card and skip the sound options menu
  *   the original's command-line switches are passed on as they are: 1, nomouse, demo, nouemem, e c v h t (force EGA / CGA / VGA / Hercules / Tandy: skips the video menu)
  */
@@ -22,13 +23,14 @@
 #include "host.h"
 #include "mem.h"
 #include "platform/ega.h"
+#include "sound/band.h"
 
 #define APP_TITLE "Street Rod 2 Enhanced"
 
 static int usage(const char *prog)
 {
     fprintf(stderr, "usage: %s [--game-dir DIR] [--scale N] [--fullscreen] [--check] [--run-ms N] "
-                    "[--music-volume N] [--sfx-volume N] "
+                    "[--music-volume N] [--sfx-volume N] [--music original|remastered] "
                     "[1] [nomouse] [demo] [nouemem] [e|c|v|h|t] [adlib|speaker]\n", prog);
     return 2;
 }
@@ -53,6 +55,7 @@ int main(int argc, char **argv)
     int scale = 3;
     bool check = false, fullscreen = false;
     int music_volume = 100, sfx_volume = 100;
+    bool band = false;
     for (int i = 1; i < argc; i++) {
         const char *a = argv[i], *v = i + 1 < argc ? argv[i + 1] : NULL;
         if (!strcmp(a, "--game-dir") && v) { dir = v; i++; }
@@ -62,6 +65,10 @@ int main(int argc, char **argv)
         else if (!strcmp(a, "--check")) check = true;
         else if (!strcmp(a, "--music-volume") && v) { music_volume = atoi(v); i++; }   /* ENH */
         else if (!strcmp(a, "--sfx-volume") && v) { sfx_volume = atoi(v); i++; }       /* ENH */
+        else if (!strcmp(a, "--music") && v && (!strcmp(v, "original") || !strcmp(v, "remastered"))) {   /* ENH */
+            band = !strcmp(v, "remastered");
+            i++;
+        }
         else if (a[0] == '-' && a[1] == '-') return usage(argv[0]);
         else if (game_argc < 63) game_argv[game_argc++] = argv[i];   /* a switch of SR.EXE */
     }
@@ -81,6 +88,8 @@ int main(int argc, char **argv)
     host_configure(&(HostConfig){ APP_TITLE, 49716, true });   /* ENH: the shared host (common/host.h) */
     if (!host_init(dir, scale, fullscreen)) return 1;
     host_set_volumes(music_volume, sfx_volume);                  /* ENH */
+    if (band && !band_enable(true))                              /* ENH: the remastered music (band.c) */
+        fprintf(stderr, "remastered music: the PC speaker tune was not found\n");
     ega_init();                     /* 16-colour planar display: frame source, planes */
     game_argv[game_argc] = NULL;
     return game_main(game_argc, game_argv);     /* the original's switches (1, nomouse, demo, nouemem, e c v h t) are read there */

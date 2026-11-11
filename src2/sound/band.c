@@ -23,6 +23,15 @@ static AdVoice ad[VOICES_ADLIB];
 static bool perc;
 static int bend_range = 1;
 
+/* The PC speaker tune, arranged as Street Rod 1's (music_rm.c). */
+static Song song;
+static Arrangement arr;
+static bool spk_ok, spk_sounding;
+#define UPPER_MAX 6
+typedef struct { int voice, ticks; } Held;
+static Held bass = { -1, 0 }, upper[UPPER_MAX];
+static int lead_voice = -1;                         /* the note the vibrato bends */
+
 static const struct { const char *name; int kind, which; } PARTS[] = {
     { "bass1", BAND_NOTE, INST_BASS },      { "bass2", BAND_NOTE, INST_BASS },
     { "jazzguit", BAND_NOTE, INST_GUITAR }, { "guitar1", BAND_NOTE, INST_GUITAR },
@@ -62,6 +71,10 @@ static void sync(void) { if (with_host) host_audio_sync(); }
 static void reset_voices(void)
 {
     for (int v = 0; v < VOICES_ADLIB; v++) { ad[v].voice = -1; ad[v].bend = 0; }
+    bass.voice = -1;
+    for (int i = 0; i < UPPER_MAX; i++) upper[i].voice = -1;
+    lead_voice = -1;
+    spk_sounding = false;
 }
 
 bool band_enable(bool host)
@@ -70,10 +83,12 @@ bool band_enable(bool host)
     memset(ad, 0, sizeof ad);
     reset_voices();
     notes_started = 0;
+    spk_ok = song_parse(DGROUP, DS_spk_bg_song, &song);
+    if (spk_ok) arrange(&song, &arr);
     with_host = host;
     band_on = true;
     if (host) host_set_music_synth(render_host);
-    return true;
+    return spk_ok;
 }
 
 void band_disable(void)
@@ -88,15 +103,19 @@ static float pan_of(int inst)
     return inst == INST_EPIANO ? 0.15f : inst == INST_VIBES ? 0.3f : -0.25f;
 }
 
+/* The AdLib songs play three voices and the drums at once, denser than the speaker tune's arrangement: at
+ * Street Rod 1's levels they reached full scale. ADLIB_LEVEL brings them to the speaker band's loudness. */
+#define ADLIB_LEVEL 0.75f
+
 static float level_of(int inst)
 {
-    return inst == INST_BASS ? 1.0f : inst == INST_VIBES ? 0.8f : 0.7f;
+    return ADLIB_LEVEL * (inst == INST_BASS ? 1.0f : inst == INST_VIBES ? 0.8f : 0.7f);
 }
 
 static void drum_hit(int drum, int note, float vel)
 {
     static const float LEVEL[4] = { 0.55f, 0.35f, 0.16f, 0.45f };   /* KICK, SNARE, BRUSH, TOM */
-    float v = LEVEL[drum] * vel / 0.75f;                             /* the songs' usual velocity 95 = SR1's level */
+    float v = ADLIB_LEVEL * LEVEL[drum] * vel / 0.75f;               /* the songs' usual velocity 95 = SR1's level */
     if (drum == DRUM_TOM) synth_drum_pitched(DRUM_TOM, (float)note, v);
     else synth_drum(drum, v);
 }
@@ -154,6 +173,45 @@ void band_adlib_all_off(void)
     reset_voices();
 }
 
+void band_spk_note(u16 off, u16 divisor)
+{
+    if (!band_on || !spk_ok) return;
+    int i = song_find(&song, off);
+    if (i < 0 || song.ev[i].note != divisor) return;   /* not the tune that was read (cannot happen) */
+    sync();
+    spk_sounding = true;
+    notes_started++;
+    const ArrNote *n = &arr.note[i];
+    if (n->drums & ARR_KICK) synth_drum(DRUM_KICK, 0.55f);
+    if (n->drums & ARR_SNARE) synth_drum(DRUM_SNARE, 0.35f);
+    if (n->drums & ARR_BRUSH) synth_drum(DRUM_BRUSH, 0.12f + 0.06f * (n->vel - 0.75f) * 4);
+    if (n->voice == ARR_BASS) {
+        synth_release(bass.voice);
+        bass.voice = synth_note(INST_BASS, n->midi, 1.0f * n->vel, 0);
+        bass.ticks = n->hold;
+        lead_voice = bass.voice;
+        return;
+    }
+    int inst = arr.sec_inst[song.ev[i].section], k = 0;
+    for (int j = 0; j < UPPER_MAX; j++) {           /* a free slot, else the one ending first */
+        if (upper[j].voice < 0) { k = j; break; }
+        if (upper[j].ticks < upper[k].ticks) k = j;
+    }
+    synth_release(upper[k].voice);
+    upper[k].voice = synth_note(inst, n->midi, (inst == INST_VIBES ? 0.8f : 0.7f) * n->vel, pan_of(inst));
+    upper[k].ticks = n->hold;
+    lead_voice = upper[k].voice;
+}
+
+void band_spk_rest(void) { lead_voice = -1; }
+
+void band_spk_bend(u16 divisor)
+{
+    if (!band_on || lead_voice < 0 || !divisor) return;
+    sync();
+    synth_bend(lead_voice, arr_midi(divisor));
+}
+
 void band_tick(void)
 {
     static bool was_on = true;
@@ -161,6 +219,12 @@ void band_tick(void)
     bool on = DSB(DS_sound_on) != 0;
     if (!on && was_on) band_adlib_all_off();        /* Ctrl: the sound off */
     was_on = on;
+    if (DSW(DS_snd_device) != 1 || !spk_sounding) return;
+    bool playing = DSW(DS_music_cur) == DS_bg_song && DSW(DS_bg_song + SS_PLAYING) && on;
+    if (!playing) { band_adlib_all_off(); return; }
+    if (bass.voice >= 0 && --bass.ticks <= 0) { sync(); synth_release(bass.voice); bass.voice = -1; }
+    for (int i = 0; i < UPPER_MAX; i++)
+        if (upper[i].voice >= 0 && --upper[i].ticks <= 0) { sync(); synth_release(upper[i].voice); upper[i].voice = -1; }
 }
 
 int band_notes_started(void) { return notes_started; }

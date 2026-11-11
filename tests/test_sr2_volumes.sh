@@ -1,5 +1,5 @@
 #!/bin/sh
-# Street Rod 2's --music-volume and --sfx-volume: the title runs headless for 12 s with each sound device
+# Street Rod 2's --music-volume, --sfx-volume and --music: the title runs headless for 12 s with each sound device
 # and the RMS of the output from 3 s on says whether the music sounded.
 #   test_sr2_volumes.sh <streetrod2-enhanced> <SR2 game dir>
 set -u
@@ -34,4 +34,9 @@ run adlib_sfx_0 loud --sfx-volume 0 v adlib
 run speaker_default loud v speaker
 run speaker_music_0 quiet --music-volume 0 v speaker
 run speaker_both_0 quiet --music-volume 0 --sfx-volume 0 v speaker
+# The band (--music remastered): the chip's and the speaker's music are silent under it, so loud is the band.
+run adlib_remastered loud --music remastered v adlib
+run adlib_remastered_music_0 quiet --music remastered --music-volume 0 v adlib
+run speaker_remastered loud --music remastered v speaker
+run speaker_remastered_music_0 quiet --music remastered --music-volume 0 v speaker
 exit $fail

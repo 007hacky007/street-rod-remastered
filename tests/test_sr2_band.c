@@ -119,6 +119,21 @@ static void sr2_band_siren(void)
     CHECK(host_opl_voice_is_music(2));
 }
 
+/* The PC speaker's background tune, in Street Rod 1's (duration, divisor) format: 14 sections of notes. */
+static void sr2_band_speaker_tune(void)
+{
+    static Song song;
+    bool ok = song_parse(DGROUP, DS_spk_bg_song, &song);
+    int with_notes = 0;                             /* the marker before the end opens an empty last one */
+    for (int sec = 0; sec < song.nsec; sec++)
+        for (int i = 0; i < song.n; i++)
+            if (song.ev[i].section == sec) { with_notes++; break; }
+    printf("  events %d, sections %d (%d with notes)\n", song.n, song.nsec, with_notes);
+    CHECK(ok);
+    CHECK(with_notes == 14);
+    CHECK(song.n > 0);
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -131,6 +146,7 @@ int main(int argc, char **argv)
     if (!host_init(argv[1], 1, false)) { printf("FAIL host_init\n"); return 1; }
     host_set_realtime(false);
     if (!band_enable(false)) { printf("FAIL band_enable\n"); return 1; }
+    RUN(sr2_band_speaker_tune);
     RUN(sr2_band_parts);
     RUN(sr2_band_plays_title);
     RUN(sr2_band_stop_silences);

@@ -17,7 +17,8 @@ BandPart band_part_of(const char *timbre);
 BandPart band_perc_part(int voice);
 
 /* with_host: the host renders the band into the output at the music volume (false in tests, which render
- * it themselves with synth_render). */
+ * it themselves with synth_render). Also reads and arranges the PC speaker tune (DS_spk_bg_song); false:
+ * that tune was not found (the AdLib songs still play). */
 bool band_enable(bool with_host);
 void band_disable(void);
 extern bool band_on;
@@ -31,7 +32,14 @@ void band_adlib_bend_range(int semitones);          /* the song's (header byte 0
 void band_adlib_perc(bool on);                      /* voices 6..10 are drums */
 void band_adlib_all_off(void);                      /* the song stopped or starts over */
 
-/* Every timer tick: all quiet while the sound is off. */
+/* From the PC speaker sequencer (spk.c), for the background tune only, as Street Rod 1's music_rm_*: a note
+ * starts (its duration word at DS offset off), a rest starts, the vibrato moved the sounding note. */
+void band_spk_note(u16 off, u16 divisor);
+void band_spk_rest(void);
+void band_spk_bend(u16 divisor);
+
+/* Every timer tick: all quiet while the sound is off; the speaker tune's notes end when their time is up and
+ * everything ends when the tune stops. */
 void band_tick(void);
 
 int band_notes_started(void);                       /* tests */

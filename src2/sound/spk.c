@@ -7,6 +7,7 @@
  * (host_busy_wait_ns): timer ticks that fall inside an effect run at their place, so the music sequencer or
  * the drive ISR change the speaker in the middle of an effect as they did on the PC. */
 #include "sound/snd_int.h"
+#include "sound/band.h"
 
 #include "platform/platform.h"
 
@@ -286,6 +287,7 @@ void speaker_music_tick(void)
                 DSW(DS_VIB_LAST_DIV) = div;
                 DSW(rec) = (u16)(DSW(rec) + 1);
                 pit2_div(div);
+                if (s == DS_bg_song) band_spk_bend(div);     /* ENH: the remastered music (band.c) */
                 DSW(DS_vib_countdown) = DSW(rec + 8);
             }
         }
@@ -327,6 +329,7 @@ void speaker_music_tick(void)
         DSW(s + SS_CUR) = (u16)(DSW(s + SS_CUR) + 2);
         DSW(s + SS_NOTE) = note;
         if (note == 0) {                                     /* rest: gate off, divisor unchanged */
+            if (s == DS_bg_song) band_spk_rest();            /* ENH: the remastered music */
             DSB(s + SS_REGATE) = 1;
             sound_vec(23);
             return;
@@ -342,6 +345,7 @@ void speaker_music_tick(void)
             }
         }
         pit2_div(note);
+        if (s == DS_bg_song) band_spk_note((u16)(DSW(s + SS_CUR) - 4), note);   /* ENH: the remastered music */
         if (DSB(DS_sound_on) && (DSB(DS_sound_gate) == 0 || DSB(s + SS_REGATE))) {
             sound_vec(24);
             if (DSB(s + SS_REGATE)) DSB(s + SS_REGATE) = 0;
