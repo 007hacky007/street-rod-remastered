@@ -4,7 +4,9 @@
 #pragma once
 
 #include <wx/frame.h>
+#include <wx/timer.h>
 
+#include "artpack.h"
 #include "download.h"
 #include "game.h"
 
@@ -40,6 +42,15 @@ private:
     void OfferDownload();
     void StartDownload();
     void DownloadFailed(const wxString& error);
+    // The remastered pictures (artpack.h): CheckArt reads the latest release's manifest quietly and, when
+    // `ask`, offers the pictures or an update; StartArtDownload fetches the manifest and the zip and installs
+    // them into UserRemasterDir().
+    void CheckArt(bool ask);
+    void AskArt(artpack::OfferKind kind);
+    void StartArtDownload();
+    void ArtFailed(const wxString& error);
+    // After a download ends while the window is closing: destroys it once nothing runs any more.
+    bool FinishClosing();
     void Play();
     void About();
     void Preferences();
@@ -76,6 +87,12 @@ private:
     wxCheckBox* fullscreen_ = nullptr;
     wxChoice* graphics_ = nullptr;   // race view: enhanced / original
     wxChoice* art_ = nullptr;        // art: original / remastered (with an art pack)
+    wxButton* artButton_ = nullptr;  // Download / Update pictures, and the download's progress
+    WebFetch artFetch_;
+    wxTimer artTimer_;               // the progress on artButton_
+    artpack::Manifest artLatest_;    // the latest release, once CheckArt has read it
+    bool artKnown_ = false;
+    bool artDownloading_ = false;    // the zip, not only the manifest
     wxChoice* resolution_ = nullptr;
     wxChoice* aa_ = nullptr;
     wxCheckBox* town_ = nullptr;

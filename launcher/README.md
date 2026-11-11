@@ -25,8 +25,13 @@ like the Street Rod and Test Drive III launchers it is modelled on.
   Alt+Enter switches).
 * **Keys in the game**: a reminder of the game's keys, including the port's A / Z gear keys.
 * **Picture**: **Art** remastered (`--remaster-dir`: every picture redrawn, the default) or original. The art
-  pack is `Remaster` beside the launcher on Windows; on a Mac `Remaster` in the settings folder if there is
-  one, else the one inside the app. Without a pack only Original is available. **Race view** enhanced (the
+  pack is a download from the latest release of
+  [street-rod-remastered-art](https://github.com/007hacky007/street-rod-remastered-art) (`artpack.cpp`): the
+  launcher offers it on its first start and a newer one when it is out ("Not Now" is remembered under
+  `[Art]`), and **Download Pictures...** / **Update Pictures...** beside Art fetch it at any time. The download is
+  checked against the release's manifest (size, SHA-256, pack format), unpacked into `Remaster.partial` and
+  then put in place of `Remaster` in the settings folder. A `Remaster` beside the launcher is used when the
+  settings folder has none. Without a pack only Original is available. **Race view** enhanced (the
   smooth, high-resolution road view, the default) or original (`--classic`); **Resolution** of the picture, 640 × 400 to 2560 × 1600 (`--res-scale`, default 1280 × 800);
   **Anti-aliasing** off, 2 × 2 (default), 3 × 3 or 4 × 4 (`--aa`); **Drives through town enhanced too**
   (`--town`). The last three are greyed out with the original graphics.
@@ -39,7 +44,8 @@ like the Street Rod and Test Drive III launchers it is modelled on.
   into its `datadisk` folder. Both downloads are checked against known SHA-256 checksums and unpacked into
   `<folder>.partial` first, so a failed download leaves nothing behind. A folder that holds anything (saved
   games, say) is never written to.
-* `SRE_DOWNLOAD_BASE=<url>` (a developer aid) downloads `sr1pc.zip` and `srsepc.zip` from there instead.
+* `SRE_DOWNLOAD_BASE=<url>` (a developer aid) downloads `sr1pc.zip` and `srsepc.zip` from there instead;
+  `SRE_ART_BASE=<url>` the art pack's manifest and zip.
 * About, Preferences and Quit are in the application menu.
 
 ## Menus
@@ -72,7 +78,9 @@ launcher itself is linked in.
 * `game.h`, `game.cpp`: the file checks, the data disk, saved games and starting the game.
 * `settings.h`, `settings.cpp`: `settings.ini`.
 * `gamefiles.h`, `gamefiles.cpp`, `sha256.h`, `sha256.cpp`: the official game files, their checksums and the
-  installer; `download.h`, `download.cpp`: fetching them (wxWebRequest).
+  installer; `download.h`, `download.cpp`: fetching them (wxWebRequest), and one file at a time (`WebFetch`).
+* `artpack.h`, `artpack.cpp`: the remastered pictures as a download: the manifest, the update offer and the
+  installer.
 * `macos/`: the app bundle's `Info.plist.in` and `AppIcon.icns` (written by `make_icon.py` on a Mac).
 * `icon.h`, `icon.cpp`: the app icon, Street Rod's night road drawn in code. `make_icon.py` (Pillow) writes the
   same drawing to `app.ico` for Explorer.

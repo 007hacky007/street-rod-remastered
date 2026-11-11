@@ -93,3 +93,69 @@ void GameDownload::Finish(bool ok, const wxString& error) {
     Done done = std::move(done_);
     if (done) done(ok, std::move(got), error);
 }
+
+WebFetch::WebFetch() { Bind(wxEVT_WEBREQUEST_STATE, &WebFetch::OnState, this); }
+
+void WebFetch::Start(const wxString& url, const wxString& label, Done done) {
+    if (running_) return;
+    done_ = std::move(done);
+    label_ = label;
+    running_ = true;
+    request_ = wxWebSession::GetDefault().CreateRequest(this, url);
+    if (!request_.IsOk()) {
+        CallAfter([this] { Finish(false, {}, wxString::Format("Couldn't start the download of %s.", label_)); });
+        return;
+    }
+    request_.SetHeader("User-Agent", "StreetRodEnhanced/" APP_VERSION_TEXT);
+    request_.SetStorage(wxWebRequest::Storage_Memory);
+    request_.Start();
+}
+
+wxFileOffset WebFetch::Received() const { return request_.IsOk() ? request_.GetBytesReceived() : 0; }
+
+wxFileOffset WebFetch::Expected() const { return request_.IsOk() ? request_.GetBytesExpectedToReceive() : -1; }
+
+void WebFetch::Cancel() {
+    if (running_ && request_.IsOk()) request_.Cancel();  // State_Cancelled follows
+}
+
+void WebFetch::OnState(wxWebRequestEvent& event) {
+    if (!running_) return;
+    switch (event.GetState()) {
+    case wxWebRequest::State_Completed: {
+        const wxWebResponse& response = event.GetResponse();
+        if (response.GetStatus() != 200) {
+            Finish(false, {}, wxString::Format("The download of %s failed: the website answered %d %s.", label_,
+                                               response.GetStatus(), response.GetStatusText()));
+            return;
+        }
+        wxMemoryOutputStream out;
+        if (wxInputStream* in = response.GetStream()) in->Read(out);
+        wxMemoryBuffer data;
+        data.AppendData(out.GetOutputStreamBuffer()->GetBufferStart(), out.GetSize());
+        Finish(true, std::move(data), wxEmptyString);
+        break;
+    }
+    case wxWebRequest::State_Failed:
+    case wxWebRequest::State_Unauthorized:
+        Finish(false, {}, wxString::Format("The download of %s failed: %s", label_,
+                                           event.GetErrorDescription().empty() ? wxString("no connection.")
+                                                                               : event.GetErrorDescription()));
+        break;
+    case wxWebRequest::State_Cancelled:
+        Finish(false, {}, wxString::Format("The download of %s was cancelled.", label_));
+        break;
+    default:
+        break;
+    }
+}
+
+void WebFetch::Finish(bool ok, wxMemoryBuffer data, const wxString& error) {
+    running_ = false;
+    Done done = std::move(done_);
+    // Not from inside the request's own event: `done` may start the next fetch.
+    CallAfter([done, ok, data, error] {
+        if (done) done(ok, data, error);
+    });
+    request_ = wxWebRequest();
+}

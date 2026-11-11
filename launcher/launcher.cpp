@@ -28,6 +28,7 @@
 #include <shellapi.h>
 #endif
 
+#include "artpack.h"
 #include "gamefiles.h"
 #include "icon.h"
 #include "settings.h"
@@ -40,6 +41,7 @@ namespace {
 const char* const WEBSITE = "https://github.com/007hacky007/street-rod-remastered";
 const char* const SECTION = "Game";
 const char* const SOUND = "Sound";
+const char* const ART = "Art";  // Declined: the first offer was turned down; Skipped: the update turned down
 
 const int ID_SOUNDS = wxID_HIGHEST + 1;
 [[maybe_unused]] const int ID_ABOUT = wxID_HIGHEST + 2;  // macOS uses wxID_ABOUT
@@ -113,6 +115,8 @@ void SliderRow(wxWindow* parent, wxFlexGridSizer* grid, const wxString& label, c
     });
 }
 
+wxString Megabytes(unsigned long bytes) { return wxString::Format("%lu MB", (bytes + 500000) / 1000000); }
+
 wxString SavesText(int n) {
     return n == 0 ? wxString("no saved games") : n == 1 ? wxString("1 saved game") : wxString::Format("%d saved games", n);
 }
@@ -169,24 +173,36 @@ LauncherFrame::LauncherFrame()
     });
     Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent&) {
         Save();
-        if (downloader_.Running()) {
-            // The request reports to downloader_, which this frame owns: stop it and go once it has ended.
+        if (downloader_.Running() || artFetch_.Running()) {
+            // The requests report to downloader_ and artFetch_, which this frame owns: stop them and go once
+            // they have ended.
             closing_ = true;
             Hide();
+            artTimer_.Stop();
             downloader_.Cancel();
+            artFetch_.Cancel();
             return;
         }
         Destroy();
     });
+    artTimer_.Bind(wxEVT_TIMER, [this](wxTimerEvent&) {
+        const wxFileOffset got = artFetch_.Received();
+        const unsigned long all = artLatest_.size ? artLatest_.size : 0;
+        artButton_->SetLabel(all ? wxString::Format(wxString::FromUTF8("Downloading… %lu of %s"),
+                                                    (unsigned long)(got + 500000) / 1000000, Megabytes(all))
+                                 : wxString::FromUTF8("Downloading…"));
+        book_->GetPage(PAGE_MAIN)->Layout();
+    });
 
     FitPage();
     if (!settings::RestoreWindowPosition(SECTION, this)) Centre();
-#ifdef __WXOSX__
-    // First launch: no game yet, so offer to fetch it.
     CallAfter([this] {
+#ifdef __WXOSX__
+        // First launch: no game yet, so offer to fetch it.
         if (gamefiles::FolderIsFree(folder_->GetValue())) OfferDownload();
-    });
 #endif
+        CheckArt(true);
+    });
 }
 
 wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
@@ -311,9 +327,16 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     art_ = new wxChoice(pb, wxID_ANY);
     art_->Append("Original: the game's pictures");
     art_->Append("Remastered: every picture redrawn (default)");
-    art_->SetToolTip("Remastered shows the redrawn pictures of the art pack in " + DefaultRemasterDir() +
-                     ". Without a pack only Original is available.");
-    pgrid->Add(art_, 0, wxALIGN_CENTER_VERTICAL);
+    art_->SetToolTip("Remastered shows every picture of the game redrawn as modern pixel art. The pictures are "
+                     "a separate download, kept in " + UserRemasterDir() + "; until then only Original is "
+                     "available.");
+    artButton_ = new wxButton(pb, wxID_ANY, wxString::FromUTF8("Download Pictures…"));
+    artButton_->SetToolTip("Downloads the remastered pictures from github.com/007hacky007/street-rod-remastered-art.");
+    artButton_->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { StartArtDownload(); });
+    auto* artRow = new wxBoxSizer(wxHORIZONTAL);
+    artRow->Add(art_, 0, wxALIGN_CENTER_VERTICAL);
+    artRow->Add(artButton_, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, gap);
+    pgrid->Add(artRow, 0, wxALIGN_CENTER_VERTICAL);
     pgrid->Add(new wxStaticText(pb, wxID_ANY, "Race &view:"), 0, wxALIGN_CENTER_VERTICAL);
     graphics_ = new wxChoice(pb, wxID_ANY);
     graphics_->Append("Enhanced: smooth, high-resolution road (default)");
@@ -536,6 +559,14 @@ void LauncherFrame::UpdateState() {
     const bool pack = IsArtPack(DefaultRemasterDir());
     if (!pack) art_->SetSelection(0);
     art_->Enable(pack);
+    if (!artDownloading_) {
+        const bool update = pack && artKnown_ &&
+            artpack::Offer(true, artpack::Installed(DefaultRemasterDir()), artLatest_, false, wxString()) ==
+                artpack::OFFER_UPDATE;
+        artButton_->SetLabel(wxString::FromUTF8(update ? "Update Pictures…" : "Download Pictures…"));
+        artButton_->Show(!pack || update);
+        artButton_->Enable(!artFetch_.Running());
+    }
     resolution_->Enable(enhanced);
     aa_->Enable(enhanced);
     town_->Enable(enhanced);
@@ -581,10 +612,7 @@ void LauncherFrame::StartDownload() {
             UpdateState();
         },
         [this](bool ok, std::vector<gamefiles::Download> downloads, wxString error) {
-            if (closing_) {
-                Destroy();
-                return;
-            }
+            if (FinishClosing()) return;
             const bool installed = ok && gamefiles::Install(folder_->GetValue(), downloads, error);
             UpdateState();
             if (!installed) DownloadFailed(error);
@@ -598,6 +626,97 @@ void LauncherFrame::DownloadFailed(const wxString& error) {
     const int answer = dialog.ShowModal();
     if (answer == wxID_YES) StartDownload();
     else if (answer == wxID_NO) BrowseFolder();
+}
+
+bool LauncherFrame::FinishClosing() {
+    if (!closing_) return false;
+    if (!downloader_.Running() && !artFetch_.Running()) Destroy();
+    return true;
+}
+
+void LauncherFrame::CheckArt(bool ask) {
+    if (artFetch_.Running()) return;
+    artFetch_.Start(artpack::ManifestUrl(), "the description of the remastered pictures",
+                    [this, ask](bool ok, wxMemoryBuffer data, wxString error) {
+                        if (FinishClosing()) return;
+                        artpack::Manifest m;
+                        if (ok && artpack::ParseManifest(
+                                      wxString::FromUTF8(static_cast<const char*>(data.GetData()), data.GetDataLen()),
+                                      m, error)) {
+                            artLatest_ = m;
+                            artKnown_ = true;
+                        }
+                        UpdateState();
+                        if (!ask || !artKnown_) return;  // offline: say nothing, the button still works
+                        const wxString dir = DefaultRemasterDir();
+                        AskArt(artpack::Offer(IsArtPack(dir), artpack::Installed(dir), artLatest_,
+                                              settings::GetInt(ART, "Declined", 0) != 0,
+                                              settings::GetString(ART, "Skipped", "")));
+                    });
+    UpdateState();
+}
+
+void LauncherFrame::AskArt(artpack::OfferKind kind) {
+    if (kind == artpack::OFFER_NONE) return;
+    const wxString text =
+        kind == artpack::OFFER_DOWNLOAD
+            ? wxString::Format("Street Rod Enhanced can show every picture of the game redrawn as modern pixel art. "
+                               "Download the remastered pictures (%s) from "
+                               "github.com/007hacky007/street-rod-remastered-art?",
+                               Megabytes(artLatest_.size))
+            : wxString::Format("New remastered pictures are available (%s, %s). Download them now?",
+                               artLatest_.version, Megabytes(artLatest_.size));
+    wxMessageDialog dialog(this, text, APP_TITLE, wxYES_NO | wxICON_QUESTION);
+    dialog.SetYesNoLabels("Download", "Not Now");
+    if (dialog.ShowModal() == wxID_YES) {
+        StartArtDownload();
+        return;
+    }
+    // Asked once: the button stays for later.
+    if (kind == artpack::OFFER_DOWNLOAD) settings::SetInt(ART, "Declined", 1);
+    else settings::SetString(ART, "Skipped", artLatest_.sha256);
+}
+
+void LauncherFrame::StartArtDownload() {
+    if (artFetch_.Running()) return;
+    artDownloading_ = true;
+    artButton_->Enable(false);
+    artButton_->SetLabel(wxString::FromUTF8("Downloading…"));
+    artTimer_.Start(250);
+    // The manifest again, so the zip is checked against the release it belongs to.
+    artFetch_.Start(artpack::ManifestUrl(), "the description of the remastered pictures",
+                    [this](bool ok, wxMemoryBuffer data, wxString error) {
+                        if (FinishClosing()) return;
+                        artpack::Manifest m;
+                        if (ok) ok = artpack::ParseManifest(
+                            wxString::FromUTF8(static_cast<const char*>(data.GetData()), data.GetDataLen()), m, error);
+                        if (ok && m.format > artpack::FORMAT) {
+                            ok = false;
+                            error = "These remastered pictures need a newer Street Rod Enhanced.";
+                        }
+                        if (!ok) return ArtFailed(error);
+                        artLatest_ = m;
+                        artKnown_ = true;
+                        artFetch_.Start(artpack::ZipUrl(), "the remastered pictures",
+                                        [this, m](bool ok, wxMemoryBuffer zip, wxString error) {
+                                            if (FinishClosing()) return;
+                                            if (ok) ok = artpack::Install(UserRemasterDir(), zip, m, error);
+                                            if (!ok) return ArtFailed(error);
+                                            artTimer_.Stop();
+                                            artDownloading_ = false;
+                                            art_->SetSelection(1);  // what the player downloaded them for
+                                            UpdateState();
+                                        });
+                    });
+}
+
+void LauncherFrame::ArtFailed(const wxString& error) {
+    artTimer_.Stop();
+    artDownloading_ = false;
+    UpdateState();
+    wxMessageDialog dialog(this, error, APP_TITLE, wxYES_NO | wxICON_WARNING);
+    dialog.SetYesNoLabels("Try Again", "Cancel");
+    if (dialog.ShowModal() == wxID_YES) StartArtDownload();
 }
 
 void LauncherFrame::Play() {

@@ -24,8 +24,6 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v7
-        with:
-          submodules: true
 
       - uses: actions/setup-python@v7
         with:
@@ -46,7 +44,7 @@ jobs:
         run: |
           set -euo pipefail
           VERSION=$(sed -n 's/^#define APP_VERSION_TEXT "\(.*\)"/\1/p' launcher/version.h)
-          tools/macos/package.sh --version "$VERSION" --pack art-pack
+          tools/macos/package.sh --version "$VERSION"
           tools/macos/make-dmg.sh --version "$VERSION"
 
       - uses: actions/upload-artifact@v7
@@ -63,8 +61,6 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: actions/checkout@v7
-        with:
-          submodules: true
 
       - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
         with:
@@ -80,7 +76,7 @@ jobs:
 
       - name: Build and test
         run: |
-          tools/windows/package.sh --pack art-pack
+          tools/windows/package.sh
 
       - uses: actions/upload-artifact@v7
         with:

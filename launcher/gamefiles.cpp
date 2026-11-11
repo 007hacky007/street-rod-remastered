@@ -17,12 +17,6 @@
 namespace gamefiles {
 namespace {
 
-// Removes a folder and everything in it; true if it's gone.
-bool RemoveTree(const wxString& dir) {
-    if (!wxFileName::DirExists(dir)) return true;
-    return wxFileName::Rmdir(dir, wxPATH_RMDIR_RECURSIVE);
-}
-
 // The path of a zip entry under `top/`, without it; empty if the entry isn't one of the game's files
 // (another folder, a directory, macOS metadata) or isn't a safe relative path.
 bool EntryPath(const wxString& name, const wxString& top, wxString& rest, bool& unsafe) {
@@ -39,19 +33,31 @@ bool EntryPath(const wxString& name, const wxString& top, wxString& rest, bool& 
 }
 
 bool Extract(const Download& d, const wxString& dest, wxString& error) {
-    wxMemoryInputStream mem(d.data.GetData(), d.data.GetDataLen());
+    return Unzip(d.data.GetData(), d.data.GetDataLen(), d.archive->top, dest, d.archive->label, error);
+}
+
+}  // namespace
+
+bool RemoveTree(const wxString& dir) {
+    if (!wxFileName::DirExists(dir)) return true;
+    return wxFileName::Rmdir(dir, wxPATH_RMDIR_RECURSIVE);
+}
+
+bool Unzip(const void* data, size_t size, const wxString& top, const wxString& dest, const wxString& label,
+           wxString& error) {
+    wxMemoryInputStream mem(data, size);
     wxZipInputStream zip(mem);
     if (!zip.IsOk()) {
-        error = wxString::Format("The download of %s isn't a zip file.", d.archive->label);
+        error = wxString::Format("The download of %s isn't a zip file.", label);
         return false;
     }
     bool any = false;
     while (std::unique_ptr<wxZipEntry> entry{zip.GetNextEntry()}) {
         wxString rest;
         bool unsafe = false;
-        if (!EntryPath(entry->GetName(wxPATH_UNIX), d.archive->top, rest, unsafe)) {
+        if (!EntryPath(entry->GetName(wxPATH_UNIX), top, rest, unsafe)) {
             if (unsafe) {
-                error = wxString::Format("The download of %s holds a file outside its folder.", d.archive->label);
+                error = wxString::Format("The download of %s holds a file outside its folder.", label);
                 return false;
             }
             continue;
@@ -64,19 +70,17 @@ bool Extract(const Download& d, const wxString& dest, wxString& error) {
         }
         wxFileOutputStream out(target.GetFullPath());
         if (!out.IsOk() || !zip.Read(out).Eof() || !out.Close()) {
-            error = wxString::Format("Couldn't unpack %s from the download of %s.", rest, d.archive->label);
+            error = wxString::Format("Couldn't unpack %s from the download of %s.", rest, label);
             return false;
         }
         any = true;
     }
     if (!any) {
-        error = wxString::Format("The download of %s doesn't hold the game.", d.archive->label);
+        error = wxString::Format("The download of %s doesn't hold the files it should.", label);
         return false;
     }
     return true;
 }
-
-}  // namespace
 
 const std::vector<Archive>& Official() {
     static const std::vector<Archive> archives = {

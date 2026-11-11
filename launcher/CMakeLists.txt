@@ -24,6 +24,7 @@ endif()
 
 add_executable(srelauncher WIN32
     app.cpp
+    artpack.cpp
     download.cpp
     game.cpp
     gameargs.cpp

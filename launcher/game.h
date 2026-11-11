@@ -27,9 +27,11 @@ wxString DefaultProgram();
 // can't start it, and it isn't the port.
 bool IsDosProgram(const wxString& path);
 
-// The remaster's art pack: Remaster beside the launcher on Windows; on a Mac, Remaster in Application Support
-// if the player put one there, else the one inside the app; elsewhere Remaster in the settings folder.
+// The remaster's art pack. UserRemasterDir: Remaster in the settings folder, where the launcher downloads
+// it (artpack.h). DefaultRemasterDir: that one if it holds a pack, else Remaster beside the launcher if that
+// does (a pack put there by hand, or the Windows zip of 0.4.1), else UserRemasterDir.
 // IsArtPack: dir holds a pack.json.
+wxString UserRemasterDir();
 wxString DefaultRemasterDir();
 bool IsArtPack(const wxString& dir);
 

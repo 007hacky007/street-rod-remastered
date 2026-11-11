@@ -23,6 +23,20 @@ if(TARGET srelauncher)
     add_test(NAME gamefiles COMMAND test_gamefiles)
 endif()
 
+# The launcher's art pack download: the manifest, the update offer and the installer; wxBase only.
+if(TARGET srelauncher)
+    add_executable(test_artpack test_artpack.cpp ../launcher/artpack.cpp ../launcher/gamefiles.cpp
+                   ../launcher/sha256.cpp)
+    target_include_directories(test_artpack PRIVATE ../launcher)
+    target_compile_features(test_artpack PRIVATE cxx_std_17)
+    if(TARGET wx::wxbase)
+        target_link_libraries(test_artpack PRIVATE wx::wxbase)
+    else()
+        target_link_libraries(test_artpack PRIVATE ${wxWidgets_LIBRARIES})
+    endif()
+    add_test(NAME artpack COMMAND test_artpack)
+endif()
+
 # The launcher's command line for the game: wxBase only.
 if(TARGET srelauncher)
     add_executable(test_args test_args.cpp ../launcher/gameargs.cpp)
@@ -40,7 +54,7 @@ endif()
 if(TARGET srelauncher)
     find_package(wxWidgets 3.2 CONFIG QUIET COMPONENTS net base)
     add_executable(test_download test_download.cpp ../launcher/download.cpp ../launcher/gamefiles.cpp
-                   ../launcher/sha256.cpp)
+                   ../launcher/artpack.cpp ../launcher/sha256.cpp)
     target_include_directories(test_download PRIVATE ../launcher)
     target_compile_features(test_download PRIVATE cxx_std_17)
     if(TARGET wx::wxnet)

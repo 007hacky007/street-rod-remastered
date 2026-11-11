@@ -21,7 +21,7 @@ and plays either one.
   same small synthesised band as Street Rod 1, in stereo. The AdLib music stays as the Original choice.
 * For Street Rod 1's art the owner accepted the takedown risk ("release it, should takedown appear, the
   repository goes down. Fair"), and confirmed the same for Street Rod 2: every SR2 picture and road-side
-  shape is redrawn and shipped in the bundled pack.
+  shape is redrawn and published in the art repository, which the launcher downloads from.
 * **No reference recordings.** The owner's playtest decides whether SR2 plays like the original; no DOSBox
   captures are made. Where upstream reproduced something deliberately from the disassembly (the 136 s
   silence after the first title song, `mus.c` "PORT: verify U5"), the port keeps it unless the playtest
@@ -131,8 +131,8 @@ Acceptance as for SR1: with time stopped, the enhanced view scaled down to 320x2
   through Claude in Chrome in the owner's browser, ingest, checks, the builder's review, the owner's in-game
   review in batches, repairs.
 * The pack format does not change. One pack holds both games' art, in the art repository
-  (`github.com/007hacky007/street-rod-remastered-art`, the `art-pack` submodule): new pictures are commits
-  there and the submodule moves forward here.
+  (`github.com/007hacky007/street-rod-remastered-art`), never in this one or in its downloads: new pictures
+  are commits there, a tag publishes a release, and the launcher offers it as an update (0.4.2).
 * The race-view shapes are in scope, as they were for Street Rod 1 (its `shape-<sha1>` entries). SR2 keeps
   them in `SR2_SHP`: 26 sets of coloured line shapes in a format other than SR1's. Sets 0..19 are the same
   objects as SR1's and reuse SR1's art by matching the drawing, not the bytes; sets 23..25 are the Aqueduct's,
@@ -175,9 +175,10 @@ Acceptance as for SR1: with time stopped, the enhanced view scaled down to 320x2
 
 ### Packaging, CI, docs, release
 
-* Mac app and Windows zip carry both executables (and SR2's DLL needs). CI and the release workflow build and
+* Mac app and Windows zip carry both executables, and no art, (and SR2's DLL needs). CI and the release workflow build and
   test both.
-* README for players covering both games, with SR2 screenshots taken as SR1's were (no username in files).
+* README for players covering both games, with SR2 screenshots taken as SR1's were (no username in files);
+  screenshots that show remastered art are kept in the art repository and linked from there.
   CHANGELOG, REMASTER.md, ENHANCED.md and launcher/README.md updated.
 * Release 0.5.0 when SR2 plays with the enhanced view, the band and the launcher; SR2's art may still be
   partial then (pictures without art show the original). A later release ships the completed pack.

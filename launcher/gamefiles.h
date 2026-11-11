@@ -38,6 +38,14 @@ bool FolderIsFree(const wxString& dir);
 // Either everything is installed or nothing is: on failure `folder` is left as it was and `error` says why.
 bool Install(const wxString& folder, const std::vector<Download>& downloads, wxString& error);
 
+// Unpacks the files under `top/` in a zip in memory into `dest`, refusing entries that would land outside
+// it; `label` names the download in the error ("The download of %s ..."). False if nothing was unpacked.
+bool Unzip(const void* data, size_t size, const wxString& top, const wxString& dest, const wxString& label,
+           wxString& error);
+
+// Removes a folder and everything in it; true if it's gone.
+bool RemoveTree(const wxString& dir);
+
 // The first of `dirs` that holds an art pack (a pack.json), or empty if none does.
 wxString FirstArtPack(const std::vector<wxString>& dirs);
 

@@ -80,19 +80,12 @@ bool IsDosProgram(const wxString& path) {
     return !(sig[0] == 'P' && sig[1] == 'E' && sig[2] == 0 && sig[3] == 0);
 }
 
+wxString UserRemasterDir() { return settings::Folder() + wxFILE_SEP_PATH + "Remaster"; }
+
 wxString DefaultRemasterDir() {
-#ifdef __WXMSW__
-    return LauncherDir() + "\\Remaster";
-#else
-    const wxString user = settings::Folder() + "/Remaster";
-#ifdef __WXOSX__
-    // The pack inside the app, unless the player put one in the settings folder.
-    const wxString found =
-        gamefiles::FirstArtPack({user, wxStandardPaths::Get().GetResourcesDir() + "/Remaster"});
-    if (!found.empty()) return found;
-#endif
-    return user;
-#endif
+    const wxString user = UserRemasterDir();
+    const wxString found = gamefiles::FirstArtPack({user, LauncherDir() + wxFILE_SEP_PATH + "Remaster"});
+    return found.empty() ? user : found;
 }
 
 bool IsArtPack(const wxString& dir) {

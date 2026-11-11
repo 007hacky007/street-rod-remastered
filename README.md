@@ -8,7 +8,7 @@ a small band, and the option to show every picture redrawn at four times the res
 The game itself is free from its copyright owner and is not included here: the Mac app downloads it for you,
 and on Windows you unzip it into a folder (see below).
 
-![The garage, remastered](docs/screenshots/garage.png)
+![The garage, remastered](https://raw.githubusercontent.com/007hacky007/street-rod-remastered-art/main/screenshots/garage.png)
 
 ## What you get
 
@@ -16,15 +16,16 @@ and on Windows you unzip it into a folder (see below).
   the same, played from the original game files.
 * **A smooth road.** Races and drives through town are drawn at your display's refresh rate, up to
   2560 × 1600, with anti-aliasing.
-* **Remastered pictures** (on by default, one click to the original). Every picture of the game redrawn as modern pixel art at four times the
-  resolution. Painting your car, fades and the flashing signs still work on the new art.
+* **Remastered pictures**, a free download the launcher offers (26 MB). Every picture of the game redrawn as
+  modern pixel art at four times the resolution, one click from the original. Painting your car, fades and the
+  flashing signs still work on the new art.
 * **Remastered music** (on by default). The game's own tune, note for note, played by a small band (bass, guitar
   or piano, drums) in stereo instead of the PC speaker.
 * **Separate music and sound effects volumes.**
 * **The Street Rod SE data disk's 25 cars**, one click away.
 * **A launcher** for all of it, and a Mac app that downloads the game for you.
 
-![Original and remastered, side by side](docs/screenshots/original-vs-remastered.png)
+![Original and remastered, side by side](https://raw.githubusercontent.com/007hacky007/street-rod-remastered-art/main/screenshots/original-vs-remastered.png)
 
 *The same car in the original (left) and remastered (right) pictures.*
 
@@ -40,12 +41,12 @@ and on Windows you unzip it into a folder (see below).
      Enhanced, so that `SR.EXE`, `LIB1`, `LIB2` and `HOT_DATA` are directly inside `Game`.
    * **Street Rod SE** (`srsepc.zip`, optional, for the 25 data disk cars): copy the files from its `SRSE`
      folder into a new folder `Game\datadisk`.
-3. Run `Street Rod Enhanced.exe`, pick your options and press **Play**.
+3. Run `Street Rod Enhanced.exe`. It offers to download the remastered pictures (see below). Pick your
+   options and press **Play**.
 
 ```text
 Street Rod Enhanced\
 ├── Game\                        <- SR.EXE, LIB1, LIB2, HOT_DATA (and datadisk\ for Street Rod SE)
-├── Remaster\                    <- the remastered pictures
 ├── Street Rod Enhanced.exe      <- the launcher: start here
 ├── streetrod-enhanced.exe       <- the game
 └── the DLLs
@@ -63,10 +64,10 @@ Street Rod Enhanced\
 4. The launcher offers to download the game from streetrodonline.com, the official site (Street Rod and the
    Street Rod SE data disk, about 1 MB). Click **Download**, or **Choose Folder...** if you already have the
    files.
-5. Press **Play**.
+5. The launcher then offers the remastered pictures (see below). Press **Play**.
 
-Needs a Mac with Apple Silicon (M1 or later) and macOS 12 or newer. The game, your saved games and the
-launcher's settings are kept in `~/Library/Application Support/Street Rod Enhanced`.
+Needs a Mac with Apple Silicon (M1 or later) and macOS 12 or newer. The game, your saved games, the
+remastered pictures and the launcher's settings are kept in `~/Library/Application Support/Street Rod Enhanced`.
 
 ## The launcher
 
@@ -77,17 +78,20 @@ launcher's settings are kept in `~/Library/Application Support/Street Rod Enhanc
 * **Start**: **Cars** picks the original cars or the Street Rod SE data disk's 25 cars. The game's own
   switches: a self-playing demo, races that drive themselves, no mouse.
 * **Options**: the window size, the **Music** (remastered or the original PC speaker) and full screen.
-* **Picture**: **Art** original or remastered, **Race view** enhanced or original, the resolution and the
-  anti-aliasing of the road.
+* **Picture**: **Art** original or remastered (with **Download Pictures...** until they are downloaded),
+  **Race view** enhanced or original, the resolution and the anti-aliasing of the road.
 * **Game settings > Sounds** (in the menu): the music and sound effects volumes.
 
 Every choice is remembered. More in [launcher/README.md](launcher/README.md).
 
 ### The remastered pictures
 
-The redrawn pictures come with the download (the `Remaster` folder next to the launcher on Windows, inside
-the app on a Mac) and are on by default. **Art: Original** brings back the game's own pictures. How the
-pictures were made: [REMASTER.md](REMASTER.md).
+The redrawn pictures are a separate, free download (26 MB) from their own repository,
+[street-rod-remastered-art](https://github.com/007hacky007/street-rod-remastered-art). On its first start the
+launcher offers to download them; **Download Pictures...** next to **Art** does it later. When a newer set is
+out, the launcher offers the update. Once they are there, **Art** is Remastered; **Art: Original** brings back
+the game's own pictures. They are kept in the launcher's settings folder (`%APPDATA%\Street Rod Enhanced\Remaster`
+on Windows). How the pictures were made: [REMASTER.md](REMASTER.md).
 
 ## Screenshots
 
@@ -95,9 +99,9 @@ All with the remastered pictures.
 
 | | |
 |---|---|
-| ![At the gas station](docs/screenshots/gas-station.png) | ![Driving through town](docs/screenshots/drive.png) |
+| ![At the gas station](https://raw.githubusercontent.com/007hacky007/street-rod-remastered-art/main/screenshots/gas-station.png) | ![Driving through town](https://raw.githubusercontent.com/007hacky007/street-rod-remastered-art/main/screenshots/drive.png) |
 | At Gus's gas station | Cruising through town on the smooth road |
-| ![The newspaper](docs/screenshots/newspaper.png) | ![Buying a car](docs/screenshots/classifieds.png) |
+| ![The newspaper](https://raw.githubusercontent.com/007hacky007/street-rod-remastered-art/main/screenshots/newspaper.png) | ![Buying a car](https://raw.githubusercontent.com/007hacky007/street-rod-remastered-art/main/screenshots/classifieds.png) |
 | The newspaper | The classifieds: buy your first car |
 
 ## Playing
@@ -117,16 +121,15 @@ All with the remastered pictures.
 
 ### Build
 
-The remastered pictures are a git submodule (`art-pack`, from
-[street-rod-remastered-art](https://github.com/007hacky007/street-rod-remastered-art)): clone with
-`git clone --recursive`, or run `git submodule update --init` in an existing clone. The packaging scripts
-put it in the zip and the app with `--pack art-pack`; without it the game shows the original pictures.
+The remastered pictures are not part of this repository or of its builds: they live in
+[street-rod-remastered-art](https://github.com/007hacky007/street-rod-remastered-art), and the launcher
+downloads its latest release (`SRE_ART_BASE=<url>`, a developer aid, downloads from there instead).
 
 Windows, in an MSYS2 UCRT64 shell with `mingw-w64-ucrt-x86_64-{gcc,cmake,ninja,sdl3,wxwidgets3.2-msw}` and
 `zip`:
 
 ```bash
-tools/windows/package.sh --pack art-pack     # tests, then dist/Street-Rod-Enhanced-windows.zip
+tools/windows/package.sh     # tests, then dist/Street-Rod-Enhanced-windows.zip
 ```
 
 Or by hand:
@@ -140,8 +143,8 @@ Mac (Apple Silicon, Xcode command line tools, CMake, Ninja and Python 3):
 
 ```bash
 tools/macos/build-deps.sh                  # SDL3 and wxWidgets, static, into build-deps/prefix
-tools/macos/package.sh --version 0.4.1 --pack art-pack     # tests, then dist/Street Rod Enhanced.app
-tools/macos/make-dmg.sh --version 0.4.1                    # dist/Street-Rod-Enhanced.dmg
+tools/macos/package.sh --version 0.4.2     # tests, then dist/Street Rod Enhanced.app
+tools/macos/make-dmg.sh --version 0.4.2    # dist/Street-Rod-Enhanced.dmg
 ```
 
 * Needs CMake 3.24+, a C11 compiler and SDL 3; the launcher needs C++17 and wxWidgets 3.2.

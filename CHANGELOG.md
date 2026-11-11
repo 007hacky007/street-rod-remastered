@@ -1,10 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.4.2
 
+- The remastered pictures are no longer inside the downloads: the launcher offers to download them (26 MB)
+  from their own repository, street-rod-remastered-art, on its first start or with **Download Pictures...**
+  next to Art, and offers newer ones when they are out. They are kept in the settings folder.
 - The repository is now called street-rod-remastered.
-- The art pack lives in its own repository, street-rod-remastered-art, included as the git submodule
-  `art-pack`; the builds take it from there instead of the v0.4.0 release.
 
 ## 0.4.1
 
