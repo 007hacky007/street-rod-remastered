@@ -39,6 +39,11 @@ void enh_phys_step(void);
  * frame into the back page (all its marks cleared, background). */
 void enh_draw_begin(void);
 void enh_draw_fg(bool fg);
+/* road_draw_front: what the engine draws next is an object of row `id` (1..14), or the opponent
+ * (ENH_OBJ_OPP); 0 = back to the background. The enhanced view draws those pixels again at the smooth position
+ * of their row (or of the opponent). */
+#define ENH_OBJ_OPP 15
+void enh_draw_objects(int id);
 
 /* road_page_flip (race_road.c): the frame just drawn is now the shown page. */
 void enh_frame_presented(void);

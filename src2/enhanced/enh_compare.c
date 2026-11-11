@@ -45,7 +45,17 @@ void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, 
             c.edge_rows++;
             int d = SDL_max(lv ? abs(ol - el) : 0, rv ? abs(or_ - er) : 0);
             if (d > c.edge_err_max) c.edge_err_max = d;
-            if (log_rows && log_file && d > 1) fprintf(log_file, "  row %02X orig %d..%d enh %d..%d\n", y, ol, or_, el, er);
+            if (log_rows && log_file && d > 1) {
+                fprintf(log_file, "  row %02X orig %d..%d enh %d..%d\n", y, ol, or_, el, er);
+                if (d > 5) {                                /* the colours around the right edges (hex; . = not covered) */
+                    int a = SDL_max(0, SDL_min(or_, er) - 3), b = SDL_min(319, SDL_max(or_, er) + 3);
+                    fprintf(log_file, "    orig ");
+                    for (int x = a; x <= b; x++) fputc(k[x] ? "0123456789abcdef"[o[x] & 15] : '.', log_file);
+                    fprintf(log_file, "\n    enh  ");
+                    for (int x = a; x <= b; x++) fputc(k[x] ? "0123456789abcdef"[e[x] & 15] : '.', log_file);
+                    fprintf(log_file, "\n");
+                }
+            }
         }
     }
     *out = c;

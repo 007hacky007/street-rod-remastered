@@ -31,6 +31,11 @@ bool enh_view_newest(EnhView *v);
 
 /* enh_road2.c: modes 0 (town) and 1 (street drag). */
 void enh_draw_road(const EnhView *v);
+/* Where an object of row id (1..14) or the opponent (ENH_OBJ_OPP) stands in a view: its depth, the screen row
+ * of the road under it, and the screen x of world x X as a + b X. */
+typedef struct { double z, yg, a, b; bool ok; } EnhObjGeo;
+EnhObjGeo enh_obj_geo(const EnhView *v, int id);
+
 /* The road colours of the compare tool's edges. */
 extern const u8 enh_road_colours[2];
 extern double enh_ground_y;    /* the first row below the horizon strip of the last frame drawn */

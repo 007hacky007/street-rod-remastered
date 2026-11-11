@@ -1283,20 +1283,21 @@ static void road_draw_front(void)
         if ((MODE & 0x10) && !(C & 0x80)) front_hillsides(row, L16);
         if (row <= DSS(DS_top_band_row)) road_draw_row_front(row);
         C = fw(DS_centre_ptr, 0);
-        enh_draw_fg(true);                                  /* ENH: the objects and the opponent stay original for now */
+        enh_draw_objects(row);                              /* ENH: the row's objects, drawn again at its smooth position */
         if (!((C & 4) && (C & 1))) {
             if (row < 11) front_objects(row);
             if (!(C & 1) && MODE == 0x10) mulholland_extras_front(row);
         }
+        enh_draw_objects(ENH_OBJ_OPP);
         if (sub16(DSS(DS_opp_seg), row) == DSS(DS_seg) && DSB(DS_racing)) opponent_draw();
-        enh_draw_fg(false);
+        enh_draw_objects(0);
         if (MODE & 6) road_draw_barrier_walls(DSS(DS_rail_phase_seg), 0xE, row);
         row_ptrs_step();
         flag_step(-2);
     }
-    enh_draw_fg(true);                                      /* ENH */
+    enh_draw_objects(ENH_OBJ_OPP);                          /* ENH */
     if (DSS(DS_seg) == DSS(DS_opp_seg) && DSB(DS_racing)) opponent_draw();
-    enh_draw_fg(false);
+    enh_draw_objects(0);
 }
 
 /* ================================================================================ mirror */

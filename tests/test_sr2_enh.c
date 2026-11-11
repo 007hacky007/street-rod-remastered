@@ -75,6 +75,31 @@ static void sr2_enh_layers(void)
     CHECK(ega_written()[10] == 0 && ega_written()[11] == 0);
 }
 
+/* The object layer: an object's pixels carry its id; the background drawn over them later clears the tags. */
+static void sr2_enh_object_tags(void)
+{
+    enh_init(true, 1, 2, 100, true);
+    ega_init();
+    vga_mode_0d();
+    vga_out(0x3C4, 2); vga_out(0x3C5, 0x0F);
+    vga_out(0x3CE, 8); vga_out(0x3CF, 0xFF);
+    ega_clear_obj(0, 0x2000);
+    ega_set_layer(EGA_LAYER_BG);
+    vga_wr(20, 0x00);
+    ega_set_obj(7);
+    ega_set_layer(EGA_LAYER_OBJ);
+    vga_wr(20, 0xF0);                               /* the left four pixels change colour */
+    const u8 *t = ega_obj();
+    CHECK(t[20 * 8 + 0] == 7 && t[20 * 8 + 3] == 7);
+    CHECK(t[20 * 8 + 4] == 0 && t[20 * 8 + 7] == 0);
+    CHECK(!(ega_fg()[20] & 0xF0));                  /* an object is not foreground */
+    ega_set_layer(EGA_LAYER_BG);
+    vga_out(0x3CE, 8); vga_out(0x3CF, 0xC0);       /* nearer road over the two leftmost */
+    vga_wr(20, 0x00);
+    CHECK(t[20 * 8 + 0] == 0 && t[20 * 8 + 1] == 0 && t[20 * 8 + 2] == 7);
+    ega_set_layer(EGA_LAYER_OFF);
+}
+
 /* As Street Rod 1: out-of-range values are clamped; res scale x aa stays within 16 samples. */
 static void sr2_enh_options(void)
 {
@@ -169,6 +194,7 @@ int main(int argc, char **argv)
     RUN(sr2_enh_scale);
     RUN(sr2_enh_layers);
     RUN(sr2_enh_options);
+    RUN(sr2_enh_object_tags);
     RUN(sr2_enh_compare_rows);
     RUN(sr2_enh_compare_log);
     host_shutdown();

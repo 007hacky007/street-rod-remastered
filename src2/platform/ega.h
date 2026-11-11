@@ -45,8 +45,14 @@ const u8 *ega_written(void);
 void ega_clear_written(u16 offset, u16 n);
 /* ENH: layers of a road frame. While the layer is FG, written pixels are marked foreground; while BG, they
  * are unmarked (a later background write covers an earlier foreground pixel). OFF leaves the marks. */
-enum { EGA_LAYER_OFF, EGA_LAYER_BG, EGA_LAYER_FG };
+enum { EGA_LAYER_OFF, EGA_LAYER_BG, EGA_LAYER_FG, EGA_LAYER_OBJ };
 void ega_set_layer(int layer);
+/* ENH (Street Rod 2): the object layer. While the layer is OBJ, the pixels a write changes are tagged with the
+ * current object id (ega_set_obj, 1..255: the row that drew them, or the opponent); a background write clears
+ * the tags of the pixels it writes. ega_obj: one byte per pixel, indexed (plane offset * 8 + pixel). */
+void ega_set_obj(u8 id);
+const u8 *ega_obj(void);
+void ega_clear_obj(u16 offset, u16 n);
 const u8 *ega_fg(void);
 void ega_clear_fg(u16 offset, u16 n);
 u16  ega_start(void);                        /* current CRTC start address */

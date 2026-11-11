@@ -13,6 +13,8 @@ static u8 written[EGA_PLANE_SIZE];     /* ENH: pixels (bit 7 = leftmost) written
 static int scale = 1;                  /* ENH: output = 320x200 times this */
 static u8 fg[EGA_PLANE_SIZE];          /* ENH: pixels of the foreground layer (see ega_set_layer) */
 static int layer;
+static u8 obj[EGA_PLANE_SIZE * 8];     /* ENH: the object layer's tags, one byte per pixel (ega_set_obj) */
+static u8 obj_id;
 /* Mode 0Dh defaults after INT 10h AH=0 (200-line values), overscan 0. */
 static u8 palette_reg[17] = { 0, 1, 2, 3, 4, 5, 6, 7, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0 };
 
@@ -104,7 +106,16 @@ void ega_mark_written(u16 offset, u8 pixels, u8 changed)
      * rewrite whole bytes with the background kept in the transparent pixels. */
     if (layer == EGA_LAYER_FG) fg[offset] |= changed;
     else if (layer == EGA_LAYER_BG) fg[offset] &= (u8)~pixels;
+    if (layer == EGA_LAYER_OBJ) {                    /* ENH: an object: its pixels carry the drawing row's tag */
+        fg[offset] &= (u8)~changed;
+        for (int b = 0; b < 8; b++) if (changed >> (7 - b) & 1) obj[(u32)offset * 8 + b] = obj_id;
+    } else if (layer == EGA_LAYER_BG) {
+        for (int b = 0; b < 8; b++) if (pixels >> (7 - b) & 1) obj[(u32)offset * 8 + b] = 0;
+    }
 }
+void ega_set_obj(u8 id) { obj_id = id; }
+const u8 *ega_obj(void) { return obj; }
+void ega_clear_obj(u16 offset, u16 n) { memset(obj + (u32)offset * 8, 0, (size_t)n * 8); }
 void ega_set_layer(int l) { layer = l; }
 const u8 *ega_fg(void) { return fg; }
 void ega_clear_fg(u16 offset, u16 n)

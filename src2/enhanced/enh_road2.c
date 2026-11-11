@@ -13,6 +13,7 @@
  *     sy = 2 dy + 4 (Y - cam_y) / z + bounce + 60      (Street Rod 1: 4 dy, and a fixed eye at 76Ch)
  * The road edges come from the centre flags as edges_of has them, with its zero-width quirk. */
 #include "enhanced/enh_internal.h"
+#include "enhanced/enhanced.h"
 
 #include <math.h>
 
@@ -309,3 +310,36 @@ void enh_draw_road(const EnhView *v)
     for (int k = FAR_ROWS; k >= 1; k--) draw_band(&c, &rows[k - 1], &rows[k], v->town, dash);   /* far to near */
 }
 
+/* ---------------------------------------------------------------- objects */
+
+EnhObjGeo enh_obj_geo(const EnhView *v, int id)
+{
+    EnhObjGeo g = { 0, 0, 0, 0, false };
+    Cam c;
+    c.base = segc((int)floor(v->pos));
+    c.pos = v->pos;
+    c.lat = v->lat;
+    c.hpos = interp(&c, v->pos, hgt_rel);
+    c.hv = (s16)((s16)v->heading - (s16)trk(TRK_YAW, c.base)) + (v->heading - (s16)v->heading);
+    c.cam_y = v->cam_y;
+    c.bounce = v->bounce;
+    c.exact = false;
+    Row r;
+    double lat_shift = 0;
+    if (id == ENH_OBJ_OPP) {                                /* the opponent: at its own position on the road */
+        r.z = 8.0 * (v->opp_pos - v->pos) + 4.0;
+        r.dx = c.hv - interp(&c, v->opp_pos, yaw_rel);
+        r.dy = c.hpos - interp(&c, v->opp_pos, hgt_rel);
+        lat_shift = v->opp_lat;                             /* x relative to the opponent's lane */
+    } else if (id >= 1 && id <= FAR_ROWS) {
+        r = row_k(&c, id);
+    } else
+        return g;
+    if (r.z < 1.0) return g;
+    g.z = r.z;
+    g.yg = py(&c, &r, Y_ROAD);
+    g.b = 4.0 / r.z;
+    g.a = px(&c, &r, lat_shift);
+    g.ok = true;
+    return g;
+}
