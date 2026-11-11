@@ -76,6 +76,7 @@ void mus_resume(void);
 void adlib_music_init(void);
 void mus_timer_remove(void);
 int  snd_timbre_lookup(const char *name, int *index, u8 *out56);
+const char *snd_timbre_name(int index);   /* ENH: the band (band.c) */
 extern bool mus_isr_installed;
 
 /* ---- adfx.c: AdLib effects, engine drone, AdLib slots */

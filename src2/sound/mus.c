@@ -13,6 +13,7 @@
  * countdown wraps and the next mus_tick runs 65 536 music interrupts later (136 s at 480 Hz): the ~2 min
  * silence between playlist entries that sound.md 7.2 / 9 derive from the code. Kept as the code does it. */
 #include "sound/snd_int.h"
+#include "sound/band.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +57,13 @@ int snd_timbre_lookup(const char *name, int *index, u8 *out56)
     return 1;
 }
 
+/* ENH: the name of the bank's timbre `index` (the band, band.c), NULL if there is none. */
+const char *snd_timbre_name(int index)
+{
+    if (!bank.buf || index < 0 || index >= bank.count) return NULL;
+    return (const char *)(bank.buf + 6 + 9 * index);
+}
+
 /* ---------------------------------------------------------------- .MUS files (2c57:09ca) */
 
 typedef struct { u8 hdr[70]; u8 *data; u32 size; } Mus;
@@ -90,6 +98,7 @@ static void mus_set_bank(int slot)                                       /* 2c57
 {
     cur = slot;
     adlib_set_perc_mode(mus[slot].hdr[0x3A]);
+    band_adlib_perc(mus[slot].hdr[0x3A] != 0);      /* ENH: the band (band.c) */
 }
 
 void snd_bank_and_intro_load(void)                                       /* 2c57:0aa2 */
@@ -199,6 +208,7 @@ void mus_stop(void)                                                      /* 2c57
     if (!mus_playing) return;
     mus_playing = false;
     for (int i = 0; i < 11; i++) adlib_voice_off(i);
+    band_adlib_all_off();                           /* ENH: the band */
     mus_timer_set_divisor(0x4000);
 }
 
@@ -209,6 +219,9 @@ void mus_resume(void)                                                    /* 2c57
     const Mus *m = &mus[cur];
     adlib_set_perc_mode(m->hdr[0x3A]);
     adlib_set_bend_range(m->hdr[0x3B]);
+    band_adlib_all_off();                           /* ENH: the band */
+    band_adlib_perc(m->hdr[0x3A] != 0);
+    band_adlib_bend_range(m->hdr[0x3B]);
     mus_set_tempo(hdr_tempo(m), m->hdr[0x24]);
     mus_playing = true;
     mus_set_countdown(2);                           /* continues at the saved read pointer */
@@ -225,6 +238,9 @@ void mus_play(int slot)                                                  /* 2c57
     for (int i = 0; i < 11; i++) adlib_voice_off(i);
     adlib_set_perc_mode(m->hdr[0x3A]);
     adlib_set_bend_range(m->hdr[0x3B]);
+    band_adlib_all_off();                           /* ENH: the band */
+    band_adlib_perc(m->hdr[0x3A] != 0);
+    band_adlib_bend_range(m->hdr[0x3B]);
     mus_set_tempo(hdr_tempo(m), m->hdr[0x24]);
     mus_set_countdown(0);
     mus_delay = *rd++;                              /* the first delay byte, raw */
@@ -264,6 +280,7 @@ static int mus_tick(void)
                     rd_end = m->data + m->size;
                     cur = i;
                     adlib_set_bend_range(m->hdr[0x3B]);
+                    band_adlib_bend_range(m->hdr[0x3B]);   /* ENH: the band */
                     mus_set_tempo(hdr_tempo(m), m->hdr[0x24]);
                     mus_delay = *rd++;
                     return mus_delay;               /* raw, no F8 / 0 handling (see the PORT note at the top) */
@@ -289,14 +306,15 @@ static int mus_tick(void)
                 if (b >= 0x80) { rd++; running_status = b; }
                 int v = running_status & 0x0F;
                 switch (running_status & 0xF0) {
-                case 0x80: rd += 2; adlib_voice_off(v); break;
+                case 0x80: rd += 2; adlib_voice_off(v); band_adlib_note_off(v); break;   /* ENH: the band */
                 case 0x90: {
                     u8 note = *rd++, vel = *rd++;
-                    if (vel == 0) adlib_voice_off(v);
+                    if (vel == 0) { adlib_voice_off(v); band_adlib_note_off(v); }   /* ENH: the band */
                     else {
                         if (v < 11 && vel_cache[v] != vel) { vel_cache[v] = vel; adlib_set_volume(v, vel, 1); }
                         host_opl_voice_music(v, true);   /* ENH: a music note: the music volume (after an effect too) */
                         adlib_note_on(v, note);
+                        band_adlib_note_on(v, note, vel);   /* ENH: the band */
                     }
                     break;
                 }
@@ -306,6 +324,7 @@ static int mus_tick(void)
                     int idx = *rd++;
                     u8 buf[56];
                     host_opl_voice_music(v, true);  /* ENH: the music's timbre: the voice plays music again */
+                    band_adlib_program(v, idx);     /* ENH: the band */
                     if (snd_timbre_lookup("", &idx, buf)) adlib_voice_timbre(v, buf);   /* else "Timbre not found: %d" on the console */
                     break;
                 }
@@ -313,6 +332,7 @@ static int mus_tick(void)
                 case 0xE0: {
                     u8 lo = *rd++, hi7 = *rd++;
                     adlib_pitch_bend(v, (u16)(lo + (hi7 << 7)));
+                    band_adlib_bend(v, (u16)(lo + (hi7 << 7)));   /* ENH: the band */
                     break;
                 }
                 default: mus_skip_unknown(); break;

@@ -30,7 +30,7 @@ typedef struct {
 typedef struct {
     bool on;
     int kind;
-    float t, vel, gl, gr;
+    float t, vel, gl, gr, freq;
     double ph;
     float lp, hp, bp1, bp2;
 } Drum;
@@ -152,7 +152,7 @@ void synth_bend(int k, float midi)
     set_pitch(&voice[k], midi);
 }
 
-void synth_drum(int kind, float vel)
+static Drum *drum_start(int kind, float vel)
 {
     int k = 0;
     for (int i = 0; i < DRUMS; i++) {
@@ -164,7 +164,17 @@ void synth_drum(int kind, float vel)
     d->on = true;
     d->kind = kind;
     d->vel = vel;
-    pan_gains(kind == DRUM_SNARE ? 0.2f : kind == DRUM_BRUSH ? -0.35f : 0, 1, &d->gl, &d->gr);
+    pan_gains(kind == DRUM_SNARE ? 0.2f : kind == DRUM_BRUSH ? -0.35f : kind == DRUM_TOM ? 0.1f : 0, 1, &d->gl, &d->gr);
+    d->freq = 110;
+    return d;
+}
+
+void synth_drum(int kind, float vel) { drum_start(kind, vel); }
+
+void synth_drum_pitched(int kind, float midi, float vel)
+{
+    float f = 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
+    drum_start(kind, vel)->freq = f < 40 ? 40 : f > 400 ? 400 : f;
 }
 
 void synth_all_off(void)
@@ -232,6 +242,13 @@ static float drum_sample(Drum *d)
         d->ph += TWO_PI * 185 * dt;
         out = (d->bp1 - d->bp2) * expf(-t / 0.11f) * 0.7f + sinf((float)d->ph) * expf(-t / 0.05f) * 0.35f;
         if (t > 0.8f) d->on = false;
+        break;
+    }
+    case DRUM_TOM: {                                           /* a tuned membrane: a sine that falls a little */
+        float f = d->freq * (1 + 0.45f * expf(-t / 0.03f));
+        d->ph += TWO_PI * f * dt;
+        out = sinf((float)d->ph) * expf(-t / 0.3f) * 0.8f + noise() * expf(-t / 0.006f) * 0.12f;
+        if (t > 1.5f) d->on = false;
         break;
     }
     case DRUM_BRUSH: {

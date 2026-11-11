@@ -4,7 +4,7 @@
 #ifndef SND_SYNTH_H
 #define SND_SYNTH_H
 
-enum { DRUM_KICK, DRUM_SNARE, DRUM_BRUSH };
+enum { DRUM_KICK, DRUM_SNARE, DRUM_BRUSH, DRUM_TOM };
 
 void synth_init(int rate);
 /* A note of instrument inst (INST_*, arrange.h) at MIDI pitch midi, velocity 0..1, pan -1..1. Returns the
@@ -13,6 +13,8 @@ int synth_note(int inst, float midi, float vel, float pan);
 void synth_release(int voice);          /* let it fade (dampened) */
 void synth_bend(int voice, float midi);
 void synth_drum(int kind, float vel);
+/* A drum tuned to MIDI pitch midi (DRUM_TOM: Street Rod 2's tom-toms). */
+void synth_drum_pitched(int kind, float midi, float vel);
 void synth_all_off(void);               /* everything fades out quickly */
 /* frames stereo frames (L, R interleaved) into lr, each sample in -1..1. */
 void synth_render(float *lr, int frames);

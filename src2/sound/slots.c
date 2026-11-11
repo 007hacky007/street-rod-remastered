@@ -4,6 +4,7 @@
  * The slot table holds far code pointers exactly as the original; every routine is registered with codeptr_register
  * (snd_register_codeptrs) and called through the table, so a slot means the same on both devices. */
 #include "sound/snd_int.h"
+#include "sound/band.h"
 
 #include "platform/platform.h"
 
@@ -104,6 +105,7 @@ void snd_timer_tick(void)
         spk_music_writing = false;
     }
     if (DSW(DS_snd_device) == 0 && DSB(DS_sound_on) != 0 && DSB(DS_sound_gate) == 0) sound_vec(24);
+    band_tick();                                  /* ENH: the remastered music (band.c) */
 }
 
 /* 0001:2622, sound.md 5.3 */
