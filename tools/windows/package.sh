@@ -1,6 +1,6 @@
 #!/bin/sh
 # Builds Street Rod Enhanced for Windows in an MSYS2 UCRT64 shell, runs the unit tests and packs
-# dist/Street-Rod-Enhanced-windows.zip: the launcher, the game, their DLLs and an empty Game folder. The
+# dist/Street-Rod-Enhanced-windows.zip: the launcher, both games, their DLLs and empty Game and Game2 folders. The
 # remastered pictures are not in it: the launcher downloads them.
 #
 #   tools/windows/package.sh
@@ -17,12 +17,13 @@ ctest --test-dir "$build" --output-on-failure
 
 out="$root/dist/Street Rod Enhanced"
 rm -rf "$root/dist"
-mkdir -p "$out/Game"
-cp "$build/Street Rod Enhanced.exe" "$build/streetrod-enhanced.exe" "$build"/*.dll "$out/"
+mkdir -p "$out/Game" "$out/Game2"
+cp "$build/Street Rod Enhanced.exe" "$build/streetrod-enhanced.exe" "$build/streetrod2-enhanced.exe" "$build"/*.dll "$out/"
 strip "$out"/*.exe
 cp "$root/LICENSE" "$out/LICENSE.txt"
 cat "$root/third_party/nuked-opl3/NOTICE" "$root/third_party/nuked-opl3/LICENSE" > "$out/LICENSE-Nuked-OPL3.txt"
 sh "$root/tools/check-notices.sh" "$out"
+sh "$root/tools/check-package.sh" "$out" --windows
 cp "$root/tools/windows/Read me.txt" "$out/"
 (cd "$root/dist" && zip -qr Street-Rod-Enhanced-windows.zip "Street Rod Enhanced")
 (cd "$root/dist" && sha256sum Street-Rod-Enhanced-windows.zip > Street-Rod-Enhanced-windows.zip.sha256)

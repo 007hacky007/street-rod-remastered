@@ -5,8 +5,11 @@ Street Rod Enhanced
 2. Copy the files from the SR1 folder in sr1pc.zip into the Game folder here, so that SR.EXE, LIB1,
    LIB2 and HOT_DATA are directly in Game. Copy the files from the SRSE folder in srsepc.zip into
    a new folder Game\datadisk.
-3. Run "Street Rod Enhanced.exe", pick your options and press Play. It offers to download the
-   remastered pictures (26 MB) from GitHub; they are kept in %APPDATA%\Street Rod Enhanced\Remaster.
+   For Street Rod 2, download sr2pc.zip from the same page and copy its files (SR.EXE, LIB1,
+   LIB2, LIB3, SR2_DATA ...) straight into the Game2 folder here.
+3. Run "Street Rod Enhanced.exe", choose the game under Game, pick your options and press Play.
+   It offers to download the remastered pictures (26 MB) from GitHub; they are kept in
+   %APPDATA%\Street Rod Enhanced\Remaster.
 
-Keep this folder somewhere you can write to (not Program Files): saved games are stored in Game.
+Keep this folder somewhere you can write to (not Program Files): saved games are stored in Game and Game2.
 Alt+Enter switches full screen. More: https://github.com/007hacky007/street-rod-remastered

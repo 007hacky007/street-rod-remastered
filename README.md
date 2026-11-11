@@ -5,8 +5,12 @@ your garage and race it for pink slips. This is the original game, rebuilt to ru
 Apple Silicon Macs, with a smooth high-resolution road, separate music and sound volumes, the tune played by
 a small band, and the option to show every picture redrawn at four times the resolution.
 
-The game itself is free from its copyright owner and is not included here: the Mac app downloads it for you,
-and on Windows you unzip it into a folder (see below).
+The sequel, *Street Rod 2: The Next Generation* (1991), comes with it: choose it under **Game** in the launcher.
+For now it plays as the original does, with the same window, full screen and volume comforts; the remastered
+pictures, the band and the smooth road are still to come for it.
+
+The games themselves are free from their copyright owner and are not included here: the Mac app downloads them
+for you, and on Windows you unzip them into a folder (see below).
 
 ![The garage, remastered](https://raw.githubusercontent.com/007hacky007/street-rod-remastered-art/main/screenshots/garage.png)
 
@@ -23,7 +27,8 @@ and on Windows you unzip it into a folder (see below).
   or piano, drums) in stereo instead of the PC speaker.
 * **Separate music and sound effects volumes.**
 * **The Street Rod SE data disk's 25 cars**, one click away.
-* **A launcher** for all of it, and a Mac app that downloads the game for you.
+* **Street Rod 2: The Next Generation**, the sequel, with its AdLib music and sound effects or the PC speaker.
+* **A launcher** for all of it, and a Mac app that downloads the games for you.
 
 ![Original and remastered, side by side](https://raw.githubusercontent.com/007hacky007/street-rod-remastered-art/main/screenshots/original-vs-remastered.png)
 
@@ -41,14 +46,18 @@ and on Windows you unzip it into a folder (see below).
      Enhanced, so that `SR.EXE`, `LIB1`, `LIB2` and `HOT_DATA` are directly inside `Game`.
    * **Street Rod SE** (`srsepc.zip`, optional, for the 25 data disk cars): copy the files from its `SRSE`
      folder into a new folder `Game\datadisk`.
-3. Run `Street Rod Enhanced.exe`. It offers to download the remastered pictures (see below). Pick your
-   options and press **Play**.
+   * **Street Rod 2** (`sr2pc.zip`, optional): copy its files straight into the `Game2` folder, so that
+     `SR.EXE`, `LIB1`, `LIB2`, `LIB3` and `SR2_DATA` are directly inside `Game2`.
+3. Run `Street Rod Enhanced.exe`. It offers to download the remastered pictures (see below). Choose the game
+   under **Game**, pick your options and press **Play**.
 
 ```text
 Street Rod Enhanced\
 ├── Game\                        <- SR.EXE, LIB1, LIB2, HOT_DATA (and datadisk\ for Street Rod SE)
+├── Game2\                       <- Street Rod 2: SR.EXE, LIB1, LIB2, LIB3, SR2_DATA ...
 ├── Street Rod Enhanced.exe      <- the launcher: start here
-├── streetrod-enhanced.exe       <- the game
+├── streetrod-enhanced.exe       <- Street Rod
+├── streetrod2-enhanced.exe      <- Street Rod 2
 └── the DLLs
 ```
 
@@ -63,7 +72,7 @@ Street Rod Enhanced\
    * macOS 14 or older: right-click the app and choose **Open**.
 4. The launcher offers to download the game from streetrodonline.com, the official site (Street Rod and the
    Street Rod SE data disk, about 1 MB). Click **Download**, or **Choose Folder...** if you already have the
-   files.
+   files. Choosing **Street Rod 2** under **Game** offers its download (`sr2pc.zip`, about 1 MB) the same way.
 5. The launcher then offers the remastered pictures (see below). Press **Play**.
 
 Needs a Mac with Apple Silicon (M1 or later) and macOS 12 or newer. The game, your saved games, the
@@ -73,11 +82,14 @@ remastered pictures and the launcher's settings are kept in `~/Library/Applicati
 
 ![The launcher](docs/screenshots/launcher.png)
 
+* **Game**: Street Rod or Street Rod 2. Each keeps its own folder, program and switches; the window size,
+  the picture settings and the volumes are shared.
 * **Game files**: where the game is. The line below says whether it was found and how many saved games there
   are; **Play** stays greyed out until the game is there.
 * **Start**: **Cars** picks the original cars or the Street Rod SE data disk's 25 cars. The game's own
   switches: a self-playing demo, races that drive themselves, no mouse.
-* **Options**: the window size, the **Music** (remastered or the original PC speaker) and full screen.
+* **Options**: the window size, the **Music** (remastered or the original PC speaker), for Street Rod 2 the
+  **Sound** (AdLib or PC speaker), and full screen.
 * **Picture**: **Art** original or remastered (with **Download Pictures...** until they are downloaded),
   **Race view** enhanced or original, the resolution and the anti-aliasing of the road.
 * **Game settings > Sounds** (in the menu): the music and sound effects volumes.
@@ -188,7 +200,7 @@ tools/macos/make-dmg.sh --version 0.4.2    # dist/Street-Rod-Enhanced.dmg
 | `--check` | Check that `SR.EXE` loads, then exit |
 | `demo`, `auto`, `nomouse` | The original's switches: self-playing demo, races drive themselves, no mouse |
 
-Street Rod 2 (work in progress, not in the downloads yet) builds beside it as `streetrod2-enhanced`. Its game
+Street Rod 2 (work in progress) builds beside it as `streetrod2-enhanced`. Its game
 files come from the official `sr2pc.zip` (streetrodonline.com); unpack them into a folder of their own:
 
 ```bash

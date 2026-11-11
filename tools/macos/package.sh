@@ -1,6 +1,6 @@
 #!/bin/sh
 # Builds Street Rod Enhanced for macOS (arm64, macOS 12+) against build-deps/prefix (tools/macos/build-deps.sh),
-# runs the unit tests and assembles dist/Street Rod Enhanced.app, ad-hoc signed. The remastered pictures are
+# runs the unit tests and assembles dist/Street Rod Enhanced.app, ad-hoc signed: the launcher and both games. The remastered pictures are
 # not in it: the launcher downloads them.
 #
 #   tools/macos/package.sh --version 0.4.2
@@ -30,16 +30,19 @@ app="$root/dist/Street Rod Enhanced.app"
 rm -rf "$root/dist"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$build/Street Rod Enhanced" "$app/Contents/MacOS/"
-cp "$build/streetrod-enhanced" "$app/Contents/MacOS/"
+cp "$build/streetrod-enhanced" "$build/streetrod2-enhanced" "$app/Contents/MacOS/"
 cp "$root/launcher/macos/AppIcon.icns" "$root/LICENSE" "$app/Contents/Resources/"
 cat "$root/third_party/nuked-opl3/NOTICE" "$root/third_party/nuked-opl3/LICENSE" \
     > "$app/Contents/Resources/LICENSE-Nuked-OPL3.txt"
 sh "$root/tools/check-notices.sh" "$app/Contents/Resources"
 sed "s/@VERSION@/$version/g" "$root/launcher/macos/Info.plist.in" > "$app/Contents/Info.plist"
 plutil -lint "$app/Contents/Info.plist" >/dev/null
-strip -x "$app/Contents/MacOS/Street Rod Enhanced" "$app/Contents/MacOS/streetrod-enhanced"
+strip -x "$app/Contents/MacOS/Street Rod Enhanced" "$app/Contents/MacOS/streetrod-enhanced" \
+    "$app/Contents/MacOS/streetrod2-enhanced"
+sh "$root/tools/check-package.sh" "$app/Contents/MacOS"
 
 codesign --force -s - "$app/Contents/MacOS/streetrod-enhanced"
+codesign --force -s - "$app/Contents/MacOS/streetrod2-enhanced"
 codesign --force -s - "$app"
 codesign --verify --strict "$app"
 echo "built $app"

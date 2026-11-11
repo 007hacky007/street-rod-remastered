@@ -5,7 +5,10 @@
 - Street Rod 2 (work in progress): the faithful port of Street Rod 2: The Next Generation by Krzysztof Kania
   builds beside Street Rod 1 as `streetrod2-enhanced`, on the same host: window size, full screen, sharp
   Retina picture, Mac keys, and separate music and sound effects volumes (`--music-volume`, `--sfx-volume`)
-  for AdLib and PC speaker. Not in the launcher or the downloads yet.
+  for AdLib and PC speaker.
+- The launcher has a **Game** choice: Street Rod or Street Rod 2, each with its own folder (`Game2` for Street
+  Rod 2), program and switches, and **Sound** (AdLib or PC speaker) for Street Rod 2. On a Mac it downloads
+  Street Rod 2 from streetrodonline.com like Street Rod. The Mac app and the Windows zip carry both games.
 - The host is shared by both games (`common/`); Street Rod 1's compiled game code is unchanged.
 
 ## 0.4.2
