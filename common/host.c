@@ -199,10 +199,11 @@ static bool opl_on;
 /* ENH: which melodic voice (0..8) plays music now; the others play effects (each at its volume). */
 static bool voice_music[9] = { true, true, true, true, true, true, true, true, true };
 
+/* ENH: while a band plays the music (host_set_music_synth) the chip's music voices are silent. */
 static void opl_apply_gains(void)
 {
     for (int v = 0; v < 9; v++)
-        OPL3_SetChannelGain(&opl, v, (voice_music[v] ? vol_music : vol_effects) * 65536 / 100);
+        OPL3_SetChannelGain(&opl, v, (voice_music[v] ? (music_synth ? 0 : vol_music) : vol_effects) * 65536 / 100);
 }
 
 static u32 half_period(u32 count, bool high)
@@ -363,6 +364,7 @@ void host_set_music_synth(void (*render)(float *lr, int frames))
     render_to(tl_now);
     music_synth = render;
     vol_now = src_music ? (music_synth ? 0 : vol_music) : vol_effects;
+    if (opl_on) opl_apply_gains();
 }
 
 void host_audio_sync(void) { render_to(tl_now); }

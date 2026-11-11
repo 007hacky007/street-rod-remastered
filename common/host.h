@@ -102,7 +102,8 @@ void host_busy_wait_us(u32 us);
 void host_set_volumes(int music, int effects);
 void host_speaker_source(bool music);
 /* ENH: the remastered music. render (NULL: none) is called for every output frame and mixed in at the
- * music volume; meanwhile the speaker's music is silent. host_audio_sync renders the output up to now,
+ * music volume; meanwhile the speaker's music and the AdLib voices marked as music are silent (the
+ * effects keep sounding). host_audio_sync renders the output up to now,
  * so a change made next sounds from the current emulated time. */
 void host_set_music_synth(void (*render)(float *lr, int frames));
 void host_audio_sync(void);

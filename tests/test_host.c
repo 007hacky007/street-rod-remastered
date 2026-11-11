@@ -202,6 +202,44 @@ static void opl_voice_gain(void)
     CHECK(music < 5);
 }
 
+/* While a band plays the music (host_set_music_synth), the chip's music voices are silent and its effect
+ * voices are not. */
+static void silent_band(float *lr, int frames) { SDL_memset(lr, 0, sizeof(float) * 2 * (size_t)frames); }
+
+static double opl_segment(void)
+{
+    host_audio_dump_begin(wav_path());
+    host_busy_wait_us(100000);
+    size_t len = 0;
+    unsigned char *wav = finish(&len);
+    double r = wav ? rms_tail(wav, len, NULL) : -1;
+    SDL_free(wav);
+    return r;
+}
+
+static void opl_music_muted_by_synth(void)
+{
+    if (!start_sr2()) { failures++; return; }
+    host_audio_dump_end();
+    host_set_volumes(100, 100);
+    host_opl_voice_music(0, true);
+    host_opl_voice_music(3, false);
+    host_set_music_synth(silent_band);
+    opl_note(0);
+    double music = opl_segment();                   /* the music voice under the band */
+    opl_note(3);
+    double effect = opl_segment();                  /* and an effect beside it */
+    opl(0xB3, 0x11);                                /* the effect ends */
+    host_busy_wait_us(300000);
+    host_set_music_synth(NULL);
+    double back = opl_segment();                    /* the band gone: the chip's music again */
+    host_shutdown();
+    printf("  music %.1f, effect %.1f, back %.1f\n", music, effect, back);
+    CHECK(music >= 0 && music < 1);
+    CHECK(effect > 100);
+    CHECK(back > 100);
+}
+
 /* ---- The mouse space */
 
 static bool compose(u32 *xrgb) { (void)xrgb; return false; }
@@ -239,6 +277,7 @@ int main(int argc, char **argv)
         { "sr1_audio_unchanged", sr1_audio_unchanged },
         { "opl_renders", opl_renders },
         { "opl_voice_gain", opl_voice_gain },
+        { "opl_music_muted_by_synth", opl_music_muted_by_synth },
         { "mouse_space", mouse_space },
         { "mouse_space_set", mouse_space_set },
     };
