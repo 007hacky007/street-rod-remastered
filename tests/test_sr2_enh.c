@@ -114,6 +114,19 @@ static void sr2_enh_compare_rows(void)
     enh_compare_rows(orig, enh, cov, 0, 10, road, 1, &c);
     CHECK(c.edge_err_max == 1 && c.mismatched == 2 && c.pixels == 2880);
 
+    memset(cov + 6 * 320 + 95, 0, 5);               /* the left edge of row 6 runs under the foreground */
+    road_row(enh + 6 * 320, 98, 200);
+    enh_compare_rows(orig, enh, cov, 0, 10, road, 1, &c);
+    CHECK(c.edge_err_max == 1);                     /* row 6's left edge is not measured; its right edge is */
+    road_row(enh + 6 * 320, 100, 200);
+    memset(cov + 6 * 320 + 95, 1, 5);
+    memset(cov + 6 * 320 + 101, 0, 8);              /* hidden between the two edges: the enhanced edge is not seen */
+    road_row(enh + 6 * 320, 110, 200);
+    enh_compare_rows(orig, enh, cov, 0, 10, road, 1, &c);
+    CHECK(c.edge_err_max == 1);
+    road_row(enh + 6 * 320, 100, 200);
+    memset(cov + 6 * 320 + 101, 1, 8);
+
     memset(orig + 7 * 320, 2, 320);                 /* no road in the original's row: no edge there */
     memset(enh + 7 * 320, 2, 320);
     enh_compare_rows(orig, enh, cov, 0, 10, road, 1, &c);

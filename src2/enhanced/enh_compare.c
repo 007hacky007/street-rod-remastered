@@ -35,8 +35,15 @@ void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, 
             if (k[x]) { c.pixels++; if (o[x] != e[x]) c.mismatched++; }
         int ol, or_, el, er;
         if (edges(o, k, road_colours, n_road, &ol, &or_) && edges(e, k, road_colours, n_road, &el, &er)) {
+            /* An edge is measured only where it is seen: the pixel beyond it covered in both (an edge that runs
+             * under the original's foreground, an object or the cockpit, cannot be compared). */
+            int l = SDL_min(ol, el), r = SDL_max(or_, er);
+            bool lv = l == 0 || k[l - 1], rv = r == 319 || k[r + 1];
+            for (int x = l; lv && x <= SDL_max(ol, el); x++) lv = k[x] != 0;   /* and all between the two edges */
+            for (int x = SDL_min(or_, er); rv && x <= r; x++) rv = k[x] != 0;
+            if (!lv && !rv) continue;
             c.edge_rows++;
-            int d = SDL_max(abs(ol - el), abs(or_ - er));
+            int d = SDL_max(lv ? abs(ol - el) : 0, rv ? abs(or_ - er) : 0);
             if (d > c.edge_err_max) c.edge_err_max = d;
             if (log_rows && log_file && d > 1) fprintf(log_file, "  row %02X orig %d..%d enh %d..%d\n", y, ol, or_, el, er);
         }

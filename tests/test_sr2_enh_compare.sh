@@ -30,10 +30,12 @@ for k in drag cruise; do
     if [ -n "$n" ] && [ "$n" -ge 20 ] && [ "$e" -le 1 ] && [ "$m" -le 10 ]; then echo "ok   $k ($s)"
     else echo "FAIL $k (${s:-no log})"; fail=1; fi
 done
-for k in grudge mulholland; do
-    s=$(summary $k)
-    n=$(field "$s" frames)
-    if [ "${n:-x}" = 0 ]; then echo "ok   $k not enhanced"
-    else echo "FAIL $k (${s:-no log}, want 0 frames)"; fail=1; fi
+# Grudge (modes 2, 4) and Mulholland (10h = 16) are not enhanced yet; their runs also drive through town (mode 0).
+for k in grudge:2:4 mulholland:16:16; do
+    name=${k%%:*} m=${k#*:}; m1=${m%%:*} m2=${m#*:}
+    if [ ! -f "$tmp/$name.cmp" ]; then echo "FAIL $name (no log)"; fail=1; continue; fi
+    n=$(awk -v a="$m1" -v b="$m2" '/^frame/ && ($4 == a || $4 == b) { c++ } END { print c + 0 }' "$tmp/$name.cmp")
+    if [ "$n" = 0 ]; then echo "ok   $name not enhanced"
+    else echo "FAIL $name ($n frames enhanced, want 0)"; fail=1; fi
 done
 exit $fail

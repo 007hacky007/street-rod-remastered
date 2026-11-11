@@ -227,10 +227,11 @@ static void compare_frame(void)
     /* Mismatched pixels: in town over the whole view (its sky is fixed), in a race from below the horizon strip
      * (the sky turns slower than the original's, SKY_SCROLL, as Street Rod 1). Road edges: from the ground down
      * (the town's skyline has the road's colour in it). */
-    int ground = SDL_clamp((int)ceil(enh_ground_y), ENH_VIEW_Y0, ENH_VIEW_Y1);
+    int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());   /* below the split the screen shows the dashboard */
+    int ground = SDL_clamp((int)ceil(enh_ground_y), ENH_VIEW_Y0, y_end);
     EnhCompare edges;
-    enh_compare_rows(orig, enh, cov, v.town ? ENH_VIEW_Y0 : ground, ENH_VIEW_Y1, enh_road_colours, 2, &c);
-    enh_compare_rows(orig, enh, cov, ground, ENH_VIEW_Y1, enh_road_colours, 2, &edges);
+    enh_compare_rows(orig, enh, cov, v.town ? ENH_VIEW_Y0 : ground, y_end, enh_road_colours, 2, &c);
+    enh_compare_rows(orig, enh, cov, ground, y_end, enh_road_colours, 2, &edges);
     c.edge_rows = edges.edge_rows;
     c.edge_err_max = edges.edge_err_max;
     enh_compare_frame(v.mode, &c);

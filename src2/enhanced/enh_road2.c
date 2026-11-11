@@ -183,6 +183,16 @@ static void draw_sky(const Cam *c, bool town)
 
 /* ---------------------------------------------------------------- road */
 
+/* A wall's or storey's face as the game's quad_fill draws it: x = xa (from ya_top to ya_bot) to xb (yb_top to
+ * yb_bot), its last row and column included (poly_fill_pts), unlike the road bands' lines. */
+static void face(double xa, double xb, double ya_bot, double yb_bot, double yb_top, double ya_top, u8 col)
+{
+    double l = xa < xb ? xa : xb, r = (xa < xb ? xb : xa) + 1.0;
+    double xs[4] = { xa == l ? l : r, xb == l ? l : r, xb == l ? l : r, xa == l ? l : r };
+    double ys[4] = { ya_bot + 1.0, yb_bot + 1.0, yb_top, ya_top };
+    enh_fill_poly(xs, ys, 4, col);
+}
+
 static void quad(double xa0, double xa1, double ya, double xb0, double xb1, double yb, u8 col)
 {
     double xs[4] = { xb0, xb1, xa1, xa0 }, ys[4] = { yb, yb, ya, ya };
@@ -226,32 +236,33 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
 {
     const Row ra = *pa, rb = *pb;
     double ya = py(c, &ra, Y_ROAD), yb = py(c, &rb, Y_ROAD);
-    if (yb >= ya) return;                                   /* back-facing (beyond a crest) */
     int n = rb.n;
     u16 C = trk(TRK_C, n), L = trk(TRK_L, n), R = trk(TRK_R, n);
     bool cross = C & 1;
-    enh_fill_rows(yb, ya, town ? COL_ROAD : COL_GRASS);    /* the ground of this band */
+    /* A crossing's band leaves the ground as it is (the town's road colour, a race's grass); a plain band paints
+     * grass across the row after the walls (road_draw_band_front), then the road. */
+    if (cross && yb < ya) enh_fill_rows(yb, ya, town ? COL_ROAD : COL_GRASS);
 
     double la, ra_, lb, rb_;
     edges(trk(TRK_C, ra.n), &la, &ra_);
     edges(trk(TRK_C, rb.n), &lb, &rb_);
     double xla = px(c, &ra, la), xra = px(c, &ra, ra_), xlb = px(c, &rb, lb), xrb = px(c, &rb, rb_);
     if (town) town_extras(c, &ra, &rb);
-    if (town && !(C & 4)) {                                 /* façades and upper storeys (town_walls_front) */
+    if (town && !(C & 4)) {    /* drawn even when the band itself has no rows (the far end of the street) */                                 /* façades and upper storeys (town_walls_front) */
         double yea = py(c, &ra, Y_EYE), yeb = py(c, &rb, Y_EYE);
         for (int side = 0; side < 2; side++) {
             u16 F = side ? R : L;
             double X = side ? X_OUT_R : X_OUT_L, xa = px(c, &ra, X), xb = px(c, &rb, X);
-            double xs[4] = { xa, xb, xb, xa }, ys[4] = { ya, yb, yeb, yea };
-            enh_fill_poly(xs, ys, 4, (F & 0x10) ? COL_WALL_A : COL_WALL_B);
+            face(xa, xb, ya, yb, yeb, yea, (F & 0x10) ? COL_WALL_A : COL_WALL_B);
             if (F & 4) {
                 double Yt = (F & 8) ? 2 * Y_EYE - Y_ROAD : Y_EYE - (Y_ROAD - Y_EYE) / 2;
-                double ts[4] = { yea, yeb, py(c, &rb, Yt), py(c, &ra, Yt) };
-                enh_fill_poly(xs, ts, 4, COL_STOREY);
+                face(xa, xb, yea - 1.0, yeb - 1.0, py(c, &rb, Yt), py(c, &ra, Yt), COL_STOREY);
             }
         }
     }
+    if (yb >= ya) return;                                   /* no rows, or back-facing (beyond a crest) */
     if (!cross) {
+        enh_fill_rows(yb, ya, COL_GRASS);
         quad(xla, xra, ya, xlb, xrb, yb, (C & 0x10) ? COL_FINISH : COL_ROAD);
     } else {
         if (C & 4) return;                                  /* intersection */
