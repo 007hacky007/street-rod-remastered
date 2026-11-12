@@ -272,6 +272,15 @@ strip (modes 2 and 4), Mulholland (10h), the Aqueduct (8) and the mirror are sti
   from the row's place in the frame to its smooth place (the opponent from its own position and lane). All of
   Street Rod 2's object logic (shapes and their sizes, signs, billboards, banners, the start tree, the police)
   stays the game's own.
+* **Remastered art** (with `--remaster-dir`): Street Rod 1's enhanced view draws road-side pictures and opponents
+  from their source bitmaps; Street Rod 2's captures what the game drew into the page, so the art comes through
+  the VRAM tags of the captured pixels, each kept only where its picture has art and the tag's original colour
+  is the pixel's (as `attach_art`). The sky and horizon sheets (`read_sheets` / `sheet_row`, as Street Rod 1's)
+  and the cut objects drawn at their picture's own size (location signs, billboards, the start props, the
+  nearest opponent and police views; `capture_objects` keeps their tags in `EnhImage.rm`, taken anew at each
+  capture) show the art. Pixels from shrunk or rotated bitmaps carry no tags and stay the original's; drawing
+  them from their source pictures belongs to the race view's parts B/C. The check below draws palette indices
+  only (`enh_cur_rgb` off while it draws).
 * **Check** (`enh_compare.c`): `SR_ENH_COMPARE=<file>` draws every enhanced frame again at scale 1, aa 1, from that
   frame's state without interpolation and with the game's integer rounding, and compares it with the page shown:
   the road's edges per row (from the ground down to the split; an edge under the original's foreground is not
@@ -279,4 +288,5 @@ strip (modes 2 and 4), Mulholland (10h), the Aqueduct (8) and the mirror are sti
   the original's as in Street Rod 1). `SR_ENH_COMPARE_ROWS=1` logs the rows that differ,
   `SR_ENH_COMPARE_DUMP=<dir>` writes the original and the enhanced view side by side. The test
   `sr2_enh_compare` (label `slow`) runs a drag and a town drive: road edges within 1 px in at least 95 % of the
-  frames, the median frame within 10 per mille of mismatched pixels.
+  frames, the median frame within 10 per mille of mismatched pixels; and the drag again with an identity art
+  pack, whose compare dumps must hold no magenta (a sample that is not a palette index).

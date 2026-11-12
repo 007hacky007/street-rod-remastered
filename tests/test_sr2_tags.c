@@ -1,12 +1,15 @@
 /* test_sr2_tags.c -- the remaster's per-pixel tags (common/remaster/rm_tags.c) through Street Rod 2's VGA
  * model and blit helpers (src2/platform ENH parts), as tests/test_tags.c does for Street Rod 1, and the
- * picture keys of src2/remaster/rm_lib.c with a pack the test writes (opened after the tag tests).
+ * picture keys of src2/remaster/rm_lib.c with a pack the test writes (opened after the tag tests), and the
+ * enhanced race view's cut objects drawn from that pack's art.
  *   test_sr2_tags <SR2 game dir>
  * Loads SR2's SR.EXE (mem_load_exe) for its DGROUP; the bitmaps live in segments 8000h-9FFFh. */
 #include <SDL3/SDL.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "enhanced/enh_draw.h"
+#include "enhanced/enhanced.h"
 #include "mem.h"
 #include "symbols.h"
 #include "platform/ega.h"
@@ -359,6 +362,52 @@ static void sr2_decode_hash_in_place(void)
     CHECK(rm_mtag(far_lin(data), 7) == rm_tag(1, 0, 0));
 }
 
+/* The enhanced race view cuts a row's objects out of the page shown: the cut keeps the VRAM tags of its pixels
+ * that verify (the picture has art, the tag's original colour is the pixel's), so they are drawn from the art
+ * (ENH_RGB). The tags are taken anew at each capture: a later frame without them draws the indices. Needs
+ * picture 1 registered (sr2_decode_hash_in_place). */
+static void sr2_enh_cut_keeps_verified_tags(void)
+{
+    static u32 xrgb[320 * 200];
+    const int id = 3, y = 0x30;
+    const u16 off = (u16)(y * EGA_BYTES_PER_LINE + 1);            /* pixels 8..15 of row 30h, page 0 */
+    if (!rm_pic(1)) { CHECK(rm_pic(1) != NULL); return; }
+    enh_init(true, 1, 1, 100, true);
+    DSS(DS_road_mode) = 1;                                         /* the street drag, racing */
+    DSB(DS_racing) = 1;
+    DSS(DS_shown_page) = 0;
+    ega_set_line_compare(200);
+    enh_race_begin();
+    enh_frame_built();
+    vga_out(0x3CE, 8); vga_out(0x3CF, 0xFF);
+    ega_set_obj((u8)id);
+    ega_set_layer(EGA_LAYER_OBJ);                                  /* the row's object: decode_row's colours */
+    for (int k = 0; k < 4; k++) {
+        u8 bits = 0;
+        for (int i = 0; i < 8; i++) bits |= (u8)((decode_row[i] >> k & 1) << (7 - i));
+        vga_out(0x3C4, 2); vga_out(0x3C5, (u8)(1 << k));
+        vga_wr(off, bits);
+    }
+    ega_set_layer(EGA_LAYER_OFF);
+    for (int i = 0; i < 7; i++) rm_set_at(0xA000, off, 7 - i, rm_tag(1, i, 0), 0);
+    rm_set_at(0xA000, off, 0, rm_tag(1, 1, 0), 0);                /* colour 1 under a tag whose original is 2 */
+    enh_frame_presented();
+    CHECK(enh_compose(xrgb, ega_palette));
+    const u8 *px = enh_buf.px + (size_t)(y - ENH_VIEW_Y0) * enh_buf.w;
+    const u32 *rgb = enh_buf.rgb ? enh_buf.rgb + (size_t)(y - ENH_VIEW_Y0) * enh_buf.w : NULL;
+    CHECK(rgb != NULL);
+    for (int i = 0; i < 7; i++) {
+        CHECK(px[8 + i] == ENH_RGB);
+        if (rgb && px[8 + i] == ENH_RGB) CHECK(rgb[8 + i] == ega_palette[decode_row[i]]);
+    }
+    CHECK(px[15] == decode_row[7]);                                /* not verified: the original's index */
+    rm_tags_reset();                                               /* the next frame's pixels carry no tags */
+    enh_frame_presented();
+    CHECK(enh_compose(xrgb, ega_palette));
+    for (int i = 0; i < 8; i++) CHECK(px[8 + i] == decode_row[i]);
+    enh_race_end();
+}
+
 /* The pack: one picture, the key of decode_packed, 32 x 4 art. */
 static bool open_pack(char *dir, size_t n)
 {
@@ -434,6 +483,7 @@ int main(int argc, char **argv)
     if (!open_pack(dir, sizeof dir)) { printf("FAIL pack\n"); return 1; }
     RUN(sr2_hash_parked_keeps_latches);
     RUN(sr2_decode_hash_in_place);
+    RUN(sr2_enh_cut_keeps_verified_tags);
     remove_pack(dir);
     return failures != 0;
 }

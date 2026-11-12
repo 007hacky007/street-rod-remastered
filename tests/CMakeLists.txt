@@ -124,7 +124,7 @@ if(SRE_TEST_GAME2_DIR)
     target_link_libraries(test_sr2_tags PRIVATE sr2_core sre_host)
     add_test(NAME sr2_tags COMMAND test_sr2_tags ${SRE_TEST_GAME2_DIR})
     add_test(NAME sr2_enh_compare COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_enh_compare.sh
-             $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR})
+             $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR} ${CMAKE_SOURCE_DIR})
     set_tests_properties(sr2_enh_compare PROPERTIES TIMEOUT 600 LABELS slow)
     add_test(NAME sr2_volumes COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_volumes.sh
              $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR})

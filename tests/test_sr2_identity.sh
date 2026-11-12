@@ -3,6 +3,7 @@
 # with SR_REMASTER_SELFTEST count the replaced pixels whose colour differs (0 wanted). Also a pack with art
 # for only some pictures (every player's case) and a missing pack folder (the game runs as without it), and
 # the palette log, whose keys must all be the dump's (a key taken after the in-place unpack would not be).
+# The enhanced race view's drag and town drive must draw art samples (race > 0) of the same colours.
 #   test_sr2_identity.sh <streetrod2-enhanced> <SR2 game dir> <repo>
 set -u
 exe=$1 dir=$2 repo=$3
@@ -41,16 +42,20 @@ run demo "$tmp/pack" 150000 SR_SEED=11 "SR_REMASTER_PALETTE_LOG=$tmp/pal.jsonl" 
 run drag_classic "$tmp/pack" 90000 SR_DEBUG_RACE=drag -- --classic demo v adlib
 run aqueduct_classic "$tmp/pack" 90000 SR_DEBUG_RACE=aqueduct -- --classic demo v adlib
 run half "$tmp/half" 90000 SR_SEED=3 -- demo v adlib
+run drag_enh "$tmp/pack" 90000 SR_DEBUG_RACE=drag -- demo v adlib
+run cruise_enh "$tmp/pack" 90000 SR_DEBUG_RACE=cruise -- demo v adlib
 run nopack "$tmp/none" 5000 -- v adlib
 wait
 
-for name in demo drag_classic aqueduct_classic half; do
+for name in demo drag_classic aqueduct_classic half drag_enh cruise_enh; do
     line=$(grep 'remaster selftest:' "$tmp/$name.err" | tail -1)
     frames=$(echo "$line" | sed -n 's/.*frames \([0-9]*\).*/\1/p')
     replaced=$(echo "$line" | sed -n 's/.*replaced \([0-9]*\).*/\1/p')
     bad=$(echo "$line" | sed -n 's/.*mismatched \([0-9]*\).*/\1/p')
+    race=$(echo "$line" | sed -n 's/.*race \([0-9]*\).*/\1/p')
+    case $name in *_enh) want_race=1 ;; *) want_race=0 ;; esac
     [ -n "$line" ] && [ "$frames" -gt 100 ] && [ "$replaced" -gt 0 ] && [ "$bad" = 0 ] &&
-        ! grep -q 'art for' "$tmp/$name.err"
+        [ "$race" -ge "$want_race" ] && ! grep -q 'art for' "$tmp/$name.err"
     check "$name" $? "${line:-no selftest line}"
 done
 

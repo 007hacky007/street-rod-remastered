@@ -15,6 +15,8 @@
 #include "host.h"
 #include "mem.h"
 #include "platform/ega.h"
+#include "remaster/rm_pack.h"
+#include "remaster/rm_tags.h"
 
 EnhOptions enh_opt = { false, 1, ENH_DEFAULT_AA, ENH_DEFAULT_MOTION_DELAY, true };
 
@@ -207,15 +209,27 @@ static void capture_objects(void)
         c->img.px = SDL_realloc(c->img.px, (size_t)w * h);
         c->img.w = w;
         c->img.h = h;
-        c->img.rm = NULL;
+        /* ENH: remaster: the VRAM tags of the cut pixels, each kept where its picture has art and the tag's
+         * original colour is the pixel's (as attach_art, enh_sprite.c); NULL when none */
+        SDL_free(c->img.rm);
+        c->img.rm = rm_pack_active() ? SDL_calloc((size_t)w * h, sizeof *c->img.rm) : NULL;
+        int tagged = 0;
         for (int j = 0; j < h; j++)
             for (int i = 0; i < w; i++) {
                 int x = x0[id] + i, y = y0[id] + j;
                 u16 b = (u16)(shown_start + y * EGA_BYTES_PER_LINE + (x >> 3));
                 int bit = 7 - (x & 7), col = 0;
                 for (int k = 0; k < 4; k++) col |= (ega_plane(k)[b] >> bit & 1) << k;
-                c->img.px[j * w + i] = tag[(u32)b * 8 + (x & 7)] == id ? (u8)col : ENH_CLEAR;
+                bool mine = tag[(u32)b * 8 + (x & 7)] == id;
+                c->img.px[j * w + i] = mine ? (u8)col : ENH_CLEAR;
+                RmTag t = mine && c->img.rm ? rm_vtag(b, bit) : 0;
+                RmPic *p = t ? rm_pic(rm_tag_slot(t)) : NULL;
+                int u = rm_tag_u(t), v = rm_tag_v(t);
+                if (!p || u >= p->w || v >= p->h || p->orig[v * p->w + u] != col) continue;
+                c->img.rm[j * w + i] = t;
+                tagged++;
             }
+        if (!tagged) { SDL_free(c->img.rm); c->img.rm = NULL; }
         c->x0 = x0[id];
         c->y0 = y0[id];
         c->used = true;
@@ -310,9 +324,13 @@ static void compare_frame(void)
     if (!enh_view_newest(&v)) return;
     EnhOptions keep = enh_opt;
     enh_opt.res_scale = enh_opt.aa = 1;
+    /* ENH: palette indices only: the last composed frame's palette left set would draw the art (ENH_RGB) */
+    const u32 *keep_rgb = enh_cur_rgb;
+    enh_cur_rgb = NULL;
     enh_buf_setup();
     enh_draw_road(&v);
     draw_objects(&v);
+    enh_cur_rgb = keep_rgb;
     static u8 orig[200 * 320], enh[200 * 320], cov[200 * 320], cov_edge[200 * 320];
     const u8 *fgm = ega_fg(), *tag = ega_obj();
     int mirror_cov = 0;
