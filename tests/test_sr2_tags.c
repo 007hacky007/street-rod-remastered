@@ -1,7 +1,9 @@
 /* test_sr2_tags.c -- the remaster's per-pixel tags (common/remaster/rm_tags.c) through Street Rod 2's VGA
- * model and blit helpers (src2/platform ENH parts), as tests/test_tags.c does for Street Rod 1.
+ * model and blit helpers (src2/platform ENH parts), as tests/test_tags.c does for Street Rod 1, and the
+ * picture keys of src2/remaster/rm_lib.c with a pack the test writes (opened after the tag tests).
  *   test_sr2_tags <SR2 game dir>
  * Loads SR2's SR.EXE (mem_load_exe) for its DGROUP; the bitmaps live in segments 8000h-9FFFh. */
+#include <SDL3/SDL.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -11,6 +13,9 @@
 #include "platform/platform.h"
 #include "platform/vga.h"
 #include "platform/video.h"
+#include "remaster/rm_dump.h"
+#include "remaster/rm_lib.h"
+#include "remaster/rm_pack.h"
 #include "remaster/rm_tags.h"
 
 static int failures;
@@ -286,7 +291,10 @@ static void sr2_bitmap_clear_clears_tags(void)
 
 /* pic_decode seeds the decoded bitmap as slot pic_index(id) + 1: picture 1 (8 x 1, unmasked) whose packed
  * bytes (BCh and 4 literals, one per plane) already sit in the destination's planes, as SR2 decodes. */
-static void sr2_decode_seeds_tags(void)
+static const u8 decode_packed[5] = { 0xBC, 0x81, 0x42, 0x24, 0x18 };
+static const u8 decode_row[8] = { 1, 2, 4, 8, 8, 4, 2, 1 };      /* what those planes show */
+
+static FarPtr decode_fixture(void)
 {
     DSS(DS_driver_id) = -2;
     DSB(DS_cursor_visible) = 0;                                    /* cursor_ctl(-4) / (-2) return at once */
@@ -299,13 +307,104 @@ static void sr2_decode_seeds_tags(void)
     wr16(e.seg, 0x1A, 5);                                          /* packed size */
     wr8(e.seg, 0x1C, 0xFF);                                        /* not parked */
     far_wr(e.seg, 0x1E, data);                                     /* loaded: the destination's tail */
-    static const u8 packed[5] = { 0xBC, 0x81, 0x42, 0x24, 0x18 };
-    for (int i = 0; i < 5; i++) wr8(data.seg, (u16)(data.off + i), packed[i]);
+    for (int i = 0; i < 5; i++) wr8(data.seg, (u16)(data.off + i), decode_packed[i]);
     far_wr(dst.seg, (u16)(dst.off + DESC_PLANES), data);
+    return dst;
+}
+
+static void sr2_decode_seeds_tags(void)
+{
+    FarPtr dst = decode_fixture(), data = far_make(0x8A00, 0x40);
     pic_decode(1, dst);
-    for (int k = 0; k < 4; k++) CHECK(rd8(data.seg, (u16)(data.off + k)) == packed[k + 1]);
+    for (int k = 0; k < 4; k++) CHECK(rd8(data.seg, (u16)(data.off + k)) == decode_packed[k + 1]);
     CHECK(rm_mtag(far_lin(data), 7) == rm_tag(1, 0, 0));
     CHECK(rm_mtag(far_lin(data) + 3, 0) == rm_tag(1, 7, 0));
+}
+
+/* ---- with a pack (rm_lib.c's hooks are no-ops before) */
+
+/* A picture parked in VRAM is hashed from its plane directly: the latches stay as the last read left them. */
+static void sr2_hash_parked_keeps_latches(void)
+{
+    static const u8 packed[5] = { 0xBC, 0x11, 0x22, 0x33, 0x44 };
+    for (int i = 0; i < 5; i++) ega_plane(2)[0x7D00 + i] = packed[i];
+    static const u8 other[4] = { 0x5A, 0x6B, 0x7C, 0x8D };
+    for (int k = 0; k < 4; k++) ega_plane(k)[0x100] = other[k];
+    vga_rd(0x100);                                                 /* the latches: 5Ah 6Bh 7Ch 8Dh */
+    rm2_pic_hash(30, far_make(0xA7D0, 0), 5, 2);
+    vga_out(0x3CE, 5); vga_out(0x3CF, 1);                          /* write mode 1: the latches */
+    vga_wr(0x200, 0);
+    vga_out(0x3CE, 5); vga_out(0x3CF, 0);
+    char want[41];
+    rm_sha1_hex(packed, 5, want);
+    CHECK(rm2_slot_sha1(30) && strcmp(rm2_slot_sha1(30), want) == 0);
+    for (int k = 0; k < 4; k++) CHECK(ega_plane(k)[0x200] == other[k]);
+}
+
+/* The key is the SHA-1 of the packed bytes before the in-place unpack overwrites them; the picture is
+ * registered with its decoded pixels and the art of the pack. */
+static void sr2_decode_hash_in_place(void)
+{
+    FarPtr dst = decode_fixture(), data = far_make(0x8A00, 0x40);
+    pic_decode(1, dst);
+    char want[41];
+    rm_sha1_hex(decode_packed, 5, want);
+    CHECK(rm2_slot_sha1(1) && strcmp(rm2_slot_sha1(1), want) == 0);
+    RmPic *p = rm_pic(1);
+    CHECK(p != NULL);
+    if (p) {
+        CHECK(p->w == 8 && p->h == 1);
+        for (int x = 0; x < 8; x++) CHECK(p->orig[x] == decode_row[x]);
+    }
+    CHECK(rm_mtag(far_lin(data), 7) == rm_tag(1, 0, 0));
+}
+
+/* The pack: one picture, the key of decode_packed, 32 x 4 art. */
+static bool open_pack(char *dir, size_t n)
+{
+    snprintf(dir, n, "sre-sr2-tags-%d", (int)SDL_GetTicks());     /* in the working directory */
+    char path[1024], sha1[41];
+    rm_sha1_hex(decode_packed, 5, sha1);
+    SDL_CreateDirectory(dir);
+    snprintf(path, sizeof path, "%s/pics", dir);
+    SDL_CreateDirectory(path);
+    snprintf(path, sizeof path, "%s/pack.json", dir);
+    FILE *f = fopen(path, "w");
+    if (!f) return false;
+    fprintf(f, "{\"format\": 1, \"pictures\": {\"%s\": {\"ref\": [\"000000\",\"0000AA\",\"00AA00\",\"00AAAA\","
+               "\"AA0000\",\"AA00AA\",\"AA5500\",\"AAAAAA\",\"555555\",\"5555FF\",\"55FF55\",\"55FFFF\",\"FF5555\","
+               "\"FF55FF\",\"FFFF55\",\"FFFFFF\"]}}, \"shapes\": {}}\n", sha1);
+    fclose(f);
+    for (int idx = 0; idx < 2; idx++) {
+        SDL_Surface *s = SDL_CreateSurface(32, 4, SDL_PIXELFORMAT_RGBA32);
+        for (int y = 0; y < 4; y++)
+            for (int x = 0; x < 32; x++) {
+                u8 c = decode_row[x / 4];
+                u32 rgb = ega_palette[c];                          /* RGBA32 in memory: R, G, B, A */
+                u32 v = idx ? 0xFF000000u | c * 0x010101u
+                            : 0xFF000000u | (rgb & 0xFF) << 16 | (rgb & 0xFF00) | rgb >> 16;
+                ((u32 *)((u8 *)s->pixels + y * s->pitch))[x] = v;
+            }
+        snprintf(path, sizeof path, "%s/pics/%s%s", dir, sha1, idx ? ".idx.png" : ".png");
+        SDL_SavePNG(s, path);
+        SDL_DestroySurface(s);
+    }
+    return rm_pack_open(dir);
+}
+
+static void remove_pack(const char *dir)
+{
+    char path[1024], sha1[41];
+    rm_sha1_hex(decode_packed, 5, sha1);
+    snprintf(path, sizeof path, "%s/pics/%s.png", dir, sha1);
+    SDL_RemovePath(path);
+    snprintf(path, sizeof path, "%s/pics/%s.idx.png", dir, sha1);
+    SDL_RemovePath(path);
+    snprintf(path, sizeof path, "%s/pics", dir);
+    SDL_RemovePath(path);
+    snprintf(path, sizeof path, "%s/pack.json", dir);
+    SDL_RemovePath(path);
+    SDL_RemovePath(dir);
 }
 
 int main(int argc, char **argv)
@@ -330,5 +429,11 @@ int main(int argc, char **argv)
     RUN(sr2_composite_behind_shows_behind);
     RUN(sr2_bitmap_clear_clears_tags);
     RUN(sr2_decode_seeds_tags);
+
+    char dir[256];
+    if (!open_pack(dir, sizeof dir)) { printf("FAIL pack\n"); return 1; }
+    RUN(sr2_hash_parked_keeps_latches);
+    RUN(sr2_decode_hash_in_place);
+    remove_pack(dir);
     return failures != 0;
 }

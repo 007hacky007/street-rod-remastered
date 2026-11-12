@@ -129,6 +129,12 @@ if(SRE_TEST_GAME2_DIR)
     add_test(NAME sr2_volumes COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_volumes.sh
              $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR})
     set_tests_properties(sr2_volumes PROPERTIES TIMEOUT 240)
+    # The remastered pictures: an identity pack (and a half one, a missing one) and a marker pack.
+    foreach(t identity marker)
+        add_test(NAME sr2_${t} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_${t}.sh
+                 $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR} ${CMAKE_SOURCE_DIR})
+        set_tests_properties(sr2_${t} PROPERTIES TIMEOUT 900 LABELS slow)
+    endforeach()
     # The 15 smoke paths of upstream (title, demo tour, every race kind, jail, garage, save/load, endings).
     find_package(Python3 COMPONENTS Interpreter)
     if(Python3_FOUND)
