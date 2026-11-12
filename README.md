@@ -22,7 +22,7 @@ for you, and on Windows you unzip them into a folder (see below).
   the same, played from the original game files.
 * **A smooth road.** Races and drives through town are drawn at your display's refresh rate, up to
   2560 × 1600, with anti-aliasing.
-* **Remastered pictures**, a free download the launcher offers (26 MB). Every picture of the game redrawn as
+* **Remastered pictures**, a free download the launcher offers (47 MB). Every picture of the game redrawn as
   modern pixel art at four times the resolution, one click from the original. Painting your car, fades and the
   flashing signs still work on the new art.
 * **Remastered music** (on by default). The game's own tune, note for note, played by a small band (bass, guitar
@@ -102,7 +102,7 @@ Every choice is remembered. More in [launcher/README.md](launcher/README.md).
 
 ### The remastered pictures
 
-The redrawn pictures are a separate, free download (26 MB) from their own repository,
+The redrawn pictures are a separate, free download (47 MB) from their own repository,
 [street-rod-remastered-art](https://github.com/007hacky007/street-rod-remastered-art). On its first start the
 launcher offers to download them; **Download Pictures...** next to **Art** does it later. When a newer set is
 out, the launcher offers the update. Once they are there, **Art** is Remastered; **Art: Original** brings back
