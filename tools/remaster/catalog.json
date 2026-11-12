@@ -7093,7 +7093,7 @@
  "8514540653a0cd3b91e2d481f47390f14c54b77f": {
   "group": "sprite",
   "batch": 8,
-  "desc": "a sprite sheet for the ending: in three rows, a dark 1970s fastback sports car with red tail lights and a yellow licence plate seen from behind and a little from the right, driving away with grey dust behind it, drawn smaller and smaller frame by frame down to tiny specks; at the bottom left a strip of the car's rear (tail lights and bumper) and a small piece of it; in the bottom middle a framed piece of the dusk landscape: a dark rocky hillside in red and grey above a black road with red gravel along it; at the right a man in a dark jacket and blue jeans standing, seen from the side",
+  "desc": "a sprite sheet for the ending: in three rows, a dark 1970s fastback sports car with red tail lights and a small blue licence plate with a yellow rim and light marks (no readable number) seen from behind and a little from the right, driving away with grey dust behind it, drawn smaller and smaller frame by frame down to tiny specks; at the bottom left a strip of the car's rear (tail lights and bumper) and a small piece of it; in the bottom middle a framed piece of the dusk landscape: a dark rocky hillside in red and grey above a black road with red gravel along it; at the right a man in a dark jacket and blue jeans standing, seen from the side",
   "keep": "every frame in its exact place, shape and size (the game cuts the frames out by fixed rectangles); the landscape piece lines up exactly with the ending backdrop (the game pastes it there over the car at the end), its road stays black and the thin blue lines around it stay where they are",
   "sheet": null,
   "status": "new",
@@ -7578,7 +7578,7 @@
  "8fd5a8f936c1534dcc53d9c885a770ee288f6147": {
   "group": "screen",
   "batch": 8,
-  "desc": "the ending: a desert road at dusk; a black night sky with a few stars and big dark clouds edged in red and grey, a glowing purple, pink and yellow sunset low over a range of dark grey and red rocky mountains; at the bottom a black road where a dark 1970s fastback sports car seen from behind and a little from the right drives away with its red tail lights and a yellow licence plate, a cloud of grey dust behind it, a smaller car further ahead on the left, red gravel along the roadside on the right",
+  "desc": "the ending: a desert road at dusk; a black night sky with a few stars and big dark clouds edged in red and grey, a glowing purple, pink and yellow sunset low over a range of dark grey and red rocky mountains; at the bottom a black road where a dark 1970s fastback sports car seen from behind and a little from the right drives away with its red tail lights and a small blue licence plate with a yellow rim and light marks (no readable number), a cloud of grey dust behind it, a smaller car further ahead on the left, red gravel along the roadside on the right",
   "keep": "the car, the dust and the small car stay exactly where they are, the same size (animation frames are drawn over them and a piece of empty road replaces the car at the end); the road stays black; the sky stays black with its few stars",
   "sheet": null,
   "status": "new",
