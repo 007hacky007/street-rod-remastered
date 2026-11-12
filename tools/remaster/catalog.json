@@ -473,8 +473,8 @@
  "07663ff07b81c8dbd63d4d90e787160f82f3f6c7": {
   "group": "race",
   "batch": 7,
-  "desc": "a purple early-1960s full-size car (Ford Galaxie style) seen straight from behind: wide see-through rear window with the driver's head, big round red tail lights at both ends, a dark chequered trim panel between them, a long chrome bumper, a yellow licence plate",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; red tail lights; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "desc": "a blue early-1960s full-size car (Ford Galaxie style) seen straight from behind: wide see-through rear window with the driver's head, big round red tail lights at both ends, a dark chequered trim panel between them, a long chrome bumper, a yellow licence plate",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome; red tail lights; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
   "sheet": "sr2-7-cars-2",
   "status": "new",
   "ids": {
@@ -1592,8 +1592,8 @@
  "1809b7f3cd0c60ffa23d3055c79fb53a09cbfd26": {
   "group": "race",
   "batch": 7,
-  "desc": "a purple late-1960s sports car (Corvette Stingray style) seen straight from behind: flat see-through rear window with the driver's head, four round red tail lights, a row of small grey vents between them, chrome bumpers, a grey licence plate, both rear tyres",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; red tail lights; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "desc": "a blue late-1960s sports car (Corvette Stingray style) seen straight from behind: flat see-through rear window with the driver's head, four round red tail lights, a row of small grey vents between them, chrome bumpers, a grey licence plate, both rear tyres",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome; red tail lights; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
   "sheet": "sr2-7-cars-1",
   "status": "new",
   "ids": {
@@ -2693,8 +2693,8 @@
  "2ccbb31bb83674d4f506d0a79bd9082dae763893": {
   "group": "race",
   "batch": 7,
-  "desc": "a tiny far-away low sports car seen from the front, coming towards us: purple body with light grey highlights, dark windscreen, small headlights",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome",
+  "desc": "a tiny far-away low sports car seen from the front, coming towards us: blue body with light blue highlights, dark windscreen, small headlights",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome",
   "sheet": "sr2-7-small-1",
   "status": "new",
   "ids": {
@@ -2751,7 +2751,7 @@
  "2dc8b9923963b74148e5f7df59fbee2b20cb306e": {
   "group": "screen",
   "batch": 5,
-  "desc": "a wall calendar page in a grey frame: 'AUG' at the top with a row of weekday letters S M T W T F S and the dates of August in dark grey, Sundays in red; in the middle a pin-up picture of a tanned blonde woman in a bright green swimsuit sunbathing on her back on a light grey beach with one knee raised, a teal sea behind her under a dark red sky and a pink-red setting sun on the left; 'SEP' at the bottom with the September dates, the red 14 circled in green; a turned-up page corner at the bottom left",
+  "desc": "a wall calendar page in a grey frame: 'AUG' at the top with a row of weekday letters S M T W T F S and the dates of August in dark grey, Sundays in red; in the middle a pin-up picture of a tanned blonde woman in a bright green swimsuit sunbathing on her back on a light grey beach with one knee raised, a dark blue sea behind her under a light blue sky and a pink-red setting sun on the left; 'SEP' at the bottom with the September dates, the red 14 circled in green; a turned-up page corner at the bottom left",
   "keep": "all the month names, weekday letters and numbers exactly, each in its place (the game draws a cross over the current date at fixed positions); Sundays stay red; the green circle round 14; the white page and the grey frame",
   "sheet": null,
   "status": "new",
@@ -3913,8 +3913,8 @@
  "45d50d047deeae7a6010d488387be9cfc84c3ca1": {
   "group": "race",
   "batch": 7,
-  "desc": "a purple late-1960s fastback car (Mustang style) seen from behind and a little from its right side: sloping fastback roof with the driver's head in the see-through rear window, rectangular red and white tail lights in chrome frames, a chrome strip between them, chrome bumper, a yellow licence plate, the right rear wheel",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "desc": "a blue late-1960s fastback car (Mustang style) seen from behind and a little from its right side: sloping fastback roof with the driver's head in the see-through rear window, rectangular red and white tail lights in chrome frames, a chrome strip between them, chrome bumper, a yellow licence plate, the right rear wheel",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
   "sheet": "sr2-7-cars-1",
   "status": "new",
   "ids": {
@@ -4881,8 +4881,8 @@
  "56760b53e10d3697ad71779ad4b35d4c9fe6c7ed": {
   "group": "race",
   "batch": 7,
-  "desc": "a purple late-1960s sports car (Corvette Stingray style) seen from behind and a little from its right side: flat see-through rear window with the driver's head, four round red tail lights, a row of small grey vents between them, chrome bumpers, a grey licence plate, the right rear wheel",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; red tail lights; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "desc": "a blue late-1960s sports car (Corvette Stingray style) seen from behind and a little from its right side: flat see-through rear window with the driver's head, four round red tail lights, a row of small grey vents between them, chrome bumpers, a grey licence plate, the right rear wheel",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome; red tail lights; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
   "sheet": "sr2-7-cars-1",
   "status": "new",
   "ids": {
@@ -7963,8 +7963,8 @@
  "964302df781aefe1bc03ea6145aa8494ca80feb9": {
   "group": "race",
   "batch": 7,
-  "desc": "a purple late-1960s coupe (Mercury Cougar style) seen from behind and a little from its right side: see-through rear window with the driver's head, a full-width tail light panel with fine vertical ribs, a yellow licence plate in its middle, chrome bumper, the right rear wheel",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "desc": "a blue late-1960s coupe (Mercury Cougar style) seen from behind and a little from its right side: see-through rear window with the driver's head, a full-width tail light panel with fine vertical ribs, a yellow licence plate in its middle, chrome bumper, the right rear wheel",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
   "sheet": "sr2-7-cars-2",
   "status": "new",
   "ids": {
@@ -9487,7 +9487,7 @@
  "b5bd9aa28c4d9033cbe8ee7d246b46b749e4a62b": {
   "group": "screen",
   "batch": 5,
-  "desc": "a wall calendar page in a grey frame: \"JUN\" with the weekday letters S M T W T F S and the dates 1 to 30 at the top, a picture of a dark-haired woman in a red two-piece swimsuit lying on a yellow beach in front of a green band in the middle, and \"JUL\" with the weekday letters and the dates 1 to 31 at the bottom; the Sunday column in red, the 14th of June circled in green, a curled-up page corner at the bottom left",
+  "desc": "a wall calendar page in a grey frame: \"JUN\" with the weekday letters S M T W T F S and the dates 1 to 30 at the top, a picture of a dark-haired woman in a blue two-piece swimsuit lying on a yellow beach in front of a green band in the middle, and \"JUL\" with the weekday letters and the dates 1 to 31 at the bottom; the Sunday column in red, the 14th of June circled in green, a curled-up page corner at the bottom left",
   "keep": "every number, letter and month name exactly and in exactly the same place (the game draws an X over the current day at a fixed grid position); the Sunday column red; the green circle round 14; plain white paper around the dates; the frame and the curled corner",
   "sheet": null,
   "status": "new",
@@ -9695,8 +9695,8 @@
  "b865d61c04ce468ca1ecf736f13d0f90916feea3": {
   "group": "race",
   "batch": 7,
-  "desc": "a tiny far-away purple late-1960s coupe seen from the front, coming towards us, with a wide chrome grille across the front",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome",
+  "desc": "a tiny far-away blue late-1960s coupe seen from the front, coming towards us, with a wide chrome grille across the front",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome",
   "sheet": "sr2-7-small-1",
   "status": "new",
   "ids": {
@@ -10985,8 +10985,8 @@
  "d12196672b66c52695be35eb21a1b06429aff90c": {
   "group": "race",
   "batch": 7,
-  "desc": "a very close view of the side of a purple late-1960s coupe (Mercury Cougar style) passing by, facing right: the door and windscreen pillar at the top left, the long flat body side with a sharp crease and a door seam, the front wheel with a chrome spoked rim and a black tyre, a dark chequered shadow along the sill, the tip of the chrome bumper at the right edge",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windscreen opening stays see-through (hot pink like the background); the outline where it is cut off at the picture edges",
+  "desc": "a very close view of the side of a blue late-1960s coupe (Mercury Cougar style) passing by, facing right: the door and windscreen pillar at the top left, the long flat body side with a sharp crease and a door seam, the front wheel with a chrome spoked rim and a black tyre, a dark chequered shadow along the sill, the tip of the chrome bumper at the right edge",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome; the windscreen opening stays see-through (hot pink like the background); the outline where it is cut off at the picture edges",
   "sheet": "sr2-7-close-1",
   "status": "new",
   "ids": {
@@ -11928,8 +11928,8 @@
  "e319e3dfcb3b9d075f000f283a9c4a14e2a675d2": {
   "group": "race",
   "batch": 7,
-  "desc": "a very close view of the side of a purple late-1960s sports car (Corvette Stingray style) passing by, facing right: the door and windscreen pillar at the top left, the long curved front fender with four black vent slots, the front wheel with a chrome spoked rim and a black tyre, the tip of the chrome bumper at the right edge",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windscreen opening stays see-through (hot pink like the background); the outline where it is cut off at the picture edges",
+  "desc": "a very close view of the side of a blue late-1960s sports car (Corvette Stingray style) passing by, facing right: the door and windscreen pillar at the top left, the long curved front fender with four black vent slots, the front wheel with a chrome spoked rim and a black tyre, the tip of the chrome bumper at the right edge",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome; the windscreen opening stays see-through (hot pink like the background); the outline where it is cut off at the picture edges",
   "sheet": "sr2-7-close-1",
   "status": "new",
   "ids": {
@@ -13011,8 +13011,8 @@
  "fa029949d500703e4658e01adb3865278392931f": {
   "group": "race",
   "batch": 7,
-  "desc": "a purple late-1960s coupe (Mercury Cougar style) seen straight from behind: see-through rear window with the driver's head, a full-width tail light panel with fine vertical ribs, a yellow licence plate, chrome bumper, both rear tyres",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "desc": "a blue late-1960s coupe (Mercury Cougar style) seen straight from behind: see-through rear window with the driver's head, a full-width tail light panel with fine vertical ribs, a yellow licence plate, chrome bumper, both rear tyres",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
   "sheet": "sr2-7-cars-2",
   "status": "new",
   "ids": {
@@ -13322,8 +13322,8 @@
  "ff69d4902e427d3346807a10b0db3846d47025e0": {
   "group": "race",
   "batch": 7,
-  "desc": "a purple late-1960s fastback car (Mustang style) seen straight from behind: sloping roof with the driver's head in the see-through rear window, rectangular red and white tail lights, a chrome strip between them, chrome bumper, a yellow licence plate, both rear tyres",
-  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "desc": "a blue late-1960s fastback car (Mustang style) seen straight from behind: sloping roof with the driver's head in the see-through rear window, rectangular red and white tail lights, a chrome strip between them, chrome bumper, a yellow licence plate, both rear tyres",
+  "keep": "the blue and its light blue highlights are the car's paint (the game repaints them): keep them blue and light blue; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
   "sheet": "sr2-7-cars-1",
   "status": "new",
   "ids": {
