@@ -13,3 +13,11 @@ int enh_clip_poly_i(const s16 *in, int n, s16 *out, int xmin, int xmax, int ymin
  * edge, y: its centre (the original's line y + ROW_TOP). Under the current clip; at a higher resolution each
  * sample row takes the original row around its own centre. */
 void enh_fill_poly_incl(const double *x, const double *y, int n, u8 col);
+/* clip_line's clip (race_gfx.c) of the line in[0..3] = x1, y1, x2, y2 on xmin..xmax, ymin..ymax (inclusive), the
+ * new ends by the game's truncating line_y_at_x / line_x_at_y: false when the game draws nothing. */
+bool enh_clip_line_i(const s16 in[4], s16 out[4], int xmin, int xmax, int ymin, int ymax);
+/* A line one original pixel thick (sa samples across the minor axis) through the centres of the pixels (x0, y0) and
+ * (x1, y1), both ends included: at res 1 the pixels of the game's Bresenham line (ega_line, a tie stepped towards
+ * the far end from the left end). x, y: the original's pixel coordinates (the line y, without ROW_TOP). Under the
+ * current clip. */
+void enh_line1(double x0, double y0, double x1, double y1, u8 col);

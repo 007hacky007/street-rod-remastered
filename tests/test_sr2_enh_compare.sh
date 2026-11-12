@@ -13,9 +13,12 @@ trap 'rm -rf "$tmp"' EXIT
 cp -R "$dir" "$tmp/game"
 fail=0
 
-run() {  # run <kind> <seconds>: in the background, the log in $tmp/<kind>.cmp
-    SDL_VIDEO_DRIVER=dummy SDL_AUDIO_DRIVER=dummy SR_SEED=2 SR_DEBUG_RACE=$1 SR_KEYS=1:03 \
-        SR_ENH_COMPARE="$tmp/$1.cmp" "$exe" --game-dir "$tmp/game" --run-ms "$2"000 demo v >"$tmp/$1.log" 2>&1 &
+run() {  # run <kind> <seconds> [race] [VAR=value ...]: in the background, the log in $tmp/<kind>.cmp; the race
+         # SR_DEBUG_RACE drives is <kind> unless given
+    k=$1 s=$2 race=${3:-$1}
+    shift 2; [ $# -gt 0 ] && shift
+    env SDL_VIDEO_DRIVER=dummy SDL_AUDIO_DRIVER=dummy SR_SEED=2 SR_DEBUG_RACE="$race" SR_KEYS=1:03 "$@" \
+        SR_ENH_COMPARE="$tmp/$k.cmp" "$exe" --game-dir "$tmp/game" --run-ms "$s"000 demo v >"$tmp/$k.log" 2>&1 &
 }
 
 field() { echo "$1" | awk -v k="$2" '{ for (i = 1; i < NF; i++) if ($i == k) { print $(i + 1); exit } }'; }
@@ -58,6 +61,13 @@ after() {  # after <kind> <mode> <last mode> <min>: frames of <mode> after the l
     else echo "FAIL $1 mode $2 after mode $3 (${n:-0} frames, want $4)"; fail=1; fi
 }
 
+police_in_mirror() {  # police_in_mirror <kind>: a frame with the police out (police >= 2) behind (opp_sprite >= 9)
+    n=$(awk '/^frame / { p = -1; o = -1; for (i = 1; i < NF; i++) { if ($i == "police") p = $(i + 1);
+        if ($i == "opp_sprite") o = $(i + 1) } if (p >= 2 && o >= 9) c++ } END { print c + 0 }' "$tmp/$1.cmp" 2>/dev/null)
+    if [ -n "$n" ] && [ "$n" -gt 0 ]; then echo "ok   police in the mirror ($n frames)"
+    else echo "FAIL police in the mirror (${n:-0} frames)"; fail=1; fi
+}
+
 none() {  # none <kind> <mode>
     s=$(mode_line "$1" "$2")
     if [ ! -f "$tmp/$1.cmp" ]; then echo "FAIL $1 mode $2 (no log)"; fail=1
@@ -69,6 +79,7 @@ run cruise 90
 run drag 90
 run grudge 200
 run mulholland 110
+run police 110 mulholland SR_DEBUG_POLICE=480
 run aqueduct 80
 wait
 
@@ -80,7 +91,9 @@ after grudge 0 4 20
 check grudge 2 20 enh
 check grudge 4 20 enh
 check mulholland 0 0 enh
-check mulholland 16 20 enh noobj   # the rails and trusses are still row cuts (Task 8)
+check mulholland 16 20 enh
+check police 16 20 enh
+police_in_mirror police
 none aqueduct 8
 check aqueduct 0 0 enh
 exit $fail

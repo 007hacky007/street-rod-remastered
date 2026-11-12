@@ -194,3 +194,27 @@ void enh_front_hillsides(const Cam *c, const Row *rows, int row, bool l16, int f
 /* mirror_hillsides of mirror row `row` (mrows[] rows 0..7, the banks read forward), on the mirror's clip
  * F0h..13Fh x 16h..2Ah. */
 void enh_mirror_hillsides(const Cam *c, const Row *mrows, int row, int fall_dir);
+/* road_draw_front's DS_rail_phase_seg at the view's base: base + k for the farthest row k (14..1) where a rail
+ * starts (R[base + k] & 8000h and not R[base + k - 1]), else the fallback (the value kept from a frame before). */
+int enh_rail_phase(const Cam *c, int fallback);
+/* Mulholland's guard rails and bridges (mulholland_extras_front, mulholland_extras_mirror): a row's table values
+ * as guard_rail and scenery_draw_truss read them (x, and the line y); the mirror's YK as its quirk holds it (row
+ * ceil(k / 2)'s). */
+typedef struct { double xl, xr, xor_, y, ye, yk; } RailRow;
+RailRow enh_rail_row_front(const Cam *c, const Row *r);
+RailRow enh_rail_row_mirror(const Cam *c, const Row *mrows, int k);
+/* guard_rail of row `row` (far p, near q): the post when enh_rail_post(phase, row, base, n), x from XORq + post /
+ * (row + 1) to XORq, YKq - 1 down to Yq, fill 5 and edges 2; the rail XORp..XORq from YE - m down to YK, fill 5, its
+ * top and bottom edges 2. Front: post -1Eh, n 0Eh, m 0; mirror: -10, 7, 1 (the front's phase, sic). */
+void enh_guard_rail(const Cam *c, const RailRow *p, const RailRow *q, int row, int post, int n, int m, int phase, bool mirror);
+/* scenery_draw_truss between p (far) and q (near), lines of colour 10 drawn w + 1 times with the original's offsets
+ * (w: the row's DS_dash_width entry), the diagonal by the parity (even, or not near: from the near row's bottom);
+ * scenery_draw_truss_end at row p. */
+void enh_truss(const Cam *c, const RailRow *p, const RailRow *q, int row, int parity, bool near_flag, int w, bool mirror);
+void enh_truss_end(const Cam *c, const RailRow *p, int w, bool mirror);
+/* mulholland_extras_front of row `row` (rows[] the front's 15 rows), mulholland_extras_mirror of mirror row `row`
+ * (mrows[] its 8 rows, the flags one segment off): the truss (front: C[s] and C[s - 1] bridges, parity base - row
+ * + 14, near below row 7; mirror: C[s], C[s + 1], C[s + 2], parity base - row, near below row 4), its end (front:
+ * not C[s + 1]; mirror: not C[s - 1]) and the guard rail (R & 8000h off a bridge). */
+void enh_extras_front(const Cam *c, const Row *rows, int row, int phase);
+void enh_extras_mirror(const Cam *c, const Row *mrows, int row, int phase);

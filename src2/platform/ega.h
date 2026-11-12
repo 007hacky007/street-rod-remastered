@@ -57,6 +57,10 @@ void ega_set_layer(int layer);
 void ega_set_obj(u8 id);
 const u8 *ega_obj(void);
 void ega_clear_obj(u16 offset, u16 n);
+/* ENH (Street Rod 2): from now on, the object ids 1..31 whose tagged pixels in plane offsets lo..hi - 1 a background
+ * (or SKY) write covers: bit id of ega_overdrawn. */
+void ega_watch_overdraw(u16 lo, u16 hi);
+u32 ega_overdrawn(void);
 const u8 *ega_fg(void);
 void ega_clear_fg(u16 offset, u16 n);
 /* ENH: the rectangle x0..x1, y0..y1 (inclusive) of the page at plane offset `page` stays the game's picture:

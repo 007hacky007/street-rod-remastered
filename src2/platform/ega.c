@@ -15,6 +15,8 @@ static u8 fg[EGA_PLANE_SIZE];          /* ENH: pixels of the foreground layer (s
 static int layer;
 static u8 obj[EGA_PLANE_SIZE * 8];     /* ENH: the object layer's tags, one byte per pixel (ega_set_obj) */
 static u8 obj_id;
+static u32 obj_over;                   /* ENH: ids (bit id, 1..31) whose tagged pixels a background write covered */
+static u16 over_lo, over_hi;           /* ENH: the plane offsets obj_over watches */
 /* Mode 0Dh defaults after INT 10h AH=0 (200-line values), overscan 0. */
 static u8 palette_reg[17] = { 0, 1, 2, 3, 4, 5, 6, 7, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0 };
 
@@ -111,12 +113,20 @@ void ega_mark_written(u16 offset, u8 pixels, u8 changed)
         for (int b = 0; b < 8; b++) if (changed >> (7 - b) & 1) obj[(u32)offset * 8 + b] = obj_id;
     } else if (layer == EGA_LAYER_BG || layer == EGA_LAYER_SKY) {
         u8 t = layer == EGA_LAYER_SKY ? EGA_TAG_SKY : 0;
-        for (int b = 0; b < 8; b++) if (pixels >> (7 - b) & 1) obj[(u32)offset * 8 + b] = t;
+        bool watch = offset >= over_lo && offset < over_hi;
+        for (int b = 0; b < 8; b++)
+            if (pixels >> (7 - b) & 1) {
+                u8 *o = &obj[(u32)offset * 8 + b];
+                if (watch && *o != 0 && *o < 32) obj_over |= 1u << *o;
+                *o = t;
+            }
     } else if (layer == EGA_LAYER_FG) {              /* the foreground over an object: no longer the object's */
         for (int b = 0; b < 8; b++) if (changed >> (7 - b) & 1) obj[(u32)offset * 8 + b] = 0;
     }
 }
 void ega_set_obj(u8 id) { obj_id = id; }
+void ega_watch_overdraw(u16 lo, u16 hi) { over_lo = lo; over_hi = hi; obj_over = 0; }
+u32 ega_overdrawn(void) { return obj_over; }
 const u8 *ega_obj(void) { return obj; }
 void ega_clear_obj(u16 offset, u16 n) { memset(obj + (u32)offset * 8, 0, (size_t)n * 8); }
 void ega_set_layer(int l) { layer = l; }

@@ -69,3 +69,67 @@ void enh_fill_poly_incl(const double *x, const double *y, int n, u8 col)
         if (i1 > i0) memset(b->px + (size_t)j * b->w + i0, col, (size_t)(i1 - i0));
     }
 }
+
+bool enh_clip_line_i(const s16 in[4], s16 out[4], int xmin, int xmax, int ymin, int ymax)
+{
+    s16 x1 = in[0], y1 = in[1], x2 = in[2], y2 = in[3], t;
+    if ((x1 < xmin && x2 < xmin) || (x1 > xmax && x2 > xmax) || (y1 < ymin && y2 < ymin) || (y1 > ymax && y2 > ymax))
+        return false;
+    if (x2 < x1) { t = x1; x1 = x2; x2 = t; t = y1; y1 = y2; y2 = t; }
+    if (x1 < xmin) { y1 = line_y_at_x(x1, y1, x2, y2, (s16)xmin); x1 = (s16)xmin; }
+    if (x2 > xmax) { y2 = line_y_at_x(x1, y1, x2, y2, (s16)xmax); x2 = (s16)xmax; }
+    if (y2 < y1) { t = x1; x1 = x2; x2 = t; t = y1; y1 = y2; y2 = t; }
+    if (y1 < ymin) { x1 = line_x_at_y(x1, y1, x2, y2, (s16)ymin); y1 = (s16)ymin; }
+    if (y2 > ymax) { x2 = line_x_at_y(x1, y1, x2, y2, (s16)ymax); y2 = (s16)ymax; }
+    if (!(x1 >= xmin && x1 <= xmax && x2 >= xmin && x2 <= xmax && y1 >= ymin && y1 <= ymax && y2 >= ymin && y2 <= ymax))
+        return false;
+    out[0] = x1; out[1] = y1; out[2] = x2; out[3] = y2;
+    return true;
+}
+
+/* the samples whose centre (in original pixels: lo0 + (k + 0.5) / sa) lies in lo..hi, both bounds as `incl_hi`
+ * says: (lo, hi] when true, [lo, hi) when false */
+static void sample_span(double lo, double hi, double o, int sa, bool incl_hi, int *k0, int *k1)
+{
+    if (incl_hi) { *k0 = (int)floor((lo - o) * sa - 0.5) + 1; *k1 = (int)floor((hi - o) * sa - 0.5); }
+    else { *k0 = (int)ceil((lo - o) * sa - 0.5); *k1 = (int)ceil((hi - o) * sa - 0.5) - 1; }
+}
+
+void enh_line1(double x0, double y0, double x1, double y1, u8 col)
+{
+    EnhBuf *b = &enh_buf;
+    if (x1 < x0) { double t = x0; x0 = x1; x1 = t; t = y0; y0 = y1; y1 = t; }   /* ega_line: from the left end */
+    double dx = x1 - x0, dy = y1 - y0;
+    if (fabs(dx) >= fabs(dy)) {        /* one original pixel tall over each column; a tie towards the far end's y */
+        int i0, i1;
+        sample_span(x0, x1 + 1, 0, b->sa, false, &i0, &i1);
+        if (i0 < b->cx0) i0 = b->cx0;
+        if (i1 > b->cx1 - 1) i1 = b->cx1 - 1;
+        for (int i = i0; i <= i1; i++) {
+            double xs = (i + 0.5) / b->sa;
+            double yl = y0 + 0.5 + (dx != 0 ? (xs - x0 - 0.5) * dy / dx : 0);
+            int j0, j1;
+            sample_span(yl - 0.5, yl + 0.5, ENH_VIEW_Y0, b->sa, dy > 0, &j0, &j1);
+            if (j0 < b->cy0) j0 = b->cy0;
+            if (j1 > b->cy1 - 1) j1 = b->cy1 - 1;
+            for (int j = j0; j <= j1; j++) b->px[(size_t)j * b->w + i] = col;
+        }
+        return;
+    }
+    if (y1 < y0) { double t = x0; x0 = x1; x1 = t; t = y0; y0 = y1; y1 = t; }
+    dx = x1 - x0;
+    dy = y1 - y0;
+    int j0, j1;                        /* one original pixel wide over each row; a tie towards the larger x */
+    sample_span(y0, y1 + 1, ENH_VIEW_Y0, b->sa, false, &j0, &j1);
+    if (j0 < b->cy0) j0 = b->cy0;
+    if (j1 > b->cy1 - 1) j1 = b->cy1 - 1;
+    for (int j = j0; j <= j1; j++) {
+        double ys = ENH_VIEW_Y0 + (j + 0.5) / b->sa;
+        double xl = x0 + 0.5 + (ys - y0 - 0.5) * dx / dy;
+        int i0, i1;
+        sample_span(xl - 0.5, xl + 0.5, 0, b->sa, true, &i0, &i1);
+        if (i0 < b->cx0) i0 = b->cx0;
+        if (i1 > b->cx1 - 1) i1 = b->cx1 - 1;
+        for (int i = i0; i <= i1; i++) b->px[(size_t)j * b->w + i] = col;
+    }
+}

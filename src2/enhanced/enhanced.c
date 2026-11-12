@@ -198,6 +198,7 @@ void enh_draw_begin(void)
     u16 page = DSS(DS_back_page) == 1 ? 0x2000 : 0x4000;
     ega_clear_fg(page, ENH_VIEW_Y1 * EGA_BYTES_PER_LINE);
     ega_clear_obj(page, ENH_VIEW_Y1 * EGA_BYTES_PER_LINE);
+    ega_watch_overdraw(page, (u16)(page + ENH_VIEW_Y1 * EGA_BYTES_PER_LINE));
     base_layer = EGA_LAYER_BG;
     ega_set_layer(EGA_LAYER_BG);
 }
@@ -259,11 +260,13 @@ static bool drawn_after(const ObjCut *a, const ObjCut *b)
     return kind_rank(b->kind) > kind_rank(a->kind);
 }
 
-/* The cut of `id` holds, within its rectangle, the foreground or a pixel of a cut of its pass drawn after it. */
+/* The cut of `id` holds, within its rectangle, the foreground or a pixel of a cut of its pass drawn after it, or the
+ * background drawn later in the frame covered some of its pixels (a nearer row's hillside or rail). */
 static bool cut_covered(int id, const u8 *tag)
 {
     const ObjCut *c = &cuts[id];
     const u8 *fgm = ega_fg();
+    if (ega_overdrawn() >> id & 1) return true;             /* the background drawn over it later in the frame */
     for (int y = c->y0; y < c->y0 + c->img.h; y++)
         for (int x = c->x0; x < c->x0 + c->img.w; x++) {
             u16 b = (u16)(shown_start + y * EGA_BYTES_PER_LINE + (x >> 3));
@@ -514,7 +517,9 @@ static CutPred preds[ENH_OBJ_IDS];
 
 /* A cut the check can judge: placed by its geometry (not fixed), not cut off by its pass's border, and not partly
  * hidden: neither its rectangle holds what was drawn after it (enh_cut_partly_hidden) nor is its bottom more than
- * 1 px above the road row it stands on (nearer road, a wall). */
+ * 1 px above the road row it stands on (nearer road, a wall). A row's object that hangs below its row (Mulholland's
+ * rocks and obstacles, drawn from the row down) is not judged either: its size steps at the row index (shape_draw's
+ * LOD), so the drawing's scale about the row cannot predict its bottom. */
 static bool cut_judged(const ObjCut *c, int y_end)
 {
     if (!c->used || c->fixed) return false;
@@ -523,6 +528,7 @@ static bool cut_judged(const ObjCut *c, int y_end)
         if (c->x0 <= 0 || x1 >= 0x13F || c->y0 <= ENH_VIEW_Y0 || y1 >= y_end - 1) return false;
     } else if (c->x0 <= 0xF2 || x1 >= 0x13D || c->y0 <= 0x16 || y1 >= 0x2A)
         return false;
+    if (c->kind == ENH_CUT_ROW && c->y0 + c->img.h > c->geo.yg + 1.0) return false;
     return !c->hidden && c->y0 + c->img.h >= c->geo.yg - 1.0;
 }
 

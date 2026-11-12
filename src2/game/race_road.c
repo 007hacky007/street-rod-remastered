@@ -1290,7 +1290,7 @@ static void road_draw_front(void)
         enh_draw_objects(row);                              /* ENH: the row's objects, drawn again at its smooth position */
         if (!((C & 4) && (C & 1))) {
             if (row < 11) front_objects(row);
-            if (!(C & 1) && MODE == 0x10) mulholland_extras_front(row);
+            if (!(C & 1) && MODE == 0x10) { enh_draw_objects(0); mulholland_extras_front(row); }   /* ENH: drawn again as geometry */
         }
         enh_draw_objects(ENH_OBJ_OPP);
         if (sub16(DSS(DS_opp_seg), row) == DSS(DS_seg) && DSB(DS_racing)) opponent_draw();
@@ -1436,7 +1436,7 @@ static void road_draw_mirror(void)
             if ((C & 0xF000) && !(MODE & 0x16))
                 scenery_draw_banner(XLp, XRp, (s16)(YEp * 4 - Yp * 3), Yp, (s16)(row + 5), 1, (u16)(C & 0xF000));
             if (row < 7) mirror_objects(row, (s16)((row >> 1) + 7));
-            if (!(C & 1) && MODE == 0x10) mulholland_extras_mirror(row);
+            if (!(C & 1) && MODE == 0x10) { enh_draw_objects(0); mulholland_extras_mirror(row); }   /* ENH: drawn again as geometry */
         }
         enh_draw_objects(ENH_OBJ_OPP);                      /* ENH */
         if (sub16(DSS(DS_seg), row) == DSS(DS_opp_seg) && DSB(DS_racing)) opponent_draw();

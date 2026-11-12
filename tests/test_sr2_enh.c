@@ -11,6 +11,7 @@
 #include "enhanced/enhanced.h"
 #include "enhanced/enh_compare.h"
 #include "enhanced/enh_internal.h"
+#include "enhanced/enh_geo2.h"
 #include "enhanced/enh_poly2.h"
 #include "game/race_int.h"
 #include "host.h"
@@ -325,6 +326,39 @@ static void sr2_enh_cut_hidden(void)
     CHECK(enh_cut_partly_hidden(5) && enh_cut_partly_hidden(ENH_OBJ_OPP));
     CHECK(!enh_cut_partly_hidden(3) && !enh_cut_partly_hidden(8));
     CHECK(enh_cut_partly_hidden(9));
+    enh_race_end();
+    restore_ds(&k);
+}
+
+/* The background drawn over an object later in the frame (Mulholland's rails and hillsides of a nearer row, the
+ * game's own drawing) covers part of it: the cut is partly hidden for the re-projection check. The next frame
+ * starts afresh. */
+static void sr2_enh_cut_overdrawn(void)
+{
+    static const u32 rgb[16];
+    Keep k = keep_ds();
+    race_setup();
+    DSS(DS_back_page) = 1;
+    DSS(DS_shown_page) = 1;
+    ega_set_start(0x2000);
+    for (int f = 0; f < 2; f++) {
+        enh_draw_begin();
+        ega_set_obj(5);
+        ega_set_layer(EGA_LAYER_OBJ);
+        wr_span(0x2000, 130, 60, 20);               /* row 5: 130..149 */
+        ega_set_obj(8);
+        wr_span(0x2000, 100, 50, 4);                /* row 8: alone */
+        enh_draw_objects(0);
+        if (f == 0) wr_span_col(0x2000, 135, 60, 3, 2);   /* the background over row 5's middle */
+        ega_set_layer(EGA_LAYER_OFF);
+        enh_frame_built();
+        enh_frame_presented();
+        CHECK(enh_compose(small, rgb));
+        printf("  frame %d: row5 %d row8 %d\n", f, enh_cut_partly_hidden(5), enh_cut_partly_hidden(8));
+        CHECK(enh_cut_partly_hidden(5) == (f == 0));
+        CHECK(!enh_cut_partly_hidden(8));
+    }
+    ega_set_start(0);
     enh_race_end();
     restore_ds(&k);
 }
@@ -844,6 +878,64 @@ static void sr2_enh_mulholland_sky_dy(void)
     CHECK(enh_mulholland_sky_dy(3, 0) == 3);
 }
 
+/* guard_rail's post parity: cmod16(phase - row - seg + n, 2) != 0 (odd, or -1 as cmod16 gives it). */
+static void sr2_enh_rail_post(void)
+{
+    CHECK(enh_rail_post(100, 3, 90, 14));
+    CHECK(!enh_rail_post(100, 4, 90, 14));
+    CHECK(enh_rail_post(5, 3, 10, 7));
+}
+
+/* road_draw_front's rail phase at the view's base: the farthest row k (14..1) where a rail starts (R[base + k] &
+ * 8000h, not R[base + k - 1]) gives base + k; none in view keeps the fallback. */
+static void sr2_enh_rail_phase(void)
+{
+    u16 keep[40];
+    for (int i = 0; i < 40; i++) { keep[i] = TRKW(TRK_R, 30 + i); TRKW(TRK_R, 30 + i) = 0; }
+    Cam c;
+    memset(&c, 0, sizeof c);
+    c.mode = 0x10;
+    c.base = 40;
+    CHECK(enh_rail_phase(&c, 123) == 123);
+    for (int i = 45; i < 48; i++) TRKW(TRK_R, i) = 0x8000;      /* a rail from row 5 */
+    for (int i = 52; i < 60; i++) TRKW(TRK_R, i) = 0x8000;      /* and one from row 12 */
+    CHECK(enh_rail_phase(&c, 123) == 52);
+    for (int i = 30; i < 70; i++) TRKW(TRK_R, i) = 0x8000;      /* rails everywhere: no start in view */
+    CHECK(enh_rail_phase(&c, 123) == 123);
+    for (int i = 0; i < 40; i++) TRKW(TRK_R, 30 + i) = keep[i];
+}
+
+/* A line one original pixel thick through the pixels' centres, both ends included: at res 1 the game's Bresenham
+ * line (ega_line: x-major, one pixel per column, a tie stepped towards the far end), whichever end comes first. */
+static void sr2_enh_line1(void)
+{
+    EnhOptions keep = enh_opt;
+    enh_opt.res_scale = enh_opt.aa = 1;
+    enh_buf_setup();
+    enh_clip_view();
+    static const int want[11] = { 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25 };
+    for (int pass = 0; pass < 2; pass++) {
+        enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+        if (pass == 0) enh_line1(10, 20, 20, 25, 7); else enh_line1(20, 25, 10, 20, 7);
+        int n = 0, bad = 0;
+        for (int y = ENH_VIEW_Y0; y < ENH_VIEW_Y1; y++)
+            for (int x = 0; x < 320; x++) {
+                if (enh_buf.px[(size_t)(y - ENH_VIEW_Y0) * enh_buf.w + x] != 7) continue;
+                n++;
+                if (x < 10 || x > 20 || want[x - 10] != y) bad++;
+            }
+        printf("  line %d samples, %d off the game's\n", n, bad);
+        CHECK(n == 11 && bad == 0);
+    }
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+    enh_line1(30, 40, 30, 40, 7);
+    int n = 0;
+    for (size_t i = 0; i < (size_t)enh_buf.w * enh_buf.h; i++) n += enh_buf.px[i] == 7;
+    CHECK(n == 1 && enh_buf.px[(size_t)(40 - ENH_VIEW_Y0) * enh_buf.w + 30] == 7);
+    enh_opt = keep;
+    enh_buf_setup();
+}
+
 /* ---------------------------------------------------------------- the rear-view mirror */
 
 /* road_project_mirror's depths: row 0 at 8, rows 1..4 at 8k + q, rows 5..7 frozen at 40, 48, 56 (the k == 5
@@ -1142,6 +1234,7 @@ int main(int argc, char **argv)
     RUN(sr2_enh_cut_order);
     RUN(sr2_enh_race_begin_resets);
     RUN(sr2_enh_cut_hidden);
+    RUN(sr2_enh_cut_overdrawn);
     RUN(sr2_enh_obj_geo_continuous);
     RUN(sr2_enh_opp_depth);
     RUN(sr2_enh_series_snap);
@@ -1164,6 +1257,9 @@ int main(int argc, char **argv)
     RUN(sr2_enh_mulholland_rows);
     RUN(sr2_enh_hill_consts);
     RUN(sr2_enh_mulholland_sky_dy);
+    RUN(sr2_enh_rail_post);
+    RUN(sr2_enh_rail_phase);
+    RUN(sr2_enh_line1);
     RUN(sr2_enh_mirror_depths);
     RUN(sr2_enh_proj_mirror_exact);
     RUN(sr2_enh_mirror_yk);

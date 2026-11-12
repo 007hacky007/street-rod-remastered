@@ -279,7 +279,7 @@ void enh_draw_mirror(const EnhView *v)
     double sy = mpy(&c, &rows[MIR_ROWS], Y_ROAD) - ROW_TOP - (hills ? 10 : 2);
     enh_draw_image(enh_image_vram(0x4000, 0xE8, 0x81, 0x50, sh), 0xF0, sy, 0xF0 + 0x50, sy + sh);
     /* far to near, each segment's cuts after its band and the opponent after its row's objects */
-    int base = c.base;
+    int base = c.base, phase = enh_rail_phase(&c, v->rail_phase);   /* the front's (sic) */
     enh_cuts_at(v, ENH_PASS_MIRROR, INT_MIN, base - MIR_ROWS - 1, false);
     enh_cuts_at(v, ENH_PASS_MIRROR, INT_MIN, base - MIR_ROWS - 1, true);
     for (int r = MIR_ROWS; r >= 1; r--) {
@@ -288,6 +288,7 @@ void enh_draw_mirror(const EnhView *v)
         town_walls(&c, &rows[r - 1], &rows[r], fs);
         band(&c, &rows[r - 1], &rows[r], r, fs);
         enh_cuts_at(v, ENH_PASS_MIRROR, n, n, false);
+        if (hills) enh_extras_mirror(&c, rows, r, phase);
         enh_cuts_at(v, ENH_PASS_MIRROR, n, n, true);
         if (on_strip(&c))          /* the phase of the front's walls, not the shown segment's (sic) */
             barrier_walls(&c, rows, r, (u8)enh_wall_colour(c.start_seg, MIR_ROWS, r, base));

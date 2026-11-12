@@ -123,6 +123,9 @@ int enh_mulholland_sky_dy(int dy, int fall_dir);
 /* front_hillsides' screen constants of row `row`, the DS words 7E1Eh, 7E20h, 7E22h, 7E24h and 7E3Ah + 4 (15 - row)
  * (the near rows' run into DS_dash_width), read at run time. */
 void enh_hill_consts(int row, s16 *w0, s16 *h0, s16 *w1, s16 *h1, s16 *e);
+/* guard_rail's post (Mulholland): drawn when cmod16(phase - row - seg + n, 2) != 0; n 14 in the front view, 7 in
+ * the mirror, phase DS_rail_phase_seg (the front's in both), seg the car's segment. */
+bool enh_rail_post(int phase, int row, int seg, int n);
 /* The captured objects (enhanced.c). A cut is one id's pixels of the frame shown; its kind says how it is placed,
  * its segment (absolute) where in the band loop it is drawn. */
 enum { ENH_CUT_ROW, ENH_CUT_OPP, ENH_CUT_MIR, ENH_CUT_STARTER };
@@ -148,8 +151,9 @@ void enh_cuts_begin(void);
 void enh_cuts_at(const EnhView *v, int pass, int lo, int hi, bool opp);
 extern int enh_cut_log[ENH_OBJ_IDS], enh_cut_log_n;   /* ids in the order the last picture drew them (tests) */
 /* The frame's cut of `id` is partly hidden: its rectangle holds the foreground, or pixels of a cut drawn after it
- * in the band loop (a nearer segment's, or at its own segment the opponent over the row's objects). The compare
- * tool's re-projection check does not judge such cuts. */
+ * in the band loop (a nearer segment's, or at its own segment the opponent over the row's objects), or the game's
+ * background drawing later in the frame covered some of its pixels (ega_overdrawn: a nearer row's hillside, rail
+ * or truss). The compare tool's re-projection check does not judge such cuts. */
 bool enh_cut_partly_hidden(int id);
 
 /* The road colours of the compare tool's edges. */

@@ -13,6 +13,7 @@
 #include "game/race_int.h"
 #include "game/race.h"
 
+#include <stdlib.h>   /* PORT: developer aid (getenv) */
 #include <string.h>
 
 #include "game/events.h"
@@ -268,6 +269,10 @@ void opponent_setup(void)
     DSW(DS_opp_contact) = 0;
 }
 
+/* PORT: developer aid: SR_DEBUG_POLICE=<seg> sends the police in every Mulholland race not against the King, at
+ * that segment and from 8 segments behind (race_step); 0 when unset */
+static s16 police_aid_seg(void) { const char *s = getenv("SR_DEBUG_POLICE"); return s && *s ? (s16)atoi(s) : 0; }   /* PORT: developer aid */
+
 /* 0001:be82 race_start */
 void race_start(void)
 {
@@ -281,6 +286,7 @@ void race_start(void)
     if (MODE == 0x10 && DSW(DS_vs_king) == 0) {
         DSW(DS_police_state) = rnd(4) == 0 ? 1 : 0;
         if (DSW(DS_police_state)) DSS(DS_police_seg) = (s16)(rnd(0xF0) + 0x1E0);
+        if (police_aid_seg()) { DSW(DS_police_state) = 1; DSS(DS_police_seg) = police_aid_seg(); }   /* PORT: developer aid */
     } else DSW(DS_police_state) = 0;
     DSW(DS_race_state) = 0;
     drive_run();
@@ -844,6 +850,8 @@ void race_step(void)
     switch (DSW(DS_police_state)) {
     case 1:
         if (DSS(DS_police_seg) <= DSS(DS_seg)) {
+            if (police_aid_seg() && DSS(DS_seg) < (s16)(DSS(DS_opp_seg) + 7))   /* PORT: developer aid: from behind */
+                DSS(DS_opp_seg) = (s16)(DSS(DS_seg) - 8);                       /* PORT: developer aid */
             if (DSS(DS_seg) < (s16)(DSS(DS_opp_seg) + 7)) DSW(DS_police_state) = 0;
             else { DSW(DS_police_state) = 2; police_spawn(); }
         }

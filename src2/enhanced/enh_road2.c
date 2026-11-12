@@ -432,6 +432,7 @@ void enh_draw_road(const EnhView *v)
     for (int k = FAR_ROWS; k > 9 && hills; k--)
         if (!(trk(&c, TRK_C, base + k) & 0x80) && (trk(&c, TRK_C, base + k - 1) & 0x80)) l16 = true;
     double q = 8.0 * (c.pos - c.base);
+    int phase = enh_rail_phase(&c, v->rail_phase);         /* at the view's base, else the frame's */
     /* far to near, each segment's cuts after its band and the opponent after its row's objects, then the strip's walls
      * (road_draw_front); cuts beyond the far row first, those at or behind the near row last */
     enh_cuts_at(v, ENH_PASS_FRONT, base + FAR_ROWS + 1, INT_MAX, false);
@@ -444,6 +445,7 @@ void enh_draw_road(const EnhView *v)
             else draw_band(&c, &rows[k - 1], &rows[k], v->town, enh_dash_width(k, q, c.exact));
         }
         enh_cuts_at(v, ENH_PASS_FRONT, base + k, base + k, false);
+        if (hills) enh_extras_front(&c, rows, k, phase);   /* the rails and trusses, whatever top_band_row */
         enh_cuts_at(v, ENH_PASS_FRONT, base + k, base + k, true);
         if (on_strip(&c))          /* whatever top_band_row */
             barrier_walls(&c, &rows[k - 1], &rows[k], (u8)enh_wall_colour(c.start_seg, FAR_ROWS, k, base));
