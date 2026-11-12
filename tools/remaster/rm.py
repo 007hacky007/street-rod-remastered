@@ -89,7 +89,7 @@ def cmd_ingest(name, result, again=False):
         ref = jobs.palette_of(s, pal)
         orig = jobs.picture_rgb(p, ref)
         x, y, w, h = cell['rect']
-        rect = register(orig, res[..., :3], (x * sx, y * sy, w * sx, h * sy))
+        rect = register(jobs.target_rgb(p, ref), res[..., :3], (x * sx, y * sy, w * sx, h * sy))
         ok, why = rect[4] >= MIN_SCORE, [] if rect[4] >= MIN_SCORE else ['not found (score %.2f)' % rect[4]]
         rgba, ix = cleanup(p.idx, p.transparent, res, rect[:4], ref)
         if ok:
