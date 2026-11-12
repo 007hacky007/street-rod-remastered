@@ -166,6 +166,8 @@ bool enh_view_at(Uint64 now_ns, EnhView *v)
     return true;
 }
 
+static void draw_road_of(const void *v) { enh_draw_road(v); }
+
 bool enh_compose(u32 *xrgb, const u32 rgb[16])
 {
     if (!active || !presented || ega_start() != shown_start) return false;
@@ -173,9 +175,12 @@ bool enh_compose(u32 *xrgb, const u32 rgb[16])
     if (!enh_view_at(SDL_GetTicksNS(), &v)) return false;
     enh_cur_rgb = rgb;
     Uint64 t0 = SDL_GetTicksNS();
-    enh_draw_road(&v);
     int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());
-    enh_resolve(xrgb, rgb, 16, shown_start, y_end);
+    if (enh_bands_check_on()) enh_bands_check(draw_road_of, &v, xrgb, rgb, 16, shown_start, y_end);
+    else {
+        enh_draw_road(&v);
+        enh_resolve(xrgb, rgb, 16, shown_start, y_end);
+    }
     enh_side_mirror(xrgb, enh_opt.res_scale);
     if (trace) {
         static double last_pos;

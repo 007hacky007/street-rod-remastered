@@ -18,6 +18,8 @@ void host_configure(const HostConfig *cfg);
 
 bool host_init(const char *game_dir, int window_scale, bool fullscreen);
 void host_shutdown(void);
+/* Called first by host_shutdown, before SDL is shut down (threads that use SDL end there). */
+void host_set_shutdown_handler(void (*handler)(void));
 
 /* Called once per timer tick from host_pump() (the port's replacement for INT 8). The platform timer
  * module installs the ISR body (0000:1fe2, or 0000:238c while a sound plays). */

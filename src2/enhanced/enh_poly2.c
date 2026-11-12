@@ -2,6 +2,7 @@
 #include "enhanced/enh_poly2.h"
 
 #include <math.h>
+#include <stddef.h>
 #include <string.h>
 
 #include "enh_draw.h"
@@ -39,22 +40,26 @@ int enh_clip_poly_i(const s16 *in, int n, s16 *out, int xmin, int xmax, int ymin
     return clip_stage(c, nc, out, 3, (s16)ymax);
 }
 
-void enh_fill_poly_incl(const double *x, const double *y, int n, u8 col)
+typedef struct { int n; u8 col; double xy[128]; } PolyIncl;   /* x[n], then y[n]; only those copied */
+static void poly_incl_run(const EnhCtx *k, const void *arg)
 {
+    const PolyIncl *a = arg;
+    int n = a->n;
+    u8 col = a->col;
+    const double *x = a->xy, *y = a->xy + n;
     EnhBuf *b = &enh_buf;
-    if (n < 1) return;
     double ymin = y[0], ymax = y[0];
     for (int i = 1; i < n; i++) { ymin = fmin(ymin, y[i]); ymax = fmax(ymax, y[i]); }
     /* the sample rows whose centre is within half an original row of the polygon */
     int j0 = (int)ceil((ymin - 0.5 - ENH_VIEW_Y0) * b->sa - 0.5), j1 = (int)floor((ymax + 0.5 - ENH_VIEW_Y0) * b->sa - 0.5);
-    if (j0 < b->cy0) j0 = b->cy0;
-    if (j1 > b->cy1 - 1) j1 = b->cy1 - 1;
+    if (j0 < k->cy0) j0 = k->cy0;
+    if (j1 > k->cy1 - 1) j1 = k->cy1 - 1;
     for (int j = j0; j <= j1; j++) {
         double yc = ENH_VIEW_Y0 + (j + 0.5) / b->sa;
         double lo = fmax(yc - 0.5, ymin), hi = fmin(yc + 0.5, ymax), xl = 1e30, xr = -1e30;
         if (lo > hi) continue;
-        for (int i = 0, k = n - 1; i < n; k = i++) {
-            double x0 = x[k], y0 = y[k], x1 = x[i], y1 = y[i];
+        for (int i = 0, m = n - 1; i < n; m = i++) {
+            double x0 = x[m], y0 = y[m], x1 = x[i], y1 = y[i];
             double ea = fmax(lo, fmin(y0, y1)), eb = fmin(hi, fmax(y0, y1));
             if (ea > eb) continue;
             double xa = y0 == y1 ? x0 : x0 + (ea - y0) * (x1 - x0) / (y1 - y0);
@@ -64,10 +69,22 @@ void enh_fill_poly_incl(const double *x, const double *y, int n, u8 col)
         }
         if (xl > xr) continue;
         int i0 = (int)ceil(xl * b->sa - 0.5), i1 = (int)ceil((xr + 1.0) * b->sa - 0.5);
-        if (i0 < b->cx0) i0 = b->cx0;
-        if (i1 > b->cx1) i1 = b->cx1;
+        if (i0 < k->cx0) i0 = k->cx0;
+        if (i1 > k->cx1) i1 = k->cx1;
         if (i1 > i0) memset(b->px + (size_t)j * b->w + i0, col, (size_t)(i1 - i0));
     }
+}
+
+void enh_fill_poly_incl(const double *x, const double *y, int n, u8 col)
+{
+    if (n < 1) return;
+    if (n > 64) n = 64;
+    PolyIncl a;
+    a.n = n;
+    a.col = col;
+    memcpy(a.xy, x, (size_t)n * sizeof *x);
+    memcpy(a.xy + n, y, (size_t)n * sizeof *y);
+    enh_submit(poly_incl_run, &a, offsetof(PolyIncl, xy) + (size_t)2 * n * sizeof *x);
 }
 
 bool enh_clip_line_i(const s16 in[4], s16 out[4], int xmin, int xmax, int ymin, int ymax)
@@ -95,23 +112,27 @@ static void sample_span(double lo, double hi, double o, int sa, bool incl_hi, in
     else { *k0 = (int)ceil((lo - o) * sa - 0.5); *k1 = (int)ceil((hi - o) * sa - 0.5) - 1; }
 }
 
-void enh_line1(double x0, double y0, double x1, double y1, u8 col)
+typedef struct { double x0, y0, x1, y1; u8 col; } Line1;
+static void line1_run(const EnhCtx *k, const void *arg)
 {
+    const Line1 *a = arg;
+    double x0 = a->x0, y0 = a->y0, x1 = a->x1, y1 = a->y1;
+    u8 col = a->col;
     EnhBuf *b = &enh_buf;
     if (x1 < x0) { double t = x0; x0 = x1; x1 = t; t = y0; y0 = y1; y1 = t; }   /* ega_line: from the left end */
     double dx = x1 - x0, dy = y1 - y0;
     if (fabs(dx) >= fabs(dy)) {        /* one original pixel tall over each column; a tie towards the far end's y */
         int i0, i1;
         sample_span(x0, x1 + 1, 0, b->sa, false, &i0, &i1);
-        if (i0 < b->cx0) i0 = b->cx0;
-        if (i1 > b->cx1 - 1) i1 = b->cx1 - 1;
+        if (i0 < k->cx0) i0 = k->cx0;
+        if (i1 > k->cx1 - 1) i1 = k->cx1 - 1;
         for (int i = i0; i <= i1; i++) {
             double xs = (i + 0.5) / b->sa;
             double yl = y0 + 0.5 + (dx != 0 ? (xs - x0 - 0.5) * dy / dx : 0);
             int j0, j1;
             sample_span(yl - 0.5, yl + 0.5, ENH_VIEW_Y0, b->sa, dy > 0, &j0, &j1);
-            if (j0 < b->cy0) j0 = b->cy0;
-            if (j1 > b->cy1 - 1) j1 = b->cy1 - 1;
+            if (j0 < k->cy0) j0 = k->cy0;
+            if (j1 > k->cy1 - 1) j1 = k->cy1 - 1;
             for (int j = j0; j <= j1; j++) b->px[(size_t)j * b->w + i] = col;
         }
         return;
@@ -121,17 +142,22 @@ void enh_line1(double x0, double y0, double x1, double y1, u8 col)
     dy = y1 - y0;
     int j0, j1;                        /* one original pixel wide over each row; a tie towards the larger x */
     sample_span(y0, y1 + 1, ENH_VIEW_Y0, b->sa, false, &j0, &j1);
-    if (j0 < b->cy0) j0 = b->cy0;
-    if (j1 > b->cy1 - 1) j1 = b->cy1 - 1;
+    if (j0 < k->cy0) j0 = k->cy0;
+    if (j1 > k->cy1 - 1) j1 = k->cy1 - 1;
     for (int j = j0; j <= j1; j++) {
         double ys = ENH_VIEW_Y0 + (j + 0.5) / b->sa;
         double xl = x0 + 0.5 + (ys - y0 - 0.5) * dx / dy;
         int i0, i1;
         sample_span(xl - 0.5, xl + 0.5, 0, b->sa, true, &i0, &i1);
-        if (i0 < b->cx0) i0 = b->cx0;
-        if (i1 > b->cx1 - 1) i1 = b->cx1 - 1;
+        if (i0 < k->cx0) i0 = k->cx0;
+        if (i1 > k->cx1 - 1) i1 = k->cx1 - 1;
         for (int i = i0; i <= i1; i++) b->px[(size_t)j * b->w + i] = col;
     }
+}
+void enh_line1(double x0, double y0, double x1, double y1, u8 col)
+{
+    Line1 a = { x0, y0, x1, y1, col };
+    enh_submit(line1_run, &a, sizeof a);
 }
 
 void enh_fill_poly_edge(const double *x, const double *y, int n, u8 fill, u8 edge)

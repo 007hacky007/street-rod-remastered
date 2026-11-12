@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- The enhanced race view of both games draws on worker threads, one horizontal band per core (bsvdoom's change
+  to kylofon/streetrod-enhanced): the same frames, several times faster, most of all with the remastered art
+  (Street Rod 2's Mulholland at 1280 x 800 from 32 to 6 ms a frame). `SR_ENH_THREADS=1` draws on one thread.
 - Street Rod 2 (work in progress): the faithful port of Street Rod 2: The Next Generation by Krzysztof Kania
   builds beside Street Rod 1 as `streetrod2-enhanced`, on the same host: window size, full screen, sharp
   Retina picture, Mac keys, and separate music and sound effects volumes (`--music-volume`, `--sfx-volume`)

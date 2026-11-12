@@ -22,6 +22,7 @@ static int ncache;
 
 void enh_images_reset(void)
 {
+    enh_flush();                   /* recorded commands may still show these images */
     for (int i = 0; i < ncache; i++) { SDL_free(cache[i].img.px); SDL_free(cache[i].img.rm); }
     ncache = 0;
 }
@@ -126,17 +127,21 @@ const EnhImage *enh_image_vram(u16 page, int x, int y, int w, int h)
 
 /* The image stretched over [x0, x1) x [y0, y1) (original screen coordinates), nearest texel per sample;
  * mirrored when x1 < x0. */
-void enh_draw_image(const EnhImage *img, double x0, double y0, double x1, double y1)
+typedef struct { EnhImage img; double x0, y0, x1, y1; } DrawImage;
+static void draw_image_run(const EnhCtx *k, const void *arg)
 {
-    if (!img || y1 <= y0 || x1 == x0) return;
+    const DrawImage *a = arg;
+    const EnhImage *img = &a->img;
+    double x0 = a->x0, y0 = a->y0, x1 = a->x1, y1 = a->y1;
+    const u32 *cur_rgb = k->rgb;
     EnhBuf *b = &enh_buf;
     bool flip = x1 < x0;
     double l = flip ? x1 : x0, r = flip ? x0 : x1;
     double sl = l * b->sa, sr = r * b->sa, st = (y0 - ENH_VIEW_Y0) * b->sa, sb = (y1 - ENH_VIEW_Y0) * b->sa;
-    int i0 = SDL_max(b->cx0, (int)ceil(sl - 0.5)), i1 = SDL_min(b->cx1, (int)ceil(sr - 0.5));
-    int j0 = SDL_max(b->cy0, (int)ceil(st - 0.5)), j1 = SDL_min(b->cy1, (int)ceil(sb - 0.5));
+    int i0 = SDL_max(k->cx0, (int)ceil(sl - 0.5)), i1 = SDL_min(k->cx1, (int)ceil(sr - 0.5));
+    int j0 = SDL_max(k->cy0, (int)ceil(st - 0.5)), j1 = SDL_min(k->cy1, (int)ceil(sb - 0.5));
     double du = img->w / (sr - sl), dv = img->h / (sb - st);
-    if (img->rm && b->rgb && enh_cur_rgb) {             /* ENH: remastered art, 4x the texels */
+    if (img->rm && b->rgb && cur_rgb) {             /* ENH: remastered art, 4x the texels */
         int st_mode = rm_selftest();
         for (int j = j0; j < j1; j++) {
             double vf = (j + 0.5 - st) * dv;
@@ -158,10 +163,10 @@ void enh_draw_image(const EnhImage *img, double x0, double y0, double x1, double
                     if (c != ENH_CLEAR) out[i] = c;
                     continue;
                 }
-                int a;
-                u32 col = rm_texel(art, rm_tag_u(t) * RM_ART_SCALE + fu, rm_tag_v(t) * RM_ART_SCALE + fv, enh_cur_rgb, &a);
-                if (st_mode) rm_selftest_race(a < 128 || col != enh_cur_rgb[c]);
-                if (a < 128) continue;
+                int al;
+                u32 col = rm_texel(art, rm_tag_u(t) * RM_ART_SCALE + fu, rm_tag_v(t) * RM_ART_SCALE + fv, cur_rgb, &al);
+                if (st_mode) rm_selftest_race(al < 128 || col != cur_rgb[c]);
+                if (al < 128) continue;
                 if (st_mode == 2) col = (col >> 1 & 0x7F7F7F) + 0x400060;
                 out[i] = ENH_RGB;
                 orgb[i] = col;
@@ -181,6 +186,13 @@ void enh_draw_image(const EnhImage *img, double x0, double y0, double x1, double
             if (c != ENH_CLEAR) out[i] = c;
         }
     }
+}
+
+void enh_draw_image(const EnhImage *img, double x0, double y0, double x1, double y1)
+{
+    if (!img || y1 <= y0 || x1 == x0) return;
+    DrawImage a = { *img, x0, y0, x1, y1 };
+    enh_submit(draw_image_run, &a, sizeof a);
 }
 
 void enh_fill_rect(double x0, double y0, double x1, double y1, u8 c)

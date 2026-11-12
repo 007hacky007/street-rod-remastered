@@ -37,8 +37,22 @@ Stage 1 is done; stage 2 (the longer draw distance) is not started.
     depth; signs use the largest pre-scaled picture; the cars their native pictures, scaled to fit the
     original's shrunk views (at most 1.3 times the native size).
   * **Mirror objects** stand at their true segment (the original draws them one segment off).
-* Not done yet: rendering on worker threads (about 8.5 ms a frame at 1280 × 800, 2 × 2, on one core), mip
-  levels for far sprites, the developer aids of §5 beyond `SR_ENH_TRACE`.
+* **Worker threads** (`common/enhanced/enh_bands.c`, both games; after bsvdoom's change to upstream
+  streetrod-enhanced): the drawing calls record a command list for the frame instead of writing the sample buffer;
+  `enh_resolve` runs it in horizontal bands, one per logical core (SDL threads woken by semaphores, the calling
+  thread takes the first band). Each band runs every command clipped to its own sample rows, in the order
+  recorded, then resolves its output rows; bands never share a row, so nothing is locked and the frame is the one
+  a single thread draws, byte for byte. A command keeps the clip and the palette of its call and a copy of its
+  arguments (an image's header by value); the image cache and the sample buffer flush the list before they free
+  anything a command may read, and Street Rod 2's check flushes before it reads the samples. A full list (warn
+  once) is run and emptied mid-frame; a worker that cannot start leaves fewer bands, none leaves the direct
+  drawing. The workers end before `SDL_Quit` (a host shutdown handler) or at exit. One band draws directly:
+  `SR_ENH_THREADS=N` sets the bands (1: the single-threaded drawing), and the remaster's self-test and palette log
+  keep it so (their counts and log in drawing order). `SR_ENH_THREADS_CHECK=1` draws each composed frame both ways
+  and compares the sample buffers and resolved frames (a line on stderr; `tests/test_enh_threads.sh`). Median
+  drawing and resolve time (`SR_ENH_TRACE`) at 1280 x 800, aa 2, on 10 cores, one band / all: Street Rod 1's demo
+  race 4.2 / 0.9 ms, with an identity art pack 19.3 / 4.4 ms.
+* Not done yet: mip levels for far sprites, the developer aids of §5 beyond `SR_ENH_TRACE`.
 
 References:
 
@@ -262,7 +276,12 @@ The road ahead exists in the table, so the geometry comes almost for free. The w
 
 `src2/enhanced/` gives Street Rod 2 the same stage 1: the same options (`--classic`, `--res-scale`, `--aa`,
 `--motion-delay`, `--town`), the same layers, and the drawing core shared with Street Rod 1 (`common/enhanced`:
-`enh_raster.c`, `enh_sprite.c`). Done: the town drive (road mode 0), the street drag (1), the Grudge drag strip
+`enh_raster.c`, `enh_sprite.c`, and `enh_bands.c`'s worker threads: Street Rod 2's own drawing calls, the sky rows
+`enh_sheet_row`, `enh_fill_poly_incl`, `enh_line1` and the turned images `enh_draw_image_xf`, record commands
+through `enh_submit` too). `SR_ENH_TRACE=<file>` logs each composed frame's mode and drawing time. Median ms at
+1280 x 800, aa 2, 10 cores, one band / all, without art and with an identity pack: the drag 4.8 / 1.0 and
+19.0 / 12.7, the town drive 4.9 / 1.7 and 18.4 / 3.5, the Aqueduct 5.1 / 2.1 and 6.3 / 1.6, Mulholland
+5.9 / 2.2 and 31.9 / 5.6. Done: the town drive (road mode 0), the street drag (1), the Grudge drag strip
 (2 and 4), Mulholland (10h), the Aqueduct (8) and the rear-view mirror in each of them: every race kind. Still
 the original's: the dashboard's side mirror, and the art until Street Rod 2 has its remastered pictures and
 shapes.

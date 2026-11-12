@@ -112,6 +112,8 @@ void enh_rowtab_read(EnhRowTab *t)
     }
 }
 
+static FILE *trace;                /* SR_ENH_TRACE: a line per composed frame, its drawing time */
+
 /* As Street Rod 1's: out-of-range values are clamped, not refused. */
 void enh_init(bool enabled, int res_scale, int aa, int motion_delay, bool town)
 {
@@ -122,6 +124,8 @@ void enh_init(bool enabled, int res_scale, int aa, int motion_delay, bool town)
     enh_opt.motion_delay = SDL_clamp(motion_delay, 0, 100);
     enh_opt.town = town;
     if (enabled && enh_compare_open()) atexit(enh_compare_close);   /* SR_ENH_COMPARE (enh_compare.h) */
+    const char *t = SDL_getenv("SR_ENH_TRACE");
+    if (enabled && t && *t && (trace = fopen(t, "w")) != NULL) setvbuf(trace, NULL, _IOLBF, 4096);
 }
 
 bool enh_enabled(void) { return enh_opt.enabled; }
@@ -749,6 +753,7 @@ static void compare_frame(void)
     enh_cur_rgb = NULL;
     enh_buf_setup();
     draw_view(&v);
+    enh_flush();                                    /* the samples are read below */
     enh_cur_rgb = keep_rgb;
     static u8 orig[200 * 320], enh[200 * 320], orig_e[200 * 320], enh_e[200 * 320];
     static u8 cov_f[200 * 320], cov_fe[200 * 320], cov_m[200 * 320], cov_me[200 * 320];
@@ -866,15 +871,22 @@ static void compare_frame(void)
     }
 }
 
+static void draw_view_of(const void *v) { draw_view(v); }
+
 bool enh_compose(u32 *xrgb, const u32 rgb[16])
 {
     if (!active || !presented || ega_start() != shown_start) return false;
     EnhView v;
     if (!enh_view_at(SDL_GetTicksNS(), &v)) return false;
     enh_cur_rgb = rgb;
-    draw_view(&v);
+    Uint64 t0 = SDL_GetTicksNS();
     int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());
-    enh_resolve(xrgb, rgb, 16, shown_start, y_end);
+    if (enh_bands_check_on()) enh_bands_check(draw_view_of, &v, xrgb, rgb, 16, shown_start, y_end);
+    else {
+        draw_view(&v);
+        enh_resolve(xrgb, rgb, 16, shown_start, y_end);
+    }
+    if (trace) fprintf(trace, "%llu mode %d ms %.2f\n", (unsigned long long)t0, v.mode, (SDL_GetTicksNS() - t0) / 1e6);
     enh_compare_shown();
     return true;
 }

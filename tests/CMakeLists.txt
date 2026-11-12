@@ -162,6 +162,31 @@ if(SRE_TEST_GAME2_DIR)
     endif()
 endif()
 
+# The enhanced view's bands on worker threads against one thread, byte for byte (both games when given).
+if(SRE_TEST_GAME_DIR OR SRE_TEST_GAME2_DIR)
+    if(SRE_TEST_GAME_DIR)
+        set(enh_threads_sr1 $<TARGET_FILE:streetrod-enhanced> ${SRE_TEST_GAME_DIR})
+    else()
+        set(enh_threads_sr1 - -)
+    endif()
+    if(SRE_TEST_GAME2_DIR)
+        set(enh_threads_sr2 $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR})
+    else()
+        set(enh_threads_sr2 - -)
+    endif()
+    add_test(NAME enh_threads COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_enh_threads.sh ${enh_threads_sr1}
+             ${enh_threads_sr2} ${CMAKE_SOURCE_DIR})
+    set_tests_properties(enh_threads PROPERTIES TIMEOUT 600 LABELS slow)
+endif()
+
 # --fps and --vsync (the frame pacing in common/host.c), both games.
 add_test(NAME frame_options COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_frame_options.sh $<TARGET_FILE:streetrod-enhanced>)
 add_test(NAME sr2_frame_options COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_frame_options.sh $<TARGET_FILE:streetrod2-enhanced>)
+
+# The unit tests read the sample buffer right after a drawing call: drawn directly, on one thread (the bands
+# against one thread: enh_threads).
+foreach(t compose side_mirror tags sr2_enh sr2_tags)
+    if(TEST ${t})
+        set_tests_properties(${t} PROPERTIES ENVIRONMENT SR_ENH_THREADS=1)
+    endif()
+endforeach()

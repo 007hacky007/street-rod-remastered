@@ -45,3 +45,24 @@ const EnhImage *enh_image_bitmap(u16 seg, u16 off);
 const EnhImage *enh_image_vram(u16 page, int x, int y, int w, int h);
 void enh_draw_image(const EnhImage *img, double x0, double y0, double x1, double y1);
 void enh_fill_rect(double x0, double y0, double x1, double y1, u8 c);
+
+/* enh_bands.c: the drawing calls above (and each game's own: its sky rows, polygons, lines, turned images) record
+ * a command list for the frame instead of writing the sample buffer; enh_resolve runs it in horizontal bands, one
+ * per logical core (worker threads, the calling thread takes the first band), each band its commands clipped to its
+ * rows in the order recorded and then its rows resolved. Bands never share a row, so the frame is the one a single
+ * thread draws. One band (SR_ENH_THREADS=1, no worker, the remaster's self-test or palette log on) draws directly.
+ * A drawing call packs its arguments and hands them with its body to enh_submit; the body draws under k's clip
+ * (the clip at the call, within the band's rows; by0..by1 the band's sample rows for a body that ignores the clip)
+ * and k->rgb in place of enh_cur_rgb. Arguments are copied; pointers in them (image pixels and tags) must stay valid
+ * until the commands ran: enh_flush first before freeing or changing what a recorded command may read. */
+typedef struct { int cx0, cy0, cx1, cy1, by0, by1; const u32 *rgb; } EnhCtx;
+typedef void (*EnhCmdFn)(const EnhCtx *k, const void *arg);
+void enh_submit(EnhCmdFn fn, const void *arg, size_t size);
+void enh_flush(void);                  /* runs the recorded commands now (in bands) */
+int  enh_bands(void);                  /* bands a frame is drawn in, 1 = directly */
+void enh_bands_shutdown(void);         /* stops the workers (before SDL_Quit) */
+/* SR_ENH_THREADS_CHECK: draw(v) once directly and once in bands, both over a copy of xrgb's picture, and the sample
+ * buffers and resolved frames compared byte for byte (a line on stderr); xrgb ends as the banded frame. */
+void enh_bands_check(void (*draw)(const void *v), const void *v, u32 *xrgb, const u32 *pal, int npal, u16 page,
+                     int y_end);
+bool enh_bands_check_on(void);
