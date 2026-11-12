@@ -657,10 +657,13 @@ static void compare_frame(void)
     c.opp_sprite = snap.opp_sprite;
     enh_compare_frame(v.mode, &c);
     compared++;
-    /* SR_ENH_COMPARE_DUMP=<dir>: every 40th frame, the original (left) and the enhanced view (right) */
+    /* SR_ENH_COMPARE_DUMP=<dir>: every 40th frame, the original (left) and the enhanced view (right), and up to 10
+     * bad frames (an edge off, a row table value, an object, more than ENH_MISMATCH_BAD permille mismatched) */
     const char *dir = SDL_getenv("SR_ENH_COMPARE_DUMP");
     static int bad_dumped;
-    bool bad = (c.edge_err_max > 1 || c.m_edge_err_max > 1 || c.geo_err > 0 || c.obj_err > 1) && bad_dumped < 10;
+    bool many = c.pixels > 0 && (long)c.mismatched * 1000 > (long)ENH_MISMATCH_BAD * c.pixels;
+    bool bad = (c.edge_err_max > 1 || c.m_edge_err_max > 1 || c.geo_err > 0 || c.obj_err > 1 || many) &&
+               bad_dumped < 10;
     if (dir && *dir && (compared % 40 == 1 || bad)) {
         if (bad) bad_dumped++;
         SDL_Surface *sf = SDL_CreateSurface(640, ENH_VIEW_Y1 - ENH_VIEW_Y0, SDL_PIXELFORMAT_XRGB8888);

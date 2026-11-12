@@ -16,15 +16,34 @@ static bool is_road(u8 c, const u8 *road, int n)
     return false;
 }
 
-/* The first and last pixel of a row's covered road runs at least ENH_EDGE_MIN_RUN long; false if none. */
-static bool edges(const u8 *row, const u8 *cov, const u8 *road, int n, int *l, int *r)
+static bool road_at(const u8 *row, const u8 *cov, const u8 *road, int n, int x)
+{
+    return cov[x] && is_road(row[x], road, n);
+}
+
+/* Whether the covered road run of row through x (a road pixel) is at least ENH_EDGE_MIN_RUN long. */
+static bool long_run_at(const u8 *row, const u8 *cov, const u8 *road, int n, int x)
+{
+    int a = x, e = x;
+    while (a > 0 && road_at(row, cov, road, n, a - 1)) a--;
+    while (e + 1 < 320 && road_at(row, cov, road, n, e + 1)) e++;
+    return e - a + 1 >= ENH_EDGE_MIN_RUN;
+}
+
+/* The first and last pixel of a row's covered road runs that are at least ENH_EDGE_MIN_RUN long, or that overlap
+ * such a run of the other picture's row (beside Mulholland's truss bars a 3-px run in one picture is 2 px in the
+ * other); false if none. */
+static bool edges(const u8 *row, const u8 *other, const u8 *cov, const u8 *road, int n, int *l, int *r)
 {
     *l = -1;
     for (int x = 0; x < 320;) {
-        if (!(cov[x] && is_road(row[x], road, n))) { x++; continue; }
+        if (!road_at(row, cov, road, n, x)) { x++; continue; }
         int e = x;
-        while (e + 1 < 320 && cov[e + 1] && is_road(row[e + 1], road, n)) e++;
-        if (e - x + 1 >= ENH_EDGE_MIN_RUN) { if (*l < 0) *l = x; *r = e; }
+        while (e + 1 < 320 && road_at(row, cov, road, n, e + 1)) e++;
+        bool keep = e - x + 1 >= ENH_EDGE_MIN_RUN;
+        for (int i = x; !keep && i <= e; i++)
+            keep = road_at(other, cov, road, n, i) && long_run_at(other, cov, road, n, i);
+        if (keep) { if (*l < 0) *l = x; *r = e; }
         x = e + 1;
     }
     return *l >= 0;
@@ -40,7 +59,7 @@ void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, 
         for (int x = 0; x < 320; x++)
             if (k[x]) { c.pixels++; if (o[x] != e[x]) c.mismatched++; }
         int ol, or_, el, er;
-        if (edges(o, k, road_colours, n_road, &ol, &or_) && edges(e, k, road_colours, n_road, &el, &er)) {
+        if (edges(o, e, k, road_colours, n_road, &ol, &or_) && edges(e, o, k, road_colours, n_road, &el, &er)) {
             /* An edge is measured only where it is seen: the pixel beyond it covered in both (an edge that runs
              * under the original's foreground, an object or the cockpit, cannot be compared). */
             int l = SDL_min(ol, el), r = SDL_max(or_, er);

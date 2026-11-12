@@ -160,8 +160,8 @@ static void town_walls(const Cam *c, const Row *near_, const Row *far_, int fs)
                 face(xa, xb, yea - 1.0, yeb - 1.0, mpy(c, &rb, Yt), mpy(c, &ra, Yt), COL_STOREY);
             }
         }
-        if (Cn & 4) {                                       /* the side street beyond the corner, to the glass's edge */
-            if (!side) {
+        if ((Cn & 4) && (side ? hspan_shown(xa, 0x13F, 0xF0, 0x13F) : hspan_shown(0xF0, xa, 0xF0, 0x13F))) {
+            if (!side) {                                    /* the side street beyond the corner, to the glass's edge */
                 enh_fill_rect(0, ya - 1, xa + 1, ya, COL_KERB);
                 enh_fill_rect(0, yea, xa + 1, ya - 1, COL_WALL_A);
             } else {
@@ -172,6 +172,8 @@ static void town_walls(const Cam *c, const Row *near_, const Row *far_, int fs)
         if (!(F & 4) || (Fn & 4)) continue;                 /* not where a storey starts */
         double top = side ? 2 * yea - ya : yea - (ya - yea) / 2;
         double depth = xa - xb;                             /* the facade's projected depth, outward */
+        bool shown = side ? hspan_shown(xa + 1, xa + depth, 0xF0, 0x13F) : hspan_shown(xa + depth, xa - 1, 0xF0, 0x13F);
+        if (!shown) continue;                               /* a reversed span off the glass (drv_hspan's ends) */
         if (!side) enh_fill_rect(xa + depth, top, xa, yea, COL_WALL_A);
         else enh_fill_rect(xa + 1, top, xa + depth + 1, yea, COL_WALL_A);
     }

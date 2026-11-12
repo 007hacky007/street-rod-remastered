@@ -1,10 +1,11 @@
 #!/bin/sh
 # Street Rod 2's enhanced race view against the original frame (SR_ENH_COMPARE, src2/enhanced/enh_compare.h):
-# headless drives of each race kind with the demo autopilot (SR_SEED 2), judged mode by mode from the compare
-# log's per-mode lines. An enhanced mode must match (road edges within 1 px in every frame, the median frame
-# within 10 permille of mismatched pixels, the game's row tables, the objects re-projected within 1 px), be on
-# the screen (composed at least once per game frame) and leave the mirror the game's (orig) or draw its glass
-# (enh); a mode not enhanced yet must not be logged at all.
+# headless drives of each race kind with the demo autopilot (SR_SEED 2; Mulholland's bridges SR_SEED 4), judged
+# mode by mode from the compare log's per-mode lines. An enhanced mode must match (road edges within 1 px in every
+# frame, the median frame within 10 permille of mismatched pixels and every frame within 20, the same for the
+# mirror's glass, the game's row tables, the objects re-projected within 1 px), be on the screen (composed at
+# least once per game frame) and leave the mirror the game's (orig) or draw its glass (enh); a mode not enhanced
+# yet must not be logged at all.
 #   test_sr2_enh_compare.sh <streetrod2-enhanced> <SR2 game dir>
 set -u
 exe=$1 dir=$2
@@ -38,13 +39,14 @@ check() {  # check <kind> <mode> <min frames> <orig|enh> [noobj]
         return
     fi
     n=$(field "$s" frames) e=$(field "$s" worst_edge) p=$(field "$s" mismatch_p50) g=$(field "$s" geo_max)
-    o=$(field "$s" obj_max) sh=$(field "$s" shown) mc=$(field "$s" mirror_cov_min)
-    me=$(field "$s" mirror_worst_edge) mp=$(field "$s" mirror_mismatch_p50)
+    o=$(field "$s" obj_max) sh=$(field "$s" shown) mc=$(field "$s" mirror_cov_min) px=$(field "$s" mismatch_max)
+    me=$(field "$s" mirror_worst_edge) mp=$(field "$s" mirror_mismatch_p50) mx=$(field "$s" mirror_mismatch_max)
     ok=1
     [ "$n" -ge "$min" ] && [ "$e" -le 1 ] && [ "$p" -le 10 ] && [ "$g" = 0 ] && [ "$sh" -ge "$n" ] || ok=0
+    [ "$px" -le 20 ] || ok=0     # every frame: a defect in one frame of a few is not in the median
     [ -n "$noobj" ] || [ "$o" -le 1 ] || ok=0
     if [ "$mir" = orig ]; then [ "$mc" = 0 ] || ok=0
-    else [ "$mc" = 1596 ] && [ "$me" -le 1 ] && [ "$mp" -le 10 ] || ok=0; fi
+    else [ "$mc" = 1596 ] && [ "$me" -le 1 ] && [ "$mp" -le 10 ] && [ "$mx" -le 20 ] || ok=0; fi
     if [ "$min" -gt 0 ]; then    # the numbers measured something
         [ "$(frames_with "$k" "$m" edge_rows)" -gt 0 ] || ok=0
         [ "$mir" = orig ] || [ "$(frames_with "$k" "$m" mirror_edge_rows)" -gt 0 ] || ok=0
@@ -79,6 +81,7 @@ run cruise 90
 run drag 90
 run grudge 200
 run mulholland 110
+run bridge 110 mulholland SR_SEED=4     # seed 2's track has no bridge; seed 4's has the ravine and the truss
 run police 110 mulholland SR_DEBUG_POLICE=480
 run aqueduct 80
 wait
@@ -92,6 +95,7 @@ check grudge 2 20 enh
 check grudge 4 20 enh
 check mulholland 0 0 enh
 check mulholland 16 20 enh
+check bridge 16 20 enh
 check police 16 20 enh
 police_in_mirror police
 none aqueduct 8

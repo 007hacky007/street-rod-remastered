@@ -216,8 +216,8 @@ static void town_extras(const Cam *c, const Row *near_, const Row *far_)
     for (int side = 0; side < 2; side++) {
         u16 F = trk(c, side ? TRK_R : TRK_L, n), Fm = trk(c, side ? TRK_R : TRK_L, n - 1);
         double xm = px(c, &rm, x_out(c, &rm, side)), xn = px(c, &rn, x_out(c, &rn, side));
-        if (Cm & 4) {                                       /* the side street beyond the corner */
-            if (!side) {
+        if ((Cm & 4) && (side ? hspan_shown(xm, 0x13F, 0, 0x13F) : hspan_shown(0, xm, 0, 0x13F))) {
+            if (!side) {                                    /* the side street beyond the corner */
                 enh_fill_rect(0, ym - 1, xm, ym, COL_KERB);
                 enh_fill_rect(0, yem, xm, ym - 1, COL_WALL_A);
             } else {
@@ -228,6 +228,10 @@ static void town_extras(const Cam *c, const Row *near_, const Row *far_)
         if (!(F & 4) || (Fm & 4)) continue;                 /* not where a storey starts */
         double top = (F & 8) ? 2 * yem - ym : yem - (ym - yem) / 2;
         double depth = xm - xn;                             /* the façade's projected depth, outward */
+        /* the game's span 2a - b .. a - 1 (left) or b + 1 .. 2b - a (right): reversed where row 0's outer edge
+         * quirk puts the near edge beyond the far one, and then most often rejected */
+        bool shown = side ? hspan_shown(xm + 1, xm + depth, 0, 0x13F) : hspan_shown(xm + depth, xm - 1, 0, 0x13F);
+        if (!shown) continue;
         if (!side) enh_fill_rect(xm + depth, top, xm, yem, COL_WALL_A);
         else enh_fill_rect(xm, top, xm + depth, yem, COL_WALL_A);
     }

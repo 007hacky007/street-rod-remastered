@@ -14,10 +14,12 @@ typedef struct {
     int police, opp_sprite; /* DS_police_state, DS_opp_sprite */
 } EnhCompare;
 #define ENH_EDGE_MIN_RUN 3   /* road-colour runs shorter than this are not the road's edge */
+#define ENH_MISMATCH_BAD 20  /* SR_ENH_COMPARE_DUMP also dumps a frame with more mismatched pixels (permille) */
 
 /* orig, enh: 320-wide rows of palette indices, rows y0..y1; covered: nonzero where the enhanced view replaces
  * the pixel. A row's road edges are the first and the last pixel of its covered runs of road_colours at least
- * ENH_EDGE_MIN_RUN long. Fills rows, edge_rows, edge_err_max, pixels and mismatched (the rest 0). */
+ * ENH_EDGE_MIN_RUN long, or overlapping such a run in the other picture's row. Fills rows, edge_rows,
+ * edge_err_max, pixels and mismatched (the rest 0). */
 void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, int y1, const u8 *road_colours,
                       int n_road, EnhCompare *out);
 

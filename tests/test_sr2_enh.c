@@ -627,6 +627,87 @@ static void sr2_enh_town_face_clipped(void)
     enh_buf_setup();
 }
 
+/* The town's storey end face (town_walls_front: drv_hspan from 2a - b to a - 1 on the left, b + 1 to 2b - a on the
+ * right, a the near row's outer x, b the far row's) where row 0's outer edge quirk puts the near edge beyond the far
+ * one. ega_hline rejects a span by its unsorted ends (x2 < 0 or x1 > 13Fh) before it swaps them, so the game draws
+ * no end face there; the enhanced view must not fill it either (it flashed the town's sky in colour 2). A storey
+ * starts at segment s (F & 4, not at s - 1): the end face is the only difference between F[s - 1] 0 and 4. Row 0's
+ * band is s 51; the control, an end face drawn, is row 1's band (s 52). */
+static int town_end_face_px(const EnhView *v, int side, int s)
+{
+    u16 arr = side ? TRK_R : TRK_L;
+    TRKW(arr, s) = 4;
+    enh_draw_road(v);
+    static u8 with[320 * 200];
+    size_t n = (size_t)enh_buf.w * enh_buf.h;
+    memcpy(with, enh_buf.px, n);
+    TRKW(arr, s - 1) = 4;                               /* the storey started a segment before: no end face */
+    enh_draw_road(v);
+    TRKW(arr, s - 1) = 0;
+    TRKW(arr, s) = 0;
+    int d = 0;                                          /* the end face's colour-2 pixels */
+    for (size_t i = 0; i < n; i++) d += with[i] == 2 && enh_buf.px[i] != 2;
+    return d;
+}
+
+static void sr2_enh_town_end_face_rejected(void)
+{
+    static const u16 arrs[] = { TRK_C, TRK_L, TRK_R, TRK_YAW, TRK_HGT, TRK_BL, TRK_BR };
+    u16 keep[7][30];
+    for (int a = 0; a < 7; a++)
+        for (int i = 0; i < 30; i++) { keep[a][i] = TRKW(arrs[a], 40 + i); TRKW(arrs[a], 40 + i) = 0; }
+    s16 keep_cx = DSS(DS_cam_x), keep_cy = DSS(DS_cam_y), keep_b = DSS(DS_view_bounce_y), keep_mode = DSS(DS_road_mode);
+    DSS(DS_cam_y) = 0x76C;
+    DSS(DS_view_bounce_y) = 0;
+    DSS(DS_road_mode) = 0;
+    EnhOptions keep_opt = enh_opt;
+    enh_opt.res_scale = enh_opt.aa = 1;
+    int bad = 0;
+    for (int exact = 1; exact >= 0; exact--)
+        for (int side = 0; side < 2; side++) {
+            const char *name = exact ? "exact" : "smooth";
+            int found = 0, ctrl = 0;
+            for (int lat = 0; lat <= 0x1A00 && !(found && ctrl); lat += 8) {
+                EnhView v;
+                memset(&v, 0, sizeof v);
+                v.pos = 50.0;
+                v.lat = lat;
+                v.cam_y = 0x76C;
+                v.town = true;
+                v.exact = exact;
+                DSS(DS_cam_x) = (s16)lat;
+                EnhRowTab t;
+                enh_rows_exact_front(&v, &t);
+                for (int k = 0; k < 2; k++) {
+                    int a = side ? t.xor_[k] : t.xol[k], b = side ? t.xor_[k + 1] : t.xol[k + 1];
+                    int x1 = side ? a + 1 : 2 * a - b, x2 = side ? 2 * a - b : a - 1;   /* the game's ends, unsorted */
+                    int lo = x1 < x2 ? x1 : x2, hi = x1 < x2 ? x2 : x1;
+                    bool reversed = x1 > x2, rejected = x2 < 0 || x1 > 0x13F, seen = hi >= 2 && lo <= 0x13D;
+                    if (k == 0 && !found && reversed && rejected && seen) {
+                        int d = town_end_face_px(&v, side, 51);
+                        printf("  %s side %d lat %d: row 0 %d row 1 %d, span %d..%d rejected, %d px drawn (want 0)\n",
+                               name, side, lat, a, b, x1, x2, d);
+                        if (d) bad++;
+                        found = 1;
+                    }
+                    if (k == 1 && !ctrl && !reversed && x1 >= 0 && x2 <= 0x13F && x2 - x1 > 4) {
+                        int d = town_end_face_px(&v, side, 52);
+                        printf("  %s side %d lat %d: row 1's span %d..%d drawn, %d px\n", name, side, lat, x1, x2, d);
+                        if (!d) bad++;
+                        ctrl = 1;
+                    }
+                }
+            }
+            if (!found || !ctrl) { printf("  %s side %d: no lat found (%d %d)\n", name, side, found, ctrl); bad++; }
+        }
+    CHECK(bad == 0);
+    enh_opt = keep_opt;
+    enh_buf_setup();
+    for (int a = 0; a < 7; a++)
+        for (int i = 0; i < 30; i++) TRKW(arrs[a], 40 + i) = keep[a][i];
+    DSS(DS_cam_x) = keep_cx; DSS(DS_cam_y) = keep_cy; DSS(DS_view_bounce_y) = keep_b; DSS(DS_road_mode) = keep_mode;
+}
+
 /* road_draw_sky's top_band_row: from row 14 to row 1, the row whose y is the first strictly above all after it
  * (and above the horizon strip's bottom). */
 static void sr2_enh_top_band_row(void)
@@ -1138,6 +1219,22 @@ static void sr2_enh_compare_rows(void)
     orig[4 * 320 + 150] = orig[4 * 320 + 151] = enh[4 * 320 + 150] = enh[4 * 320 + 151] = 8;
     enh_compare_rows(orig, enh, cov, 0, 10, road, 1, &c);
     CHECK(c.edge_rows == 9 && c.edge_err_max == 0);
+
+    /* Mulholland's truss over the bridge's road (colour 10 bars, SR_SEED 4): the last road run between the bars is
+     * 3 px in the original and 2 px in the enhanced view, its right edge 1 px in. A short run that overlaps a run
+     * of ENH_EDGE_MIN_RUN or more in the other picture is still the road: the edge is 1 px off, not the next bar's
+     * run 20 px in. */
+    for (int y = 0; y < 10; y++) { road_row(orig + y * 320, 100, 200); road_row(enh + y * 320, 100, 200); }
+    memset(cov, 1, sizeof cov);
+    memset(orig + 3 * 320 + 175, 10, 23);           /* bars 175..197, road 198..200 */
+    memset(enh + 3 * 320 + 175, 10, 23);
+    enh[3 * 320 + 200] = 2;                         /* road 198..199 */
+    enh_compare_rows(orig, enh, cov, 0, 10, road, 1, &c);
+    printf("  truss row: edge_err_max %d (want 1)\n", c.edge_err_max);
+    CHECK(c.edge_rows == 10 && c.edge_err_max == 1);
+    orig[3 * 320 + 199] = orig[3 * 320 + 200] = 2;  /* the original's run only 1 px: the enhanced 2-px run is no edge */
+    enh_compare_rows(orig, enh, cov, 0, 10, road, 1, &c);
+    CHECK(c.edge_err_max == 0);
 }
 
 /* The SKY layer: every pixel written is the sky's, whether its colour changed or not; the background drawn
@@ -1246,6 +1343,7 @@ int main(int argc, char **argv)
     RUN(sr2_enh_proj_exact);
     RUN(sr2_enh_rows_front_row0);
     RUN(sr2_enh_town_face_clipped);
+    RUN(sr2_enh_town_end_face_rejected);
     RUN(sr2_enh_top_band_row);
     RUN(sr2_enh_dash_width);
     RUN(sr2_enh_sky_shift);

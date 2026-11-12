@@ -124,6 +124,11 @@ static inline double mpy(const Cam *c, const Row *r, double Y)
 }
 static inline double mx_out(const Cam *c, int side) { return side ? c->w + 0xCE4 : 0x5DC - c->w; }
 
+/* Whether ega_hline draws drv_hspan's span x1..x2 (the game's ends, in its order) on the clip xmin..xmax: it
+ * rejects a span by its unsorted ends (x2 left of xmin or x1 right of xmax) before it sorts them, so a reversed
+ * span whose ends lie on both sides of the clip is drawn and one off it is not. */
+static inline bool hspan_shown(double x1, double x2, double xmin, double xmax) { return !(x2 < xmin || x1 > xmax); }
+
 /* A wall's or storey's face as the game's quad_fill draws it: x = xa (from ya_top to ya_bot) to xb (yb_top to
  * yb_bot), its last row and column included (poly_fill_pts), unlike the road bands' lines. */
 static inline void face(double xa, double xb, double ya_bot, double yb_bot, double yb_top, double ya_top, u8 col)
