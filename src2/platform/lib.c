@@ -11,6 +11,8 @@
 #include "platform/video.h"
 #include "platform/vga.h"
 #include "modules.h"
+#include "remaster/rm_lib.h"
+#include "remaster/rm_tags.h"
 
 #include <string.h>
 
@@ -239,6 +241,7 @@ FarPtr pic_decode(s16 id, FarPtr dst)
         out(0x3CF, rd8(e.seg, (u16)(e.off + PE_PLANE)));         /* read map select: the parked plane */
     }
     FarPtr src = far_rd(e.seg, (u16)(e.off + PE_PACKED));
+    rm2_pic_hash(pic_index(id) + 1, src, size, rd8(e.seg, (u16)(e.off + PE_PLANE)));   /* ENH: before the unpack overwrites it */
     src.off++;                                                   /* skip the leading BCh */
     u16 n = (u16)(size - 1);
     if (DSS(DS_driver_id) == -2) {
@@ -251,6 +254,10 @@ FarPtr pic_decode(s16 id, FarPtr dst)
     } else {
         /* PORT: the Tandy decoders (3210:005a / 0120 / 023c) and the CGA picture order are not ported. */
         pic_unpack(src, !far_is_null(data) ? data : mask, n, tokens, 0x10);
+    }
+    if (!far_is_null(data)) {                                    /* ENH: remaster tags and art */
+        rm_seed_bitmap(data, (s16)desc_w(dst), (s16)desc_h(dst), (s16)desc_stride(dst), pic_index(id) + 1);
+        rm2_pic_register(pic_index(id) + 1, data, (s16)desc_w(dst), (s16)desc_h(dst), (s16)desc_stride(dst));
     }
     if (rd8(e.seg, (u16)(e.off + PE_PLANE)) != 0xFF) {
         out(0x3C4, 2);

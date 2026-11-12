@@ -82,8 +82,8 @@ static void traits_table() {
     CHECK(wxString(b.program) == "streetrod2-enhanced");
     CHECK(wxString(b.folder) == "Game2");
     CHECK(wxString(b.section) == "Game2");
-    CHECK(b.soundDevice && b.remasteredMusic && b.enhanced && !b.cars && !b.autoDrive && !b.art && !b.gearKeys);
-    CHECK(wxString(b.pictureNote) == "Street Rod 2: the art is original for now.");
+    CHECK(b.soundDevice && b.remasteredMusic && b.enhanced && b.art && !b.cars && !b.autoDrive && !b.gearKeys);
+    CHECK(wxString(b.pictureNote) == "Street Rod 2: a picture the art pack has not redrawn shows the original.");
 }
 
 static void game_from_setting() {
@@ -100,8 +100,9 @@ static void args_sr2_minimal() {
     o.autoDrive = true;
     o.classic = false;
     o.sounds.remasteredMusic = true;
-    const std::vector<wxString> want{"/p/streetrod2-enhanced", "--game-dir", "/g2", "--scale", "3", "--res-scale", "4",
-                                     "--aa", "2", "--town", "on", "--music", "remastered", "v", "adlib"};
+    const std::vector<wxString> want{"/p/streetrod2-enhanced", "--game-dir", "/g2", "--scale", "3", "--remaster-dir",
+                                     "/art", "--res-scale", "4", "--aa", "2", "--town", "on", "--music", "remastered",
+                                     "v", "adlib"};
     CHECK(GameArgs(o) == want);
 }
 
@@ -133,7 +134,17 @@ static void args_sr2_classic() {
     o.classic = true;
     o.remasterDir = "/art";
     auto a = GameArgs(o);
-    CHECK(has(a, "--classic") && !has(a, "--res-scale") && !has(a, "--remaster-dir"));
+    CHECK(has(a, "--classic") && !has(a, "--res-scale") && followed_by(a, "--remaster-dir", "/art"));
+}
+
+static void args_sr2_no_pack_no_dir() {
+    GameOptions o;
+    o.game = Game::SR2;
+    o.program = "/p/streetrod2-enhanced";
+    o.gameDir = "/g2";                             // no pack found: remasterDir stays empty
+    CHECK(!has(GameArgs(o), "--remaster-dir"));
+    o.classic = true;
+    CHECK(!has(GameArgs(o), "--remaster-dir"));
 }
 
 static void args_sr2_original_music() {
@@ -159,5 +170,6 @@ int main() {
     RUN(args_sr2_speaker_switches_volumes);
     RUN(args_sr2_original_music);
     RUN(args_sr2_classic);
+    RUN(args_sr2_no_pack_no_dir);
     return failures != 0;
 }

@@ -5,21 +5,31 @@
 # frame, in the Aqueduct's mode 8 the line metric's black and white lines and sky border instead, the median
 # frame within 10 permille of mismatched pixels and every frame within 20, the same for the mirror's glass, the
 # game's row tables, the objects re-projected within 1 px), be on the screen (composed at least once per game
-# frame) and leave the mirror the game's (orig) or draw its glass (enh).
-#   test_sr2_enh_compare.sh <streetrod2-enhanced> <SR2 game dir>
+# frame) and leave the mirror the game's (orig) or draw its glass (enh). The drag again with an identity art
+# pack (drag_art): the same thresholds, and the compare tool must see palette indices only (its dump paints a
+# sample that is not one magenta, FF00FFh, which the EGA palette does not have).
+#   test_sr2_enh_compare.sh <streetrod2-enhanced> <SR2 game dir> <repo>
 set -u
-exe=$1 dir=$2
+exe=$1 dir=$2 repo=$3
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 cp -R "$dir" "$tmp/game"
 fail=0
 
-run() {  # run <kind> <seconds> [race] [VAR=value ...]: in the background, the log in $tmp/<kind>.cmp; the race
-         # SR_DEBUG_RACE drives is <kind> unless given
-    k=$1 s=$2 race=${3:-$1}
+mkdir -p "$tmp/dump" "$tmp/art_dump"
+SDL_VIDEO_DRIVER=dummy "$exe" --game-dir "$dir" --dump-pictures "$tmp/dump" >/dev/null || { echo "FAIL dump"; exit 1; }
+python3 "$repo/tools/remaster/rm.py" identity-pack "$tmp/pack" "$tmp/dump" >/dev/null || { echo "FAIL identity-pack"; exit 1; }
+
+run() {  # run <kind> <seconds> [race] [VAR=value ...] [-- ARGS ...]: in the background, the log in $tmp/<kind>.cmp;
+         # the race SR_DEBUG_RACE drives is <kind> unless given, ARGS go to the game; drag_art writes compare dumps
+    k=$1 s=$2 race=${3:-$1} envs= dump=
     shift 2; [ $# -gt 0 ] && shift
-    env SDL_VIDEO_DRIVER=dummy SDL_AUDIO_DRIVER=dummy SR_SEED=2 SR_DEBUG_RACE="$race" SR_KEYS=1:03 "$@" \
-        SR_ENH_COMPARE="$tmp/$k.cmp" "$exe" --game-dir "$tmp/game" --run-ms "$s"000 demo v >"$tmp/$k.log" 2>&1 &
+    while [ $# -gt 0 ] && [ "$1" != -- ]; do envs="$envs $1"; shift; done
+    [ $# -gt 0 ] && shift
+    [ "$k" = drag_art ] && dump="$tmp/art_dump"
+    env SDL_VIDEO_DRIVER=dummy SDL_AUDIO_DRIVER=dummy SR_SEED=2 SR_DEBUG_RACE="$race" SR_KEYS=1:03 $envs \
+        SR_ENH_COMPARE="$tmp/$k.cmp" SR_ENH_COMPARE_DUMP="$dump" "$exe" --game-dir "$tmp/game" "$@" \
+        --run-ms "$s"000 demo v >"$tmp/$k.log" 2>&1 &
 }
 
 field() { echo "$1" | awk -v k="$2" '{ for (i = 1; i < NF; i++) if ($i == k) { print $(i + 1); exit } }'; }
@@ -119,6 +129,7 @@ kept() {  # kept <kind> <mode>: the mode's last frame line still has the bounce'
 
 run cruise 90
 run drag 90
+run drag_art 90 drag -- --remaster-dir "$tmp/pack"
 run grudge 200
 run mulholland 110
 run bridge 110 mulholland SR_SEED=4     # seed 2's track has no bridge; seed 4's has the ravine and the truss
@@ -131,6 +142,7 @@ wait
 check cruise 0 20 enh
 check drag 1 20 enh
 check drag 0 0 enh
+check drag_art 1 20 enh
 check grudge 0 20 enh        # the location-4 routes, there and back
 after grudge 0 4 20
 check grudge 2 20 enh
@@ -148,4 +160,17 @@ bounced aqwall 8 8
 steep aqwall 8 1
 kept aqwall 8
 check aqueduct 0 0 enh
+python3 -I -c '
+import glob, sys
+from PIL import Image
+files = sorted(glob.glob(sys.argv[1] + "/cmp*.bmp"))
+bad = 0
+for f in files:
+    im = Image.open(f).convert("RGB")
+    w, h = im.size
+    bad += sum(1 for p in im.crop((w // 2, 0, w, h)).getdata() if p == (255, 0, 255))
+print("  %d compare dumps, %d magenta pixels" % (len(files), bad))
+sys.exit(0 if files and not bad else 1)
+' "$tmp/art_dump"
+if [ $? = 0 ]; then echo "ok   drag_art indices"; else echo "FAIL drag_art indices"; fail=1; fi
 exit $fail

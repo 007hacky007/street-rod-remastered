@@ -11,6 +11,7 @@
  * PORT: the Tandy helpers (0e6c:0002/00c1, 2462, 2487, 24be, 24d8) are not ported (VGA path only). */
 #include "platform/vga.h"
 #include "platform/video.h"
+#include "remaster/rm_tags.h"
 
 /* ======================================================================= pointer (§4.7, §4.10) */
 
@@ -23,6 +24,7 @@ void ega_draw_cursor(FarPtr img, FarPtr mask, FarPtr save, FarPtr scr, s16 xb, s
     u16 s = img.off, m = mask.off, v = save.off;
     out(0x3CE, 5); out(0x3CF, 0);                              /* write mode 0 */
     out(0x3CE, 8);                                             /* GC index 8 from here on */
+    rm_suspend();                                              /* ENH: remaster tags set below */
     u16 rows16 = (u16)rows;
     for (;;) {
         u16 n = (u16)wb;                                       /* loop: wb = 0 runs 65536 times */
@@ -30,8 +32,10 @@ void ega_draw_cursor(FarPtr img, FarPtr mask, FarPtr save, FarPtr scr, s16 xb, s
             out(0x3CF, 0);                                     /* bit mask 0 */
             out(0x3C5, 0x0F);
             vwr(save.seg, v, vrd(scr.seg, o));                 /* stores the 4 latched planes */
+            rm_copy_bits(save.seg, v, scr.seg, o, 0xFF);
             v++;
             out(0x3CF, vrd(img.seg, m));                       /* bit mask = pointer mask */
+            rm_masked_byte(scr.seg, o, img.seg, s, (u8)~vrd(img.seg, m));
             m++;
             out(0x3C5, 1); vwr(scr.seg, o, vrd(img.seg, s));
             out(0x3C5, 2); vwr(scr.seg, o, vrd(img.seg, (u16)(s + 0x480)));
@@ -46,6 +50,7 @@ void ega_draw_cursor(FarPtr img, FarPtr mask, FarPtr save, FarPtr scr, s16 xb, s
         v = (u16)(v + 3 - wb);
         o = (u16)(o + 0x28 - wb);
     }
+    rm_resume();
     out(0x3C5, 0x0F);
     out(0x3CF, 0xFF);
 }
@@ -146,49 +151,59 @@ void ega_latch_copy_to40(FarPtr s, s16 wb, s16 h, FarPtr d, s16 sstride)
 void rows_composite(FarPtr d, u16 seg, u16 s, u16 m, u16 bg, s16 sstr, s16 wb, s16 h, s16 bgstr, s16 dstr)
 {
     if (h <= 0 || wb <= 0) return;
+    rm_suspend();                                             /* ENH: remaster tags set per byte */
     u16 cx = (u16)h;
     do {
         for (s16 i = (s16)(wb - 2); i >= (wb & 1); i -= 2) {
-            u16 ax = vrd16(seg, (u16)(m + i));
+            u16 mk = vrd16(seg, (u16)(m + i)), ax = mk;
             ax &= vrd16(seg, (u16)(bg + i));
             ax |= vrd16(seg, (u16)(s + i));
             vwr16(d.seg, (u16)(d.off + i), ax);
+            rm_composite_byte(d.seg, (u16)(d.off + i), seg, (u16)(s + i), seg, (u16)(bg + i), (u8)mk);
+            rm_composite_byte(d.seg, (u16)(d.off + i + 1), seg, (u16)(s + i + 1), seg, (u16)(bg + i + 1), (u8)(mk >> 8));
         }
         if (wb & 1) {
-            u8 al = vrd(seg, m);
+            u8 mk = vrd(seg, m), al = mk;
             al &= vrd(seg, bg);
             al |= vrd(seg, s);
             vwr(d.seg, d.off, al);
+            rm_composite_byte(d.seg, d.off, seg, s, seg, bg, mk);
         }
         s = (u16)(s + sstr);
         m = (u16)(m + sstr);
         bg = (u16)(bg + bgstr);
         d.off = (u16)(d.off + dstr);
     } while (--cx);
+    rm_resume();
 }
 
 /* 3345:000c — one plane: dst = (mask & dst) | src, same unrolled order as 32a5:0002 */
 void rows_mask_or(FarPtr d, u16 seg, u16 s, u16 m, s16 sstr, s16 wb, s16 h, s16 dstr)
 {
     if (h <= 0 || wb <= 0) return;
+    rm_suspend();                                             /* ENH: remaster tags set per byte */
     u16 cx = (u16)h;
     do {
         for (s16 i = (s16)(wb - 2); i >= (wb & 1); i -= 2) {
-            u16 ax = vrd16(seg, (u16)(m + i));
+            u16 mk = vrd16(seg, (u16)(m + i)), ax = mk;
             ax &= vrd16(d.seg, (u16)(d.off + i));             /* loads the latches */
             ax |= vrd16(seg, (u16)(s + i));
             vwr16(d.seg, (u16)(d.off + i), ax);
+            rm_masked_byte(d.seg, (u16)(d.off + i), seg, (u16)(s + i), (u8)mk);
+            rm_masked_byte(d.seg, (u16)(d.off + i + 1), seg, (u16)(s + i + 1), (u8)(mk >> 8));
         }
         if (wb & 1) {
-            u8 al = vrd(seg, m);
+            u8 mk = vrd(seg, m), al = mk;
             al &= vrd(d.seg, d.off);
             al |= vrd(seg, s);
             vwr(d.seg, d.off, al);
+            rm_masked_byte(d.seg, d.off, seg, s, mk);
         }
         s = (u16)(s + sstr);
         m = (u16)(m + sstr);
         d.off = (u16)(d.off + dstr);
     } while (--cx);
+    rm_resume();
 }
 
 /* 33e5:0002 — one plane: dst = (dst & mask) | (src & ~mask), left to right. Row counter = low byte
@@ -205,6 +220,7 @@ void rows_mask_blend(FarPtr d, u16 seg, u16 s, u16 m, s16 sstr, s16 wb, s16 h, s
     u16 dadd = (u16)(((u16)dstr & 0xFF00) | (u8)((u8)dstr - ch));
     u8 words = (u8)(ch >> 1);                                 /* cs:[2Ah] */
     u16 bp = m, si = s, di = d.off;
+    rm_suspend();                                             /* ENH: remaster tags set per byte */
     do {
         u8 n = words;
         if (n != 0) {
@@ -216,6 +232,9 @@ void rows_mask_blend(FarPtr d, u16 seg, u16 s, u16 m, s16 sstr, s16 wb, s16 h, s
                 ax &= vrd16(seg, si);
                 ax |= bx;
                 vwr16(d.seg, di, ax);
+                u16 mk = vrd16(seg, bp);
+                rm_masked_byte(d.seg, di, seg, si, (u8)mk);
+                rm_masked_byte(d.seg, (u16)(di + 1), seg, (u16)(si + 1), (u8)(mk >> 8));
                 bp = (u16)(bp + 2); si = (u16)(si + 2); di = (u16)(di + 2);
             } while (--n);
         }
@@ -227,11 +246,13 @@ void rows_mask_blend(FarPtr d, u16 seg, u16 s, u16 m, s16 sstr, s16 wb, s16 h, s
             al &= vrd(seg, si);
             al |= bl;
             vwr(d.seg, di, al);
+            rm_masked_byte(d.seg, di, seg, si, vrd(seg, bp));
         }
         bp = (u16)(bp + sadd);
         si = (u16)(si + sadd);
         di = (u16)(di + dadd);
     } while (--cl);
+    rm_resume();
 }
 
 /* 33e5:00b9 — mask = ~(p0 | p1 | p2 | p3), n = total / 4 bytes per plane (odd byte first, then words;

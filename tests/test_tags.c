@@ -1,4 +1,4 @@
-/* test_tags.c -- the remaster's per-pixel tags (src/remaster/rm_tags.c) through the VGA model and the
+/* test_tags.c -- the remaster's per-pixel tags (common/remaster/rm_tags.c) through the VGA model and the
  * blit helpers. */
 #include <stdio.h>
 #include <string.h>

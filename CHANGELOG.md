@@ -17,6 +17,10 @@
   night sky with the stars and clouds, the wall bounce) at high resolution, with smooth motion and anti-aliasing
   (`--classic`, `--res-scale`, `--aa`, `--motion-delay`, `--town`, as Street Rod 1), and the rear-view mirror
   in each of them, its quirks kept. The dashboard's side mirror stays the original's.
+- Remastered pictures for Street Rod 2 (`--remaster-dir`, the launcher's **Art**, with its own choice for each
+  game): the same art pack, in the classic picture and in the enhanced race view. Of its 297 pictures, 48 are
+  Street Rod 1's own and 40 of those already show remastered; the other 249 show the original until the art
+  pack has them.
 - The host is shared by both games (`common/`); Street Rod 1's compiled game code is unchanged.
 
 ## 0.4.2

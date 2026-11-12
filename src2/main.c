@@ -6,11 +6,14 @@
  *   --fullscreen  start in full screen (Alt+Enter switches)
  *   --check       load and verify the original executable, print a summary and exit (no window)
  *   --run-ms N    developer aid: exit after N ms (headless snapshot runs)
+ *   --dump-pictures DIR  ENH: write every picture of LIB1/LIB2/LIB3 to DIR for the remaster and exit (no window)
+ *   --remaster-dir DIR   ENH: show the remastered pictures of the art pack in DIR (output scale 4 even with
+ *                        --classic, unless --res-scale is given)
  *   --music-volume N  ENH: volume of the music, percent 0..100 (default 100)
  *   --sfx-volume N    ENH: volume of the sound effects and the engine, 0..100 (default 100)
  *   --music original|remastered  ENH: the music as the game plays it (default), or played by a small band
  *   --classic        ENH: the original's race picture only (else the enhanced race view, ENHANCED.md)
- *   --res-scale N    ENH: the picture is 320x200 times N, 1..8 (default 4; 1 with --classic)
+ *   --res-scale N    ENH: the picture is 320x200 times N, 1..8 (default 4; 1 with --classic and no art pack)
  *   --aa N           ENH: anti-aliasing of the enhanced view, N x N samples per pixel, 1..4 (default 2)
  *   --motion-delay P ENH: how far the smooth view runs behind the game, percent of a frame (default 100)
  *   --town on|off    ENH: the drives through town enhanced too (default on)
@@ -29,13 +32,15 @@
 #include "mem.h"
 #include "platform/ega.h"
 #include "enhanced/enhanced.h"
+#include "remaster/rm_dump.h"
+#include "remaster/rm_pack.h"
 #include "sound/band.h"
 
 #define APP_TITLE "Street Rod 2 Enhanced"
 
 static int usage(const char *prog)
 {
-    fprintf(stderr, "usage: %s [--game-dir DIR] [--scale N] [--fullscreen] [--check] [--run-ms N] "
+    fprintf(stderr, "usage: %s [--game-dir DIR] [--scale N] [--fullscreen] [--check] [--run-ms N] [--dump-pictures DIR] [--remaster-dir DIR] "
                     "[--music-volume N] [--sfx-volume N] [--music original|remastered] "
                     "[--classic] [--res-scale N] [--aa N] [--motion-delay P] [--town on|off] "
                     "[1] [nomouse] [demo] [nouemem] [e|c|v|h|t] [adlib|speaker]\n", prog);
@@ -61,6 +66,7 @@ int main(int argc, char **argv)
     game_argv[game_argc++] = argv[0];
     int scale = 3;
     bool check = false, fullscreen = false;
+    const char *dump_dir = NULL, *remaster_dir = NULL;           /* ENH: the remaster's picture dump, art pack */
     int music_volume = 100, sfx_volume = 100;
     bool band = false;
     bool classic = false, town = true;                           /* ENH: the enhanced race view */
@@ -72,6 +78,8 @@ int main(int argc, char **argv)
         else if (!strcmp(a, "--run-ms") && v) { game_run_ms = atoi(v); i++; }
         else if (!strcmp(a, "--fullscreen")) fullscreen = true;
         else if (!strcmp(a, "--check")) check = true;
+        else if (!strcmp(a, "--dump-pictures") && v) { dump_dir = v; i++; }          /* ENH */
+        else if (!strcmp(a, "--remaster-dir") && v) { remaster_dir = v; i++; }       /* ENH */
         else if (!strcmp(a, "--music-volume") && v) { music_volume = atoi(v); i++; }   /* ENH */
         else if (!strcmp(a, "--sfx-volume") && v) { sfx_volume = atoi(v); i++; }       /* ENH */
         else if (!strcmp(a, "--music") && v && (!strcmp(v, "original") || !strcmp(v, "remastered"))) {   /* ENH */
@@ -98,8 +106,15 @@ int main(int argc, char **argv)
         printf("%s ok: image %u bytes at %04X:0000, DGROUP %04X\n", SR_EXE_NAME, mem_image_size, LOAD_SEG, DGROUP);
         return 0;
     }
+    if (dump_dir) {                                              /* ENH */
+        int n = rm_dump_pictures(dir, dump_dir);
+        if (n < 0) return 1;
+        printf("%d pictures written to %s\n", n, dump_dir);
+        return 0;
+    }
 
-    if (res_scale < 0) res_scale = classic ? 1 : ENH_DEFAULT_RES_SCALE;   /* ENH: as Street Rod 1 without art */
+    if (remaster_dir && !rm_pack_open(remaster_dir)) remaster_dir = NULL;   /* ENH: runs as without it */
+    if (res_scale < 0) res_scale = classic && !remaster_dir ? 1 : ENH_DEFAULT_RES_SCALE;   /* ENH: as Street Rod 1 */
     enh_init(!classic, res_scale, aa, motion_delay, town);
     host_configure(&(HostConfig){ APP_TITLE, 49716, true });   /* ENH: the shared host (common/host.h) */
     if (!host_init(dir, scale, fullscreen)) return 1;
@@ -108,5 +123,6 @@ int main(int argc, char **argv)
         fprintf(stderr, "remastered music: the PC speaker tune was not found\n");
     ega_init();                     /* 16-colour planar display: frame source, planes */
     game_argv[game_argc] = NULL;
+    atexit(rm_pack_report);                                      /* ENH: the remaster's self-test line */
     return game_main(game_argc, game_argv);     /* the original's switches (1, nomouse, demo, nouemem, e c v h t) are read there */
 }

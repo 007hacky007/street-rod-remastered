@@ -38,8 +38,20 @@ What differs from upstream:
   `road_page_flip`: presented), `race_aq.c` (`aq_draw_front`: `enh_aq_begin`, the Aqueduct's frame, its roll
   and pivot; its stars, clouds, the rows' shapes, the opponent, the mirror's starter figure and the mirror's
   stars tagged by their id) and `race_phys.c` (the physics step); the written / foreground / object / SKY
-  layers in `platform/ega.c` and `vga.c`; the options in `main.c`. `src2/remaster/` holds stand-ins until
-  Street Rod 2 has remastered pictures.
+  layers in `platform/ega.c` and `vga.c`; the options in `main.c`.
+* The remastered pictures (REMASTER.md), `--remaster-dir DIR` (the art pack; without it, or when `DIR/pack.json`
+  cannot be read, the game runs as the original; with it the output scale is 4 even with `--classic`, unless
+  `--res-scale` is given). The core (tags, art pack, colour) is Street Rod 1's, built from `common/remaster`.
+  The tags follow the pixels through the same hooks as in Street Rod 1: `vga.c` (`vga_rd`, `vga_wr`,
+  `vmovedata`), the RAM accessors of `vga.h`, `blit.c`, `drv_ega.c`, `gfx.c` and `garage_draw.c` (the ground
+  fill's holes). `lib.c` `pic_decode` seeds each decoded picture as slot `pic_index(id) + 1` and
+  `src2/remaster/rm_lib.c` gives it its key: SR2 unpacks a picture over its own packed bytes, so the SHA-1 is
+  taken before the unpack (a picture parked in VRAM is read from its plane directly, no latch side effects)
+  and the picture is registered after it. `ega_compose` draws the art (`rm_compose`) before the enhanced view.
+  `src2/remaster/rm_dump.c` is Street Rod 2's picture dump (`--dump-pictures DIR`: LIB1, LIB2, LIB3 in Street
+  Rod 1's dump format). Developer aids with a pack (`common/remaster/rm_pack.h`): `SR_REMASTER_SELFTEST`,
+  `SR_REMASTER_PALETTE_LOG`, `SR_REMASTER_TAGMAP` (+ `SR_REMASTER_TAGMAP_N`); tests `sr2_tags`, `sr2_identity`,
+  `sr2_marker`.
 * Deliberate changes are marked `ENH:`, port fixes `PORT:` (as upstream marks its own).
 
 Developer aids kept from upstream: `SR_TRACE`, `SR_KEYS`, `SR_DEBUG_RACE`, `SR_DEBUG_END`, `SR_DEBUG_OPP`,

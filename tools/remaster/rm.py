@@ -17,9 +17,9 @@ from rmlib.repair import find_offset, hue_lock, splice, tiles_of  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
-ART = os.path.join(REPO, 'remaster-art')
+ART = os.environ.get('SRE_REMASTER_ART') or os.path.join(REPO, 'remaster-art')   # a worktree has none of its own
 CATALOG = os.path.join(HERE, 'catalog.json')
-DUMPS = [os.path.join(ART, 'dump', 'main'), os.path.join(ART, 'dump', 'datadisk')]
+DUMPS = [os.path.join(ART, 'dump', g) for g in ('main', 'datadisk', 'sr2')]
 MIN_SCORE = 0.3
 
 
@@ -46,18 +46,7 @@ def cmd_palettes(logs):
     known.pop('default', None)
     records = [json.loads(line) for log in logs for line in open(log) if line.strip()]
     out = palettes_lib.merge(known, records)
-    cat, by_id = load_catalog(), {}
-    for k, e in cat.items():                    # pictures never seen: the palette of a sibling (catalogue pal_like)
-        for g, ids in e['ids'].items():
-            for i in ids:
-                by_id[(g, i)] = k
-    for k, e in cat.items():
-        like = e.get('pal_like')
-        if like and k not in out:
-            g = 'main' if 'main' in e['ids'] else 'datadisk'
-            src = by_id.get((g, like))
-            if src in out:
-                out[k] = out[src]
+    palettes_lib.fill_like(out, load_catalog())  # pictures never seen: the palette of a sibling (pal_like)
     common = collections.Counter(tuple(v) for v in out.values()).most_common(1)
     if common:
         out['default'] = list(common[0][0])
@@ -100,7 +89,7 @@ def cmd_ingest(name, result, again=False):
         ref = jobs.palette_of(s, pal)
         orig = jobs.picture_rgb(p, ref)
         x, y, w, h = cell['rect']
-        rect = register(orig, res[..., :3], (x * sx, y * sy, w * sx, h * sy))
+        rect = register(jobs.target_rgb(p, ref), res[..., :3], (x * sx, y * sy, w * sx, h * sy))
         ok, why = rect[4] >= MIN_SCORE, [] if rect[4] >= MIN_SCORE else ['not found (score %.2f)' % rect[4]]
         rgba, ix = cleanup(p.idx, p.transparent, res, rect[:4], ref)
         if ok:
@@ -114,9 +103,7 @@ def cmd_ingest(name, result, again=False):
         rows.append((orig, rgba, why))
     review_sheet(name, rows)
     if again:                                    # an earlier result again: not a new try
-        j = pr.jobs[name]
-        j['status'], j['reasons'] = ('done' if all_ok else j['status']), reasons
-        pr.save()
+        pr.settle(name, all_ok, reasons)
     else:
         pr.result(name, all_ok, reasons)
     print(name, 'ok' if all_ok else 'FAILED', pr.jobs[name]['status'])
@@ -174,11 +161,8 @@ def cmd_repair(name, only=None, whole=False):
         reasons += ['%s: %s' % (s[:8], r) for r in m['reasons']]
         rows.append((jobs.picture_rgb(p, ref), rgba, m['reasons']))
     review_sheet(name, rows)
-    j = pr.jobs[name]
-    j['reasons'] = reasons
-    j['status'] = 'done' if all_ok else 'attention'
-    pr.save()
-    print(name, 'repaired' if all_ok else 'still failing', j['status'])
+    pr.settle(name, all_ok, reasons)
+    print(name, 'repaired' if all_ok else 'still failing', pr.jobs[name]['status'])
     for r in reasons[:12]:
         print('  ', r)
 
@@ -338,13 +322,18 @@ def main():
     sp.add_argument('--common', action='store_true', help="not near the scene's own figure (two frames differ from the scene there)")
     sp.add_argument('--margin', type=int, default=0, help="with --common: keep this far from the scene's own figure")
     sp.add_argument('--max-diff', type=float, default=None, help='only where the two drawings agree (mean RGB difference)')
+    sub.add_parser('retry', help='a job set aside back in the queue for one more generation').add_argument('name')
     sub.add_parser('reindex', help='texel indices again from the art as it is (after repairs)')
     sub.add_parser('pack').add_argument('out')
     sub.add_parser('status')
     a = ap.parse_args()
     if a.cmd == 'catalog':
-        cat = catalog.merge(CATALOG, [tuple(d.split('=', 1)) for d in a.dumps])
+        dumps = [tuple(d.split('=', 1)) for d in a.dumps]
+        cat = catalog.merge(CATALOG, dumps)
         print(len(cat), 'pictures')
+        for game, _ in dumps:
+            t, s, o = catalog.overlap(cat, game)
+            print('%s: %d pictures, %d also in other games, %d only in %s' % (game, t, s, o, game))
     elif a.cmd == 'identity-pack':
         print(pack.identity_pack(a.dumps, a.out), 'pictures')
     elif a.cmd == 'marker-pack':
@@ -359,6 +348,9 @@ def main():
         cmd_job(a.name)
     elif a.cmd == 'next':
         print(progress().next() or '')
+    elif a.cmd == 'retry':
+        progress().retry(a.name)
+        print(a.name, 'failed, one more try')
     elif a.cmd == 'reindex':
         cmd_reindex()
     elif a.cmd == 'ingest':

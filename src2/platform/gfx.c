@@ -12,6 +12,7 @@
 #include "platform/platform.h"
 #include "platform/vga.h"
 #include "platform/video.h"
+#include "remaster/rm_tags.h"
 
 static inline u16 x_align(void) { return DSW(DS_g_x_align); }       /* FFF8h */
 static inline u8  px_shift(void) { return (u8)DSW(DS_g_px_shift); } /* cl = byte [823A] */
@@ -526,7 +527,9 @@ FarPtr bitmap_make_shifted(FarPtr s, s16 shift, FarPtr d)
     u16 stride = desc_stride(s);
 
     if (shift <= 0) {
+        rm_copy_begin();                         /* ENH: a copy carries the remaster tags */
         bitmap_copy_into(s, d, has_mask(s) ? 3 : 1);
+        rm_copy_end();
         return d;
     }
 
@@ -544,6 +547,19 @@ FarPtr bitmap_make_shifted(FarPtr s, s16 shift, FarPtr d)
     FarPtr dp = desc_planes(nd);
     FarPtr sp = desc_planes(s);
     s16 rows = (s16)(h * (s16)DSW(DS_g_nplanes));
+    if (rm_tags_on() && rows > 0) {              /* ENH: remaster tags: pixel x lands on x + sh7 */
+        u16 dstride = desc_stride(nd);
+        for (u16 r = 0; r < (u16)rows; r++) {
+            u16 so = (u16)(sp.off + r * stride), dof = (u16)(dp.off + r * dstride);
+            for (int x = 0; x < sh7; x++) rm_clear_px(dp.seg, dof, 7 - x);
+            for (int x = 0; x < (int)stride * 8; x++) {
+                int t = x + sh7;
+                if (t >= (int)dstride * 8) break;
+                rm_copy_px(dp.seg, (u16)(dof + t / 8), 7 - (t & 7), sp.seg, (u16)(so + x / 8), 7 - (x & 7));
+            }
+        }
+    }
+    rm_suspend();
     if (rows > 0) {
         for (u16 r = (u16)rows; r; r--) {
             u8 carry = 0;
@@ -562,6 +578,7 @@ FarPtr bitmap_make_shifted(FarPtr s, s16 shift, FarPtr d)
             }
         }
     }
+    rm_resume();
 
     if (!has_mask(s)) return nd;
     FarPtr dm = desc_mask(nd);
@@ -666,9 +683,12 @@ void bitmap_composite_behind(FarPtr s, FarPtr d, s16 x, s16 y)
                     if ((s16)sstride > 0) {
                         for (u16 n = sstride; n; n--) {
                             u8 al = (u8)~vrdp(sm);
+                            rm_suspend();                /* ENH: remaster tags: s shows where d is clear */
+                            rm_copy_bits(dp.seg, dp.off, sp.seg, sp.off, (u8)(al & vrdp(dm)));
                             al &= vrdp(sp);
                             al &= vrdp(dm);
                             vwrp(dp, (u8)(vrdp(dp) | al));
+                            rm_resume();
                             dm.off++; sp.off++; sm.off++; dp.off++;
                         }
                     }

@@ -20,6 +20,8 @@
 #include "enhanced/enhanced.h"
 #include "enhanced/enh_geo2.h"
 #include "enhanced/enh_aq2.h"
+#include "remaster/rm_pack.h"
+#include "remaster/rm_tags.h"
 
 #include <limits.h>
 #include <stdlib.h>
@@ -87,9 +89,11 @@ double enh_dash_width(int k, double q, bool exact)
 /* ---------------------------------------------------------------- sky and horizon */
 
 static u8 src_rows[0xC8][320];     /* page 1 rows 66h..C7h: the sky and horizon sheets */
+static RmTag src_tags[0xC8][320];  /* ENH: their remaster tags (verified), 0 = original */
 
 void enh_sheets_read(void)
 {
+    bool rm = rm_pack_active();
     for (int y = 0x66; y < 0xC8; y++) {
         u16 o = (u16)(0x2000 + y * EGA_BYTES_PER_LINE);
         for (int x = 0; x < 320; x++) {
@@ -97,22 +101,40 @@ void enh_sheets_read(void)
             int bit = 7 - (x & 7), c = 0;
             for (int k = 0; k < 4; k++) c |= (ega_plane(k)[b] >> bit & 1) << k;
             src_rows[y][x] = (u8)c;
+            RmTag t = rm ? rm_vtag(b, bit) : 0;
+            RmPic *p = t ? rm_pic(rm_tag_slot(t)) : NULL;
+            if (p && (rm_tag_u(t) >= p->w || rm_tag_v(t) >= p->h || p->orig[rm_tag_v(t) * p->w + rm_tag_u(t)] != c)) p = NULL;
+            src_tags[y][x] = p ? t : 0;
         }
     }
 }
 
+/* one sample row from sheet row syf (fraction: the row within the remastered art), scrolled so that screen
+ * x shows sheet column x - shift */
 void enh_sheet_row(int j, double syf, double shift)
 {
     EnhBuf *b = &enh_buf;
-    int sy = (int)floor(syf);
+    int sy = (int)floor(syf), fv = (int)((syf - floor(syf)) * RM_ART_SCALE);
     if (sy < 0x66) sy = 0x66;
     if (sy > 0xC7) sy = 0xC7;
     u8 *out = b->px + (size_t)j * b->w;
+    u32 *orgb = b->rgb && enh_cur_rgb ? b->rgb + (size_t)j * b->w : NULL;   /* ENH: remastered art */
+    int st_mode = orgb ? rm_selftest() : 0;
     for (int i = 0; i < b->w; i++) {
         double x = (i + 0.5) / b->sa - shift;
         int col = (int)floor(x) % 320;
         if (col < 0) col += 320;
         out[i] = src_rows[sy][col];
+        RmTag t = orgb ? src_tags[sy][col] : 0;
+        if (!t) continue;
+        int a, fu = (int)((x - floor(x)) * RM_ART_SCALE);
+        u32 c = rm_texel(rm_pic(rm_tag_slot(t)), rm_tag_u(t) * RM_ART_SCALE + fu, rm_tag_v(t) * RM_ART_SCALE + fv,
+                         enh_cur_rgb, &a);
+        if (st_mode) rm_selftest_race(a < 128 || c != enh_cur_rgb[src_rows[sy][col]]);
+        if (a < 128) continue;
+        if (st_mode == 2) c = (c >> 1 & 0x7F7F7F) + 0x400060;
+        out[i] = ENH_RGB;
+        orgb[i] = c;
     }
 }
 

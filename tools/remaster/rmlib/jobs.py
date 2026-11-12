@@ -40,6 +40,15 @@ def picture_rgb(p, pal):
     return P[p.idx]
 
 
+def target_rgb(p, pal):
+    """The picture as the job's input shows it: transparent pixels in the key colour."""
+    rgb = picture_rgb(p, pal)
+    if p.masked:
+        rgb = rgb.copy()
+        rgb[p.transparent] = KEY
+    return rgb
+
+
 def build(name, sha1s, catalog, dumps, palettes, out):
     pics = unique_pictures(dumps)
     d = os.path.join(out, name)

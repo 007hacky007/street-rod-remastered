@@ -32,3 +32,17 @@ class Progress:
         j['reasons'] = list(reasons)
         j['status'] = 'done' if ok else ('attention' if j['tries'] >= MAX_TRIES else 'failed')
         self.save()
+
+    def settle(self, name, ok, reasons=()):
+        """The checks again on the same result (a repair, an earlier result ingested again): no new try."""
+        j = self.jobs[name]
+        j['reasons'] = list(reasons)
+        j['status'] = 'done' if ok else ('attention' if j['tries'] >= MAX_TRIES else 'failed')
+        self.save()
+
+    def retry(self, name):
+        """A job set aside (or rejected after review) back in the queue for one more generation."""
+        j = self.jobs[name]
+        j['tries'] = min(j['tries'], MAX_TRIES - 1)
+        j['status'] = 'failed'
+        self.save()

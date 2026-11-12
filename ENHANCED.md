@@ -314,6 +314,15 @@ shapes.
   `aq_draw_row_shape`'s own anchor), turned by the change of its angle, the view's roll or, for the opponent, its
   bank. The opponent's pre-rotated pictures (`opp_bank_variant`) still change where the game changes them; that
   pop is the original's and is accepted.
+* **Remastered art** (with `--remaster-dir`): Street Rod 1's enhanced view draws road-side pictures and opponents
+  from their source bitmaps; Street Rod 2's captures what the game drew into the page, so the art comes through
+  the VRAM tags of the captured pixels, each kept only where its picture has art and the tag's original colour
+  is the pixel's (as `attach_art`). The sky and horizon sheets (`enh_sheets_read` / `enh_sheet_row`, also
+  Mulholland's backdrop) and the cut objects drawn at their picture's own size (location signs, billboards, the
+  start props, the nearest opponent and police views; `capture_objects` keeps their tags in `EnhImage.rm`, taken
+  anew at each capture) show the art. Pixels from shrunk bitmaps carry no tags and stay the original's, and so do
+  the Aqueduct's turned cuts (`enh_draw_image_xf`) and everything drawn as geometry. The check draws palette
+  indices only (`enh_cur_rgb` off while it draws).
 * **Check** (`enh_compare.c`): `SR_ENH_COMPARE=<file>` draws every enhanced frame again at scale 1, aa 1, from that
   frame's state without interpolation and with the game's integer rounding (the sky scrolled as `sky_scroll`
   does), and compares it with the page shown, for the front view and for the mirror's glass apart. It measures

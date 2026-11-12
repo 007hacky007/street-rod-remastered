@@ -1,5 +1,5 @@
 """Repairs for pictures that keep failing: the hue lock recolours texels to the hue of the original colour
-they belong to, keeping their shading (the engine's palette-relative rule, src/remaster/rm_color.c)."""
+they belong to, keeping their shading (the engine's palette-relative rule, common/remaster/rm_color.c)."""
 import re
 import numpy as np
 
