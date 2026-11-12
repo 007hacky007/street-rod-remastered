@@ -10,3 +10,4 @@ build*/
 __pycache__/
 /dist/
 /remaster-art/
+.worktrees/
