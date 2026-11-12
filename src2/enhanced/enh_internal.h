@@ -150,14 +150,16 @@ void enh_hill_consts(int row, s16 *w0, s16 *h0, s16 *w1, s16 *h1, s16 *e);
 bool enh_rail_post(int phase, int row, int seg, int n);
 /* The captured objects (enhanced.c). A cut is one id's pixels of the frame shown; its kind says how it is placed,
  * its segment (absolute) where in the band loop it is drawn. */
-enum { ENH_CUT_ROW, ENH_CUT_OPP, ENH_CUT_MIR, ENH_CUT_STARTER };
+enum { ENH_CUT_ROW, ENH_CUT_OPP, ENH_CUT_MIR, ENH_CUT_STARTER, ENH_CUT_STARS, ENH_CUT_CLOUDS };
 enum { ENH_PASS_FRONT, ENH_PASS_MIRROR };
 /* Where an object stands in a view: its depth, the screen row of the road under it, and the screen x of world x
  * X as a + b X. ENH_CUT_ROW: an object on the road at the (absolute) segment seg, at its row's depth;
  * ENH_CUT_OPP: the opponent, at the depth opponent_draw gives its picture `sprite` from v->opp_d (|d / 8| + 4,
  * 16 more for the side view 0, 8 more for the rear view 2 close behind), x relative to its lane (seg unused, the
  * view's opp_seg is the game's). */
-typedef struct { double z, yg, a, b; bool ok; } EnhObjGeo;
+/* The Aqueduct's (xf): (a, yg) is the anchor rotated as the game rotates it, rot its angle in degrees (the view's roll,
+ * the opponent's bank), b 4 / z (the opponent's mirror pictures 1 / z, the sky's 1). */
+typedef struct { double z, yg, a, b; bool ok; bool xf; double rot; } EnhObjGeo;
 EnhObjGeo enh_obj_geo(const EnhView *v, int kind, int seg, int sprite);   /* the mirror's: enh_obj_geo_mirror */
 /* enh_obj_geo of the mirror's cuts: ENH_CUT_MIR and ENH_CUT_STARTER at segment seg (k = base - seg, depth
  * enh_mirror_z, 8k beyond row 7; the starter's bottom pinned at row 27h), ENH_CUT_OPP with picture >= 9 at
@@ -172,6 +174,9 @@ void enh_cuts_begin(void);
  * opponent when `opp`, the others otherwise. The opponent's pass is the mirror's for pictures 9 and up. */
 void enh_cuts_at(const EnhView *v, int pass, int lo, int hi, bool opp);
 extern int enh_cut_log[ENH_OBJ_IDS], enh_cut_log_n;   /* ids in the order the last picture drew them (tests) */
+/* Draws the frame's cut of `id` if it has one not yet drawn in this picture (the Aqueduct's stars and clouds, which
+ * enh_cuts_at never draws: right after the sky's fill). */
+void enh_cut_id(const EnhView *v, int id);
 /* The frame's cut of `id` is partly hidden: its rectangle holds the foreground, or pixels of a cut drawn after it
  * in the band loop (a nearer segment's, or at its own segment the opponent over the row's objects), or the game's
  * background drawing later in the frame covered some of its pixels (ega_overdrawn: a nearer row's hillside, rail

@@ -6,6 +6,7 @@
 #include "enhanced/enh_internal.h"
 
 #include <SDL3/SDL.h>
+#include <limits.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +39,7 @@ typedef struct {
     int kind;                  /* ENH_CUT_ */
     int seg;                   /* the absolute segment it is drawn at in the band loop */
     int sprite;                /* the opponent's picture (DS_opp_sprite) */
+    int variant;               /* the opponent's DS_opp_variant (the Aqueduct's pre-rotated pictures) */
     bool fixed;                /* drawn where the frame had it: the opponent at a fixed screen spot (snap.opp_fixed) */
     EnhObjGeo geo;
     bool used;
@@ -123,8 +125,8 @@ void enh_init(bool enabled, int res_scale, int aa, int motion_delay, bool town)
 bool enh_enabled(void) { return enh_opt.enabled; }
 int  enh_res_scale(void) { return enh_opt.res_scale; }
 
-/* The road modes drawn enhanced so far: the town (0), the street drag (1), the Grudge drag strip (2, 4),
- * Mulholland (10h); the Aqueduct (8) keeps its frame state, its picture stays the game's (enh_frame_presented). */
+/* The road modes drawn enhanced: the town (0), the street drag (1), the Grudge drag strip (2, 4), the Aqueduct (8;
+ * its mirror stays the game's so far), Mulholland (10h). */
 static bool mode_enhanced(s16 mode)
 {
     return mode == 0 || mode == 1 || mode == 2 || mode == 4 || mode == 8 || mode == 0x10;
@@ -280,13 +282,17 @@ bool enh_tag_kept(int id, int opp_sprite, int x, int y)
 
 static int cut_kind(int id)
 {
+    if (id == ENH_OBJ_STARS) return ENH_CUT_STARS;
+    if (id == ENH_OBJ_CLOUDS) return ENH_CUT_CLOUDS;
     return id == ENH_OBJ_OPP ? ENH_CUT_OPP : id == ENH_OBJ_STARTER ? ENH_CUT_STARTER : id > ENH_OBJ_OPP ? ENH_CUT_MIR : ENH_CUT_ROW;
 }
+
+static bool sky_kind(int kind) { return kind == ENH_CUT_STARS || kind == ENH_CUT_CLOUDS; }
 
 static int cut_pass(const ObjCut *c)
 {
     if (c->kind == ENH_CUT_OPP) return c->sprite >= 9 ? ENH_PASS_MIRROR : ENH_PASS_FRONT;
-    return c->kind == ENH_CUT_ROW ? ENH_PASS_FRONT : ENH_PASS_MIRROR;
+    return c->kind == ENH_CUT_ROW || sky_kind(c->kind) ? ENH_PASS_FRONT : ENH_PASS_MIRROR;
 }
 
 /* b is drawn after a in its pass's band loop: far to near (the front's far rows at larger segments, the mirror's
@@ -316,6 +322,23 @@ static bool cut_covered(int id, const u8 *tag)
     return false;
 }
 
+/* The Aqueduct's cut turned with the view (its bottom is no longer on its row's line). */
+static bool rotated(const ObjCut *c) { return c->geo.xf && fmod(c->geo.rot, 360.0) != 0; }
+
+/* The foreground (the hood) right below the cut's rectangle: the rest of it is hidden there. cut_judged's tests of
+ * the bottom against the row find that for a cut that is not rotated. */
+static bool fg_below(const ObjCut *c)
+{
+    int y = c->y0 + c->img.h;
+    if (y >= ENH_VIEW_Y1) return true;
+    const u8 *fgm = ega_fg();
+    for (int x = SDL_max(0, c->x0 - 1); x <= SDL_min(319, c->x0 + c->img.w); x++) {
+        u16 b = (u16)(shown_start + y * EGA_BYTES_PER_LINE + (x >> 3));
+        if (fgm[b] >> (7 - (x & 7)) & 1) return true;
+    }
+    return false;
+}
+
 /* Cuts each id's pixels (where enh_tag_kept keeps them) out of the page just shown. */
 static void capture_objects(void)
 {
@@ -339,11 +362,14 @@ static void capture_objects(void)
         if (x1[id] < 0) continue;
         ObjCut *c = &cuts[id];
         c->kind = cut_kind(id);
-        c->seg = c->kind == ENH_CUT_ROW ? base + id
+        /* the sky's: the first thing of the front pass (drawn right after the sky's fill) */
+        c->seg = sky_kind(c->kind) ? INT_MAX
+               : c->kind == ENH_CUT_ROW ? base + id
                : c->kind == ENH_CUT_OPP ? snap.opp_seg
                : c->kind == ENH_CUT_MIR ? base - (id - ENH_OBJ_OPP)
                : DSS(DS_starter_seg);
         c->sprite = c->kind == ENH_CUT_OPP ? opp_sprite : 0;
+        c->variant = c->kind == ENH_CUT_OPP ? snap.opp_variant : 0;
         c->fixed = c->kind == ENH_CUT_OPP && snap.opp_fixed;
         c->geo = enh_obj_geo(&cut_view, c->kind, c->seg, c->sprite);
         if (!c->geo.ok) continue;
@@ -366,7 +392,7 @@ static void capture_objects(void)
         c->used = true;
     }
     for (int id = 1; id < ENH_OBJ_IDS; id++)
-        if (cuts[id].used) cuts[id].hidden = cut_covered(id, tag);
+        if (cuts[id].used) cuts[id].hidden = cut_covered(id, tag) || (rotated(&cuts[id]) && fg_below(&cuts[id]));
 }
 
 bool enh_cut_partly_hidden(int id) { return id > 0 && id < ENH_OBJ_IDS && cuts[id].used && cuts[id].hidden; }
@@ -397,16 +423,22 @@ void enh_cuts_at(const EnhView *v, int pass, int lo, int hi, bool opp)
 {
     for (int id = 1; id < ENH_OBJ_IDS; id++) {
         const ObjCut *c = &cuts[id];
-        if (!c->used || c->drawn || (c->kind == ENH_CUT_OPP) != opp || cut_pass(c) != pass) continue;
+        if (!c->used || c->drawn || sky_kind(c->kind) || (c->kind == ENH_CUT_OPP) != opp || cut_pass(c) != pass) continue;
         if (c->seg >= lo && c->seg <= hi) draw_cut(v, id);
     }
 }
 
+void enh_cut_id(const EnhView *v, int id)
+{
+    if (id > 0 && id < ENH_OBJ_IDS && cuts[id].used && !cuts[id].drawn) draw_cut(v, id);
+}
+
 /* One picture of view v: the front pass draws the road and the cuts at their rows (enh_road2.c), then the mirror
- * pass its glass (enh_mirror2.c). */
+ * pass its glass (enh_mirror2.c); the Aqueduct its channel (enh_aq2.c), its mirror stays the game's. */
 static void draw_view(const EnhView *v)
 {
     enh_cuts_begin();
+    if (v->mode == 8) { enh_draw_aq(v); return; }
     enh_draw_road(v);
     enh_draw_mirror(v);
 }
@@ -434,6 +466,7 @@ void enh_mirror_end(void)
     ega_mark_fg_rect(page, 0xF0, 0x2B, 0x13F, 0x2C);
     ega_mark_fg_rect(page, 0xF0, 0x16, 0xF1, 0x2A);
     ega_mark_fg_rect(page, 0x13E, 0x16, 0x13F, 0x2A);
+    if (DSS(DS_road_mode) == 8) ega_mark_fg_rect(page, 0xF2, 0x16, 0x13D, 0x2A);   /* the Aqueduct's glass: the game's */
     base_layer = EGA_LAYER_FG;                          /* the hood and the cockpit stay the game's */
     ega_set_layer(base_layer);
 }
@@ -480,12 +513,6 @@ void enh_frame_presented(void)
 {
     if (!active) return;
     ega_set_layer(EGA_LAYER_OFF);
-    /* The Aqueduct keeps its frame state; its picture stays the game's (nothing cut, composed or compared). */
-    if (DSS(DS_road_mode) == 8) {
-        snap_fill();
-        presented = false;
-        return;
-    }
     /* After the cliff fall road_draw_front draws nothing (it returns before enh_draw_begin): the page keeps the
      * original's picture, and nothing of it is cut or composed. */
     if (DSW(DS_fallen)) {
@@ -566,24 +593,28 @@ bool enh_view_newest(EnhView *v)
 
 /* The re-projection check: before the new capture, each old cut placed in the new frame's exact view by the
  * drawing's own mapping (draw_cut); after it, compared with the new cut of the same kind and segment. */
-typedef struct { bool ok; int kind, seg, sprite; double bottom, cx; } CutPred;
+typedef struct { bool ok; int kind, seg, sprite, variant; double bottom, cx; } CutPred;
 static CutPred preds[ENH_OBJ_IDS];
 
 /* A cut the check can judge: placed by its geometry (not fixed), not cut off by its pass's border, and not partly
  * hidden: neither its rectangle holds what was drawn after it (enh_cut_partly_hidden) nor is its bottom more than
  * 1 px above the road row it stands on (nearer road, a wall). A row's object that hangs below its row (Mulholland's
  * rocks and obstacles, drawn from the row down) is not judged either: its size steps at the row index (shape_draw's
- * LOD), so the drawing's scale about the row cannot predict its bottom. */
+ * LOD), so the drawing's scale about the row cannot predict its bottom. The Aqueduct's sky is never judged, and a
+ * rotated cut (rot not 0) not on the tests of its bottom: that is the turned picture's lowest corner, not on the
+ * row (the foreground right below it counts as hidden instead, fg_below). */
 static bool cut_judged(const ObjCut *c, int y_end)
 {
-    if (!c->used || c->fixed) return false;
+    if (!c->used || c->fixed || sky_kind(c->kind)) return false;
     int x1 = c->x0 + c->img.w - 1, y1 = c->y0 + c->img.h - 1;
     if (cut_pass(c) == ENH_PASS_FRONT) {
         if (c->x0 <= 0 || x1 >= 0x13F || c->y0 <= ENH_VIEW_Y0 || y1 >= y_end - 1) return false;
     } else if (c->x0 <= 0xF2 || x1 >= 0x13D || c->y0 <= 0x16 || y1 >= 0x2A)
         return false;
+    if (c->hidden) return false;
+    if (rotated(c)) return true;
     if (c->kind == ENH_CUT_ROW && c->y0 + c->img.h > c->geo.yg + 1.0) return false;
-    return !c->hidden && c->y0 + c->img.h >= c->geo.yg - 1.0;
+    return c->y0 + c->img.h >= c->geo.yg - 1.0;
 }
 
 static int compare_y_end(void) { return SDL_min(ENH_VIEW_Y1, ega_line_compare()); }
@@ -598,12 +629,17 @@ static void predict_cuts(void)
         p->ok = false;
         if (!have || c->gen != series_gen || !cut_judged(c, compare_y_end())) continue;
         EnhObjGeo g = enh_obj_geo(&v, c->kind, c->seg, c->sprite);
-        if (!g.ok) continue;
         const EnhObjGeo *f = &c->geo;
+        if (!g.ok || g.rot != f->rot) continue;     /* the Aqueduct: turned between the frames */
+        /* a rotated row's box: its bottom is the turned picture's lowest corner, and the picture is the row's shape
+         * group (aq_draw_row_shape: row >> 1), another one once the row index crossed a pair */
+        if (c->kind == ENH_CUT_ROW && rotated(c)
+            && (c->seg - (int)floor(cut_view.pos)) >> 1 != (c->seg - (int)floor(v.pos)) >> 1) continue;
         p->ok = true;
         p->kind = c->kind;
         p->seg = c->seg;
         p->sprite = c->sprite;
+        p->variant = c->variant;
         p->bottom = g.yg + (c->y0 + c->img.h - f->yg) * (f->z / g.z);
         p->cx = g.a + g.b * ((c->x0 + c->img.w / 2.0 - f->a) / f->b);
     }
@@ -619,7 +655,7 @@ static int reprojection_err(void)
         for (int id = 1; id < ENH_OBJ_IDS; id++) {
             const ObjCut *c = &cuts[id];
             if (!cut_judged(c, compare_y_end()) || c->kind != p->kind || c->seg != p->seg) continue;
-            if (c->kind == ENH_CUT_OPP && c->sprite != p->sprite) continue;
+            if (c->kind == ENH_CUT_OPP && (c->sprite != p->sprite || c->variant != p->variant)) continue;
             double e = SDL_fabs(p->bottom - (c->y0 + c->img.h));
             if (c->kind == ENH_CUT_OPP) e = SDL_max(e, SDL_fabs(p->cx - (c->x0 + c->img.w / 2.0)));
             if (e > err) err = e;
@@ -686,10 +722,16 @@ static void compare_frame(void)
     int m_n = v.town ? 1 : 2;
     EnhCompare c, e, mc, me;
     enh_compare_rows(orig, enh, cov_f, ENH_VIEW_Y0, y_end, enh_road_colours, 2, &c);
-    enh_compare_log_rows(true);
-    enh_compare_rows(orig_e, enh_e, cov_fe, ground, y_end, enh_road_colours, 2, &e);
-    enh_compare_rows(orig_e, enh_e, cov_me, m_ground, 0x2B, m_road, m_n, &me);
-    enh_compare_log_rows(false);
+    bool aq = v.mode == 8;
+    if (aq) {                                       /* shallow rotated lines: the line metric instead of the edges */
+        memset(&e, 0, sizeof e);
+        memset(&me, 0, sizeof me);
+    } else {
+        enh_compare_log_rows(true);
+        enh_compare_rows(orig_e, enh_e, cov_fe, ground, y_end, enh_road_colours, 2, &e);
+        enh_compare_rows(orig_e, enh_e, cov_me, m_ground, 0x2B, m_road, m_n, &me);
+        enh_compare_log_rows(false);
+    }
     enh_compare_rows(orig, enh, cov_m, 0x16, 0x2B, m_road, m_n, &mc);
     c.edge_rows = e.edge_rows;
     c.edge_err_max = e.edge_err_max;
@@ -700,12 +742,25 @@ static void compare_frame(void)
     c.m_mismatched = mc.mismatched;
     c.mirror_cov = mirror_cov;
     EnhRowTab rows, mrows;
-    enh_rows_exact_front(&v, &rows);
-    c.geo_err = rows_err(&rows, &snap.game_front, 15);
-    mrows = snap.game_mirror;                       /* rows 8..14 are the front's: only rows 0..7 and YK compared */
-    enh_rows_exact_mirror(&v, &mrows);
-    c.geo_err = SDL_max(c.geo_err, rows_err(&mrows, &snap.game_mirror, 8));
-    for (int k = 0; k < 15; k++) c.geo_err = SDL_max(c.geo_err, abs(mrows.yk[k] - snap.game_mirror.yk[k]));
+    if (aq) {
+        static const u8 lines[2] = { 0, 15 };      /* the outlines and the wall tops; the sky's border in front */
+        enh_compare_lines(orig, enh, cov_fe, ENH_VIEW_Y0, y_end, lines, 2, 1, &c.line_px, &c.line_err_max);
+        enh_compare_lines(orig, enh, cov_me, 0x16, 0x2B, lines, 2, -1, &c.m_line_px, &c.m_line_err_max);
+        rows = snap.game_front;                     /* the seven tables the Aqueduct writes, the rest kept */
+        enh_rows_exact_aq(&v, false, &rows);
+        c.geo_err = rows_err(&rows, &snap.game_front, 15);
+        EnhAqTab at;
+        enh_aqtab_exact(&v, false, &at);
+        c.geo_err = SDL_max(c.geo_err, enh_aqtab_err(&at, &snap.aq_front, 14));
+        c.roll = snap.aq_front.roll;
+    } else {
+        enh_rows_exact_front(&v, &rows);
+        c.geo_err = rows_err(&rows, &snap.game_front, 15);
+        mrows = snap.game_mirror;                   /* rows 8..14 are the front's: only rows 0..7 and YK compared */
+        enh_rows_exact_mirror(&v, &mrows);
+        c.geo_err = SDL_max(c.geo_err, rows_err(&mrows, &snap.game_mirror, 8));
+        for (int k = 0; k < 15; k++) c.geo_err = SDL_max(c.geo_err, abs(mrows.yk[k] - snap.game_mirror.yk[k]));
+    }
     c.obj_err = reprojection_err();
     c.police = snap.police;
     c.opp_sprite = snap.opp_sprite;
@@ -717,7 +772,8 @@ static void compare_frame(void)
     const char *dir = SDL_getenv("SR_ENH_COMPARE_DUMP");
     static int bad_dumped;
     bool many = c.pixels > 0 && (long)c.mismatched * 1000 > (long)ENH_MISMATCH_BAD * c.pixels;
-    bool bad = (c.edge_err_max > 1 || c.m_edge_err_max > 1 || c.geo_err > 0 || c.obj_err > 1 || many) &&
+    bool bad = (c.edge_err_max > 1 || c.m_edge_err_max > 1 || c.geo_err > 0 || c.obj_err > 1 || many
+                || c.line_err_max > 1 || c.m_line_err_max > 1) &&
                bad_dumped < 10;
     if (dir && *dir && (compared % 40 == 1 || bad)) {
         if (bad) bad_dumped++;

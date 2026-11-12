@@ -18,6 +18,7 @@
 #include "enhanced/enh_internal.h"
 #include "enhanced/enhanced.h"
 #include "enhanced/enh_geo2.h"
+#include "enhanced/enh_aq2.h"
 
 #include <limits.h>
 #include <stdlib.h>
@@ -463,7 +464,8 @@ void enh_draw_road(const EnhView *v)
 
 EnhObjGeo enh_obj_geo(const EnhView *v, int kind, int seg, int sprite)
 {
-    EnhObjGeo g = { 0, 0, 0, 0, false };
+    EnhObjGeo g = { 0, 0, 0, 0, false, false, 0 };
+    if (v->mode == 8) return enh_obj_geo_aq(v, kind, seg, sprite);   /* the Aqueduct's, its mirror's kinds included */
     if (kind == ENH_CUT_MIR || kind == ENH_CUT_STARTER || (kind == ENH_CUT_OPP && sprite >= 9))
         return enh_obj_geo_mirror(v, kind, seg, sprite);
     bool opp = kind == ENH_CUT_OPP;

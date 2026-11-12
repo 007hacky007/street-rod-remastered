@@ -3,6 +3,7 @@
  *   test_sr2_enh <SR2 game dir>
  * Headless with the SDL dummy drivers. */
 #include <SDL3/SDL.h>
+#include <limits.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -966,6 +967,55 @@ static void sr2_enh_poly_edge(void)
     enh_buf_setup();
 }
 
+/* poly_fill's own picture in exact mode: its edge walkers' pixels in the edge colour, the spans between them in the
+ * fill colour, pixel for pixel (a shallow edge's steps included). */
+static void sr2_enh_poly_fill_i(void)
+{
+    static const s16 shapes[6][8] = { { 10, 20, 200, 40, 30, 60 },
+                                      { 50, 30, 90, 25, 95, 70, 45, 80 },
+                                      { 120, 20, 121, 20, 130, 80, 129, 80 },
+                                      { -1320, -180, 109, 52, 106, 63, 0, 63 },   /* a wall to the left, clipped */
+                                      { 200, 70, 230, 50, 260, 52, 250, 90 },
+                                      { 160, 30, 161, 30, 161, 60, 160, 60 } };   /* a pillar 2 px wide */
+    static const int counts[6] = { 3, 4, 4, 4, 4, 4 };
+    static const u8 cols[6][2] = { { 2, 0 }, { 2, 0 }, { 2, 0 }, { 5, 5 }, { 5, 2 }, { 2, 2 } };
+    EnhOptions keep = enh_opt;
+    u16 keep_seg = DSW(DS_draw_seg), keep_off = DSW(0x81DF);
+    u8 keep_stride = DSB(0x81DE);
+    enh_opt.res_scale = enh_opt.aa = 1;
+    enh_buf_setup();
+    enh_clip_view();
+    ega_init();
+    vga_mode_0d();
+    DSW(DS_draw_seg) = 0xA400;
+    DSB(0x81DE) = 0x28;
+    DSW(0x81DF) = 0;
+    for (int s = 0; s < 6; s++) {
+        for (int k = 0; k < 4; k++) memset(ega_plane(k) + 0x4000, 9 >> k & 1 ? 0xFF : 0, 200 * EGA_BYTES_PER_LINE);
+        enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 9);
+        s16 o[128];
+        int n = enh_clip_poly_i(shapes[s], counts[s], o, 0, 0x13F, 0x12, 0x65);
+        poly_fill(o, (s16)n, cols[s][0], cols[s][1]);
+        enh_poly_fill_i(o, n, cols[s][0], cols[s][1]);
+        int bad = 0, set = 0;
+        for (int yy = ENH_VIEW_Y0; yy < ENH_VIEW_Y1; yy++)
+            for (int xx = 0; xx < 320; xx++) {
+                u16 b = (u16)(0x4000 + yy * EGA_BYTES_PER_LINE + (xx >> 3));
+                int c = 0;
+                for (int k = 0; k < 4; k++) c |= (ega_plane(k)[b] >> (7 - (xx & 7)) & 1) << k;
+                set += c != 9;
+                bad += c != enh_buf.px[(size_t)(yy - ENH_VIEW_Y0) * enh_buf.w + xx];
+            }
+        printf("  polygon %d: %d px, %d differ\n", s, set, bad);
+        CHECK(set > 0 && bad == 0);
+    }
+    DSW(DS_draw_seg) = keep_seg;
+    DSW(0x81DF) = keep_off;
+    DSB(0x81DE) = keep_stride;
+    enh_opt = keep;
+    enh_buf_setup();
+}
+
 /* After the cliff fall the game draws no front view: the enhanced view is not composed over the stale page. */
 static void sr2_enh_fallen_not_composed(void)
 {
@@ -1919,7 +1969,7 @@ static void sr2_enh_aq_frame_state(void)
     CHECK(defs_ok);
     CHECK(v.aq_dy == 3);
     CHECK(v.rot_sin == sin256(48) && v.rot_cos == sin256(138));
-    CHECK(!enh_compose(small, rgb));                /* the Aqueduct's picture stays the game's */
+    CHECK(enh_compose(small, rgb));                 /* the Aqueduct is drawn enhanced */
     for (s16 r = 80; r <= 304; r += 32) {
         aq_frame(def, 3, 0, r, 0x50, 0x3F);
         CHECK(enh_view_newest(&v) && v.roll == r && v.roll_raw == r);
@@ -1971,6 +2021,147 @@ static void sr2_enh_aq_race_resets(void)
     aq_restore();
 }
 
+/* At roll 0 the game builds the floor and the walls unrotated (the sky down to the far floor, the floor filled from
+ * there, the walls out to the screen's sides), at any other roll as extended rolled polygons: the two constructions
+ * give the same picture, so a roll just off 0 makes no jump. */
+static void sr2_enh_aq_roll_zero_continuous(void)
+{
+    static u8 pic[2][200 * 320], cov[200 * 320];
+    aq_save();
+    Keep k = keep_ds();
+    aq_setup();
+    EnhView v;
+    memset(&v, 0, sizeof v);
+    v.mode = 8;
+    v.lat = 0xA00;
+    v.pos = 100;
+    v.cam_y = 0x76C;
+    AqCam c;
+    AqRows r;
+    enh_aq_cam(&v, false, &c);
+    enh_aq_rows(&c, &r);
+    v.piv_x = (r.r[14].xl + r.r[14].xr) / 2;       /* aq_draw_front's pivot */
+    v.piv_y = r.r[14].y;
+    for (int pass = 0; pass < 2; pass++) {
+        v.roll = v.roll_raw = pass ? 1e-6 : 0;
+        enh_cuts_begin();
+        enh_draw_aq(&v);
+        for (int y = ENH_VIEW_Y0; y < ENH_VIEW_Y1; y++)
+            for (int x = 0; x < 320; x++) pic[pass][y * 320 + x] = enh_buf.px[(size_t)(y - ENH_VIEW_Y0) * enh_buf.w + x];
+    }
+    memset(cov, 0, sizeof cov);
+    memset(cov + 0x12 * 320, 1, (size_t)(0x64 - 0x12) * 320);
+    EnhCompare cmp;
+    enh_compare_rows(pic[0], pic[1], cov, 0x12, 0x64, enh_road_colours, 2, &cmp);
+    static const u8 lines[2] = { 0, 15 };
+    int px, err;
+    enh_compare_lines(pic[0], pic[1], cov, 0x12, 0x64, lines, 2, 1, &px, &err);
+    printf("  mismatch %d of %d, lines %d px err %d\n", cmp.mismatched, cmp.pixels, px, err);
+    CHECK(cmp.pixels > 0 && (long)cmp.mismatched * 1000 <= 10L * cmp.pixels);
+    CHECK(px > 0 && err <= 1);
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_race_end();
+    restore_ds(&k);
+    aq_restore();
+}
+
+/* Where the Aqueduct's cuts stand in an exact view: a row's at its shape's rotated anchor (world x 0 on its floor
+ * without one), the
+ * opponent's at its rotated place moved by the byte its picture was blitted at, the stars' at the rotated sky x. */
+static void sr2_enh_aq_cut_geo(void)
+{
+    static const s16 def[6] = { 20, 10, -30, 50, 0, 0 };
+    aq_save();
+    Keep k = keep_ds();
+    aq_setup();
+    DSS(DS_opp_seg) = 105;
+    DSS(DS_opp_sprite) = 5;
+    DSS(DS_opp_last_d) = 300;
+    DSS(DS_opp_lat) = 0x900;
+    DSW(DS_opp_contact) = 0;
+    DSS(DS_g_px_shift) = 3;
+    for (int pass = 0; pass < 2; pass++) {
+        DSS(DS_opp_last_sx) = pass ? 100 : 101;
+        aq_frame(def, 3, 0, 48, 0x7A, 0x3F);
+        EnhView v;
+        CHECK(enh_view_newest(&v));
+        AqCam c, m;
+        enh_aq_cam(&v, false, &c);
+        enh_aq_cam(&v, true, &m);
+        double z = enh_aq_z(5, c.q), ax, ay;
+        int sx = enh_proj_x_i((int)z, 0, i16(c.heading), (int)c.cx);
+        int sy = enh_proj_y_i((int)z, 2000 + def[0], i16(c.aq_dy), 0x76C, 0);
+        enh_aq_rot(&c, sx, sy, &ax, &ay);
+        EnhObjGeo g = enh_obj_geo(&v, ENH_CUT_ROW, 105, 0);
+        printf("  row: ok %d xf %d rot %.1f z %.1f a %.1f (%.1f) yg %.1f (%.1f)\n", g.ok, g.xf, g.rot, g.z, g.a, ax, g.yg,
+               ay + ROW_TOP);
+        CHECK(g.ok && g.xf && g.rot == 48 && g.z == z && g.a == ax && g.yg == ay + ROW_TOP && g.b == 4.0 / z);
+        /* a row with a shape: at the shape's own anchor (aq_draw_row_shape), 20h a quarter in from the left edge */
+        CHECK(TRKW(TRK_AQ, 100) & 0x20);
+        int xl = enh_proj_x_i(4, 0x5C8 + def[1], i16(c.heading), (int)c.cx);
+        int xr = enh_proj_x_i(4, 0xCF8 + def[2], i16(c.heading), (int)c.cx);
+        enh_aq_rot(&c, (s16)(xl + ((s16)(xr - xl) >> 2)), enh_proj_y_i(4, 2000 + def[0], i16(c.aq_dy), 0x76C, 0), &ax, &ay);
+        g = enh_obj_geo(&v, ENH_CUT_ROW, 100, 0);
+        printf("  row 0: a %.1f (%.1f) yg %.1f (%.1f)\n", g.a, ax, g.yg, ay + ROW_TOP);
+        CHECK(g.ok && g.z == 4 && g.a == ax && g.yg == ay + ROW_TOP);
+        double ox, oy, oz;
+        CHECK(enh_aq_opp_anchor(&c, &m, 300, 5, 0x900, v.opp_sx_prev, false, &ox, &oy, &oz));
+        g = enh_obj_geo(&v, ENH_CUT_OPP, 105, 5);
+        double snap = pass ? -4 : 3;                /* (101 + 3) & ~7 = 104; (100 + 3) & ~7 = 96 */
+        printf("  opp: ok %d z %.1f rot %.1f a %.1f (%.1f + %.0f) yg %.1f\n", g.ok, g.z, g.rot, g.a, ox, snap, g.yg);
+        CHECK(g.ok && g.xf && g.z == 41 && oz == 41 && g.rot == enh_aq_opp_bank(&c, 0x900) && g.a == ox + snap
+              && g.yg == oy + ROW_TOP && g.b == 4.0 / 41);
+        enh_aq_rot(&c, enh_aq_sky_x(v.heading, ENH_AQ_STARS, true), 0, &ax, &ay);
+        g = enh_obj_geo(&v, ENH_CUT_STARS, INT_MAX, 0);
+        CHECK(g.ok && g.xf && g.z == 1 && g.b == 1 && g.a == ax && g.yg == ay + ROW_TOP && g.rot == 48);
+    }
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_race_end();
+    restore_ds(&k);
+    aq_restore();
+}
+
+/* A rotated cut is judged without the tests of its bottom against its row: one that meets the foreground right below
+ * it (the hood over the rest of it) counts as partly hidden; at roll 0 the bottom tests do that. */
+static void sr2_enh_aq_cut_hood(void)
+{
+    static const s16 def[6] = { 0, 0, 0, 0, 0, 0 };
+    aq_save();
+    Keep k = keep_ds();
+    for (int pass = 0; pass < 2; pass++) {
+        s16 roll = pass ? 0 : 48;
+        aq_setup();
+        static const u16 defs[6] = { DS_aq_def_floor_h, DS_aq_def_xl, DS_aq_def_xr, DS_aq_def_top_h,
+                                     DS_aq_def_top_xl, DS_aq_def_top_xr };
+        for (int i = 0; i < 6; i++) DSS(defs[i]) = def[i];
+        enh_frame_built();
+        DSS(DS_rot_enable) = roll;
+        DSS(DS_rot_sin) = sin256(roll);
+        DSS(DS_rot_cos) = sin256((s16)(roll + 90));
+        DSS(DS_rot_cx) = 0xA0;
+        DSS(DS_rot_cy) = 0x3F;
+        enh_aq_begin();
+        ega_clear_obj(0, 0x2000);
+        ega_clear_fg(0, 0x2000);
+        ega_set_layer(EGA_LAYER_OBJ);
+        ega_set_obj(5); wr_span(0, 100, 60, 4);
+        ega_set_obj(6); wr_span(0, 150, 70, 4);
+        ega_set_obj(7); wr_span(0, 200, 80, 4);
+        ega_set_layer(EGA_LAYER_FG);
+        wr_span(0, 148, 71, 20);                    /* the hood right below row 6's */
+        wr_span(0, 198, 83, 20);                    /* two rows below row 7's */
+        ega_set_layer(EGA_LAYER_OFF);
+        enh_frame_presented();
+        printf("  roll %d: hidden row5 %d row6 %d row7 %d\n", roll, enh_cut_partly_hidden(5), enh_cut_partly_hidden(6),
+               enh_cut_partly_hidden(7));
+        CHECK(!enh_cut_partly_hidden(5) && !enh_cut_partly_hidden(7));
+        CHECK(enh_cut_partly_hidden(6) == (roll != 0));
+        enh_race_end();
+    }
+    restore_ds(&k);
+    aq_restore();
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -2015,6 +2206,7 @@ int main(int argc, char **argv)
     RUN(sr2_enh_poly_incl);
     RUN(sr2_enh_clip_poly_f);
     RUN(sr2_enh_poly_edge);
+    RUN(sr2_enh_poly_fill_i);
     RUN(sr2_enh_mulholland_rows);
     RUN(sr2_enh_hill_consts);
     RUN(sr2_enh_mulholland_sky_dy);
@@ -2044,6 +2236,9 @@ int main(int argc, char **argv)
     RUN(sr2_enh_aqtab_exact);
     RUN(sr2_enh_aq_frame_state);
     RUN(sr2_enh_aq_race_resets);
+    RUN(sr2_enh_aq_roll_zero_continuous);
+    RUN(sr2_enh_aq_cut_geo);
+    RUN(sr2_enh_aq_cut_hood);
     host_shutdown();
     return failures ? 1 : 0;
 }

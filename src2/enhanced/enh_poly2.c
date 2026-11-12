@@ -179,3 +179,79 @@ int enh_clip_poly_f(const double *x, const double *y, int n, double *ox, double 
     int nc = clip_stage_f(bx, by, nb, cx, cy, 2, ymin);
     return clip_stage_f(cx, cy, nc, ox, oy, 3, ymax);
 }
+
+/* poly_fill's edge walker (race_gfx.c poly_edge_setup, poly_step, poly_edge_advance) in pixel coordinates */
+typedef struct { int x, y, cur, next, dir, count, step; s16 err, d1, d2; } Walk;
+typedef struct { const s16 *p; int n, remaining; u8 edge; } WalkPoly;
+
+static void px1(int x, int y, u8 col) { enh_fill_rect(x, y, x + 1, y + 1, col); }
+
+static void walk_setup(Walk *e, const WalkPoly *f)
+{
+    s16 bx = (s16)(f->p[2 * e->next] - f->p[2 * e->cur]);
+    s16 ax = (s16)-(s16)(f->p[2 * e->cur + 1] - f->p[2 * e->next + 1]);
+    s16 a = bx >= 0 ? bx : (s16)-bx;
+    bool xmaj = !(ax > a);
+    e->count = xmaj ? a : ax;
+    e->err = xmaj ? (s16)(a - 2 * ax) : (s16)(ax - 2 * a);
+    e->d1 = xmaj ? (s16)(-2 * ax) : (s16)(-2 * a);
+    e->d2 = xmaj ? (s16)(2 * a - 2 * ax) : (s16)(2 * ax - 2 * a);
+    e->step = bx >= 0 ? (xmaj ? 0 : 1) : (xmaj ? 3 : 2);
+}
+
+/* one step; true when the walker went down a row */
+static bool walk_step(Walk *e)
+{
+    bool neg = e->err < 0;
+    s16 add = neg ? e->d2 : e->d1;
+    switch (e->step) {
+    case 0: case 3:                    /* x-major: along the row, down on a carry */
+        e->x += e->step == 0 ? 1 : -1;
+        if (neg) e->y++;
+        e->err = (s16)(e->err + add);
+        return neg;
+    default:                           /* y-major: down a row, sideways on a carry */
+        e->y++;
+        if (neg) e->x += e->step == 1 ? 1 : -1;
+        e->err = (s16)(e->err + add);
+        return true;
+    }
+}
+
+/* true when the polygon's vertices are used up */
+static bool walk_advance(Walk *e, WalkPoly *f)
+{
+    for (;;) {
+        if (--e->count < 0) {
+            if (--f->remaining < 0) return true;
+            e->cur = e->next;
+            e->next = (e->cur + e->dir + f->n) % f->n;
+            walk_setup(e, f);
+            continue;
+        }
+        bool row = walk_step(e);
+        px1(e->x, e->y, f->edge);
+        if (row) return false;
+    }
+}
+
+void enh_poly_fill_i(const s16 *pts, int n, u8 fill, u8 edge)
+{
+    if (n < 1) return;
+    int top = 0;
+    for (int i = 1; i < n; i++) if (pts[2 * i + 1] < pts[2 * top + 1]) top = i;
+    WalkPoly f = { pts, n, n - 2, edge };
+    Walk a = { pts[2 * top], pts[2 * top + 1], top, (top - 1 + n) % n, -1, 0, 0, 0, 0, 0 };
+    Walk b = { pts[2 * top], pts[2 * top + 1], top, (top + 1) % n, +1, 0, 0, 0, 0, 0 };
+    walk_setup(&a, &f);
+    walk_setup(&b, &f);
+    px1(a.x, a.y, edge);
+    for (;;) {
+        if (walk_advance(&a, &f)) { walk_advance(&b, &f); break; }
+        if (walk_advance(&b, &f)) { walk_advance(&a, &f); break; }
+        /* poly_span_fill: strictly between the two walkers (on b's row, by byte and bit as the game orders them) */
+        const Walk *l = &a, *r = &b;
+        if (a.y * 320 + a.x > b.y * 320 + b.x) { l = &b; r = &a; }
+        if (r->x - l->x > 1 && l->y == r->y) enh_fill_rect(l->x + 1, l->y, r->x, l->y + 1, fill);
+    }
+}

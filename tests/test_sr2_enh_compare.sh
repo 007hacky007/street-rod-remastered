@@ -31,8 +31,12 @@ frames_with() {
         END { print c + 0 }' "$tmp/$1.cmp"
 }
 
-check() {  # check <kind> <mode> <min frames> <orig|enh> [noobj]
-    k=$1 m=$2 min=$3 mir=$4 noobj=${5:-}
+check() {  # check <kind> <mode> <min frames> <orig|enh> [noobj] [lines]: lines (the Aqueduct) judges the line
+           # metric (front, and the glass with enh) instead of the per-row edges
+    k=$1 m=$2 min=$3 mir=$4
+    shift 4
+    noobj= lines=
+    for o in "$@"; do case $o in noobj) noobj=1 ;; lines) lines=1 ;; esac; done
     s=$(mode_line "$k" "$m")
     if [ -z "$s" ]; then
         if [ "$min" -gt 0 ]; then echo "FAIL $k mode $m (no frames)"; fail=1; else echo "ok   $k mode $m (no frames)"; fi
@@ -41,18 +45,35 @@ check() {  # check <kind> <mode> <min frames> <orig|enh> [noobj]
     n=$(field "$s" frames) e=$(field "$s" worst_edge) p=$(field "$s" mismatch_p50) g=$(field "$s" geo_max)
     o=$(field "$s" obj_max) sh=$(field "$s" shown) mc=$(field "$s" mirror_cov_min) px=$(field "$s" mismatch_max)
     me=$(field "$s" mirror_worst_edge) mp=$(field "$s" mirror_mismatch_p50) mx=$(field "$s" mirror_mismatch_max)
+    lw=$(field "$s" line_worst) mlw=$(field "$s" mirror_line_worst)
     ok=1
     [ "$n" -ge "$min" ] && [ "$e" -le 1 ] && [ "$p" -le 10 ] && [ "$g" = 0 ] && [ "$sh" -ge "$n" ] || ok=0
     [ "$px" -le 20 ] || ok=0     # every frame: a defect in one frame of a few is not in the median
     [ -n "$noobj" ] || [ "$o" -le 1 ] || ok=0
     if [ "$mir" = orig ]; then [ "$mc" = 0 ] || ok=0
     else [ "$mc" = 1596 ] && [ "$me" -le 1 ] && [ "$mp" -le 10 ] && [ "$mx" -le 20 ] || ok=0; fi
+    if [ -n "$lines" ]; then
+        [ "$lw" -le 1 ] || ok=0
+        [ "$mir" = orig ] || [ "$mlw" -le 1 ] || ok=0
+    fi
     if [ "$min" -gt 0 ]; then    # the numbers measured something
-        [ "$(frames_with "$k" "$m" edge_rows)" -gt 0 ] || ok=0
-        [ "$mir" = orig ] || [ "$(frames_with "$k" "$m" mirror_edge_rows)" -gt 0 ] || ok=0
+        if [ -n "$lines" ]; then
+            [ "$(frames_with "$k" "$m" line_px)" -gt 0 ] || ok=0
+            [ "$mir" = orig ] || [ "$(frames_with "$k" "$m" mirror_line_px)" -gt 0 ] || ok=0
+        else
+            [ "$(frames_with "$k" "$m" edge_rows)" -gt 0 ] || ok=0
+            [ "$mir" = orig ] || [ "$(frames_with "$k" "$m" mirror_edge_rows)" -gt 0 ] || ok=0
+        fi
         [ -n "$noobj" ] || [ "$(frames_with "$k" "$m" obj_err)" -gt 0 ] || ok=0
     fi
     if [ $ok = 1 ]; then echo "ok   $k mode $m ($s)"; else echo "FAIL $k mode $m ($s)"; fail=1; fi
+}
+
+rolled() {  # rolled <kind> <mode> <min>: at least min frame lines of the mode with the view rolled (roll not 0)
+    n=$(awk -v m="$2" '/^frame / && $4 == m { for (i = 1; i < NF; i++) if ($i == "roll" && $(i + 1) != 0) { c++; break } }
+        END { print c + 0 }' "$tmp/$1.cmp" 2>/dev/null)
+    if [ -n "$n" ] && [ "$n" -ge "$3" ]; then echo "ok   $1 mode $2 rolled ($n frames)"
+    else echo "FAIL $1 mode $2 rolled (${n:-0} frames, want $3)"; fail=1; fi
 }
 
 after() {  # after <kind> <mode> <last mode> <min>: frames of <mode> after the last frame (or race start, a mode not
@@ -84,6 +105,7 @@ run mulholland 110
 run bridge 110 mulholland SR_SEED=4     # seed 2's track has no bridge; seed 4's has the ravine and the truss
 run police 110 mulholland SR_DEBUG_POLICE=480
 run aqueduct 80
+run aqking 80 aqueduct SR_DEBUG_OPP=21     # the King's rotated sprites
 wait
 
 check cruise 0 20 enh
@@ -98,6 +120,8 @@ check mulholland 16 20 enh
 check bridge 16 20 enh
 check police 16 20 enh
 police_in_mirror police
-none aqueduct 8
+check aqueduct 8 20 orig lines
+rolled aqueduct 8 20
+check aqking 8 20 orig lines
 check aqueduct 0 0 enh
 exit $fail

@@ -67,3 +67,13 @@ bool enh_aq_opp_anchor(const AqCam *front, const AqCam *mirror, double d, int sp
 /* y, xl, xr into their slots, XC into ybl, YT into ye, XTL into xol, XTR into xor_ (race_aq.c's A_*); rows 0..n;
  * yk and ybr untouched */
 void enh_rows_exact_aq(const EnhView *v, bool mirror, EnhRowTab *t);
+/* aq_draw_sky and aq_draw_scene(14) (race_aq.c) of the view: the sky, the rolled channel, its walls, bands, openings,
+ * trough, boxes and pillars, the captured cuts at their place (the stars and clouds after the sky's fill, the rows'
+ * shapes in the band loop, the opponent with the boxes); exact mode with the game's integer clip and lines. */
+void enh_draw_aq(const EnhView *v);
+/* enh_obj_geo in mode 8 (xf): ENH_CUT_ROW at segment seg (row k = seg - base at enh_aq_z, beyond the rows 8 (seg -
+ * pos) + 4) anchored where aq_draw_row_shape anchors its shape (flag 20h, else 40h; world x 0 on the floor without
+ * either), rot the roll; ENH_CUT_OPP (pictures below 9) at enh_aq_opp_anchor, rot its bank, in exact mode moved by
+ * the byte its picture was blitted at; ENH_CUT_STARS and ENH_CUT_CLOUDS at (enh_aq_sky_x, 0), the stars rotated only
+ * off roll 0. The mirror's kinds and pictures are not placed. */
+EnhObjGeo enh_obj_geo_aq(const EnhView *v, int kind, int seg, int sprite);

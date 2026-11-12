@@ -29,3 +29,7 @@ void enh_fill_poly_edge(const double *x, const double *y, int n, u8 fill, u8 edg
  * 64-point buffers. Returns the count of points in ox, oy (0: nothing left). */
 int enh_clip_poly_f(const double *x, const double *y, int n, double *ox, double *oy,
                     double xmin, double xmax, double ymin, double ymax);
+/* poly_fill itself (race_gfx.c) on a polygon already clipped, integer points {x, y} (y the line y): its two edge
+ * walkers' pixels from the top vertex in `edge`, the spans strictly between them in `fill`, as whole original pixels
+ * (exact mode: the game's picture pixel for pixel). Under the current clip. */
+void enh_poly_fill_i(const s16 *pts, int n, u8 fill, u8 edge);

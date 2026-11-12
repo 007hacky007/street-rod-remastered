@@ -236,11 +236,14 @@ static void aq_draw_row_shape(s16 x, s16 y, s16 row, s16 set)
 static void aq_draw_night_sky(void)
 {
     s16 sc = DSS(DS_aq_star_scroll);
+    enh_draw_objects(ENH_OBJ_STARS);                /* ENH: captured, drawn again at the smooth heading and roll */
     drv_plot_points(desc_planes(back_page()), (s16)(sc >> 1), 0x7F2E, 18, DSS(DS_star_colour_a));
     drv_plot_points(desc_planes(back_page()), (s16)(sc >> 1), 0x7F76, 6, DSS(DS_star_colour_b));
+    enh_draw_objects(ENH_OBJ_CLOUDS);               /* ENH */
     shp_b_draw((s16)(DSS(DS_aq_star_scroll) + 0x5C), 0x20, 0, ds_far(DS_shp_b_ptrs));
     shp_b_draw((s16)(DSS(DS_aq_star_scroll) + 0xD2), 0x2D, 0, ds_far(DS_shp_b_ptrs + 4));
     shp_b_draw((s16)(DSS(DS_aq_star_scroll) + 0xB4), 0x16, 0, ds_far(DS_shp_b_ptrs + 4));
+    enh_draw_objects(0);                            /* ENH */
 }
 
 /* 0dcb:85a0 aq_draw_mirror_stars (from the mirror backdrop 57a6 in mode 8) */
@@ -446,10 +449,12 @@ static void aq_draw_scene(void)
             poly_fill_pts(o, n, 2, 0);
         }
         s16 i = (s16)(N - k);
+        if (N == 14) enh_draw_objects(i);            /* ENH: the row's shapes, drawn again at its smooth position */
         if ((w & 0x20) && k > 0)
             aq_draw_row_shape((s16)(RW(A_XL, i) + (sub16(RW(A_XR, i), RW(A_XL, i)) >> 2)), RW(A_Y, i), (s16)(i - 1), 2);
         if ((w & 0x40) && k > 0)
             aq_draw_row_shape(sub16(RW(A_XR, i), (s16)(sub16(RW(A_XR, i), RW(A_XL, i)) >> 3)), RW(A_Y, i), (s16)(i - 1), 2);
+        if (N == 14) enh_draw_objects(0);            /* ENH */
     }
 
     /* 3. centre trough, interrupted where the flags have bit 2 */
@@ -498,13 +503,13 @@ static void aq_draw_scene(void)
             aq_draw_box(p2, 1);
         }
         if (N == 14) {
-            if (sub16(DSS(DS_opp_seg), DSS(DS_seg)) == i) opponent_draw();
+            if (sub16(DSS(DS_opp_seg), DSS(DS_seg)) == i) { enh_draw_objects(ENH_OBJ_OPP); opponent_draw(); enh_draw_objects(0); }   /* ENH */
         } else {
             if ((s16)(i - N - DSS(DS_starter_seg) + DSS(DS_seg) - 1) == 0) starter_draw_mirror_aq((s16)(N - i));
             if (sub16(DSS(DS_seg), DSS(DS_opp_seg)) == i) opponent_draw();
         }
     }
-    if (N == 14 && DSS(DS_opp_seg) == DSS(DS_seg)) opponent_draw();
+    if (N == 14 && DSS(DS_opp_seg) == DSS(DS_seg)) { enh_draw_objects(ENH_OBJ_OPP); opponent_draw(); enh_draw_objects(0); }   /* ENH */
 }
 
 /* ================================================================================ roll */

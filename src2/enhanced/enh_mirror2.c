@@ -87,7 +87,7 @@ void enh_rows_exact_mirror(const EnhView *v, EnhRowTab *t)
 
 EnhObjGeo enh_obj_geo_mirror(const EnhView *v, int kind, int seg, int sprite)
 {
-    EnhObjGeo g = { 0, 0, 0, 0, false };
+    EnhObjGeo g = { 0, 0, 0, 0, false, false, 0 };
     (void)sprite;
     Cam c;
     cam_of(v, &c);
