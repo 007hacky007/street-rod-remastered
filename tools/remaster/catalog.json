@@ -826,7 +826,8 @@
   ],
   "w": 16,
   "h": 11,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1095
  },
  "0c3d8b72b0c8b55a976462ecdefba8b6d91e55c2": {
   "group": "car",
@@ -1184,7 +1185,8 @@
   ],
   "w": 96,
   "h": 10,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1095
  },
  "130421ccb530255d2d8fa15d146e362a2f4c2c47": {
   "group": "car",
@@ -1283,7 +1285,8 @@
   ],
   "w": 16,
   "h": 13,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1095
  },
  "1374137a59172960100e54d8b16e3db4743e6dbc": {
   "group": "ui",
@@ -1679,7 +1682,8 @@
   ],
   "w": 40,
   "h": 23,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1070
  },
  "19403c7ae00ec5320f619ad8090b7808e700e2f6": {
   "group": "screen",
@@ -1852,7 +1856,7 @@
  },
  "1ae2e681d31130e8d8094dee9fdd352ffb55c3c7": {
   "group": "garage",
-  "batch": 6,
+  "batch": 5,
   "desc": "two animation frames side by side, 16 px each, of the front of an engine close up: a brown ribbed fan belt with red edges running down over a black and grey pulley, a bright green hose at the left of each frame, black gaps between the parts",
   "keep": "the two frames stay alike with the belt ribs shifted between them (the game alternates them to run the belt), each exactly 16 px wide; every edge matches the engine picture around it; the colours exactly",
   "sheet": null,
@@ -2244,7 +2248,8 @@
   ],
   "w": 32,
   "h": 23,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1020
  },
  "22cc8f961883061099a7f2ba97b4e9cbc8486bef": {
   "group": "race",
@@ -2740,7 +2745,8 @@
   ],
   "w": 24,
   "h": 19,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1090
  },
  "2dc8b9923963b74148e5f7df59fbee2b20cb306e": {
   "group": "screen",
@@ -3068,13 +3074,14 @@
   ],
   "w": 88,
   "h": 14,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1095
  },
  "359266c12610d5cf3112e7cdc6c8e0e1a0e8b4c5": {
   "group": "race",
   "batch": 7,
-  "desc": "a tiny far-away figure of the race starter standing on the road: brown hair, a dark red leather jacket with brown hands at its sides, dark grey trousers, light red and brown lower legs and grey shoes",
-  "keep": "the figure's outline and colours exactly (it is that small); the same man as the other sizes of the starter",
+  "desc": "a tiny far-away figure of the race starter standing on the road: a woman with brown hair, a dark red jacket with her brown hands at its sides, a grey skirt, bare legs in light red and brown and grey shoes",
+  "keep": "the figure's outline and colours exactly (it is that small); the same woman as the other sizes of the starter",
   "sheet": "sr2-7-starter-1",
   "status": "new",
   "ids": {
@@ -3568,7 +3575,8 @@
   ],
   "w": 88,
   "h": 10,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1089
  },
  "3fdbb75d8d345d1866090be0f5aeab178a744680": {
   "group": "car",
@@ -3787,7 +3795,7 @@
   "group": "car",
   "batch": 6,
   "desc": "the front end of a 1963 Corvette Sting Ray body seen from the side with its front bumper taken off: the rounded lower front corner of the body panel with a dark edge, a row of dark shading dots along the bottom and a small grey bit at the right, cut out on its own",
-  "keep": "the outline exactly (it is pasted over the front of the car body at the same place); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome",
+  "keep": "the outline exactly (it is pasted over the front of the car body at the same place); keep every colour exactly as in the picture: the white and light grey are the car's paint (the game repaints it), chrome stays chrome",
   "sheet": "sr2-6-vette-ends-1",
   "status": "new",
   "ids": {
@@ -3800,7 +3808,8 @@
   ],
   "w": 24,
   "h": 13,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1094
  },
  "43f28e538ff47737036ce61c10762cf72ce036ff": {
   "group": "race",
@@ -4599,7 +4608,8 @@
   ],
   "w": 240,
   "h": 50,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1095
  },
  "513cbe6a22f5ebe5100e8e617243bc71a582c369": {
   "group": "race",
@@ -8283,7 +8293,7 @@
   "group": "car",
   "batch": 6,
   "desc": "the rear end of a 1963 Corvette Sting Ray body seen from the side with its rear bumper taken off: the rounded lower rear corner of the body panel with a dark edge, a row of dark shading dots along the bottom and a small chrome tip at the left, cut out on its own",
-  "keep": "the outline exactly (it is pasted over the rear of the car body at the same place); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome",
+  "keep": "the outline exactly (it is pasted over the rear of the car body at the same place); keep every colour exactly as in the picture: the white and light grey are the car's paint (the game repaints it), chrome stays chrome",
   "sheet": "sr2-6-vette-ends-1",
   "status": "new",
   "ids": {
@@ -8296,7 +8306,8 @@
   ],
   "w": 32,
   "h": 14,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1094
  },
  "9cdaf269ecea9b12616ca747b3f0b63a7b4edd35": {
   "group": "garage",
@@ -8315,7 +8326,8 @@
   ],
   "w": 40,
   "h": 43,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1070
  },
  "9cf18ede0f9805da20a572cd4692970ed19701bf": {
   "group": "car",
@@ -9316,7 +9328,8 @@
   ],
   "w": 24,
   "h": 12,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1095
  },
  "b1c2825cd212a15989e80cd5a700a4e60197429e": {
   "group": "car",
@@ -10487,7 +10500,8 @@
   ],
   "w": 16,
   "h": 16,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1102
  },
  "c6eaebfaaa71e511a8a28c790f324737570f09c6": {
   "group": "screen",
@@ -10525,7 +10539,8 @@
   ],
   "w": 104,
   "h": 13,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1102
  },
  "c7095bbf4cd23419f0ac14c44f75e1b543184852": {
   "group": "race",
@@ -11511,7 +11526,7 @@
  "db6410724e835e1486b384ac072175d8cf2bc2c3": {
   "group": "race",
   "batch": 7,
-  "desc": "a tiny far-away figure of the race starter standing on the road, seen from the front: brown hair, a red jacket with dark folds, grey shorts, bare legs and grey shoes",
+  "desc": "a tiny far-away figure of the race starter standing on the road: a woman with brown hair, a red jacket with dark folds, a grey skirt, bare legs and grey shoes, her arms at her sides",
   "keep": "the shape and size; it stays one small standing figure",
   "sheet": "sr2-7-starter-1",
   "status": "new",
@@ -11582,7 +11597,8 @@
   ],
   "w": 88,
   "h": 12,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1090
  },
  "dd69cc95ba1446b9f24a838ab36f6f96d37cabaf": {
   "group": "race",
@@ -12414,7 +12430,7 @@
  "ecfad6fef480f58a76a411b6a5a148aab52475a0": {
   "group": "race",
   "batch": 7,
-  "desc": "a small far-away figure of the race starter seen from behind: a woman with brown hair, a red jacket and a grey skirt, arms at her sides, standing",
+  "desc": "a tiny far-away figure of the race starter standing on the road: a woman with brown hair, a red jacket and a grey skirt, her arms at her sides, brown legs and grey shoes",
   "keep": "the outline and the colours; the same figure at each size",
   "sheet": "sr2-7-starter-1",
   "status": "new",
@@ -13243,7 +13259,8 @@
   ],
   "w": 16,
   "h": 13,
-  "masked": 1
+  "masked": 1,
+  "pal_like": 1102
  },
  "fecf49cdbf1739cfe7974e0c24b6edf2f6856467": {
   "group": "car",
