@@ -60,7 +60,19 @@ typedef void (*EnhCmdFn)(const EnhCtx *k, const void *arg);
 void enh_submit(EnhCmdFn fn, const void *arg, size_t size);
 void enh_flush(void);                  /* runs the recorded commands now (in bands) */
 int  enh_bands(void);                  /* bands a frame is drawn in, 1 = directly */
-void enh_bands_shutdown(void);         /* stops the workers (before SDL_Quit) */
+void enh_bands_shutdown(void);         /* runs anything recorded, then stops the workers (before SDL_Quit) */
+typedef struct {
+    int bands;          /* bands the last frame's commands ran in (1: every command drawn directly) */
+    int cmds;           /* commands recorded in the last frame */
+    int flushes;        /* runs before the last frame's resolve (full list, cache reset, buffer change) */
+    long full;          /* times the list was full since the start */
+    double band_ms_max, band_ms_mean;   /* last frame: slowest band and mean band (run + resolve), ms */
+} EnhBandStats;
+void enh_bands_stats(EnhBandStats *out);
+/* Test and developer hook: stops the workers (running anything recorded) and makes the next submit start
+ * `bands` bands (0: SR_ENH_THREADS or one per core) with a list of cmd_max commands and arena bytes (0: the
+ * defaults 32768 and 4 MiB); fail_after >= 0 makes thread creation fail after that many workers (-1: never). */
+void enh_bands_config(int bands, int cmd_max, size_t arena, int fail_after);
 /* SR_ENH_THREADS_CHECK: draw(v) once directly and once in bands, both over a copy of xrgb's picture, and the sample
  * buffers and resolved frames compared byte for byte (a line on stderr); xrgb ends as the banded frame. */
 void enh_bands_check(void (*draw)(const void *v), const void *v, u32 *xrgb, const u32 *pal, int npal, u16 page,

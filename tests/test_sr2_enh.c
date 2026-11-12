@@ -2583,6 +2583,90 @@ static void sr2_enh_aq_bounce_persists(void)
     aq_restore();
 }
 
+/* Street Rod 2's own command bodies in bands: inclusive and edged polygons, the game's polygon walker, 1-px lines,
+ * the sky sheet rows (whole rows whatever the clip) and turned images, crossing band edges, under the mirror glass's
+ * clip and the view's, are the samples drawn directly; also when the command list fills every 5 commands. */
+static void bands_bodies_scene(void)
+{
+    static u8 xf_px[24 * 10];
+    for (int i = 0; i < 24 * 10; i++) xf_px[i] = i % 7 == 0 ? ENH_CLEAR : (u8)(1 + i % 15);
+    static const EnhImage xf = { 24, 10, xf_px, NULL };
+    enh_cur_rgb = NULL;
+    enh_clip_view();
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 1);
+    for (int j = 0; j < enh_buf.h; j += 3) enh_sheet_row(j, 0x66 + j / 2.0 / enh_buf.sa * 2, 17.3 + j * 0.1);
+    for (int pass = 0; pass < 2; pass++) {
+        if (pass) enh_clip(0xF2, 0x16, 0x13E, 0x2B);           /* the mirror glass (enh_mirror2.c MIR_X0..) */
+        else enh_clip_view();
+        double o = pass * 230;
+        double ix[4] = { 10 + o, 70.5 + o, 60 + o, 5.25 + o }, iy[4] = { 0x13, 0x22, 0x60, 0x48 };
+        enh_fill_poly_incl(ix, iy, 4, 4);
+        double ex[3] = { 40 + o, 95 + o, 20 + o }, ey[3] = { 0x14, 0x40, 0x52 };
+        enh_fill_poly_edge(ex, ey, 3, 5, 6);
+        static const s16 shape[8] = { 120, 18, 190, 30, 200, 90, 110, 70 };
+        s16 sh[8], out[128];
+        for (int i = 0; i < 4; i++) { sh[2 * i] = (s16)(shape[2 * i] + (pass ? 100 : 0)); sh[2 * i + 1] = shape[2 * i + 1]; }
+        int n = enh_clip_poly_i(sh, 4, out, 0, 0x13F, 0x12, 0x65);
+        enh_poly_fill_i(out, n, 7, 8);
+        static const double lines[8][4] = { { 5, 20, 300, 31 }, { 300, 40, 5, 52 }, { 50, 18, 61, 100 },
+                                             { 80, 100, 70, 18 }, { 0, 0x30, 319, 0x30 }, { 150, 0x20, 150, 0x58 },
+                                             { 10, 0x24, 250, 0x2A }, { 250, 0x50, 251, 0x18 } };
+        for (int i = 0; i < 8; i++)
+            enh_line1(lines[i][0] + (pass ? 230 : 0) * (i & 1), lines[i][1], lines[i][2], lines[i][3], (u8)(9 + i % 6));
+        double a = pass ? -0.5 : 0.35, c = cos(a), s = sin(a), cx = 200 + o * 0.3, cy = 0x30;
+        double m[6] = { c, s, cx - c * cx - s * cy, -s, c, cy + s * cx - c * cy };
+        enh_draw_image_xf(&xf, cx - 12, cy - 5, m);
+    }
+    enh_clip_view();
+}
+
+static void sr2_enh_bands_bodies(void)
+{
+    static const int scales[2] = { 2, 3 };
+    static const int runs[4][2] = { { 1, 0 }, { 3, 0 }, { 7, 0 }, { 7, 5 } };
+    EnhOptions keep = enh_opt;
+    ega_init();
+    vga_mode_0d();
+    u32 seed = 7;
+    for (int k = 0; k < 4; k++)                                   /* page 1's sheets: a pattern */
+        for (int o = 0x2000 + 0x66 * EGA_BYTES_PER_LINE; o < 0x2000 + 0xC8 * EGA_BYTES_PER_LINE; o++) {
+            seed = seed * 1664525u + 1013904223u;
+            ega_plane(k)[o] = (u8)(seed >> 13);
+        }
+    enh_sheets_read();
+    for (int s = 0; s < 2; s++) {
+        enh_opt.res_scale = enh_opt.aa = scales[s];
+        u8 *one = NULL;
+        size_t n = 0;
+        for (int r = 0; r < 4; r++) {
+            enh_bands_config(runs[r][0], runs[r][1], 0, -1);
+            enh_buf_setup();
+            n = (size_t)enh_buf.w * enh_buf.h;
+            memset(enh_buf.px, 0xFD, n);
+            bands_bodies_scene();
+            enh_flush();
+            if (r == 0) {
+                one = SDL_malloc(n);
+                memcpy(one, enh_buf.px, n);
+                int hist[256] = { 0 }, kinds = 0;
+                for (size_t i = 0; i < n; i++) hist[one[i]]++;
+                for (int i = 0; i < 256; i++) kinds += hist[i] > 0;
+                printf("  scale %d: %d colours drawn\n", scales[s], kinds);
+                CHECK(kinds >= 12 && hist[0xFD] == 0);
+                continue;
+            }
+            long d = 0;
+            for (size_t i = 0; i < n; i++) d += one[i] != enh_buf.px[i];
+            if (d) printf("  scale %d bands %d list %d: %ld samples differ\n", scales[s], runs[r][0], runs[r][1], d);
+            CHECK(memcmp(enh_buf.px, one, n) == 0);
+        }
+        SDL_free(one);
+    }
+    enh_bands_config(1, 0, 0, -1);                                /* the suite draws directly */
+    enh_opt = keep;
+    enh_buf_setup();
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -2667,6 +2751,7 @@ int main(int argc, char **argv)
     RUN(sr2_enh_aq_bounce_persists);
     RUN(sr2_enh_aq_starter);
     RUN(sr2_enh_aq_mirror_geo);
+    RUN(sr2_enh_bands_bodies);
     host_shutdown();
     return failures ? 1 : 0;
 }

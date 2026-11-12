@@ -104,6 +104,13 @@ add_test(NAME compose COMMAND test_compose)
 add_executable(test_side_mirror test_side_mirror.c)
 target_link_libraries(test_side_mirror PRIVATE sre_core)
 add_test(NAME side_mirror COMMAND test_side_mirror)
+# The enhanced view's bands against one thread, the band count set by each case.
+add_executable(test_enh_bands test_enh_bands.c)
+target_link_libraries(test_enh_bands PRIVATE sre_core)
+foreach(t identity_counts full_list arena_full thread_fail cache_overflow shutdown_runs_pending restart)
+    add_test(NAME enh_bands_${t} COMMAND test_enh_bands bands_${t})
+    set_tests_properties(enh_bands_${t} PROPERTIES TIMEOUT 120)
+endforeach()
 
 # The shared host: Street Rod 1's audio pinned, the AdLib chip, voice volumes, the mouse space.
 add_executable(test_host test_host.c)

@@ -18,9 +18,9 @@
 typedef struct { EnhCmdFn fn; u32 off; int cx0, cy0, cx1, cy1; const u32 *rgb; } Cmd;
 
 static Cmd *cmds;
-static int ncmd;
+static int ncmd, cmd_max;
 static u8 *arena;
-static size_t used;
+static size_t used, arena_size;
 
 static int nbands;                 /* 0: not started yet */
 static bool direct;                /* this frame draws directly (one band, a serial dev aid, the check's first pass) */
@@ -29,6 +29,19 @@ static SDL_Semaphore *sem_go[MAX_BANDS], *sem_done[MAX_BANDS];
 static int nworkers;
 static bool quit;
 static const EnhResolveJob *job;
+
+/* enh_bands_config: 0 / -1 = the defaults */
+static int cfg_bands, cfg_cmds, cfg_fail = -1;
+static size_t cfg_arena;
+
+/* the frame being drawn, frozen into `last` at the end of enh_bands_run */
+static struct {
+    int cmds, flushes;
+    bool drawn_directly;           /* a command went through enh_submit's direct path */
+    Uint64 band_ns[MAX_BANDS];     /* band k's time (its commands and rows); each written only by its own thread */
+} cur;
+static EnhBandStats last;
+static long full;
 
 /* band k's output rows (counted from the view's top) */
 static void band_rows(int k, int n, int *r0, int *r1)
@@ -40,6 +53,7 @@ static void band_rows(int k, int n, int *r0, int *r1)
 
 static void run_band(int k, int n)
 {
+    Uint64 t0 = SDL_GetTicksNS();
     int r0, r1, aa = enh_opt.aa;
     band_rows(k, n, &r0, &r1);
     int by0 = r0 * aa, by1 = r1 * aa;
@@ -49,6 +63,7 @@ static void run_band(int k, int n)
         c->fn(&ctx, arena + c->off);
     }
     if (job) enh_resolve_rows(job, r0, r1);
+    cur.band_ns[k] += SDL_GetTicksNS() - t0;
 }
 
 static int SDLCALL worker(void *data)
@@ -61,69 +76,6 @@ static int SDLCALL worker(void *data)
         SDL_SignalSemaphore(sem_done[k]);
     }
     return 0;
-}
-
-void enh_bands_shutdown(void)
-{
-    if (nworkers == 0) return;
-    quit = true;
-    for (int i = 0; i < nworkers; i++) SDL_SignalSemaphore(sem_go[i]);
-    for (int i = 0; i < nworkers; i++) {
-        SDL_WaitThread(threads[i], NULL);
-        SDL_DestroySemaphore(sem_go[i]);
-        SDL_DestroySemaphore(sem_done[i]);
-    }
-    nworkers = 0;
-    nbands = 1;                    /* anything drawn after: directly */
-    ncmd = 0;
-    used = 0;
-}
-
-/* SR_ENH_THREADS=N: N bands (1: no worker, the single-threaded drawing); default one per logical core. */
-static void start(void)
-{
-    if (nbands) return;
-    nbands = 1;
-    const char *t = SDL_getenv("SR_ENH_THREADS");
-    int n = t && *t ? SDL_atoi(t) : SDL_GetNumLogicalCPUCores();
-    n = SDL_clamp(n, 1, MAX_BANDS);
-    if (n == 1) return;
-    cmds = SDL_malloc(CMD_MAX * sizeof *cmds);
-    arena = SDL_malloc(ARENA);
-    if (!cmds || !arena) { SDL_free(cmds); SDL_free(arena); cmds = NULL; arena = NULL; return; }
-    for (int i = 0; i < n - 1; i++) {
-        sem_go[i] = SDL_CreateSemaphore(0);
-        sem_done[i] = SDL_CreateSemaphore(0);
-        char name[24];
-        SDL_snprintf(name, sizeof name, "enh_band%d", i + 1);
-        threads[i] = sem_go[i] && sem_done[i] ? SDL_CreateThread(worker, name, (void *)(intptr_t)i) : NULL;
-        if (!threads[i]) {
-            if (sem_go[i]) SDL_DestroySemaphore(sem_go[i]);
-            if (sem_done[i]) SDL_DestroySemaphore(sem_done[i]);
-            fprintf(stderr, "enhanced view: %d of %d worker threads started: %s\n", i, n - 1, SDL_GetError());
-            break;
-        }
-        nworkers++;
-    }
-    nbands = nworkers + 1;
-    if (nworkers) {
-        host_set_shutdown_handler(enh_bands_shutdown);  /* the workers end before SDL_Quit */
-        atexit(enh_bands_shutdown);                     /* and on any other way out (it runs once) */
-    }
-}
-
-int enh_bands(void)
-{
-    start();
-    return nbands;
-}
-
-/* the remaster's self-test counts and palette log keep their order on one thread */
-static bool serial(void)
-{
-    static int log = -1;
-    if (log < 0) { const char *p = SDL_getenv("SR_REMASTER_PALETTE_LOG"); log = p && *p; }
-    return rm_selftest() || log;
 }
 
 static void run_all(const EnhResolveJob *q)
@@ -139,24 +91,139 @@ static void run_all(const EnhResolveJob *q)
 
 void enh_flush(void)
 {
-    if (ncmd) run_all(NULL);
+    if (!ncmd) return;
+    cur.flushes++;
+    run_all(NULL);
+}
+
+void enh_bands_shutdown(void)
+{
+    enh_flush();                   /* nothing recorded is lost */
+    if (nworkers == 0) return;
+    quit = true;
+    for (int i = 0; i < nworkers; i++) SDL_SignalSemaphore(sem_go[i]);
+    for (int i = 0; i < nworkers; i++) {
+        SDL_WaitThread(threads[i], NULL);
+        SDL_DestroySemaphore(sem_go[i]);
+        SDL_DestroySemaphore(sem_done[i]);
+    }
+    nworkers = 0;
+    nbands = 1;                    /* anything drawn after: directly */
+}
+
+/* SR_ENH_THREADS=N: N bands (1: no worker, the single-threaded drawing); default one per logical core. */
+static void start(void)
+{
+    if (nbands) return;
+    nbands = 1;
+    int n = cfg_bands;
+    if (n <= 0) {
+        const char *t = SDL_getenv("SR_ENH_THREADS");
+        n = t && *t ? SDL_atoi(t) : SDL_GetNumLogicalCPUCores();
+    }
+    n = SDL_clamp(n, 1, MAX_BANDS);
+    if (n == 1) return;
+    int cm = cfg_cmds > 0 ? cfg_cmds : CMD_MAX;
+    size_t ar = cfg_arena > 0 ? cfg_arena : ARENA;
+    if (!cmds || cm != cmd_max || ar != arena_size) {
+        SDL_free(cmds);
+        SDL_free(arena);
+        cmds = SDL_malloc((size_t)cm * sizeof *cmds);
+        arena = SDL_malloc(ar);
+        cmd_max = cm;
+        arena_size = ar;
+        if (!cmds || !arena) {
+            SDL_free(cmds); SDL_free(arena); cmds = NULL; arena = NULL; cmd_max = 0; arena_size = 0;
+            return;
+        }
+    }
+    quit = false;                  /* a restart after enh_bands_shutdown */
+    for (int i = 0; i < n - 1; i++) {
+        sem_go[i] = SDL_CreateSemaphore(0);
+        sem_done[i] = SDL_CreateSemaphore(0);
+        char name[24];
+        SDL_snprintf(name, sizeof name, "enh_band%d", i + 1);
+        bool refuse = cfg_fail >= 0 && i >= cfg_fail;           /* enh_bands_config's creation failure */
+        if (refuse) SDL_SetError("thread creation refused (enh_bands_config)");
+        threads[i] = sem_go[i] && sem_done[i] && !refuse ? SDL_CreateThread(worker, name, (void *)(intptr_t)i) : NULL;
+        if (!threads[i]) {
+            if (sem_go[i]) SDL_DestroySemaphore(sem_go[i]);
+            if (sem_done[i]) SDL_DestroySemaphore(sem_done[i]);
+            fprintf(stderr, "enhanced view: %d of %d worker threads started: %s\n", i, n - 1, SDL_GetError());
+            break;
+        }
+        nworkers++;
+    }
+    nbands = nworkers + 1;
+    static bool registered;
+    if (nworkers && !registered) {
+        registered = true;
+        host_set_shutdown_handler(enh_bands_shutdown);  /* the workers end before SDL_Quit */
+        atexit(enh_bands_shutdown);                     /* and on any other way out */
+    }
+}
+
+int enh_bands(void)
+{
+    start();
+    return nbands;
+}
+
+void enh_bands_config(int bands, int cmd_max_, size_t arena_, int fail_after)
+{
+    enh_bands_shutdown();
+    cfg_bands = bands;
+    cfg_cmds = cmd_max_;
+    cfg_arena = arena_;
+    cfg_fail = fail_after;
+    nbands = 0;                    /* the next submit starts again */
+    memset(&cur, 0, sizeof cur);
+}
+
+void enh_bands_stats(EnhBandStats *out)
+{
+    *out = last;
+}
+
+/* the frame's commands ran (bands: nb), its rows are resolved: its stats */
+static void freeze(int nb)
+{
+    double max = 0, sum = 0;
+    for (int k = 0; k < nb; k++) {
+        double ms = (double)cur.band_ns[k] / 1e6;
+        if (ms > max) max = ms;
+        sum += ms;
+    }
+    last = (EnhBandStats){ cur.drawn_directly ? 1 : nb, cur.cmds, cur.flushes, full, max, sum / nb };
+    memset(&cur, 0, sizeof cur);
+}
+
+/* the remaster's self-test counts and palette log keep their order on one thread */
+static bool serial(void)
+{
+    static int log = -1;
+    if (log < 0) { const char *p = SDL_getenv("SR_REMASTER_PALETTE_LOG"); log = p && *p; }
+    return rm_selftest() || log;
 }
 
 void enh_submit(EnhCmdFn fn, const void *arg, size_t size)
 {
     EnhBuf *b = &enh_buf;
     start();
-    if (direct || nbands == 1 || serial()) {
+    cur.cmds++;
+    if (direct || nbands == 1 || serial() || size > arena_size) {
         enh_flush();
+        cur.drawn_directly = true;
         EnhCtx k = { b->cx0, b->cy0, b->cx1, b->cy1, 0, b->h, enh_cur_rgb };
         fn(&k, arg);
         return;
     }
     size_t at = (used + 15) & ~(size_t)15;
-    if (ncmd == CMD_MAX || at + size > ARENA) {
+    if (ncmd == cmd_max || at + size > arena_size) {
         static bool warned;
         if (!warned) fprintf(stderr, "enhanced view: the frame's command list is full, drawn in parts\n");
         warned = true;
+        full++;
         enh_flush();
         at = 0;
     }
@@ -170,10 +237,14 @@ void enh_bands_run(const EnhResolveJob *q)
     start();
     if (nworkers == 0 || direct) {
         enh_flush();
+        Uint64 t0 = SDL_GetTicksNS();
         enh_resolve_rows(q, 0, enh_buf.h / enh_opt.aa);
+        cur.band_ns[0] += SDL_GetTicksNS() - t0;
+        freeze(1);
         return;
     }
     run_all(q);
+    freeze(nworkers + 1);
 }
 
 /* ---------------------------------------------------------------- SR_ENH_THREADS_CHECK */
