@@ -3,12 +3,14 @@
  *   test_sr2_enh <SR2 game dir>
  * Headless with the SDL dummy drivers. */
 #include <SDL3/SDL.h>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "enhanced/enhanced.h"
 #include "enhanced/enh_compare.h"
 #include "enhanced/enh_internal.h"
+#include "game/race_int.h"
 #include "host.h"
 #include "mem.h"
 #include "platform/ega.h"
@@ -153,15 +155,145 @@ static void sr2_enh_opp_depth(void)
 {
     EnhView v = view_at(100.0);
     v.opp_pos = 100.0 - 40.0 / 64;                 /* d = -40: just behind */
+    v.opp_d = -40;
     EnhObjGeo g = enh_obj_geo(&v, -1, 2);
     printf("  rear, d -40: ok %d z %.2f\n", g.ok, g.z);
     CHECK(g.ok && SDL_fabs(g.z - 7.0) < 1e-6);
     v.opp_pos = 100.0 + 8.0 / 64;                  /* d = 8, the side view */
+    v.opp_d = 8;
     g = enh_obj_geo(&v, -1, 0);
     CHECK(g.ok && SDL_fabs(g.z - 21.0) < 1e-6);
     v.opp_pos = 103.0;                             /* d = 192, ahead */
+    v.opp_d = 192;
     g = enh_obj_geo(&v, -1, 5);
     CHECK(g.ok && SDL_fabs(g.z - 28.0) < 1e-6);
+}
+
+/* A channel that jumps (enh_ser_snap) takes its new value at once; the others still interpolate. */
+static void sr2_enh_series_snap(void)
+{
+    enh_init(false, 1, 1, 100, true);
+    EnhSeries s;
+    memset(&s, 0, sizeof s);
+    double v[ENH_SER_N] = { 0 };
+    Uint64 t0 = 1000000000ull, ms = 10000000ull;
+    v[0] = 0; v[1] = 0;
+    enh_ser_push(&s, t0, v, 1e7);
+    v[0] = 10; v[1] = 0;
+    enh_ser_push(&s, t0 + ms, v, 1e7);
+    v[0] = 20; v[1] = 100;
+    enh_ser_push(&s, t0 + 2 * ms, v, 1e7);
+    enh_ser_snap(&s, 1);
+    double out[ENH_SER_N];
+    enh_ser_at(&s, t0 + 2 * ms + ms / 2, out);
+    printf("  ch0 %.3f ch1 %.3f\n", out[0], out[1]);
+    CHECK(out[0] > 10 && out[0] < 20);
+    CHECK(out[1] == 100);
+}
+
+/* The heading is unwrapped across the s16 range: a long race does not reset the motion. */
+static void sr2_enh_heading_wrap(void)
+{
+    CHECK(enh_unwrap(32760.0, 32760, (s16)0x8002) == 32770.0);
+    CHECK(enh_s16_of(32770.0) == (s16)0x8002);
+    CHECK(enh_s16_of(-40000.5) == (s16)(s32)floor(-40000.5));
+    s16 keep_mode = DSS(DS_road_mode), keep_seg = DSS(DS_seg), keep_sub = DSS(DS_substep), keep_head = DSS(DS_heading);
+    u8 keep_racing = DSB(DS_racing);
+    enh_init(true, 1, 1, 100, true);
+    DSS(DS_road_mode) = 1;
+    DSB(DS_racing) = 1;
+    DSS(DS_seg) = 100;
+    DSS(DS_substep) = 0;
+    enh_race_begin();
+    const u16 h[4] = { 0x7FF0, 0x7FF8, 0x8000, 0x8008 };
+    for (int i = 0; i < 4; i++) { DSW(DS_heading) = h[i]; enh_frame_built(); }
+    EnhView v;
+    CHECK(enh_view_newest(&v));
+    printf("  heading %.1f\n", v.heading);
+    CHECK(v.heading == 32776.0);
+    enh_race_end();
+    DSS(DS_road_mode) = keep_mode; DSS(DS_seg) = keep_seg; DSS(DS_substep) = keep_sub; DSS(DS_heading) = keep_head;
+    DSB(DS_racing) = keep_racing;
+}
+
+/* An object's row at a game frame is the game's own (integer projection, the frame's height), and between
+ * frames it moves on smoothly on a slope. */
+static void sr2_enh_obj_geo_exact_slope(void)
+{
+    u16 keep[31];
+    for (int i = 90; i <= 120; i++) { keep[i - 90] = TRKW(TRK_HGT, i); TRKW(TRK_HGT, i) = (u16)(2 * i); }
+    s16 keep_cam = DSS(DS_cam_y), keep_b = DSS(DS_view_bounce_y), keep_mode = DSS(DS_road_mode);
+    DSS(DS_cam_y) = 0x76C;
+    DSS(DS_view_bounce_y) = 0;
+    DSS(DS_road_mode) = 1;
+    EnhView v = view_at(100.875);
+    v.mode = 1;
+    v.exact = true;
+    v.hoff = 0;
+    EnhObjGeo g = enh_obj_geo(&v, 105, 0);
+    double want = road_proj_y(37, 2000, (s16)(200 - 210)) + 0.5;     /* 37 = 8 * 5 + 4 - 7 */
+    printf("  exact yg %.2f, the game's %.2f\n", g.yg, want);
+    CHECK(g.ok && g.yg == want);
+    EnhView a = view_at(100.99), b = view_at(101.01);
+    a.mode = b.mode = 1;
+    EnhObjGeo ga = enh_obj_geo(&a, 105, 0), gb = enh_obj_geo(&b, 105, 0);
+    printf("  smooth yg %.3f -> %.3f\n", ga.yg, gb.yg);
+    CHECK(ga.ok && gb.ok && SDL_fabs(ga.yg - gb.yg) < 0.5);
+    for (int i = 90; i <= 120; i++) TRKW(TRK_HGT, i) = keep[i - 90];
+    DSS(DS_cam_y) = keep_cam; DSS(DS_view_bounce_y) = keep_b; DSS(DS_road_mode) = keep_mode;
+}
+
+/* The opponent stands at the depth the game drew it at (DS_opp_last_d), not at one computed from opp_pos. */
+static void sr2_enh_opp_drawn_d(void)
+{
+    EnhView v = view_at(100.0);
+    v.mode = 1;
+    v.exact = true;
+    v.opp_pos = v.pos + 10;                         /* inconsistent on purpose: d is what was drawn */
+    v.opp_seg = 104;
+    v.opp_sx = 160;
+    v.opp_d = 300;
+    EnhObjGeo g = enh_obj_geo(&v, -1, 5);
+    CHECK(g.ok && g.z == 41);
+    v.opp_d = -20;
+    g = enh_obj_geo(&v, -1, 2);
+    CHECK(g.ok && g.z == 6);
+    v.opp_d = -40;
+    g = enh_obj_geo(&v, -1, 2);
+    CHECK(g.ok && g.z == 7);
+    EnhView a = view_at(100.0), b = view_at(100.125);
+    a.mode = b.mode = 1;
+    a.opp_d = 300;
+    b.opp_d = 292;                                  /* the car 1/8 segment on */
+    EnhObjGeo ga = enh_obj_geo(&a, -1, 5), gb = enh_obj_geo(&b, -1, 5);
+    printf("  smooth z %.2f, %.2f\n", ga.z, gb.z);
+    CHECK(ga.ok && gb.ok && ga.z == 41.5 && gb.z == 40.5);
+}
+
+/* After the cliff fall the game draws no front view: the enhanced view is not composed over the stale page. */
+static void sr2_enh_fallen_not_composed(void)
+{
+    static const u32 rgb[16];
+    s16 keep_mode = DSS(DS_road_mode), keep_page = DSS(DS_shown_page);
+    u8 keep_racing = DSB(DS_racing);
+    u16 keep_fallen = DSW(DS_fallen);
+    enh_init(true, 1, 1, 100, true);
+    ega_init();
+    DSS(DS_road_mode) = 1;
+    DSB(DS_racing) = 1;
+    DSS(DS_shown_page) = 0;
+    DSW(DS_fallen) = 0;
+    enh_race_begin();
+    enh_frame_built();
+    enh_frame_presented();
+    CHECK(enh_compose(small, rgb));
+    DSW(DS_fallen) = 1;
+    enh_frame_built();
+    enh_frame_presented();
+    CHECK(!enh_compose(small, rgb));
+    enh_race_end();
+    DSW(DS_fallen) = keep_fallen;
+    DSS(DS_road_mode) = keep_mode; DSS(DS_shown_page) = keep_page; DSB(DS_racing) = keep_racing;
 }
 
 /* As Street Rod 1: out-of-range values are clamped; res scale x aa stays within 16 samples. */
@@ -262,6 +394,11 @@ int main(int argc, char **argv)
     RUN(sr2_enh_fg_clears_tags);
     RUN(sr2_enh_obj_geo_continuous);
     RUN(sr2_enh_opp_depth);
+    RUN(sr2_enh_series_snap);
+    RUN(sr2_enh_heading_wrap);
+    RUN(sr2_enh_obj_geo_exact_slope);
+    RUN(sr2_enh_opp_drawn_d);
+    RUN(sr2_enh_fallen_not_composed);
     RUN(sr2_enh_compare_rows);
     RUN(sr2_enh_compare_log);
     host_shutdown();

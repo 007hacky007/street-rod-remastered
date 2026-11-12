@@ -18,17 +18,8 @@
 
 EnhOptions enh_opt = { false, 1, ENH_DEFAULT_AA, ENH_DEFAULT_MOTION_DELAY, true };
 
-/* A smoothly interpolated series of samples: [0] = the newest, [1] and [2] the ones before. */
-#define SER_N 5
-typedef struct {
-    Uint64 t[3];
-    double v[3][SER_N];
-    int n;
-    double period;             /* the measured period, smoothed (ns) */
-} Series;
-
-static Series frames;          /* per game frame: lat, heading, pos, opp_pos, opp_lat */
-static Series phys;            /* per physics step in a race: pos, opp_pos */
+static EnhSeries frames;       /* per game frame: the ENH_F_ channels */
+static EnhSeries phys;         /* per physics step in a race: pos, opp_pos */
 static EnhSnap snap;           /* the newest frame's other state */
 static bool active;            /* between enh_race_begin and enh_race_end, and enhancing this drive */
 static u16 shown_start;        /* plane offset of the page the last road frame was presented in */
@@ -53,7 +44,7 @@ static EnhView cut_view;
 
 #define NOMINAL_FRAME_NS (8 * (double)PIT_DIV_GAME * 1e9 / PIT_HZ)    /* pace_ticks(8) at the game rate */
 
-static void ser_push(Series *s, Uint64 t, const double *v, double nominal)
+void enh_ser_push(EnhSeries *s, Uint64 t, const double *v, double nominal)
 {
     if (s->n > 0) {
         double d = (double)(t - s->t[0]);
@@ -71,17 +62,41 @@ static void ser_push(Series *s, Uint64 t, const double *v, double nominal)
 static double lerp(double a, double b, double x) { return a + (b - a) * x; }
 
 /* As Street Rod 1's ser_at: the newest segment running motion_delay behind, blended from the one before. */
-static void ser_at(const Series *s, Uint64 now, double *out)
+void enh_ser_at(const EnhSeries *s, Uint64 now, double *out)
 {
     if (s->n == 1) { memcpy(out, s->v[0], sizeof s->v[0]); return; }
     double nominal = s->period, period = (double)(s->t[0] - s->t[1]);
     if (period < nominal * 0.5 || period > nominal * 2.0) period = nominal;
     double x = ((double)now - (double)s->t[0]) / period + 1.0 - enh_opt.motion_delay / 100.0;
     x = SDL_clamp(x, 0.0, 1.5);
-    for (int k = 0; k < SER_N; k++) out[k] = lerp(s->v[1][k], s->v[0][k], x);
+    for (int k = 0; k < ENH_SER_N; k++) out[k] = lerp(s->v[1][k], s->v[0][k], x);
     if (s->n == 3 && x < 1.0) {
         double w = x * x * (3 - 2 * x), xo = SDL_min(x + 1.0, 1.5);
-        for (int k = 0; k < SER_N; k++) out[k] = lerp(lerp(s->v[2][k], s->v[1][k], xo), out[k], w);
+        for (int k = 0; k < ENH_SER_N; k++) out[k] = lerp(lerp(s->v[2][k], s->v[1][k], xo), out[k], w);
+    }
+}
+
+void enh_ser_snap(EnhSeries *s, int k)
+{
+    for (int i = 1; i < s->n; i++) s->v[i][k] = s->v[0][k];
+}
+
+s16 enh_s16_of(double h) { return (s16)(u16)(s32)floor(h); }
+
+double enh_unwrap(double prev, s16 prev_raw, s16 raw) { return prev + (s16)(u16)(raw - prev_raw); }
+
+void enh_rowtab_read(EnhRowTab *t)
+{
+    for (int k = 0; k < 15; k++) {
+        t->xl[k] = DSS((u16)(DS_row_xl + 2 * k));
+        t->xr[k] = DSS((u16)(DS_row_xr + 2 * k));
+        t->y[k] = DSS((u16)(DS_row_y + 2 * k));
+        t->xol[k] = DSS((u16)(DS_row_xol + 2 * k));
+        t->xor_[k] = DSS((u16)(DS_row_xor + 2 * k));
+        t->ye[k] = DSS((u16)(DS_row_yeye + 2 * k));
+        t->yk[k] = DSS((u16)(DS_row_ykerb + 2 * k));
+        t->ybl[k] = DSS((u16)(DS_row_ybank_l + 2 * k));
+        t->ybr[k] = DSS((u16)(DS_row_ybank_r + 2 * k));
     }
 }
 
@@ -128,27 +143,36 @@ static double opp_pos(void) { return DSS(DS_opp_seg) + DSS(DS_opp_seg_frac64) / 
 void enh_frame_built(void)
 {
     if (!active) return;
+    static s16 last_heading;   /* the raw s16 heading of the newest frame */
+    double v[ENH_SER_N] = { 0 };
+    s16 heading = DSS(DS_heading);
+    v[ENH_F_LAT] = DSS(DS_cam_x);
+    v[ENH_F_POS] = car_pos();
+    v[ENH_F_OPP_POS] = opp_pos();
+    v[ENH_F_OPP_LAT] = DSS(DS_opp_lat);
+    v[ENH_F_CAM_Y] = DSS(DS_cam_y);
+    v[ENH_F_BOUNCE] = DSS(DS_view_bounce_y);
+    /* the height above the track where the game reads it (road_set_seg_ptrs: the strip at seg + C0h) */
+    int hseg = DSS(DS_seg) + ((DSS(DS_road_mode) & 6) ? 0xC0 : 0);
+    v[ENH_F_HOFF] = (s16)(u16)(DSW(DS_cur_height) - TRKW(TRK_HGT, SDL_clamp(hseg, 0, TRK_N - 1)));
+    /* A jump (race start, reset, a drive-to entry) starts the motion anew. */
+    if (frames.n > 0 && (SDL_fabs(v[ENH_F_POS] - frames.v[0][ENH_F_POS]) >= 2.0
+                         || abs((s16)(u16)(heading - last_heading)) >= 0x40))
+        frames.n = phys.n = 0;
     /* The heading is kept as it is (road_project_front: dx = heading - YAW[seg + k]), unwrapped against the last
      * frame, so the view equals the original's at each frame and turns smoothly between frames. */
-    double v[SER_N] = { DSS(DS_cam_x), DSS(DS_heading), car_pos(), opp_pos(), DSS(DS_opp_lat) };
-    /* A jump (race start, reset, a drive-to entry) starts the motion anew. */
-    if (frames.n > 0 && (SDL_fabs(v[2] - frames.v[0][2]) >= 2.0 || SDL_fabs(v[1] - frames.v[0][1]) >= 0x40))
-        frames.n = phys.n = 0;
-    if (frames.n > 0) v[1] = frames.v[0][1] + (s16)((s16)v[1] - (s16)frames.v[0][1]);
-    ser_push(&frames, host_tick_time_ns(), v, NOMINAL_FRAME_NS);
-    snap.height = DSS(DS_cur_height);
-    snap.cam_y = DSS(DS_cam_y);
-    snap.bounce = DSS(DS_view_bounce_y);
-    snap.mode = DSS(DS_road_mode);
-    snap.town = DSB(DS_racing) == 0;
+    v[ENH_F_HEADING] = frames.n > 0 ? enh_unwrap(frames.v[0][ENH_F_HEADING], last_heading, heading) : heading;
+    last_heading = heading;
+    enh_ser_push(&frames, host_tick_time_ns(), v, NOMINAL_FRAME_NS);
+    enh_rowtab_read(&snap.game_front);   /* before road_project_mirror overwrites rows 0..7 and YK */
 }
 
 void enh_phys_step(void)
 {
     if (!active) return;
-    double v[SER_N] = { car_pos(), opp_pos(), 0, 0, 0 };
+    double v[ENH_SER_N] = { car_pos(), opp_pos() };
     if (phys.n > 0 && SDL_fabs(v[0] - phys.v[0][0]) >= 2.0) phys.n = 0;
-    ser_push(&phys, host_tick_time_ns(), v, NOMINAL_FRAME_NS * 12 / 8);
+    enh_ser_push(&phys, host_tick_time_ns(), v, NOMINAL_FRAME_NS * 12 / 8);
 }
 
 void enh_draw_begin(void)
@@ -200,7 +224,7 @@ static void capture_objects(void)
         bool opp = id == ENH_OBJ_OPP;
         c->seg = opp ? -1 : (int)floor(cut_view.pos) + id;
         c->sprite = opp ? DSS(DS_opp_sprite) : 0;
-        c->fixed = opp && (c->sprite == 0 || c->sprite == 1);
+        c->fixed = opp && cut_view.opp_fixed;
         c->geo = enh_obj_geo(&cut_view, c->seg, c->sprite);
         if (!c->geo.ok) continue;
         int w = x1[id] - x0[id] + 1, h = y1[id] - y0[id] + 1;
@@ -253,33 +277,71 @@ void enh_draw_fg(bool fg)
 
 static void compare_frame(void);
 
+/* The newest frame's state that is not interpolated, after the frame was drawn. */
+static void snap_fill(void)
+{
+    snap.mode = DSS(DS_road_mode);
+    snap.town = DSB(DS_racing) == 0;
+    snap.opp_sprite = DSS(DS_opp_sprite);
+    snap.opp_seg = DSS(DS_opp_seg);
+    snap.opp_d = DSS(DS_opp_last_d);
+    snap.opp_sx = DSS(DS_opp_last_sx);
+    /* opponent_draw puts these at fixed screen spots */
+    snap.opp_fixed = snap.opp_sprite == 0 || snap.opp_sprite == 1 || DSW(DS_opp_contact) != 0
+                     || PHW(PLAYER, PH_RESULT) == 3;
+    snap.fall_dir = DSS(DS_fall_dir);
+    snap.fallen = DSW(DS_fallen) != 0;
+    snap.rail_phase = DSS(DS_rail_phase_seg);
+    snap.start_seg = DSS(DS_start_seg);
+    snap.ground_top_y = DSS(DS_ground_top_y);
+    snap.top_band_row = DSS(DS_top_band_row);
+    snap.police = DSS(DS_police_state);
+    enh_rowtab_read(&snap.game_mirror);
+}
+
 void enh_frame_presented(void)
 {
     if (!active) return;
     ega_set_layer(EGA_LAYER_OFF);
+    /* After the cliff fall road_draw_front draws nothing (it returns before enh_draw_begin): the page keeps the
+     * original's picture, and nothing of it is cut or composed. */
+    if (DSW(DS_fallen)) { snap.fallen = true; presented = false; return; }
     /* The page drawn by road_frame is shown: its view rows are the road frame. Whatever is written there from
      * now on (messages, the start light, the results) stays the original's picture. */
     shown_start = (u16)(DSS(DS_shown_page) * 0x2000);
     ega_clear_written(shown_start, ENH_VIEW_Y1 * EGA_BYTES_PER_LINE);
     presented = true;
-    snap.opp_sprite = DSS(DS_opp_sprite);
+    snap_fill();
+    enh_sheets_read();
     capture_objects();
     if (enh_compare_on()) compare_frame();
 }
 
 static void view_of(const double *f, const double *p, EnhView *v)
 {
-    v->lat = f[0];
-    v->heading = f[1];
-    v->pos = f[2];
-    v->opp_pos = f[3];
+    v->lat = f[ENH_F_LAT];
+    v->heading = f[ENH_F_HEADING];
+    v->pos = f[ENH_F_POS];
+    v->opp_pos = f[ENH_F_OPP_POS];
     if (p) { v->pos = p[0]; v->opp_pos = p[1]; }
-    v->opp_lat = f[4];
+    v->opp_lat = f[ENH_F_OPP_LAT];
+    v->cam_y = f[ENH_F_CAM_Y];
+    v->hoff = f[ENH_F_HOFF];
+    v->bounce = f[ENH_F_BOUNCE];
+    v->roll = f[ENH_F_ROLL];
+    v->aq_dy = f[ENH_F_AQ_DY];
+    for (int k = 0; k < 6; k++) v->aq_def[k] = f[ENH_F_DEF0 + k];
+    /* the depth the opponent was drawn at, moved on by the cars' motion since the newest frame */
+    v->opp_d = snap.opp_d + 64.0 * ((v->opp_pos - v->pos) - (frames.v[0][ENH_F_OPP_POS] - frames.v[0][ENH_F_POS]));
     v->opp_sprite = snap.opp_sprite;
+    v->opp_seg = snap.opp_seg;
+    v->opp_sx = snap.opp_sx;
+    v->opp_fixed = snap.opp_fixed;
+    v->fall_dir = snap.fall_dir;
+    v->start_seg = snap.start_seg;
+    v->rail_phase = snap.rail_phase;
+    v->ground_top_y = snap.ground_top_y;
     v->town = snap.town;
-    v->height = snap.height;
-    v->cam_y = snap.cam_y;
-    v->bounce = snap.bounce;
     v->mode = snap.mode;
     v->exact = false;
 }
@@ -287,10 +349,10 @@ static void view_of(const double *f, const double *p, EnhView *v)
 bool enh_view_at(Uint64 now_ns, EnhView *v)
 {
     if (frames.n == 0) return false;
-    double f[SER_N], p[SER_N];
-    ser_at(&frames, now_ns, f);
+    double f[ENH_SER_N], p[ENH_SER_N];
+    enh_ser_at(&frames, now_ns, f);
     bool use_phys = !snap.town && phys.n > 0;   /* in a race the cars move with the physics */
-    if (use_phys) ser_at(&phys, now_ns, p);
+    if (use_phys) enh_ser_at(&phys, now_ns, p);
     view_of(f, use_phys ? p : NULL, v);
     return true;
 }

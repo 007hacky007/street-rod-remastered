@@ -117,11 +117,11 @@ static double dash_half(void)
 
 /* ---------------------------------------------------------------- sky and horizon */
 
-static u8 src_rows[0xB8][320];     /* page 1 rows 66h..B7h: the sky and horizon sheets */
+static u8 src_rows[0xC8][320];     /* page 1 rows 66h..C7h: the sky and horizon sheets */
 
-static void read_sheets(void)
+void enh_sheets_read(void)
 {
-    for (int y = 0x66; y < 0xB8; y++) {
+    for (int y = 0x66; y < 0xC8; y++) {
         u16 o = (u16)(0x2000 + y * EGA_BYTES_PER_LINE);
         for (int x = 0; x < 320; x++) {
             u16 b = (u16)(o + (x >> 3));
@@ -137,7 +137,7 @@ static void sheet_row(int j, double syf, double shift)
     EnhBuf *b = &enh_buf;
     int sy = (int)floor(syf);
     if (sy < 0x66) sy = 0x66;
-    if (sy > 0xB7) sy = 0xB7;
+    if (sy > 0xC7) sy = 0xC7;
     u8 *out = b->px + (size_t)j * b->w;
     for (int i = 0; i < b->w; i++) {
         double x = (i + 0.5) / b->sa - shift;
@@ -160,7 +160,6 @@ static double horizon_y(const Cam *c)
 static void draw_sky(const Cam *c, bool town)
 {
     EnhBuf *b = &enh_buf;
-    read_sheets();
     if (town) {                    /* fixed: sky 1Dh rows from 66h, skyline 10h rows from A3h at 2Fh */
         for (int j = 0; j < b->h; j++) {
             double y = ENH_VIEW_Y0 + (j + 0.5) / b->sa;
@@ -288,21 +287,28 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
     }
 }
 
+/* The camera of a view, for the road and the objects alike. dy = height - HGT(s): the game's height is HGT[seg]
+ * (road_advance_segment) plus hoff (the cliff fall); between frames the track's height at pos keeps the view
+ * smooth. dx = heading - YAW(s), the heading unwrapped. */
+static void cam_of(const EnhView *v, Cam *c)
+{
+    c->base = segc((int)floor(v->pos));
+    c->pos = v->pos;
+    c->lat = v->lat;
+    c->hpos = v->exact ? v->hoff : interp(c, v->pos, hgt_rel) + v->hoff;
+    double hf = floor(v->heading);
+    c->hv = (s16)(u16)(enh_s16_of(hf) - (s16)trk(TRK_YAW, c->base)) + (v->heading - hf);
+    c->cam_y = v->cam_y;
+    c->bounce = v->bounce;
+    c->exact = v->exact;
+}
+
 void enh_draw_road(const EnhView *v)
 {
     enh_buf_setup();
     enh_clip_view();
     Cam c;
-    c.base = segc((int)floor(v->pos));
-    c.pos = v->pos;
-    c.lat = v->lat;
-    /* dy = height - HGT(s): the game's height is HGT[seg] (road_advance_segment); between frames the track's
-     * height at pos keeps the view smooth. dx = heading - YAW(s). */
-    c.hpos = v->exact ? (s16)(v->height - (s16)trk(TRK_HGT, c.base)) : interp(&c, v->pos, hgt_rel);
-    c.hv = (s16)((s16)v->heading - (s16)trk(TRK_YAW, c.base)) + (v->heading - (s16)v->heading);
-    c.cam_y = v->cam_y;
-    c.bounce = v->bounce;
-    c.exact = v->exact;
+    cam_of(v, &c);
     draw_sky(&c, v->town);
     double dash = dash_half();
     Row rows[FAR_ROWS + 1];
@@ -316,34 +322,46 @@ EnhObjGeo enh_obj_geo(const EnhView *v, int seg, int sprite)
 {
     EnhObjGeo g = { 0, 0, 0, 0, false };
     Cam c;
-    c.base = segc((int)floor(v->pos));
-    c.pos = v->pos;
-    c.lat = v->lat;
-    c.hpos = interp(&c, v->pos, hgt_rel);
-    c.hv = (s16)((s16)v->heading - (s16)trk(TRK_YAW, c.base)) + (v->heading - (s16)v->heading);
-    c.cam_y = v->cam_y;
-    c.bounce = v->bounce;
-    c.exact = false;
+    cam_of(v, &c);
     Row r;
-    double lat_shift = 0;
-    if (seg < 0) {                                          /* the opponent (opponent_draw) */
-        double d = 64.0 * (v->opp_pos - v->pos), z = d / 8.0;
+    if (seg < 0) {                                          /* the opponent (opponent_draw), at the d it was drawn at */
+        double z = c.exact ? cdiv16((s16)v->opp_d, 8) : v->opp_d / 8.0;
         if (sprite == 0) z += 16;
         if (z < -2 && sprite == 2) z += 8;
         r.z = fabs(z) + 4.0;
-        r.dx = c.hv - interp(&c, v->opp_pos, yaw_rel);
-        r.dy = c.hpos - interp(&c, v->opp_pos, hgt_rel);
-        lat_shift = v->opp_lat;                             /* x relative to the opponent's lane */
+        if (c.exact) {                                      /* the game's integer segment */
+            r.dx = c.hv - yaw_rel(&c, v->opp_seg);
+            r.dy = c.hpos - hgt_rel(&c, v->opp_seg);
+        } else {
+            r.dx = c.hv - interp(&c, v->opp_pos, yaw_rel);
+            r.dy = c.hpos - interp(&c, v->opp_pos, hgt_rel);
+        }
+        if (v->mode == 4) r.dy = 0;
     } else {                                                /* on the road at segment seg */
-        r.z = 8.0 * (seg - v->pos) + 4.0;
-        r.dx = c.hv - yaw_rel(&c, seg);
-        r.dy = c.hpos - hgt_rel(&c, seg);
+        int k = seg - c.base;
+        if (k >= 0 && k <= FAR_ROWS) r = row_k(&c, k);      /* the row's own depth: row 0 at 4, row 14 at 116 */
+        else {
+            r.z = 8.0 * (seg - v->pos) + 4.0;
+            r.dx = c.hv - yaw_rel(&c, seg);
+            r.dy = c.hpos - hgt_rel(&c, seg);
+        }
     }
     if (r.z < 1.0) return g;
     g.z = r.z;
     g.yg = py(&c, &r, Y_ROAD);
     g.b = 4.0 / r.z;
-    g.a = px(&c, &r, lat_shift);
+    if (seg < 0) {
+        g.a = c.exact ? v->opp_sx : px(&c, &r, v->opp_lat);   /* x relative to the opponent's lane */
+        if (sprite > 3 && sprite < 9) {                     /* rear views: not above the road row they stand on */
+            int row = ((int)r.z + 1) >> 3;
+            Row rr = row_k(&c, SDL_min(row, FAR_ROWS));
+            double yr = row > FAR_ROWS ? v->ground_top_y + ROW_TOP : py(&c, &rr, Y_ROAD);
+            if (g.yg < yr) g.yg = yr;
+        }
+        /* pictures 2 and 3: the base at most row 100 (the bottom clamp at 65h is then always met) */
+        if ((sprite == 2 || sprite == 3) && g.yg > 100 + ROW_TOP) g.yg = 100 + ROW_TOP;
+    } else
+        g.a = px(&c, &r, 0);
     g.ok = true;
     return g;
 }
