@@ -160,6 +160,11 @@ enum { ENH_PASS_FRONT, ENH_PASS_MIRROR };
 /* The Aqueduct's (xf): (a, yg) is the anchor rotated as the game rotates it, rot its angle in degrees (the view's roll,
  * the opponent's bank), b 4 / z (the opponent's mirror pictures 1 / z, the sky's 1). */
 typedef struct { double z, yg, a, b; bool ok; bool xf; double rot; } EnhObjGeo;
+/* enh_xf2.c: the image whose top-left texel corner is at (x0, y0) in the frame, drawn through the affine map m: a
+ * frame point p goes to (m[0] p.x + m[1] p.y + m[2], m[3] p.x + m[4] p.y + m[5]). Each sample's centre is mapped back
+ * and takes the texel it lands on (nearest), ENH_CLEAR skipped, under the current clip. img->rm is not drawn (no
+ * remastered art rotated yet). */
+void enh_draw_image_xf(const EnhImage *img, double x0, double y0, const double m[6]);
 EnhObjGeo enh_obj_geo(const EnhView *v, int kind, int seg, int sprite);   /* the mirror's: enh_obj_geo_mirror */
 /* enh_obj_geo of the mirror's cuts: ENH_CUT_MIR and ENH_CUT_STARTER at segment seg (k = base - seg, depth
  * enh_mirror_z, 8k beyond row 7; the starter's bottom pinned at row 27h), ENH_CUT_OPP with picture >= 9 at

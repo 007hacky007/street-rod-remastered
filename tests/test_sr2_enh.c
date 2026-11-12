@@ -1931,7 +1931,8 @@ static void aq_setup(void)
 }
 
 /* One Aqueduct frame as road_frame and aq_draw_front make it: the projection's words, enh_frame_built, the roll and
- * its pivot, enh_aq_begin, the presentation. */
+ * its pivot, enh_aq_begin, aq_frame_draw (the game's drawing of the shown page, when set), the presentation. */
+static void (*aq_frame_draw)(void);
 static void aq_frame(const s16 def[6], s16 aq_dy, s16 bounce, s16 roll, s16 cx, s16 cy)
 {
     static const u16 defs[6] = { DS_aq_def_floor_h, DS_aq_def_xl, DS_aq_def_xr, DS_aq_def_top_h, DS_aq_def_top_xl,
@@ -1946,6 +1947,7 @@ static void aq_frame(const s16 def[6], s16 aq_dy, s16 bounce, s16 roll, s16 cx, 
     DSS(DS_rot_cx) = cx;
     DSS(DS_rot_cy) = cy;
     enh_aq_begin();
+    if (aq_frame_draw) aq_frame_draw();
     enh_frame_presented();
 }
 
@@ -2162,6 +2164,181 @@ static void sr2_enh_aq_cut_hood(void)
     aq_restore();
 }
 
+/* An image through an affine map: the identity gives enh_draw_image's samples, a quarter turn puts each texel where
+ * the map sends its centre, nothing outside the clip. */
+static void sr2_enh_image_xf(void)
+{
+    static u8 want[640 * 200];
+    EnhOptions keep = enh_opt;
+    enh_opt.res_scale = 2;
+    enh_opt.aa = 1;
+    enh_buf_setup();
+    enh_clip_view();
+    u8 px[15];
+    for (int i = 0; i < 15; i++) px[i] = (u8)(i + 1);
+    EnhImage img = { 5, 3, px, NULL };
+    static const double id[6] = { 1, 0, 0, 0, 1, 0 };
+    size_t n = (size_t)enh_buf.w * enh_buf.h;
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+    enh_draw_image(&img, 40, 30, 45, 33);
+    memcpy(want, enh_buf.px, n);
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+    enh_draw_image_xf(&img, 40, 30, id);
+    int diff = 0, drawn = 0;
+    for (size_t i = 0; i < n; i++) { diff += want[i] != enh_buf.px[i]; drawn += enh_buf.px[i] != 0; }
+    printf("  identity: %d samples drawn, %d differ\n", drawn, diff);
+    CHECK(diff == 0 && drawn == 5 * 3 * 4);
+    enh_opt.res_scale = 1;
+    enh_buf_setup();
+    enh_clip_view();
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+    u8 p2[2] = { 3, 4 };
+    EnhImage im2 = { 2, 1, p2, NULL };
+    static const double m[6] = { 0, 1, 50, -1, 0, 150 };   /* +90 degrees about (100, 50) */
+    enh_draw_image_xf(&im2, 100, 50, m);
+    n = (size_t)enh_buf.w * enh_buf.h;
+    drawn = 0;
+    for (size_t i = 0; i < n; i++) drawn += enh_buf.px[i] != 0;
+    u8 a = enh_buf.px[(size_t)(49 - ENH_VIEW_Y0) * enh_buf.w + 100], b = enh_buf.px[(size_t)(48 - ENH_VIEW_Y0) * enh_buf.w + 100];
+    printf("  quarter turn: (100, 49) %d (100, 48) %d, %d drawn\n", a, b, drawn);
+    CHECK(a == 3 && b == 4 && drawn == 2);
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+    enh_clip(0, ENH_VIEW_Y0, 100, ENH_VIEW_Y1);
+    enh_draw_image_xf(&im2, 100, 50, m);
+    drawn = 0;
+    for (size_t i = 0; i < n; i++) drawn += enh_buf.px[i] != 0;
+    CHECK(drawn == 0);
+    enh_opt = keep;
+    enh_buf_setup();
+}
+
+/* the tagged pixels of sr2_enh_aq_cut_turns' frames: a 3x3 cut of row 5, the opponent's 4x3 (cleared first: the
+ * object layer tags only the pixels a write changes) */
+static void cut_turns_draw(void)
+{
+    ega_set_layer(EGA_LAYER_OFF);
+    for (int j = 0; j < 3; j++) { wr_span_col(0, 60, 50 + j, 3, 0); wr_span_col(0, 200, 60 + j, 4, 0); }
+    ega_clear_obj(0, 0x2000);
+    ega_clear_fg(0, 0x2000);
+    ega_set_layer(EGA_LAYER_OBJ);
+    ega_set_obj(5);
+    for (int j = 0; j < 3; j++) wr_span(0, 60, 50 + j, 3);
+    ega_set_obj(ENH_OBJ_OPP);
+    for (int j = 0; j < 3; j++) wr_span(0, 200, 60 + j, 4);
+    ega_set_layer(EGA_LAYER_OFF);
+}
+
+/* Cut `id` of the frame (geometry f, its rectangle at x0, y0, w x h) drawn alone in view v (geometry g): every
+ * drawn sample lies in the quadrilateral the rectangle's corners go to under the cut mapping M, and the samples'
+ * centroid is within 1 px of M of the rectangle's centre. */
+static bool cut_turned(const EnhView *v, int id, EnhObjGeo f, EnhObjGeo g, int x0, int y0, int w, int h)
+{
+    double s = f.z / g.z, a = (g.rot - f.rot) * SDL_PI_D / 180.0, C = s * cos(a), S = s * sin(a);
+    double m[6] = { C, S, g.a - C * f.a - S * f.yg, -S, C, g.yg + S * f.a - C * f.yg };
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0xEE);
+    enh_cuts_begin();
+    enh_cut_id(v, id);
+    double qx[4], qy[4], fx[4] = { x0, x0 + w, x0 + w, x0 }, fy[4] = { y0, y0, y0 + h, y0 + h };
+    for (int k = 0; k < 4; k++) { qx[k] = m[0] * fx[k] + m[1] * fy[k] + m[2]; qy[k] = m[3] * fx[k] + m[4] * fy[k] + m[5]; }
+    int n = 0, out = 0, sa = enh_buf.sa;
+    double sx = 0, sy = 0;
+    for (int j = 0; j < enh_buf.h; j++)
+        for (int i = 0; i < enh_buf.w; i++) {
+            if (enh_buf.px[(size_t)j * enh_buf.w + i] == 0xEE) continue;
+            double X = (i + 0.5) / sa, Y = ENH_VIEW_Y0 + (j + 0.5) / sa;
+            n++;
+            sx += X;
+            sy += Y;
+            int side = 0;
+            for (int k = 0; k < 4; k++) {
+                int l = (k + 1) & 3;
+                double cr = (qx[l] - qx[k]) * (Y - qy[k]) - (qy[l] - qy[k]) * (X - qx[k]);
+                side |= cr > 1e-9 ? 1 : cr < -1e-9 ? 2 : 0;
+            }
+            out += side == 3;
+        }
+    double cx = x0 + w / 2.0, cy = y0 + h / 2.0, mx = m[0] * cx + m[1] * cy + m[2], my = m[3] * cx + m[4] * cy + m[5];
+    double e = n ? SDL_max(fabs(sx / n - mx), fabs(sy / n - my)) : 99;
+    printf("  id %d: turned %.1f, %d samples, %d outside, centroid %.2f,%.2f (M %.2f,%.2f)\n", id, g.rot - f.rot, n, out,
+           n ? sx / n : 0, n ? sy / n : 0, mx, my);
+    return n >= w * h * sa * sa / 2 && out == 0 && e <= 1.0;
+}
+
+/* Between a frame at roll 0 and one at roll 20, a smooth view at roll 10 draws the newest frame's cuts turned back
+ * by 10 degrees about their rotated anchors: a row's by the roll, the opponent's (on the floor) by its bank, which
+ * a positive roll moves as much as the roll. */
+static void sr2_enh_aq_cut_turns(void)
+{
+    static const s16 def[6] = { 0, 0, 0, 0, 0, 0 };
+    aq_save();
+    Keep k = keep_ds();
+    aq_setup();
+    DSS(DS_opp_seg) = 105;
+    DSS(DS_opp_sprite) = 5;
+    DSS(DS_opp_last_d) = 300;
+    DSS(DS_opp_lat) = 0xA00;
+    DSS(DS_opp_last_sx) = 160;
+    DSW(DS_opp_contact) = 0;
+    aq_frame_draw = cut_turns_draw;
+    aq_frame(def, 3, 0, 0, 0xA0, 0x3F);
+    aq_frame(def, 3, 0, 20, 0xA0, 0x3F);
+    aq_frame_draw = NULL;
+    EnhView nv, v;
+    CHECK(enh_view_newest(&nv));
+    v = nv;
+    v.exact = false;
+    v.roll = v.roll_raw = 10;
+    EnhOptions keep = enh_opt;
+    enh_opt.res_scale = 4;
+    enh_opt.aa = 1;
+    enh_buf_setup();
+    enh_clip_view();
+    EnhObjGeo f = enh_obj_geo(&nv, ENH_CUT_ROW, 105, 0), g = enh_obj_geo(&v, ENH_CUT_ROW, 105, 0);
+    CHECK(f.ok && g.ok && f.rot == 20 && g.rot == 10);
+    CHECK(cut_turned(&v, 5, f, g, 60, 50, 3, 3));
+    f = enh_obj_geo(&nv, ENH_CUT_OPP, 105, 5);
+    g = enh_obj_geo(&v, ENH_CUT_OPP, 105, 5);
+    CHECK(f.ok && g.ok && g.rot - f.rot == -10);
+    CHECK(cut_turned(&v, ENH_OBJ_OPP, f, g, 200, 60, 4, 3));
+    enh_opt = keep;
+    enh_buf_setup();
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_race_end();
+    restore_ds(&k);
+    aq_restore();
+}
+
+/* The sky's cuts in smooth views at headings h and h + 3, roll 0: the stars' anchor moves by 3 (plot_points does not
+ * rotate at roll 0), the clouds' by 6 x 255/256 (shp_b_draw always rotates, with the shrink). */
+static void sr2_enh_aq_sky_cuts(void)
+{
+    aq_save();
+    Keep k = keep_ds();
+    aq_setup();
+    EnhView v;
+    memset(&v, 0, sizeof v);
+    v.mode = 8;
+    v.lat = 0xA00;
+    v.pos = 100;
+    v.cam_y = 0x76C;
+    v.piv_x = 0xA0;
+    v.piv_y = 0x3F;
+    EnhObjGeo s[2], c[2];
+    for (int i = 0; i < 2; i++) {
+        v.heading = 10 + 3 * i;
+        s[i] = enh_obj_geo(&v, ENH_CUT_STARS, INT_MAX, 0);
+        c[i] = enh_obj_geo(&v, ENH_CUT_CLOUDS, INT_MAX, 0);
+    }
+    printf("  stars %.4f -> %.4f, clouds %.4f -> %.4f\n", s[0].a, s[1].a, c[0].a, c[1].a);
+    CHECK(s[0].ok && s[1].ok && c[0].ok && c[1].ok);
+    CHECK(s[1].a - s[0].a == 3 && s[1].yg == s[0].yg && s[0].z == 1 && s[0].rot == 0);
+    CHECK(fabs(c[1].a - c[0].a - 6.0 * 255 / 256) < 1e-9 && fabs(c[1].yg - c[0].yg) < 1e-9);
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_race_end();
+    restore_ds(&k);
+    aq_restore();
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -2239,6 +2416,9 @@ int main(int argc, char **argv)
     RUN(sr2_enh_aq_roll_zero_continuous);
     RUN(sr2_enh_aq_cut_geo);
     RUN(sr2_enh_aq_cut_hood);
+    RUN(sr2_enh_image_xf);
+    RUN(sr2_enh_aq_cut_turns);
+    RUN(sr2_enh_aq_sky_cuts);
     host_shutdown();
     return failures ? 1 : 0;
 }
