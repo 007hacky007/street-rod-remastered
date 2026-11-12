@@ -18,6 +18,7 @@ std::vector<wxString> GameArgs(const GameOptions& o) {
                                "--game-dir", o.gameDir,
                                "--scale", wxString::Format("%d", o.scale)};
     if (o.fullscreen) args.push_back("--fullscreen");
+    if (o.uncapped) args.insert(args.end(), {"--fps", "0", "--vsync", "off"});
     if (t.art && !o.remasterDir.empty()) args.insert(args.end(), {"--remaster-dir", o.remasterDir});
     if (t.enhanced) {
         if (o.classic) {

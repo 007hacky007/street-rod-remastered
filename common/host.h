@@ -36,6 +36,20 @@ uint64_t host_tick_time_ns(void);
 #define HOST_FRAME_MAX_H (200 * 8)
 void host_set_frame_source(bool (*compose)(u32 *xrgb), int w, int h);
 
+/* ENH: frame pacing. host_set_fps: the cap, HOST_FPS_AUTO (the display's refresh rate) or 0..1000 (0 =
+ * uncapped); with VSync only a cap below the refresh rate counts. host_set_vsync: wait for the display's
+ * vertical sync (default on; if the renderer refuses it, a timer paces the frames). */
+#define HOST_FPS_AUTO (-1)
+#define HOST_FPS_BAD  (-2)
+void host_set_fps(int fps);
+void host_set_vsync(bool vsync);
+/* --fps's value: "auto", a number (clamped to 0..1000) or HOST_FPS_BAD. */
+int host_parse_fps(const char *value);
+/* The present grid for a cap (HOST_FPS_AUTO or 0..1000), the refresh rate (0 = unknown) and VSync, 0 = every
+ * changed frame; and the next present due after one at `presented` (`next` 0: the grid starts there). */
+uint64_t host_frame_interval_ns(int fps, float hz, bool vsync_active, bool vsync_asked);
+uint64_t host_next_present_ns(uint64_t next, uint64_t presented, uint64_t interval);
+
 /* Runs due timer ticks (and their audio), handles window events and presents the screen when it
  * changed. Every busy-wait loop of the original (tick waits, key polls, delays) must call this.
  * Sleeps briefly when nothing was due, so tight polling loops do not spin the CPU. */
@@ -153,7 +167,9 @@ _Noreturn void host_fatal(const char *fmt, ...);
  *                           l / r      left / right click where the pointer is
  *                           lp lr rp rr  hold / let go of the left / right button
  *                         A move feeds mouse motion until the pointer (host_set_pointer_query) is
- *                         there, 3 s at most; the next entry waits until the action is done. */
+ *                         there, 3 s at most; the next entry waits until the action is done.
+ *   SR_FPS=n              the frame rate cap when --fps is not given (0 = uncapped)
+ *   SR_DEBUG_FPS=1        once a second: the frame rate and the texture upload / present times on stderr */
 
 /* Developer aid: where the game's own pointer is (screen pixels), for scripted SR_KEYS mouse moves.
  * Installed by the platform (its pointer is DS:472A/472C); returns false if unknown. */

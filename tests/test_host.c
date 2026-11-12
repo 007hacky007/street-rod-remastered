@@ -297,6 +297,72 @@ static void mouse_space_set(void)
     host_shutdown();
 }
 
+/* --fps: auto, 0..1000 (clamped), anything else refused (HOST_FPS_BAD). */
+static void fps_parse(void)
+{
+    CHECK(host_parse_fps("auto") == HOST_FPS_AUTO);
+    CHECK(host_parse_fps("0") == 0);
+    CHECK(host_parse_fps("144") == 144);
+    CHECK(host_parse_fps("5000") == 1000);
+    CHECK(host_parse_fps("-3") == 0);
+    CHECK(host_parse_fps("60x") == HOST_FPS_BAD);
+    CHECK(host_parse_fps("") == HOST_FPS_BAD);
+    CHECK(host_parse_fps("fast") == HOST_FPS_BAD);
+}
+
+/* The present grid: 0 = every changed frame (VSync waits, or uncapped). With VSync a cap at or above the
+ * refresh rate is left to the VSync; automatic without VSync is the refresh rate, unknown: 60 when VSync was
+ * asked for and refused, else 165. */
+static void fps_interval(void)
+{
+    const uint64_t s = 1000000000ull;
+    CHECK(host_frame_interval_ns(HOST_FPS_AUTO, 120, true, true) == 0);
+    CHECK(host_frame_interval_ns(60, 120, true, true) == s / 60);
+    CHECK(host_frame_interval_ns(144, 144, true, true) == 0);
+    CHECK(host_frame_interval_ns(240, 144, true, true) == 0);
+    CHECK(host_frame_interval_ns(HOST_FPS_AUTO, 144, false, false) == s / 144);
+    CHECK(host_frame_interval_ns(HOST_FPS_AUTO, 0, false, true) == s / 60);
+    CHECK(host_frame_interval_ns(HOST_FPS_AUTO, 0, false, false) == s / 165);
+    CHECK(host_frame_interval_ns(0, 144, false, false) == 0);
+    CHECK(host_frame_interval_ns(30, 0, false, false) == s / 30);
+}
+
+/* Presents due on a fixed grid: the first one starts it, a late frame is followed at once. */
+static void fps_next_present(void)
+{
+    CHECK(host_next_present_ns(0, 1000, 100) == 1100);
+    CHECK(host_next_present_ns(1100, 1150, 100) == 1200);
+    CHECK(host_next_present_ns(1100, 1500, 100) == 1500);
+}
+
+static int presents;
+static bool compose_changed(u32 *xrgb) { (void)xrgb; presents++; return true; }
+
+/* host_pump with a frame that always changed, for about 0.5 s: with --fps 40 about 20 presents; uncapped
+ * without VSync far more than the old floor of one present per 8 ms (62). */
+static int pump_presents(int fps)
+{
+    presents = 0;
+    host_set_fps(fps);
+    host_set_vsync(false);
+    host_set_frame_source(compose_changed, 320, 200);
+    uint64_t t0 = SDL_GetTicksNS();
+    while (SDL_GetTicksNS() - t0 < 500000000ull) host_pump();
+    return presents;
+}
+
+static void fps_pump_cap(void)
+{
+    SDL_setenv_unsafe("SDL_VIDEO_DRIVER", "dummy", 1);
+    SDL_setenv_unsafe("SDL_AUDIO_DRIVER", "dummy", 1);
+    if (!host_init(".", 1, false)) { failures++; return; }
+    int capped = pump_presents(40), uncapped = pump_presents(0);
+    printf("  presents in 0.5 s: --fps 40 %d, uncapped %d\n", capped, uncapped);
+    CHECK(capped >= 16 && capped <= 22);
+    CHECK(uncapped > 100);
+    host_shutdown();
+}
+
 int main(int argc, char **argv)
 {
     static const struct { const char *name; void (*fn)(void); } tests[] = {
@@ -307,6 +373,10 @@ int main(int argc, char **argv)
         { "opl_key_retrigger", opl_key_retrigger },
         { "mouse_space", mouse_space },
         { "mouse_space_set", mouse_space_set },
+        { "fps_parse", fps_parse },
+        { "fps_interval", fps_interval },
+        { "fps_next_present", fps_next_present },
+        { "fps_pump_cap", fps_pump_cap },
     };
     if (argc != 2) { fprintf(stderr, "usage: %s <test>\n", argv[0]); return 2; }
     for (size_t i = 0; i < SDL_arraysize(tests); i++)

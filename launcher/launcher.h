@@ -93,6 +93,7 @@ private:
     wxCheckBox* autoDrive_ = nullptr;
     wxCheckBox* noMouse_ = nullptr;
     wxChoice* scale_ = nullptr;
+    wxChoice* frameRate_ = nullptr;  // the display's refresh rate / uncapped
     wxStaticText* soundLabel_ = nullptr;
     wxChoice* sound_ = nullptr;      // Street Rod 2: AdLib / PC speaker
     wxStaticText* gearKeys_[2] = {nullptr, nullptr};  // the A / Z row of the keys

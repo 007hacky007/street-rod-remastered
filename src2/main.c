@@ -11,6 +11,9 @@
  *                        --classic, unless --res-scale is given)
  *   --music-volume N  ENH: volume of the music, percent 0..100 (default 100)
  *   --sfx-volume N    ENH: volume of the sound effects and the engine, 0..100 (default 100)
+ *   --fps N|auto  ENH: frame rate cap, 0..1000 (default auto: the display's refresh rate; 0 = uncapped); with
+ *                 VSync only a cap below the refresh rate counts
+ *   --vsync on|off  ENH: wait for the display's vertical sync (default on)
  *   --music original|remastered  ENH: the music as the game plays it (default), or played by a small band
  *   --classic        ENH: the original's race picture only (else the enhanced race view, ENHANCED.md)
  *   --res-scale N    ENH: the picture is 320x200 times N, 1..8 (default 4; 1 with --classic and no art pack)
@@ -41,7 +44,7 @@
 static int usage(const char *prog)
 {
     fprintf(stderr, "usage: %s [--game-dir DIR] [--scale N] [--fullscreen] [--check] [--run-ms N] [--dump-pictures DIR] [--remaster-dir DIR] "
-                    "[--music-volume N] [--sfx-volume N] [--music original|remastered] "
+                    "[--music-volume N] [--sfx-volume N] [--fps N|auto] [--vsync on|off] [--music original|remastered] "
                     "[--classic] [--res-scale N] [--aa N] [--motion-delay P] [--town on|off] "
                     "[1] [nomouse] [demo] [nouemem] [e|c|v|h|t] [adlib|speaker]\n", prog);
     return 2;
@@ -68,6 +71,8 @@ int main(int argc, char **argv)
     bool check = false, fullscreen = false;
     const char *dump_dir = NULL, *remaster_dir = NULL;           /* ENH: the remaster's picture dump, art pack */
     int music_volume = 100, sfx_volume = 100;
+    int fps = HOST_FPS_AUTO;                       /* ENH */
+    bool vsync = true;
     bool band = false;
     bool classic = false, town = true;                           /* ENH: the enhanced race view */
     int res_scale = -1, aa = ENH_DEFAULT_AA, motion_delay = ENH_DEFAULT_MOTION_DELAY;
@@ -82,6 +87,12 @@ int main(int argc, char **argv)
         else if (!strcmp(a, "--remaster-dir") && v) { remaster_dir = v; i++; }       /* ENH */
         else if (!strcmp(a, "--music-volume") && v) { music_volume = atoi(v); i++; }   /* ENH */
         else if (!strcmp(a, "--sfx-volume") && v) { sfx_volume = atoi(v); i++; }       /* ENH */
+        else if (!strcmp(a, "--fps") && v) {   /* ENH */
+            fps = host_parse_fps(v);
+            if (fps == HOST_FPS_BAD) return usage(argv[0]);
+            i++;
+        }
+        else if (!strcmp(a, "--vsync") && v) { vsync = strcmp(v, "off") != 0 && strcmp(v, "0") != 0; i++; }   /* ENH */
         else if (!strcmp(a, "--music") && v && (!strcmp(v, "original") || !strcmp(v, "remastered"))) {   /* ENH */
             band = !strcmp(v, "remastered");
             i++;
@@ -117,6 +128,8 @@ int main(int argc, char **argv)
     if (res_scale < 0) res_scale = classic && !remaster_dir ? 1 : ENH_DEFAULT_RES_SCALE;   /* ENH: as Street Rod 1 */
     enh_init(!classic, res_scale, aa, motion_delay, town);
     host_configure(&(HostConfig){ APP_TITLE, 49716, true });   /* ENH: the shared host (common/host.h) */
+    host_set_fps(fps);   /* ENH */
+    host_set_vsync(vsync);
     if (!host_init(dir, scale, fullscreen)) return 1;
     host_set_volumes(music_volume, sfx_volume);                  /* ENH */
     if (band && !band_enable(true))                              /* ENH: the remastered music (band.c) */

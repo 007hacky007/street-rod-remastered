@@ -196,6 +196,8 @@ tools/macos/make-dmg.sh --version 0.4.2    # dist/Street-Rod-Enhanced.dmg
 | `--game-dir DIR` | Game files folder (default `Game`) |
 | `--scale N` | Window size, × 320×240 (default 3) |
 | `--fullscreen` | Start in full screen |
+| `--fps N` | Frame rate cap, 0 to 1000 (default `auto`, the display's refresh rate; 0 = uncapped) |
+| `--vsync on\|off` | Wait for the display's refresh (default on) |
 | `--res-scale N` | Resolution, × 320×200 (default 4, 2 to 8) |
 | `--aa N` | Anti-aliasing, N×N samples (default 2, 1 = off) |
 | `--motion-delay P` | Smooth view delay, % of a game frame (default 100) |
@@ -215,7 +217,7 @@ files come from the official `sr2pc.zip` (streetrodonline.com); unpack them into
 ./build/streetrod2-enhanced --game-dir Game2 v adlib
 ```
 
-It takes `--game-dir`, `--scale`, `--fullscreen`, `--check`, `--classic`, `--res-scale`, `--aa`,
+It takes `--game-dir`, `--scale`, `--fullscreen`, `--fps`, `--vsync`, `--check`, `--classic`, `--res-scale`, `--aa`,
 `--motion-delay`, `--town`, `--music-volume`, `--sfx-volume`, `--remaster-dir` and `--music original|remastered`
 as above (the band plays its AdLib songs, or with `speaker` its PC speaker tune; the enhanced race view covers
 every race kind, the town, the drags, the Grudge drag strip, Mulholland and the Aqueduct, and the mirror in

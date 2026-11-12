@@ -105,7 +105,7 @@ add_test(NAME compose COMMAND test_compose)
 # The shared host: Street Rod 1's audio pinned, the AdLib chip, voice volumes, the mouse space.
 add_executable(test_host test_host.c)
 target_link_libraries(test_host PRIVATE sre_host)
-foreach(t sr1_audio_unchanged opl_renders opl_voice_gain opl_music_muted_by_synth opl_key_retrigger mouse_space mouse_space_set)
+foreach(t sr1_audio_unchanged opl_renders opl_voice_gain opl_music_muted_by_synth opl_key_retrigger mouse_space mouse_space_set fps_parse fps_interval fps_next_present fps_pump_cap)
     add_test(NAME host_${t} COMMAND test_host ${t})
 endforeach()
 
@@ -158,3 +158,7 @@ if(SRE_TEST_GAME2_DIR)
                  $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR})
     endif()
 endif()
+
+# --fps and --vsync (the frame pacing in common/host.c), both games.
+add_test(NAME frame_options COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_frame_options.sh $<TARGET_FILE:streetrod-enhanced>)
+add_test(NAME sr2_frame_options COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_frame_options.sh $<TARGET_FILE:streetrod2-enhanced>)

@@ -126,6 +126,20 @@ static void args_sr2_speaker_switches_volumes() {
     CHECK(before(a, "v", "speaker"));
 }
 
+// Frame rate: the display's refresh rate adds nothing; uncapped is --fps 0 --vsync off, for both games.
+static void args_frame_rate() {
+    for (Game g : {Game::SR1, Game::SR2}) {
+        GameOptions o;
+        o.game = g;
+        o.program = "/p/game";
+        o.gameDir = "/g";
+        CHECK(!has(GameArgs(o), "--fps") && !has(GameArgs(o), "--vsync"));
+        o.uncapped = true;
+        auto a = GameArgs(o);
+        CHECK(followed_by(a, "--fps", "0") && followed_by(a, "--vsync", "off"));
+    }
+}
+
 static void args_sr2_classic() {
     GameOptions o;
     o.game = Game::SR2;
@@ -169,6 +183,7 @@ int main() {
     RUN(args_sr2_minimal);
     RUN(args_sr2_speaker_switches_volumes);
     RUN(args_sr2_original_music);
+    RUN(args_frame_rate);
     RUN(args_sr2_classic);
     RUN(args_sr2_no_pack_no_dir);
     return failures != 0;

@@ -24,7 +24,8 @@ like the Street Rod and Test Drive III launchers it is modelled on.
     as in the usual GOG/eXoDOS copies; the game then runs in that folder and keeps its own saved games there.
   * The original's own command-line switches: **Demo** (`demo`: the game plays itself, Esc ends it), **Races
     drive themselves** (`auto`, Street Rod only) and **No mouse** (`nomouse`).
-* **Options**: **Window size** (`--scale`), **Music**: Remastered (`--music remastered`, the default: the tune,
+* **Options**: **Window size** (`--scale`), **Frame rate** (the display's refresh rate with VSync, the default,
+  or uncapped: `--fps 0 --vsync off`, both games; `Uncapped` under `[Game]`), **Music**: Remastered (`--music remastered`, the default: the tune,
   for Street Rod 2 the songs, played by a small band) or Original (the PC speaker; for Street Rod 2 the AdLib or
   the PC speaker as chosen under Sound; Street Rod 2's choice is `[Game2] Music`), **Sound** (Street Rod 2 only): AdLib (`adlib`, the
   default) or PC speaker (`speaker`), and **Start in full screen** (`--fullscreen`; Alt+Enter switches).

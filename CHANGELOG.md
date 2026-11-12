@@ -22,6 +22,10 @@
   Street Rod 1's own and 40 of those already show remastered; the other 249 show the original until the art
   pack has them.
 - The host is shared by both games (`common/`); Street Rod 1's compiled game code is unchanged.
+- Frame rate (from bsvdoom's change to kylofon/streetrod-enhanced): both games draw at the display's refresh
+  rate above 125 Hz too, and the waits no longer overrun by a system timer period (which held the game near
+  30 FPS on Windows). `--fps N|auto` caps it, `--vsync on|off`; the launcher's **Frame rate** offers the
+  refresh rate (VSync) or uncapped. `SR_FPS` and `SR_DEBUG_FPS` are developer aids.
 
 ## 0.4.2
 

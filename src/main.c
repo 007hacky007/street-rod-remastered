@@ -10,6 +10,9 @@
  *                        --classic, unless --res-scale is given)
  *   --music-volume N  volume of the music (the background tune), percent 0..100 (default 100)
  *   --sfx-volume N    volume of the sound effects, the engine and the loop sounds, 0..100 (default 100)
+ *   --fps N|auto  frame rate cap, 0..1000 (default auto: the display's refresh rate; 0 = uncapped); with
+ *                 VSync only a cap below the refresh rate counts
+ *   --vsync on|off  wait for the display's vertical sync (default on)
  * enhanced view (ENHANCED.md):
  *   --classic         the original's picture only
  *   --res-scale N     output = 320x200 times N, 1..8 (default 4; 1 with --classic)
@@ -42,7 +45,7 @@
 static int usage(const char *prog)
 {
     fprintf(stderr, "usage: %s [--game-dir DIR] [--scale N] [--fullscreen] [--check] "
-                    "[--music-volume N] [--sfx-volume N] [--music original|remastered] "
+                    "[--music-volume N] [--sfx-volume N] [--fps N|auto] [--vsync on|off] [--music original|remastered] "
                     "[1] [nomouse] [demo] [auto] [nouemem]\n", prog);
     return 2;
 }
@@ -76,6 +79,8 @@ int main(int argc, char **argv)
     const char *dump_dir = NULL, *remaster_dir = NULL;
     bool classic = false, town = true, music_rm = false;
     int music_volume = 100, sfx_volume = 100;
+    int fps = HOST_FPS_AUTO;
+    bool vsync = true;
     int res_scale = -1, aa = ENH_DEFAULT_AA, motion_delay = ENH_DEFAULT_MOTION_DELAY;
     char *game_argv[MAX_GAME_ARGS + 1] = { argv[0] };
     int game_argc = 1;
@@ -89,6 +94,12 @@ int main(int argc, char **argv)
         else if (!strcmp(a, "--remaster-dir") && v) { remaster_dir = v; i++; }
         else if (!strcmp(a, "--music-volume") && v) { music_volume = atoi(v); i++; }
         else if (!strcmp(a, "--sfx-volume") && v) { sfx_volume = atoi(v); i++; }
+        else if (!strcmp(a, "--fps") && v) {
+            fps = host_parse_fps(v);
+            if (fps == HOST_FPS_BAD) return usage(argv[0]);
+            i++;
+        }
+        else if (!strcmp(a, "--vsync") && v) { vsync = strcmp(v, "off") != 0 && strcmp(v, "0") != 0; i++; }
         else if (!strcmp(a, "--music") && v) { music_rm = !strcmp(v, "remastered"); i++; }
         else if (!strcmp(a, "--classic")) classic = true;
         else if (!strcmp(a, "--res-scale") && v) { res_scale = atoi(v); i++; }
@@ -122,6 +133,8 @@ int main(int argc, char **argv)
     if (remaster_dir && !rm_pack_open(remaster_dir)) remaster_dir = NULL;
     if (res_scale < 0) res_scale = classic && !remaster_dir ? 1 : ENH_DEFAULT_RES_SCALE;
     enh_init(!classic, res_scale, aa, motion_delay, town);
+    host_set_fps(fps);
+    host_set_vsync(vsync);
     if (!host_init(dir, scale, fullscreen)) return 1;
     host_set_volumes(music_volume, sfx_volume);
     if (music_rm && !music_rm_enable(true)) fprintf(stderr, "remastered music: the tune was not found\n");
