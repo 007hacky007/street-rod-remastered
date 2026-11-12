@@ -882,14 +882,24 @@ bool enh_compose(u32 *xrgb, const u32 rgb[16])
     EnhView v;
     if (!enh_view_at(SDL_GetTicksNS(), &v)) return false;
     enh_cur_rgb = rgb;
-    Uint64 t0 = SDL_GetTicksNS();
+    Uint64 t0 = SDL_GetTicksNS(), t1, t2;
     int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());
-    if (enh_bands_check_on()) enh_bands_check(draw_view_of, &v, xrgb, rgb, 16, shown_start, y_end);
-    else {
+    if (enh_bands_check_on()) {
+        enh_bands_check(draw_view_of, &v, xrgb, rgb, 16, shown_start, y_end);
+        t1 = t2 = SDL_GetTicksNS();         /* the check's two passes count as drawing */
+    } else {
         draw_view(&v);
+        t1 = SDL_GetTicksNS();
         enh_resolve(xrgb, rgb, 16, shown_start, y_end);
+        t2 = SDL_GetTicksNS();
     }
-    if (trace) fprintf(trace, "%llu mode %d ms %.2f\n", (unsigned long long)t0, v.mode, (SDL_GetTicksNS() - t0) / 1e6);
+    if (trace) {
+        EnhBandStats st;
+        enh_bands_stats(&st);
+        fprintf(trace, "%llu mode %d ms %.2f draw %.2f resolve %.2f cmds %d flushes %d bands %d bmax %.2f bmean %.2f\n",
+                (unsigned long long)t0, v.mode, (SDL_GetTicksNS() - t0) / 1e6, (t1 - t0) / 1e6, (t2 - t1) / 1e6,
+                st.cmds, st.flushes, st.bands, st.band_ms_max, st.band_ms_mean);
+    }
     enh_compare_shown();
     return true;
 }

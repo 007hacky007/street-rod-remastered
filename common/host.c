@@ -583,27 +583,32 @@ static void snapshot(void)
     SDL_DestroySurface(s);
 }
 
-/* Developer aid: SR_DEBUG_FPS, see host.h. One presented frame: started, texture uploaded, presented. */
-static void debug_fps_frame(Uint64 t_start, Uint64 t_tex, Uint64 t_pres)
+/* Developer aid: SR_DEBUG_FPS, see host.h. One presented frame: composed (the frame source's time), started,
+ * texture uploaded, presented. */
+static void debug_fps_frame(Uint64 compose, Uint64 t_start, Uint64 t_tex, Uint64 t_pres)
 {
-    static Uint64 last_ns, tex_ns, pres_ns;
+    static Uint64 last_ns, tex_ns, pres_ns, compose_ns;
     static int frames;
     if (last_ns == 0) last_ns = t_start;
     frames++;
+    compose_ns += compose;
     tex_ns += t_tex - t_start;
     pres_ns += t_pres - t_tex;
     if (t_pres - last_ns < SDL_NS_PER_SECOND) return;
     double ms = (double)(t_pres - last_ns) / 1e6;
-    fprintf(stderr, "[HOST FPS] %.1f FPS (avg frame: %.2f ms | tex: %.2f ms | pres: %.2f ms)\n",
-            frames * 1000.0 / ms, ms / frames, (double)tex_ns / frames / 1e6, (double)pres_ns / frames / 1e6);
+    fprintf(stderr, "[HOST FPS] %.1f FPS (avg frame: %.2f ms | tex: %.2f ms | pres: %.2f ms | compose: %.2f ms)\n",
+            frames * 1000.0 / ms, ms / frames, (double)tex_ns / frames / 1e6, (double)pres_ns / frames / 1e6,
+            (double)compose_ns / frames / 1e6);
     frames = 0;
-    tex_ns = pres_ns = 0;
+    tex_ns = pres_ns = compose_ns = 0;
     last_ns = t_pres;
 }
 
-static void present(void)
+static int debug_fps = -1;
+
+/* compose: the frame source's time for this frame (SR_DEBUG_FPS) */
+static void present(Uint64 compose)
 {
-    static int debug_fps = -1;
     if (debug_fps < 0) debug_fps = SDL_getenv("SR_DEBUG_FPS") != NULL;
     Uint64 t_start = debug_fps ? SDL_GetTicksNS() : 0;
     snapshot();
@@ -615,7 +620,7 @@ static void present(void)
     SDL_FRect dst = { 0, 0, (float)VIEW_W(frame_w), (float)VIEW_H(frame_w) };
     SDL_RenderTexture(renderer, texture, NULL, &dst);
     SDL_RenderPresent(renderer);
-    if (debug_fps) debug_fps_frame(t_start, t_tex, SDL_GetTicksNS());
+    if (debug_fps) debug_fps_frame(compose, t_start, t_tex, SDL_GetTicksNS());
 }
 
 /* Developer aid: SR_KEYS, see host.h. */
@@ -759,8 +764,10 @@ void host_pump(void)
     bool due = frame_interval_ns > 0 ? next_present_ns == 0 || now >= next_present_ns
                                      : !vsync_active || now - last_present_ns >= 2 * SDL_NS_PER_MS;
     if (frame_source && due) {
+        if (debug_fps < 0) debug_fps = SDL_getenv("SR_DEBUG_FPS") != NULL;
+        Uint64 t_compose = debug_fps ? SDL_GetTicksNS() : 0;
         if (frame_source(frame)) {
-            present();
+            present(debug_fps ? SDL_GetTicksNS() - t_compose : 0);
             last_present_ns = SDL_GetTicksNS();
             if (frame_interval_ns > 0)
                 next_present_ns = host_next_present_ns(next_present_ns, last_present_ns, frame_interval_ns);

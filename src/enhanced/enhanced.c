@@ -174,19 +174,27 @@ bool enh_compose(u32 *xrgb, const u32 rgb[16])
     EnhView v;
     if (!enh_view_at(SDL_GetTicksNS(), &v)) return false;
     enh_cur_rgb = rgb;
-    Uint64 t0 = SDL_GetTicksNS();
+    Uint64 t0 = SDL_GetTicksNS(), t1, t2;
     int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());
-    if (enh_bands_check_on()) enh_bands_check(draw_road_of, &v, xrgb, rgb, 16, shown_start, y_end);
-    else {
+    if (enh_bands_check_on()) {
+        enh_bands_check(draw_road_of, &v, xrgb, rgb, 16, shown_start, y_end);
+        t1 = t2 = SDL_GetTicksNS();         /* the check's two passes count as drawing */
+    } else {
         enh_draw_road(&v);
+        t1 = SDL_GetTicksNS();
         enh_resolve(xrgb, rgb, 16, shown_start, y_end);
+        t2 = SDL_GetTicksNS();
     }
     enh_side_mirror(xrgb, enh_opt.res_scale);
     if (trace) {
         static double last_pos;
-        fprintf(trace, "%llu pos %.4f d %.4f lat %.1f rh %.2f opp %.3f ms %.2f\n",
+        EnhBandStats st;
+        enh_bands_stats(&st);
+        fprintf(trace, "%llu pos %.4f d %.4f lat %.1f rh %.2f opp %.3f ms %.2f draw %.2f resolve %.2f cmds %d "
+                       "flushes %d bands %d bmax %.2f bmean %.2f\n",
                 (unsigned long long)t0, v.pos, v.pos - last_pos, v.lat, v.rel_heading, v.opp_pos,
-                (SDL_GetTicksNS() - t0) / 1e6);
+                (SDL_GetTicksNS() - t0) / 1e6, (t1 - t0) / 1e6, (t2 - t1) / 1e6, st.cmds, st.flushes, st.bands,
+                st.band_ms_max, st.band_ms_mean);
         last_pos = v.pos;
     }
     return true;

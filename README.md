@@ -176,6 +176,8 @@ tools/macos/make-dmg.sh --version 0.4.2    # dist/Street-Rod-Enhanced.dmg
 * The enhanced race view draws on one worker thread per core. Developer aids: `SR_ENH_THREADS=N` sets the
   number of bands (1: one thread), `SR_ENH_THREADS_CHECK=1` draws every frame both ways and compares them byte
   for byte (`ctest -R enh_threads`), `SR_ENH_TRACE=<file>` logs each frame's drawing time.
+* `tools/enh-timing.sh` measures the enhanced view's frame time and the whole frame's compose time in every
+  race kind (one run at a time; on a quiet machine).
 * `tools/sr1-codecheck.sh BASE [HEAD]` builds Street Rod 1 at two commits and compares the compiled code of
   every file: a change meant only for Street Rod 2 must leave it the same.
 * `tests/test_download` checks the download for real: `test_download <dir> ok` fetches the game into `<dir>`.

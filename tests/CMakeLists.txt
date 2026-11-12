@@ -186,6 +186,14 @@ if(SRE_TEST_GAME_DIR OR SRE_TEST_GAME2_DIR)
     set_tests_properties(enh_threads PROPERTIES TIMEOUT 900 LABELS slow)
 endif()
 
+# The trace's split of a frame's time (drawing, resolve, bands) and the host's compose time, both games.
+if(SRE_TEST_GAME_DIR AND SRE_TEST_GAME2_DIR)
+    add_test(NAME enh_trace_fields COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_enh_trace_fields.sh
+             $<TARGET_FILE:streetrod-enhanced> ${SRE_TEST_GAME_DIR} $<TARGET_FILE:streetrod2-enhanced>
+             ${SRE_TEST_GAME2_DIR})
+    set_tests_properties(enh_trace_fields PROPERTIES TIMEOUT 300 LABELS slow)
+endif()
+
 # --fps and --vsync (the frame pacing in common/host.c), both games.
 add_test(NAME frame_options COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_frame_options.sh $<TARGET_FILE:streetrod-enhanced>)
 add_test(NAME sr2_frame_options COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_frame_options.sh $<TARGET_FILE:streetrod2-enhanced>)

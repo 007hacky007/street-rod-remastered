@@ -171,7 +171,8 @@ _Noreturn void host_fatal(const char *fmt, ...);
  *                         A move feeds mouse motion until the pointer (host_set_pointer_query) is
  *                         there, 3 s at most; the next entry waits until the action is done.
  *   SR_FPS=n              the frame rate cap when --fps is not given (0 = uncapped)
- *   SR_DEBUG_FPS=1        once a second: the frame rate and the texture upload / present times on stderr */
+ *   SR_DEBUG_FPS=1        once a second: the frame rate, the texture upload / present times and the frame
+ *                         source's compose time (art and enhanced view), means per frame, on stderr */
 
 /* Developer aid: where the game's own pointer is (screen pixels), for scripted SR_KEYS mouse moves.
  * Installed by the platform (its pointer is DS:472A/472C); returns false if unknown. */
