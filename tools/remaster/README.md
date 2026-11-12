@@ -2,18 +2,27 @@
 
 Tools for the HD remaster art pack (design: `docs/superpowers/specs/2026-11-10-hd-remaster-design.md`).
 The art itself lives in `remaster-art/`, which git ignores; nothing generated from the game's pictures is
-committed.
+committed. `rm.py` finds that folder next to the repository (`<repo>/remaster-art`), or wherever the
+environment variable `SRE_REMASTER_ART` points (a git worktree has no `remaster-art` of its own).
 
 Needs Python 3 with Pillow and numpy (tests: pytest).
 
-1. Dump the original pictures of both games through the engine:
+1. Dump the original pictures through the engine: Street Rod 1 and its data disk, and Street Rod 2:
 
        streetrod-enhanced --game-dir Game --dump-pictures remaster-art/dump/main
        streetrod-enhanced --game-dir Game/datadisk --dump-pictures remaster-art/dump/datadisk
+       streetrod2-enhanced --game-dir Game2 --dump-pictures remaster-art/dump/sr2
+
+   A picture is keyed by the SHA-1 of its packed bytes, so one pack holds the art of both games, and a
+   Street Rod 2 picture byte-identical to a Street Rod 1 one shows the same art.
 
 2. Merge them into the catalogue (`catalog.json`, committed: sizes, ids, descriptions, no pixels):
 
-       tools/remaster/rm.py catalog main=remaster-art/dump/main datadisk=remaster-art/dump/datadisk
+       tools/remaster/rm.py catalog main=remaster-art/dump/main datadisk=remaster-art/dump/datadisk \
+           sr2=remaster-art/dump/sr2
+
+   It replaces the ids of the games named and keeps the others' (`catalog sr2=...` alone leaves the Street
+   Rod 1 ids), and prints per game how many of its pictures are also in another game.
 
 3. Packs for testing the engine: `identity-pack OUT DUMP...` (the originals at 4x: the game must look
    exactly as without a pack) and `marker-pack OUT DUMP...` (tinted: shows where remastered art is used).
@@ -22,7 +31,10 @@ Needs Python 3 with Pillow and numpy (tests: pytest).
 4. Palettes: run the game with `SR_REMASTER_PALETTE_LOG=remaster-art/palette-log-N.jsonl` and an art pack
    (the identity pack will do) through the screens to be remastered, then
    `palettes remaster-art/palette-log-*.jsonl` (`remaster-art/palettes.json`: the colours each picture is
-   shown with; `default` for pictures never seen).
+   shown with; `default` for pictures never seen). For Street Rod 2 the same with `streetrod2-enhanced`, an
+   identity pack of `dump/sr2` and logs `palette-log-sr2-*.jsonl`: demo runs with a few `SR_SEED`s and one
+   `SR_DEBUG_RACE` run per race (they end when the race is over), always with `demo v adlib`. A picture
+   never seen takes the palette of its catalogue `pal_like` (an id in the same game).
 
 5. Generation, batch by batch (`batch` and `sheet` set in the catalogue, with `desc` and `keep`):
 

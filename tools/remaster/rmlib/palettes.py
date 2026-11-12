@@ -15,3 +15,24 @@ def merge(known, records):
         if not is_dark(r['pal']):
             out.setdefault(r['sha1'], r['pal'])
     return out
+
+
+def fill_like(out, cat):
+    """Pictures never seen: the palette of a sibling (catalogue pal_like = the sibling's id in the same game,
+    'main' when the entry has main ids, else its first game)."""
+    by_id = {}
+    for k, e in cat.items():
+        for g, ids in e.get('ids', {}).items():
+            for i in ids:
+                by_id[(g, i)] = k
+    for k, e in cat.items():
+        like = e.get('pal_like')
+        if not like or k in out:
+            continue
+        games = e.get('games') or list(e.get('ids', {}))
+        if not games:
+            continue
+        g = 'main' if 'main' in e.get('ids', {}) else games[0]
+        src = by_id.get((g, like))
+        if src in out:
+            out[k] = out[src]

@@ -17,9 +17,9 @@ from rmlib.repair import find_offset, hue_lock, splice, tiles_of  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
-ART = os.path.join(REPO, 'remaster-art')
+ART = os.environ.get('SRE_REMASTER_ART') or os.path.join(REPO, 'remaster-art')   # a worktree has none of its own
 CATALOG = os.path.join(HERE, 'catalog.json')
-DUMPS = [os.path.join(ART, 'dump', 'main'), os.path.join(ART, 'dump', 'datadisk')]
+DUMPS = [os.path.join(ART, 'dump', g) for g in ('main', 'datadisk', 'sr2')]
 MIN_SCORE = 0.3
 
 
@@ -46,18 +46,7 @@ def cmd_palettes(logs):
     known.pop('default', None)
     records = [json.loads(line) for log in logs for line in open(log) if line.strip()]
     out = palettes_lib.merge(known, records)
-    cat, by_id = load_catalog(), {}
-    for k, e in cat.items():                    # pictures never seen: the palette of a sibling (catalogue pal_like)
-        for g, ids in e['ids'].items():
-            for i in ids:
-                by_id[(g, i)] = k
-    for k, e in cat.items():
-        like = e.get('pal_like')
-        if like and k not in out:
-            g = 'main' if 'main' in e['ids'] else 'datadisk'
-            src = by_id.get((g, like))
-            if src in out:
-                out[k] = out[src]
+    palettes_lib.fill_like(out, load_catalog())  # pictures never seen: the palette of a sibling (pal_like)
     common = collections.Counter(tuple(v) for v in out.values()).most_common(1)
     if common:
         out['default'] = list(common[0][0])
@@ -343,8 +332,12 @@ def main():
     sub.add_parser('status')
     a = ap.parse_args()
     if a.cmd == 'catalog':
-        cat = catalog.merge(CATALOG, [tuple(d.split('=', 1)) for d in a.dumps])
+        dumps = [tuple(d.split('=', 1)) for d in a.dumps]
+        cat = catalog.merge(CATALOG, dumps)
         print(len(cat), 'pictures')
+        for game, _ in dumps:
+            t, s, o = catalog.overlap(cat, game)
+            print('%s: %d pictures, %d also in other games, %d only in %s' % (game, t, s, o, game))
     elif a.cmd == 'identity-pack':
         print(pack.identity_pack(a.dumps, a.out), 'pictures')
     elif a.cmd == 'marker-pack':
