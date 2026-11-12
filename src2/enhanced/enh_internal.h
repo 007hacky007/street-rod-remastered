@@ -61,6 +61,9 @@ typedef struct {
     double pos, lat, heading, opp_pos, opp_lat;   /* heading: DS_heading, unwrapped (not relative to the road) */
     double cam_y, hoff, bounce;                   /* DS_cam_y; DS_cur_height - HGT[seg]; DS_view_bounce_y */
     double roll, aq_dy, aq_def[6];                /* part C (0 in part B) */
+    double roll_raw, piv_x, piv_y;                /* the Aqueduct: the roll in the game's range, the rotation's
+                                                     pivot (0 until the frame state fills them) */
+    s16 rot_sin, rot_cos, opp_sx_prev;            /* the frame's DS_rot_sin, DS_rot_cos; DS_opp_last_sx before it */
     double opp_d;              /* the opponent's depth in 1/64 segment: DS_opp_last_d at the newest frame, moved on
                                   by the cars' motion since then in a smooth view */
     s16 mode, opp_sprite;
@@ -70,6 +73,16 @@ typedef struct {
     bool town;
     bool exact;                /* the newest frame itself (the compare tool): the game's integer projection */
 } EnhView;
+
+/* The Aqueduct's rotated rows (race_aq.c's reversed arrays, k = 0 the farthest), its trough (unrotated) and the
+ * rotation of a frame. */
+typedef struct { s16 lx[15], ly[15], rx[15], ry[15], tlx[15], tly[15], trx[15], try_[15];
+                 s16 tnl, tnr, tfl, tfr, tny, tfy; s16 roll, sn, cs, cx, cy; } EnhAqTab;
+void enh_aqtab_read(EnhAqTab *t);     /* the rotated arrays, the trough, DS_rot_enable, _sin, _cos, _cx, _cy now */
+/* An exact view's rows 0..n (14 front, 7 mirror) rotated into k = n - i, the trough unrotated (as the game keeps
+ * it), the view's roll, sin, cos and pivot. */
+void enh_aqtab_exact(const EnhView *v, bool mirror, EnhAqTab *t);
+int enh_aqtab_err(const EnhAqTab *a, const EnhAqTab *b, int n);   /* the largest difference, rows 0..n and trough */
 
 bool enh_view_at(Uint64 now_ns, EnhView *v);
 /* The newest frame's view, not interpolated (the compare tool). */

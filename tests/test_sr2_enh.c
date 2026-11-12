@@ -10,6 +10,7 @@
 
 #include "enhanced/enhanced.h"
 #include "enhanced/enh_compare.h"
+#include "enhanced/enh_aq2.h"
 #include "enhanced/enh_internal.h"
 #include "enhanced/enh_geo2.h"
 #include "enhanced/enh_poly2.h"
@@ -1310,6 +1311,400 @@ static void sr2_enh_compare_log(void)
     SDL_RemovePath(path);
 }
 
+/* ================================================================================ the Aqueduct (part C) */
+
+/* The track segment and DGROUP (contiguous, the track below) as they were before an Aqueduct test. */
+static u8 aq_keep[(0x3E08 - TRK_SEG) * 16 + 0x10000];
+static void aq_save(void) { memcpy(aq_keep, mp(SEG(TRK_SEG), 0), sizeof aq_keep); }
+static void aq_restore(void) { memcpy(mp(SEG(TRK_SEG), 0), aq_keep, sizeof aq_keep); }
+
+typedef struct { s16 cx, heading, sub, height, pitch, bounce, def[6]; } AqCase;
+static const AqCase aq_cases[4] = {
+    { 0xA00, 0, 0, 0, 0, 0, { 0, 0, 0, 0, 0, 0 } },
+    { 0x400, 7, 40, 0, 2, 0, { 157, 45, 45, 0, 0, 45 } },
+    { 0xE00, -12, 63, 0, -3, 10, { 102, -408, -408, -34, -272, 102 } },
+    { 0xA00, 3, 16, 0, 1, 36, { 20, 10, -30, 50, 0, 0 } },     /* the bounce (critic D2) */
+};
+
+static void aq_set(const AqCase *c)
+{
+    static const u16 defs[6] = { DS_aq_def_floor_h, DS_aq_def_xl, DS_aq_def_xr, DS_aq_def_top_h, DS_aq_def_top_xl,
+                                 DS_aq_def_top_xr };
+    DSS(DS_road_mode) = 8;
+    DSS(DS_seg) = 100;
+    DSS(DS_cam_y) = 0x76C;
+    for (int i = 0; i < 6; i++) DSS(defs[i]) = c->def[i];
+    DSS(DS_cur_height) = c->height;
+    DSS(DS_aq_pitch) = c->pitch;
+    DSS(DS_heading) = c->heading;
+    DSS(DS_cam_x) = c->cx;
+    DSS(DS_substep) = c->sub;
+    DSS(DS_view_bounce_y) = c->bounce;
+}
+
+/* An exact view of the case, level (roll 0, pivot 0). */
+static EnhView aq_view(const AqCase *c)
+{
+    EnhView v;
+    memset(&v, 0, sizeof v);
+    v.mode = 8;
+    v.exact = true;
+    v.lat = c->cx;
+    v.heading = c->heading;
+    v.pos = 100 + (c->sub >> 3) / 8.0;
+    v.aq_dy = (s16)(c->height - c->pitch);
+    for (int i = 0; i < 6; i++) v.aq_def[i] = c->def[i];
+    v.bounce = c->bounce;
+    v.cam_y = 0x76C;
+    v.rot_sin = 0;
+    v.rot_cos = sin256(90);
+    return v;
+}
+
+static void aq_roll(EnhView *v, s16 roll, s16 cx, s16 cy)
+{
+    v->roll = v->roll_raw = roll;
+    v->rot_sin = sin256(roll);
+    v->rot_cos = sin256((s16)(roll + 90));
+    v->piv_x = cx;
+    v->piv_y = cy;
+    DSS(DS_rot_enable) = roll;
+    DSS(DS_rot_sin) = v->rot_sin;
+    DSS(DS_rot_cos) = v->rot_cos;
+    DSS(DS_rot_cx) = cx;
+    DSS(DS_rot_cy) = cy;
+}
+
+#define RWT(a, i) DSS((u16)((a) + 2 * (i)))
+
+static int aq_rows_differ(const EnhRowTab *t, int n)
+{
+    int bad = 0;
+    for (int i = 0; i <= n; i++)
+        bad += t->y[i] != RWT(DS_row_y, i) || t->xl[i] != RWT(DS_row_xl, i) || t->xr[i] != RWT(DS_row_xr, i)
+               || t->ybl[i] != RWT(DS_row_ybank_l, i) || t->ye[i] != RWT(DS_row_yeye, i)
+               || t->xol[i] != RWT(DS_row_xol, i) || t->xor_[i] != RWT(DS_row_xor, i);
+    return bad;
+}
+
+static int aq_trough_differs(const AqRows *r)
+{
+    return (r->tnl != DSS(AQ_TROUGH_NEAR_XL)) + (r->tnr != DSS(AQ_TROUGH_NEAR_XR)) + (r->tfl != DSS(AQ_TROUGH_FAR_XL))
+           + (r->tfr != DSS(AQ_TROUGH_FAR_XR)) + (r->tny != DSS(AQ_TROUGH_NEAR_Y)) + (r->tfy != DSS(AQ_TROUGH_FAR_Y));
+}
+
+static void sr2_enh_aq_depths(void)
+{
+    static const double qs[3] = { 0, 3, 7 };
+    int bad = 0;
+    for (int j = 0; j < 3; j++) {
+        double q = qs[j];
+        for (int i = 0; i < 15; i++) {
+            double want = i == 0 ? 4 : i <= 11 ? 8 * i + 4 - q : 100 + 8 * (i - 12);
+            if (enh_aq_z(i, q) != want) bad++;
+        }
+        for (int i = 0; i < 8; i++) {
+            double want = i == 0 ? 2 : i <= 4 ? 8 * i + q : 8 * i;
+            if (enh_aq_mz(i, q) != want) bad++;
+        }
+    }
+    CHECK(bad == 0);
+    CHECK(enh_aq_z(11, 3) == 89 && enh_aq_z(14, 3) == 116 && enh_aq_mz(4, 7) == 39 && enh_aq_mz(5, 7) == 40);
+}
+
+/* aq_project_front's 15 rows and its trough, with cam_x below 564h and above D5Ch (clamped), a bounce. */
+static void sr2_enh_aq_rows_exact(void)
+{
+    aq_save();
+    for (int k = 0; k < 4; k++) {
+        aq_set(&aq_cases[k]);
+        aq_project_front();
+        EnhView v = aq_view(&aq_cases[k]);
+        EnhRowTab t;
+        memset(&t, 0, sizeof t);
+        enh_rows_exact_aq(&v, false, &t);
+        AqCam c;
+        enh_aq_cam(&v, false, &c);
+        AqRows r;
+        enh_aq_rows(&c, &r);
+        int bad = aq_rows_differ(&t, 14), tb = aq_trough_differs(&r);
+        printf("  case %d: rows differ %d trough %d (y14 %d xl0 %d xtr14 %d)\n", k, bad, tb, t.y[14], t.xl[0], t.xor_[14]);
+        CHECK(bad == 0);
+        CHECK(tb == 0);
+    }
+    aq_restore();
+}
+
+/* aq_project_mirror's 8 rows: the saved deformation, the wall shifts for the wall tops, XC with +heading. */
+static void sr2_enh_aq_mirror_rows_exact(void)
+{
+    aq_save();
+    for (int k = 0; k < 4; k++) {
+        const AqCase *ac = &aq_cases[k];
+        aq_set(ac);
+        aq_project_front();
+        DSS(DS_aq_saved_floor_h) = ac->def[0];
+        DSS(DS_aq_saved_xl) = ac->def[1];
+        DSS(DS_aq_saved_xr) = ac->def[2];
+        DSS(DS_aq_saved_top_h) = ac->def[3];
+        DSS(DS_aq_wall_l_shift) = 32;
+        DSS(DS_aq_wall_r_shift) = -48;
+        aq_project_mirror();
+        EnhView v = aq_view(ac);
+        EnhRowTab t;
+        memset(&t, 0, sizeof t);
+        enh_rows_exact_aq(&v, true, &t);
+        AqCam c;
+        enh_aq_cam(&v, true, &c);
+        AqRows r;
+        enh_aq_rows(&c, &r);
+        int bad = aq_rows_differ(&t, 7), tb = aq_trough_differs(&r);
+        printf("  case %d: rows differ %d trough %d (y7 %d xc0 %d xtl7 %d)\n", k, bad, tb, t.y[7], t.ybl[0], t.xol[7]);
+        CHECK(bad == 0);
+        CHECK(tb == 0);
+    }
+    aq_restore();
+}
+
+/* The exact rotation is rotate_about_centre's; the smooth one is within 3 px of it near the view: the game's two
+ * mul8 floors take up to 2 px together, the sine table's rounding up to 0.5 (|dx| + |dy|) / 256 more. */
+static void sr2_enh_aq_rot(void)
+{
+    aq_save();
+    static const s16 rolls[] = { 0, 4, -4, 30, 48, -30, 104, -256 };
+    static const s16 xs[] = { -900, -20, 0, 0x7A, 160, 0x13F, 700 }, ys[] = { -200, 0x12, 0x3F, 0x65, 400 };
+    int bad = 0, far = 0, n = 0;
+    double worst = 0;
+    for (int r = 0; r < 8; r++) {
+        EnhView v = aq_view(&aq_cases[0]);
+        aq_roll(&v, rolls[r], 0x7A, 0x3F);
+        AqCam ce, cs;
+        enh_aq_cam(&v, false, &ce);
+        v.exact = false;
+        enh_aq_cam(&v, false, &cs);
+        for (int i = 0; i < 7; i++)
+            for (int j = 0; j < 5; j++) {
+                s16 gx, gy;
+                double ox, oy;
+                rotate_about_centre(xs[i], ys[j], &gx, &gy);
+                enh_aq_rot(&ce, xs[i], ys[j], &ox, &oy);
+                n++;
+                if (ox != gx || oy != gy) bad++;
+                if (abs(xs[i] - 0x7A) > 320 || abs(ys[j] - 0x3F) > 320) continue;
+                enh_aq_rot(&cs, xs[i], ys[j], &ox, &oy);
+                double e = fmax(fabs(ox - gx), fabs(oy - gy));
+                if (e > worst) worst = e;
+                if (e > 3) far++;
+            }
+    }
+    printf("  exact %d of %d differ; smooth worst %.2f, %d beyond 3 px\n", bad, n, worst, far);
+    CHECK(bad == 0);
+    CHECK(far == 0);
+    aq_restore();
+}
+
+/* A roll step is the game's step wrapped to -180..180; one of more than 60 degrees (the bounce's snap back) is a
+ * jump. */
+static void sr2_enh_aq_roll_unwrap(void)
+{
+    bool snap = true;
+    CHECK(enh_aq_roll_unwrap(0, 0, 48, &snap) == 48 && !snap);
+    CHECK(enh_aq_roll_unwrap(48, 48, 80, &snap) == 80 && !snap);
+    CHECK(enh_aq_roll_unwrap(332, 332, 4, &snap) == 364 && !snap);
+    snap = false;
+    CHECK(enh_aq_roll_unwrap(304, 304, 48, &snap) == 408 && snap);
+    snap = false;
+    CHECK(enh_aq_roll_unwrap(-302, -302, -30, &snap) == -390 && snap);
+    CHECK(enh_aq_roll_unwrap(0, 0, -4, &snap) == -4 && !snap);
+}
+
+static void sr2_enh_aq_sky_x(void)
+{
+    static const struct { double h; int s, c, m; } t[4] = { { 5, 5, 10, -2 }, { -5, -5, -10, 3 }, { 170, 10, 20, -5 },
+                                                            { 16400, -48, -96, 24 } };
+    for (int i = 0; i < 4; i++) {
+        double s = enh_aq_sky_x(t[i].h, ENH_AQ_STARS, true), c = enh_aq_sky_x(t[i].h, ENH_AQ_CLOUDS, true);
+        double m = enh_aq_sky_x(t[i].h, ENH_AQ_MIR_STARS, true);
+        printf("  heading %.0f: %.0f %.0f %.0f\n", t[i].h, s, c, m);
+        CHECK(s == t[i].s && c == t[i].c && m == t[i].m);
+    }
+    CHECK(enh_aq_sky_x(5.5, ENH_AQ_STARS, false) == 5.5);
+    CHECK(enh_aq_sky_x(5.5, ENH_AQ_CLOUDS, false) == 11);
+    CHECK(enh_aq_sky_x(5.5, ENH_AQ_MIR_STARS, false) == -2.75);
+}
+
+/* The flags of row i: the front's TRK_AQ[base + i], read as aq_flag(14 - i) reads them; the mirror's
+ * AQM[179h - base - (7 - i)] = AQ[base - 1 - i] (the critic's identity), as aq_flag(7 - i) reads them. */
+static void sr2_enh_aq_flags(void)
+{
+    aq_save();
+    for (int i = 0; i < 0x172; i++) TRKW(TRK_AQ, i) = TRKW(TRK_AQM, i) = 0;
+    aq_build();
+    EnhView v = aq_view(&aq_cases[0]);
+    AqCam c;
+    enh_aq_cam(&v, false, &c);
+    FarPtr p = trk_ptr(TRK_AQ, 100);
+    p.off = (u16)(p.off + 0x1C);
+    int bad = 0, set = 0;
+    for (int i = 0; i <= 14; i++) {
+        u16 f = enh_aq_flag(&c, i);
+        set += f != 0;
+        if (f != TRKW(TRK_AQ, 100 + i) || f != rd16(p.seg, (u16)(p.off - 2 * (14 - i)))) bad++;
+    }
+    AqCam m;
+    enh_aq_cam(&v, true, &m);
+    p = far_make(SEG(TRK_SEG), (u16)(0x6570 - 2 * 100));
+    p.off = (u16)(p.off + 0x10);
+    for (int i = 0; i <= 7; i++) {
+        u16 f = enh_aq_flag(&m, i);
+        set += f != 0;
+        if (f != TRKW(TRK_AQ, 100 - 1 - i) || f != rd16(p.seg, (u16)(p.off - 2 * (7 - i)))) bad++;
+    }
+    printf("  %d differ, %d set\n", bad, set);
+    CHECK(bad == 0);
+    CHECK(set > 0);
+    aq_restore();
+}
+
+/* opp_bank_variant's bank: the opponent's lane against the walls, the roll (and a quarter of a small left roll). */
+static void sr2_enh_aq_opp_bank(void)
+{
+    aq_save();
+    static const s16 lats[] = { 0x400, 0x5A0, 0x600, 0x900, 0xCC0, 0xD40, 0xE00 }, sxs[] = { 0, 40, -60 };
+    static const s16 rolls[] = { 0, 48, -30, -100, 200 };
+    int bad = 0, steep = 0, far = 0;
+    for (int a = 0; a < 7; a++)
+        for (int b = 0; b < 3; b++)
+            for (int r = 0; r < 5; r++) {
+                DSS(DS_opp_lat) = lats[a];
+                DSS(DS_aq_saved_xl) = sxs[b];
+                DSS(DS_aq_saved_xr) = sxs[b];
+                DSS(DS_rot_enable) = rolls[r];
+                opp_bank_variant();
+                EnhView v = aq_view(&aq_cases[0]);
+                v.aq_def[1] = v.aq_def[2] = sxs[b];
+                v.roll = v.roll_raw = rolls[r];
+                AqCam c;
+                enh_aq_cam(&v, false, &c);
+                double e = enh_aq_opp_bank(&c, lats[a]);
+                if (e != DSS(DS_opp_bank)) bad++;
+                if (abs(DSS(DS_opp_bank)) >= 56) steep++;
+                v.exact = false;
+                enh_aq_cam(&v, false, &c);
+                if (fabs(enh_aq_opp_bank(&c, lats[a]) - e) > 2) far++;
+            }
+    printf("  %d differ, %d steep, %d smooth beyond 2\n", bad, steep, far);
+    CHECK(bad == 0);
+    CHECK(steep > 0);
+    CHECK(far == 0);
+    aq_restore();
+}
+
+/* opponent_draw's wy: the floor, lifted up the walls by the opponent's lane. */
+static void sr2_enh_aq_opp_wy(void)
+{
+    aq_save();
+    DSS(DS_aq_wall_l_shift) = 0;
+    DSS(DS_aq_wall_r_shift) = 0;
+    EnhView v = aq_view(&aq_cases[0]);
+    AqCam c;
+    enh_aq_cam(&v, false, &c);
+    printf("  %.0f %.0f %.0f\n", enh_aq_opp_wy(&c, 0x500), enh_aq_opp_wy(&c, 0xD00), enh_aq_opp_wy(&c, 0xA00));
+    CHECK(enh_aq_opp_wy(&c, 0x500) == 1864);
+    CHECK(enh_aq_opp_wy(&c, 0xD00) == 1994);
+    CHECK(enh_aq_opp_wy(&c, 0xA00) == 2000);
+    DSS(DS_aq_wall_l_shift) = 0x20;
+    static const s16 d[6] = { 20, 10, 0, 50, 0, 0 };
+    for (int i = 0; i < 6; i++) v.aq_def[i] = d[i];
+    enh_aq_cam(&v, false, &c);
+    printf("  %.0f\n", enh_aq_opp_wy(&c, 0x500));
+    CHECK(enh_aq_opp_wy(&c, 0x500) == 1854);
+    aq_restore();
+}
+
+/* opponent_draw's place in mode 8: its depth, the projection of its picture, rotated about the pivot of the pass
+ * that draws it. */
+static void sr2_enh_aq_opp_anchor(void)
+{
+    aq_save();
+    const AqCase *ac = &aq_cases[2];
+    aq_set(ac);
+    aq_project_front();
+    EnhView v = aq_view(ac);
+    aq_roll(&v, 48, 0x7A, 0x3F);
+    AqCam f, m;
+    enh_aq_cam(&v, false, &f);
+    enh_aq_cam(&v, true, &m);
+    s16 dy = (s16)(ac->height - ac->pitch), rx, ry;
+    double ax, ay, z;
+    /* picture 5 ahead, the front's pass */
+    s16 lat = 0x900, wy = (s16)enh_aq_opp_wy(&f, lat);
+    CHECK(enh_aq_opp_anchor(&f, &m, 300, 5, lat, 0, false, &ax, &ay, &z));
+    rotate_about_centre(road_proj_x(41, lat, ac->heading), road_proj_y(41, wy, dy), &rx, &ry);
+    printf("  5: z %.0f (%.0f, %.0f) want (%d, %d)\n", z, ax, ay, rx, ry);
+    CHECK(z == 41 && ax == rx && ay == ry);
+    /* picture 2 off the right side: averaged with the last sx, its y clamped */
+    lat = 0xF00;
+    wy = (s16)enh_aq_opp_wy(&f, lat);
+    s16 sx = road_proj_x(4, lat, ac->heading), sy = road_proj_y(4, wy, dy);
+    CHECK(sx > 0x13F);
+    sx = (s16)((sx + 150) / 2);
+    if (sy > 100) sy = 100;
+    rotate_about_centre(sx, sy, &rx, &ry);
+    CHECK(enh_aq_opp_anchor(&f, &m, 0, 2, lat, 150, false, &ax, &ay, &z));
+    printf("  2: z %.0f (%.0f, %.0f) want (%d, %d)\n", z, ax, ay, rx, ry);
+    CHECK(z == 4 && ax == rx && ay == ry);
+    /* picture 10 behind, the mirror's pass: the mirror's projection, about the mirror's pivot */
+    lat = 0x900;
+    wy = (s16)enh_aq_opp_wy(&f, lat);
+    DSS(DS_rot_cx) = (s16)m.pcx;
+    DSS(DS_rot_cy) = (s16)m.pcy;
+    rotate_about_centre(road_proj_x_mirror(12, lat, (s16)(10 - ac->heading)), road_proj_y_mirror(12, wy, (s16)-dy), &rx, &ry);
+    CHECK(enh_aq_opp_anchor(&f, &m, -100, 10, lat, 0, true, &ax, &ay, &z));
+    printf("  10: z %.0f (%.0f, %.0f) want (%d, %d), mirror pivot (%.0f, %.0f)\n", z, ax, ay, rx, ry, m.pcx, m.pcy);
+    CHECK(z == 12 && ax == rx && ay == ry);
+    /* picture 3 just behind, drawn by the mirror's pass: the front's projection about the mirror's pivot */
+    sx = road_proj_x(9, lat, ac->heading);
+    sy = road_proj_y(9, wy, dy);
+    if (sy > 100) sy = 100;
+    rotate_about_centre(sx, sy, &rx, &ry);
+    CHECK(enh_aq_opp_anchor(&f, &m, -40, 3, lat, 0, true, &ax, &ay, &z));
+    printf("  3: z %.0f (%.0f, %.0f) want (%d, %d)\n", z, ax, ay, rx, ry);
+    CHECK(z == 9 && ax == rx && ay == ry);
+    CHECK(!enh_aq_opp_anchor(&f, &m, 0, 13, lat, 0, false, &ax, &ay, &z));
+    CHECK(!enh_aq_opp_anchor(&f, &m, 0, -1, lat, 0, false, &ax, &ay, &z));
+    aq_restore();
+}
+
+/* The rotated rows as aq_rotate_rows(14) leaves them (k = 14 - i), and the trough. */
+static void sr2_enh_aqtab_exact(void)
+{
+    aq_save();
+    const AqCase *ac = &aq_cases[2];
+    aq_set(ac);
+    aq_project_front();
+    EnhView v = aq_view(ac);
+    aq_roll(&v, 48, 0x7A, 0x3F);
+    for (int i = 0; i <= 14; i++) {
+        int k = 14 - i;
+        s16 x, y;
+        rotate_about_centre(RWT(DS_row_xl, i), RWT(DS_row_y, i), &x, &y);   RWT(AQ_R_LX, k) = x;  RWT(AQ_R_LY, k) = y;
+        rotate_about_centre(RWT(DS_row_xr, i), RWT(DS_row_y, i), &x, &y);   RWT(AQ_R_RX, k) = x;  RWT(AQ_R_RY, k) = y;
+        rotate_about_centre(RWT(DS_row_xol, i), RWT(DS_row_yeye, i), &x, &y); RWT(AQ_R_TLX, k) = x; RWT(AQ_R_TLY, k) = y;
+        rotate_about_centre(RWT(DS_row_xor, i), RWT(DS_row_yeye, i), &x, &y); RWT(AQ_R_TRX, k) = x; RWT(AQ_R_TRY, k) = y;
+    }
+    EnhAqTab mine, read;
+    memset(&mine, 0, sizeof mine);
+    memset(&read, 0, sizeof read);
+    enh_aqtab_read(&read);
+    enh_aqtab_exact(&v, false, &mine);
+    int e = enh_aqtab_err(&mine, &read, 14);
+    printf("  err %d (lx0 %d/%d try14 %d/%d)\n", e, mine.lx[0], read.lx[0], mine.try_[14], read.try_[14]);
+    CHECK(e == 0);
+    CHECK(read.roll == 48 && read.cx == 0x7A && read.cy == 0x3F);
+    aq_restore();
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -1367,6 +1762,17 @@ int main(int argc, char **argv)
     RUN(sr2_enh_sky_tags);
     RUN(sr2_enh_compare_rows);
     RUN(sr2_enh_compare_log);
+    RUN(sr2_enh_aq_depths);
+    RUN(sr2_enh_aq_rows_exact);
+    RUN(sr2_enh_aq_mirror_rows_exact);
+    RUN(sr2_enh_aq_rot);
+    RUN(sr2_enh_aq_roll_unwrap);
+    RUN(sr2_enh_aq_sky_x);
+    RUN(sr2_enh_aq_flags);
+    RUN(sr2_enh_aq_opp_bank);
+    RUN(sr2_enh_aq_opp_wy);
+    RUN(sr2_enh_aq_opp_anchor);
+    RUN(sr2_enh_aqtab_exact);
     host_shutdown();
     return failures ? 1 : 0;
 }
