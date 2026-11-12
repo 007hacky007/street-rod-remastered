@@ -1,10 +1,10 @@
 {
  "001b8006e8e92e11bc61d5865df419f5337623db": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a part of a classic car body seen from the side, cut out on its own: a roof with its pillars, or a smooth painted lower front or rear corner of the body (a roll pan in place of a bumper)",
+  "keep": "the outline exactly; the window openings stay see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, white stays white, the small grey grille bars and lights stay grey",
+  "sheet": "sr2-6-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -203,11 +203,11 @@
   "masked": 1
  },
  "020f29792f8a5ab3b14b9fbaec9e97eb4e661bcc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a tiny far-away white police car seen from the front, coming towards us, with a red and white light bar on the roof and two headlights",
+  "keep": "white body, red lights",
+  "sheet": "sr2-7-small-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -241,11 +241,11 @@
   "masked": 1
  },
  "02baac8b9ff556785d6d1f15e9a09801e7486aee": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with curly black hair and a full black beard, a white shirt with a blue collar",
+  "keep": "the face, hair, beard and clothes as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -283,10 +283,10 @@
   "masked": 1
  },
  "03b9bb1171ea2d6f05e09b0e85f32556f06cbd82": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "the bottom of a shattered car windshield seen from inside after a crash: crazed glass with a web of white cracks over the car's green hood, then the curved top of the dashboard and the steering wheel rim at the bottom, a window pillar at the left",
+  "keep": "the green of the hood under the cracks is the car's paint (the game repaints it): keep it green; the small see-through gaps among the cracks at the top stay hot pink like the background; the outline, which lines up with the shattered windshield picture it is drawn over",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -302,11 +302,11 @@
   "masked": 1
  },
  "0417e21d69e0a80da32cfe4637b753483d676aaf": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the top of a steering wheel's wide padded centre, turned a little the other way, at the bottom of the view: a long rounded grey pad with a dark outline, tilted, between the two lower sides of the wheel's chrome rim at the left and right edges, in front of a black dashboard with a small square panel holding a round knob at the left",
+  "keep": "the shape; the padding smooth grey, not checkered; it is drawn into the dashboard picture, so the rim at both edges and the dashboard behind line up with it; the dashboard behind the wheel the same as in the other two wheel positions",
+  "sheet": "sr2-7-dash2-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -349,11 +349,11 @@
   "pal_like": 1076
  },
  "051ba6dfb40ea710e07aad98846ad742aadc1f06": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a dark-skinned woman with a big round black afro, dark sunglasses with white glints and purple lipstick, a red and brown chequered top",
+  "keep": "the face, hair, sunglasses and clothes as drawn; she stays a woman; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -368,11 +368,11 @@
   "masked": 1
  },
  "061455f3ca57477fbbb27003fd3e8e40b79f00f3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a dark-skinned man with black hair, a black moustache and goatee, a grey shirt",
+  "keep": "the face, hair, beard and shirt as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-3",
   "status": "new",
   "ids": {
    "sr2": [
@@ -433,11 +433,11 @@
   "masked": 1
  },
  "069b70c75843d45cec65cae128b78050bfb60d97": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a part of a classic car body seen from the side, cut out on its own: a roof with its pillars, or a smooth painted lower front or rear corner of the body (a roll pan in place of a bumper)",
+  "keep": "the outline exactly; the window openings stay see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, white stays white, the small grey grille bars and lights stay grey",
+  "sheet": "sr2-6-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -471,11 +471,11 @@
   "masked": 1
  },
  "07663ff07b81c8dbd63d4d90e787160f82f3f6c7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a purple early-1960s full-size car (Ford Galaxie style) seen straight from behind: wide see-through rear window with the driver's head, big round red tail lights at both ends, a dark chequered trim panel between them, a long chrome bumper, a yellow licence plate",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; red tail lights; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "sheet": "sr2-7-cars-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -490,11 +490,11 @@
   "masked": 1
  },
  "078189ebc1204e9b335bc93b3695b34dcd849996": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a very close view of the side of a red 1960s car passing by, facing right: the door and windscreen pillar at the top left, the long front fender, a chrome side trim line, the door seam, the front wheel with a chrome spoked rim and a black tyre, the tip of the chrome bumper at the right edge",
+  "keep": "the red is the car's paint (the game repaints it): keep it red; chrome stays chrome; the windscreen opening stays see-through (hot pink like the background); the outline where it is cut off at the picture edges",
+  "sheet": "sr2-7-cars-3",
   "status": "new",
   "ids": {
    "sr2": [
@@ -753,10 +753,10 @@
   "masked": 1
  },
  "0bab2cb372220ce37c3c7096d6d3ace33ef2f6f4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "pointer",
+  "batch": 5,
+  "desc": "three mouse pointer icons stacked vertically, each 16 x 16 pixels: a grey open-end wrench lying diagonally, a white pointing hand with a grey outline, and a grey fuel pump nozzle with its handle, on a flat background",
+  "keep": "each icon stays in its own 16-pixel row, the same size, pointing the same way; the tip of each pointer stays at the top left",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -772,11 +772,11 @@
   "masked": 1
  },
  "0bb058629fdf887f3aa16cefb7b8b79372813e9f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a 1962 Plymouth Fury four-door hardtop body facing right (front on the right), without its wheels: teal paint, small canted rear fins, two open side windows with chrome frames, the grey glass of the rear window and of the windshield, three door lines with two chrome door handles, a chrome trim line on the front fender and chrome bumper ends",
+  "keep": "the outline exactly (the game draws a chopped roof and bumperless ends over it at fixed places); the empty wheel arches (the wheels are drawn separately); the window openings stay empty and see-through; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, black edges stay black",
+  "sheet": "sr2-6-olds-fury-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -810,11 +810,11 @@
   "masked": 1
  },
  "0bccc360ec9c244fa6c802fda8f94bf1638a25e6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner of a classic car body seen from the side with its bumper removed, cut out on its own: a small piece of paint with a black edge slanting down to the left",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the transparent part stays transparent (the piece replaces that corner and cuts the bumper away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-chops-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -867,11 +867,11 @@
   "masked": 1
  },
  "0c7a50a4b57ad78ebc82c026e7661f2ee79e5f07": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a strip of a car's underside seen from below: a brown cast-iron exhaust pipe with light red highlights rising from the lower left and running along the top to the right, over grey frame and cross member lines on black",
+  "keep": "a piece cut out of the underside picture: the pipe ends and the grey lines at the edges stay exactly where they are so that it lines up with the picture around it; the pipe stays brown",
+  "sheet": "sr2-6-undercar-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -886,11 +886,11 @@
   "masked": 0
  },
  "0cd69fe38ecb4af1d6d7ea353837fb74724cda5b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a chrome fuel injection unit on an engine seen from the side, a little from above: eight tall round chrome injector stacks in two groups of four on a ribbed manifold base, a fuel rail and a throttle rod running across them, a fuel line at each end",
+  "keep": "the shape and all its details; the eight stacks; the flat bottom edge (it sits on the engine)",
+  "sheet": "sr2-6-manifolds-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -928,11 +928,11 @@
   "masked": 1
  },
  "0deabee1df24945a355763bfed84cd77a4dbe68e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a small piece of a classic car body seen from the side: the rounded painted lower corner of a fender where the chrome bumper was taken off, with black checker shading along its curved edge, cut out on its own",
+  "keep": "the outline and the see-through part exactly (the picture replaces this corner of the car body, so its see-through part is where the bumper is cut away, and its painted edges must meet the body around it); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-parts-1037",
   "status": "new",
   "ids": {
    "sr2": [
@@ -970,11 +970,11 @@
   "masked": 1
  },
  "0f4f2f84d3f110b884a87925610bd93a195f8a10": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a thin-faced man with slicked-back black hair and dark eyes, a black and grey jacket",
+  "keep": "the face, hair and jacket as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1050,10 +1050,10 @@
   "masked": 1
  },
  "1085c847b4c06956c982fe7ff1420af1a6c0472e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "the bottom of a shattered windshield and the dashboard below it, seen from the driver's seat: the car's bright green hood seen through the glass, covered with a web of thin white cracks, the windshield's lower frame curving down at the left, and below it the top of a grey dashboard with the top arc of a steering wheel rim in the middle and a small dotted strip at the right",
+  "keep": "the green is the car's paint (the game repaints it): keep it green; the transparent area at the top left and between the top cracks; it is laid over the crash picture, so its edges, the frame and the wheel arc stay exactly where they are",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1088,12 +1088,12 @@
   "masked": 0
  },
  "125c854449c128902a4f43470e385d61be6b46be": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "kept original: a driver licence card (ChatGPT does not draw ID documents), as Street Rod 1's licence",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "sr2": [
     1002
@@ -1107,11 +1107,11 @@
   "masked": 0
  },
  "128341daaff16026ba8b34f75c5114b2ecff536e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a blue 1960s American two-door hardtop facing right, without its wheels: a long hood and trunk, a sloping roof with the side window and a quarter window, door lines and a door handle, a chrome rear bumper and tail light at the left end, a chrome front bumper and headlight at the right end",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the window openings stay transparent (the driver is drawn behind them); the outline exactly; keep every colour exactly as in the picture: the blue is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-bodies-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1168,11 +1168,11 @@
   "masked": 1
  },
  "12d0b676353b8eb934d2320b6afef90367b9f46d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the chopped roof of a classic car seen from the side, cut out on its own: a low flat roof line in the body paint with a thin grey window frame and a small door pillar under it, the window opening empty, a chrome windshield pillar slanting down at the right",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the window opening and the area above the low roof line stay transparent (the piece replaces that part of the body and cuts the stock roof away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-chops-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1206,12 +1206,12 @@
   "masked": 1
  },
  "13302f62916c9d7a376427be10da3214d2049c2e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "kept original: too small to carry detail (the starter far away, a figure about 3x5 pixels)",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "sr2": [
     2081
@@ -1267,11 +1267,11 @@
   "masked": 1
  },
  "13532fe74b084b2933f5097b900f58a7a072e68d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner of a classic car body seen from the side with its bumper removed, cut out on its own: a small rounded piece of paint with a black outline curving down at the left",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the transparent part stays transparent (the piece replaces that corner and cuts the bumper away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-chops-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1332,10 +1332,10 @@
   "masked": 0
  },
  "13bfd4385795aa15b26be60d2e2d5528506bb6d8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "the dashboard of a late-1950s car seen from the driver's seat: a grey padded top with ribs, a teal painted panel holding three round gauges with white numbers (a fuel gauge with tick marks and a row of red lights at the left, the speedometer with 'MPH' and a small odometer strip in the middle, a rev gauge with a red zone at the right), a dark speaker grille at the right, round chrome knobs on a chequered strip below, the big chrome steering wheel rim arching over the gauges and its teal hub at the bottom middle, the door with its window frame, armrest and handle at the left, and the edge of the teal hood at the top",
+  "keep": "the teal of the hood and the dash panel is the car's paint (the game repaints it): keep it teal; the gauges have no needles (the game draws them); the speedometer numbers 10 20 30 40 50 60 70 80 90 100 110 120 130 with 'MPH' and the rev gauge numbers 0 10 20 30 40 50 60 with its red zone from 50 to 60 exactly; the steering wheel rim, hub and spokes stay exactly in place (separate steering wheel pictures are drawn over its lower part, and a clock picture over the rev gauge); the black areas stay plain black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1351,10 +1351,10 @@
   "masked": 0
  },
  "142dcf84de0551572ff266451bb602de19d957ae": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 6,
+  "desc": "a part of a classic car body seen from the side, cut out on its own: a low painted fastback roof sloping to the left with a chrome windscreen pillar at the right",
+  "keep": "the outline exactly; the window opening stays see-through; the blue is the car's paint (the game repaints it): keep it blue; chrome stays chrome",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1427,11 +1427,11 @@
   "masked": 1
  },
  "1561d1f29427a34c230acf7284c2de0a43ba7090": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a part of a classic car body seen from the side, cut out on its own: a roof with its pillars, or a smooth painted lower front or rear corner of the body (a roll pan in place of a bumper)",
+  "keep": "the outline exactly; the window openings stay see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, white stays white, the small grey grille bars and lights stay grey",
+  "sheet": "sr2-6-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1469,11 +1469,11 @@
   "masked": 1
  },
  "157a289d312d8d60df98cf3aec4ca201952cd66d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a glass pack muffler seen from below: a long brown box with a light red lower edge and a thin black line inside its top left edge",
+  "keep": "a piece cut out of the underside picture: the edges stay where they are so that it lines up with the picture around it; brown with the light red edge",
+  "sheet": "sr2-6-undercar-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1507,11 +1507,11 @@
   "masked": 1
  },
  "169891e03016bcf14ff9b35df293bd9b3476d349": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a small far-away figure of the race starter seen from behind: a woman with brown hair, a black jacket and a red skirt, arms at her sides, standing",
+  "keep": "the outline and the colours; the same figure at each size",
+  "sheet": "sr2-7-startermirror-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1587,11 +1587,11 @@
   "masked": 1
  },
  "1809b7f3cd0c60ffa23d3055c79fb53a09cbfd26": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a purple late-1960s sports car (Corvette Stingray style) seen straight from behind: flat see-through rear window with the driver's head, four round red tail lights, a row of small grey vents between them, chrome bumpers, a grey licence plate, both rear tyres",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; red tail lights; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "sheet": "sr2-7-cars-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1625,11 +1625,11 @@
   "masked": 1
  },
  "18371c606a986ec144e3d8ae7faa38085cf6bbd1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of an early-1960s American two-door hardtop car body without its wheels, front at the right: a long low body with a chrome side spear along its whole length, chrome bumpers at both ends, a roof with a sloping rear window pillar at the left, a slanted chrome windshield pillar at the right and no centre pillar, door lines",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows stay see-through (the driver and the background show through them); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "sr2-6-bodies-1039",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1663,11 +1663,11 @@
   "masked": 1
  },
  "193fdcebae86e38285d94c4a4439ce4444a2e47f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "the engine's wiring connector unplugged: a small yellow plug at the top left with a thin grey wire running from it to the right and hanging down in a loose curve to the bottom right",
+  "keep": "the plug's place and the wire's path and thickness exactly; everything else transparent",
+  "sheet": "sr2-6-bay-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1782,11 +1782,11 @@
   "masked": 1
  },
  "1a4bf1764fca2f1a1285f49b06360f430eba912e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a 1966 Pontiac GTO two-door hardtop body facing right (front on the right), without its wheels: blue paint, a sloping roof with an open side window, a thin pillar and a chrome windshield pillar, one door line, a chrome door handle, a small white badge on the rear fender and a small winged emblem on the front fender, chrome bumper ends and a chrome rocker strip along the bottom",
+  "keep": "the outline exactly (the game draws a chopped roof and bumperless ends over it at fixed places); the empty wheel arches (the wheels are drawn separately); the window openings stay empty and see-through; the two small badges as drawn; keep every colour exactly as in the picture: the blue is the car's paint (the game repaints it), chrome stays chrome, black edges stay black",
+  "sheet": "sr2-6-gto-belvedere-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -1851,10 +1851,10 @@
   "masked": 1
  },
  "1ae2e681d31130e8d8094dee9fdd352ffb55c3c7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 6,
+  "desc": "two animation frames side by side, 16 px each, of the front of an engine close up: a brown ribbed fan belt with red edges running down over a black and grey pulley, a bright green hose at the left of each frame, black gaps between the parts",
+  "keep": "the two frames stay alike with the belt ribs shifted between them (the game alternates them to run the belt), each exactly 16 px wide; every edge matches the engine picture around it; the colours exactly",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1870,10 +1870,10 @@
   "masked": 0
  },
  "1b42b1812989c2088a656ba0480f0fcbfb17b4b5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper headline strip: the headline 'Kennedy in Car Accident' in bold black letters on white, and under it two columns of small article text separated by a thin vertical black line",
+  "keep": "the headline exactly, letter by letter; the small text rows and the column line; black on plain white; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -1889,11 +1889,11 @@
   "masked": 1
  },
  "1c5014e42a76cfab4986227a145283db10a5f56e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "the engine's wiring plugged in: a thin grey wire running along the top from the left and bending down at the right edge",
+  "keep": "the wire's path and thickness exactly; everything else transparent",
+  "sheet": "sr2-6-bay-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2057,11 +2057,11 @@
   "masked": 1
  },
  "1f3e22341bb922f12b7cb3628b4e9a84e40b594f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a chrome intake manifold for a V6 engine seen from the side in perspective, with curved runners and one two-barrel carburettor pad on top",
+  "keep": "one carburettor pad with two holes; the outline; grey, white and black only",
+  "sheet": "sr2-6-engineparts-1064",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2076,11 +2076,11 @@
   "masked": 1
  },
  "1f45a68ac38f95c1d6e8e1ad0d2c98e270d40e15": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a chrome dual tunnel ram intake manifold seen from the side, a little from above: four tall curved runners down to the engine, a wide plenum on top with two carburettor openings, dark grey ribbed shading between them",
+  "keep": "the shape and all its details; the two carburettor openings on top; the flat bottom edge (it sits on the engine)",
+  "sheet": "sr2-6-manifolds-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2095,11 +2095,11 @@
   "masked": 1
  },
  "1f532df9642a7688249d4b6f32b5bd3de09c0099": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the front corner (the right end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the front fender with its black edge, a light trim highlight along its top left and a small grey spot at the top right, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black, grey stays grey",
+  "sheet": "sr2-6-bumpers-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2133,11 +2133,11 @@
   "masked": 1
  },
  "2005f9d59da270ffa4a91a7f76bbef0f999f5766": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the top of a steering wheel's wide padded centre, held straight, at the bottom of the view: a long rounded grey pad with a dark outline, level, between the two lower sides of the wheel's chrome rim at the left and right edges, in front of a black dashboard with small square panels holding round knobs at the left and right",
+  "keep": "the shape; the padding smooth grey, not checkered; it is drawn into the dashboard picture, so the rim at both edges and the dashboard behind line up with it; the dashboard behind the wheel the same as in the other two wheel positions",
+  "sheet": "sr2-7-dash2-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2152,11 +2152,11 @@
   "masked": 1
  },
  "2094b23b0c5cfdfc6688bbf052d49b595d7f90ef": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a classic car wheel seen from the side, one frame of it rolling: a thin dark grey tyre, a broad white whitewall and chrome wire spokes around a small hub",
+  "keep": "the oval outline the same size; the spoke pattern as drawn (the four pictures are frames of the wheel turning); grey, white and black only",
+  "sheet": "sr2-6-wheels-1050",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2190,11 +2190,11 @@
   "masked": 1
  },
  "21138f7947f2317ccf46b51c7e8c6d307025fda0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the top of a classic car body seen from the side with a chopped (lowered) roof, facing right like the car: the low roof line with its window pillars and chrome window frames, the grey glass of the windshield on the right (and of the rear window on some), the window openings empty, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the top of the car body at a fixed place and must join it without a seam; the window openings stay empty (see-through); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-roofs-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2209,11 +2209,11 @@
   "masked": 1
  },
  "2225651a671061dd3bf2453cd34515e3cf647680": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with black hair, dark sunglasses and a cigarette, a white shirt with a black collar under a brown jacket with pink edges",
+  "keep": "the face, hair, sunglasses, cigarette and clothes as drawn; the pink stays pink (it is not the background); it stays a portrait the same size",
+  "sheet": "sr2-8-racers-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2228,11 +2228,11 @@
   "masked": 1
  },
  "2299656c4f64f7bdb23eb597651f4b90018a3ede": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 5,
+  "desc": "a grey hydraulic bottle jack seen from the side: a rounded grey body on a wide flat base, a dark blue panel on its front, a short ram on top with a small brass cap and a white saddle, its pump handle raised to the upper right",
+  "keep": "the shape and position; the handle angle; the body exactly where it is in the other two frames (the frames are swapped as the jack is pumped); grey stays grey, the panel dark blue",
+  "sheet": "sr2-5-jack-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2247,11 +2247,11 @@
   "masked": 1
  },
  "22cc8f961883061099a7f2ba97b4e9cbc8486bef": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a white 1960s police car seen straight from behind: a red, grey and red light bar on the roof, see-through rear window with the driver's head, red tail lights, a small emblem on the boot lid, chrome bumper, a black licence plate with yellow letters, both rear tyres",
+  "keep": "white body, red lights, the plate lettering as it is; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "sheet": "sr2-7-cars-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2266,12 +2266,12 @@
   "masked": 1
  },
  "22e40c2566597134f557d84a1abe699e9b9f4765": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "kept original: too small to carry detail (the starter far away, a figure about 3x5 pixels)",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "sr2": [
     2058
@@ -2285,11 +2285,11 @@
   "masked": 1
  },
  "23479d1eed677657ac989ea1a4ef798032fe86ab": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the top of a classic car body seen from the side with a chopped (lowered) roof, facing right like the car: the low roof line with its window pillars and chrome window frames, the grey glass of the windshield on the right (and of the rear window on some), the window openings empty, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the top of the car body at a fixed place and must join it without a seam; the window openings stay empty (see-through); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-roofs-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2304,11 +2304,11 @@
   "masked": 1
  },
  "2360ca14f3ac9874f8cc28860c17785b0b5fcb42": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the chopped (lowered) roof of a classic American car seen from the side, cut out on its own: a long low flat roof panel with a chrome strip sloping down to the rear at the left, the open side window space under it and the chrome windshield pillar sloping down at the right",
+  "keep": "the outline exactly (it replaces the top of the car body, so its see-through parts cut the old roof away and must stay see-through); the window space stays empty; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it): keep it green; chrome stays chrome, black stays black",
+  "sheet": "sr2-6-choptops-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2347,9 +2347,9 @@
  },
  "23bbd078f77cbe0f9d7c68b0dd5a4db62626e1db": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 5,
+  "desc": "the credits screen: two white 'WANTED!' police posters pinned over a brown speckled wall with red and grey specks and a few black cracks. The small poster at the top left overlaps the big one: big black stencil 'WANTED!' cut off at the top edge, blue 'CALIFORNIA HIGHWAY PATROL LOOKOUT FOR', red 'PZ KAREN ROAD GANG CHIEF', a grey photo portrait of a man in a frame and 'ANDRZEJ SANOJCA LEAD PROGRAMMER', a line of tiny scribbled text, a grey frame edge with a pin at its corner. The big poster: 'NTED!' in black stencil letters (its start hidden under the small poster), blue '...WAY PATROL LOOKOUT FOR', red 'PZ KAREN ROAD GANG', and six framed grey photo portraits with names in two columns: 'ANDRZEJ MICIA\u0141KIEWICZ PROGRAMMER', 'MARCIN GRZEGORZEWSKI SOUND DESIGNER', 'WOJTEK W\u0104S PROGRAMMER', 'NATALIA WR\u00d3BLEWSKA GRAPHIC DESIGNER', 'DOROTA B\u0141ASZCZAK SOUND DESIGNER' (with black glasses), 'ZBYCH D\u0104BROWSKI GRAPHIC DESIGNER', and two lines of tiny scribbled text at the bottom",
+  "keep": "all the lettering exactly, letter for letter as drawn, with the Polish letters \u0141 (MICIA\u0141KIEWICZ, B\u0141ASZCZAK), \u00d3 (WR\u00d3BLEWSKA) and \u0104 (W\u0104S, D\u0104BROWSKI); the overlap of the two posters and where each is cut off; each portrait stays the same person in grey, in its frame; the tiny scribbled lines stay unreadable scribble, no new words",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -2473,10 +2473,10 @@
   "masked": 0
  },
  "2541dc0aa688976eb8c41f8af54064fa0da9de24": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a white 1960s American sports coupe facing right, without its wheels: a low pointed nose, a fastback roof with a small side window and a vented rear quarter, a door line, a long chrome side exhaust pipe under the door, thin chrome bumpers at both ends",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the window opening stays transparent (the driver is drawn behind it); the outline exactly; keep every colour exactly as in the picture: the white and light grey of the body are the car's paint (the game repaints it); the chrome side pipe, bumpers and trim stay exactly where and as thin as they are, chrome stays chrome, black stays black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -2511,11 +2511,11 @@
   "masked": 1
  },
  "266ac4734c1430098315da6e9d52f570b4ed3d41": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a chopped (lowered) car roof seen from the side, cut out on its own: a flat painted roof with the tops of the window openings, two thin grey pillars and slanted chrome window corners at both ends",
+  "keep": "the outline and the see-through parts exactly (the picture replaces the top rows of the car body, so its see-through part cuts the old roof away, and its lower edge must meet the body); the window openings stay see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome",
+  "sheet": "sr2-6-roofs-1044",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2553,11 +2553,11 @@
   "masked": 0
  },
  "2757e66e5526669120c47eaac554f9f055082d7e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a part of a classic car body seen from the side, cut out on its own: a roof with its pillars, or a smooth painted lower front or rear corner of the body (a roll pan in place of a bumper)",
+  "keep": "the outline exactly; the window openings stay see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, white stays white, the small grey grille bars and lights stay grey",
+  "sheet": "sr2-6-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2629,11 +2629,11 @@
   "masked": 1
  },
  "2a4ba8d3ff8d57563a2aa85ddf60d9632002d3e2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a classic car wheel seen from the side: a dark grey tyre with a broad white wall, a grey rim, a ring of black and grey hubcap ribs, and a light grey hubcap with a black centre ring around a small white cap; one frame of a turning wheel",
+  "keep": "a round wheel the same size; the ribs in the ring exactly where they are in this frame (the four frames animate a rolling wheel); white wall stays white",
+  "sheet": "sr2-6-wheels-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2648,11 +2648,11 @@
   "masked": 1
  },
  "2ab66e273232f38ef591f3464668bc54be4f7018": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the centre of a chrome steering wheel held straight, at the bottom of the view: a round chrome hub with two chrome spokes running out to the sides and a ribbed chrome arc below it, the two lower sides of the wheel's chrome rim at the left and right edges, and behind it the dashboard with a black mesh grille and two pairs of round white knobs at the left and right",
+  "keep": "the shape; it is drawn into the dashboard picture, so the rim at both edges and the dashboard behind line up with it; the dashboard behind the wheel the same as in the other two wheel positions",
+  "sheet": "sr2-7-dash0-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2667,11 +2667,11 @@
   "masked": 1
  },
  "2b040baf2bdbd03ecc68caf3380ff82d5b8cc916": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a purple 1960s American two-door hardtop facing right, without its wheels: a fastback roof with the side window, chrome vent strakes on the rear quarter, door lines and a door handle, a chrome rear bumper at the left end, a chrome front bumper and lights at the right end",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the window opening stays transparent (the driver is drawn behind it); the outline exactly; keep every colour exactly as in the picture: the purple is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-bodies-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2686,11 +2686,11 @@
   "masked": 1
  },
  "2ccbb31bb83674d4f506d0a79bd9082dae763893": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a tiny far-away low sports car seen from the front, coming towards us: purple body with light grey highlights, dark windscreen, small headlights",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome",
+  "sheet": "sr2-7-small-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2724,11 +2724,11 @@
   "masked": 1
  },
  "2dc3d526c023ac28df87473285f6d126792d6260": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the front corner of a classic car body seen from the side with its bumper removed, cut out on its own: a rounded nose of paint with a lighter top edge and a black outline curving down at the right",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the transparent part stays transparent (the piece replaces that corner and cuts the bumper away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-chops-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -2743,10 +2743,10 @@
   "masked": 1
  },
  "2dc8b9923963b74148e5f7df59fbee2b20cb306e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a wall calendar page in a grey frame: 'AUG' at the top with a row of weekday letters S M T W T F S and the dates of August in dark grey, Sundays in red; in the middle a pin-up picture of a tanned blonde woman in a bright green swimsuit sunbathing on her back on a light grey beach with one knee raised, a teal sea behind her under a dark red sky and a pink-red setting sun on the left; 'SEP' at the bottom with the September dates, the red 14 circled in green; a turned-up page corner at the bottom left",
+  "keep": "all the month names, weekday letters and numbers exactly, each in its place (the game draws a cross over the current date at fixed positions); Sundays stay red; the green circle round 14; the white page and the grey frame",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -2809,9 +2809,9 @@
  },
  "2fc5b7ed8739e96381649fb7175dbcccc3b4b490": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 5,
+  "desc": "the top of the newspaper front page: two stacked paper tabs, 'AUTO PARTS' (with a wheel, a spark plug and a chrome engine block beside the words) and 'USED CARS' (with a blue 1930s sedan and a green sports car), then the 'Los Angeles News' masthead in big black gothic letters, and '10 cents' small at the right under a thin rule",
+  "keep": "all the lettering exactly; the paper stays white with black lettering; the stacked tabs keep their thin grey edges exactly as in the original, and nothing else gets a curl, fold or shadow; the black area at the top right outside the tabs stays plain black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -2873,10 +2873,10 @@
   "masked": 1
  },
  "31c3cd4d9ec6ab354a7743283aff245d33968ce3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 5,
+  "desc": "the empty window of the engine bay screen: a plain black panel inside a thin light grey and white bevelled metal frame",
+  "keep": "the black panel stays plain black (the engine and its parts are drawn in it); the frame exactly as thin and straight as it is",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -2892,10 +2892,10 @@
   "masked": 0
  },
  "32ae27407d4180dfd14b4c1e840712f5fa02e6b1": {
-  "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "a shattered car windshield seen from the driver's seat after a crash: the glass crazed into a web of small cells by thin white cracks, a big jagged hole in the middle, the cracked rear-view mirror at the top right, the dark left windshield pillar and the chrome frame of the side window at the left (the side window's lower part grey and cracked), the roof edge at the top, the car's bright green hood seen through the lower part of the glass, also cracked, and the top of the steering wheel rim at the bottom centre",
+  "keep": "the clear glass between the cracks and the hole stay transparent (the road view shows through); the cracks stay thin white lines; the green is the car's paint (the game repaints it): keep it green; the frame, the pillar and the mirror where they are; the bottom edge and the wheel arc line up with the dashboard and the pieces drawn over it",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3033,10 +3033,10 @@
   "masked": 1
  },
  "3588091012479264f042b6fef670b08023786683": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper strip with the headline \"U.S.D.A. suspend use of DDT\" across the width and two columns of tiny article text below, split by a thin vertical rule, black on white",
+  "keep": "the headline exactly, with the dots in U.S.D.A.; the tiny article text stays small unreadable print, no new words; the vertical rule; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3052,11 +3052,11 @@
   "masked": 0
  },
  "358c46aa47ccd94a54ba62e3a65a557c31ddf9e2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the chopped roof and upper rear fender of a sports coupe seen from the side, cut out on its own: a low roof line in the body paint running into the rear fender at the left, a thin black window frame, the window opening empty, a chrome windshield pillar slanting down at the right",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the window opening and the area above the low roof line stay transparent (the piece replaces that part of the body and cuts the stock roof away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-chops-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3071,11 +3071,11 @@
   "masked": 1
  },
  "359266c12610d5cf3112e7cdc6c8e0e1a0e8b4c5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a tiny far-away figure of the race starter standing on the road: brown hair, a dark red leather jacket with brown hands at its sides, dark grey trousers, light red and brown lower legs and grey shoes",
+  "keep": "the figure's outline and colours exactly (it is that small); the same man as the other sizes of the starter",
+  "sheet": "sr2-7-starter-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3128,11 +3128,11 @@
   "masked": 0
  },
  "367805f8306809e94ac80dcced1a8a7d3481d7ac": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a small piece of a car's underside seen from below in greys on black: the rear axle differential, a round housing with a cross-shaped cover and the pinion pointing right towards the driveshaft, a grey frame line at the left edge",
+  "keep": "a piece cut out of the underside picture: the lines at its edges stay exactly where they are so that it lines up with the picture around it; greys on black",
+  "sheet": "sr2-6-undercar-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3185,11 +3185,11 @@
   "masked": 1
  },
  "379d09ff53705bb5e3504b0385a2cadc1b4a6dd7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a late-1960s American fastback muscle car body without its wheels, front at the right: a long hood with a dark grille at the front, a roof sloping down in a long line to the tail at the left with a small quarter window, a slanted chrome windshield pillar, a door line with a chrome handle, a pointed rear fender end and chrome bumpers",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows stay see-through (the driver and the background show through them); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "sr2-6-bodies-1039",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3284,11 +3284,11 @@
   "masked": 1
  },
  "3bb71c2b4ff4fd9df03217bf49f952aa99b09bfd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a small piece of a car's underside seen from below in greys on black: the rear axle differential, a rounded housing with a ribbed cover between the axle tubes, the pinion pointing right, a grey frame line at the left edge",
+  "keep": "a piece cut out of the underside picture: the lines at its edges stay exactly where they are so that it lines up with the picture around it; greys on black",
+  "sheet": "sr2-6-undercar-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3330,11 +3330,11 @@
   "masked": 0
  },
  "3d17adffa76720bed22b81f540bd8d5f560c1dc0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a small piece of a classic car body seen from the side: the rounded painted lower corner of a fender where the chrome bumper was taken off, with black checker shading along its curved edge, cut out on its own",
+  "keep": "the outline and the see-through part exactly (the picture replaces this corner of the car body, so its see-through part is where the bumper is cut away, and its painted edges must meet the body around it); keep every colour exactly as in the picture: the blue is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-parts-1035",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3349,11 +3349,11 @@
   "masked": 1
  },
  "3d1e042919273805b0175783fb1c44248d3f052d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a small piece of a classic car body seen from the side: the rounded painted lower corner of a fender where the chrome bumper was taken off, with black checker shading along its curved edge, cut out on its own",
+  "keep": "the outline and the see-through part exactly (the picture replaces this corner of the car body, so its see-through part is where the bumper is cut away, and its painted edges must meet the body around it); keep every colour exactly as in the picture: the blue is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-parts-1035",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3368,11 +3368,11 @@
   "masked": 1
  },
  "3d2cbeddd986a865950493fc416fdcaf0774f1dd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner (the left end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the rear fender with its black edge and a few light highlights on the right, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-bumpers-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3387,10 +3387,10 @@
   "masked": 1
  },
  "3d4b2cc83e536d6589e6c74fc0f83214fadec12b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of the King's car, a black 1969 Shelby GT500 fastback body facing right (front on the right), without its wheels: glossy black paint with grey and white highlights, a big chrome supercharger blower sticking up out of the hood near the front, yellow, green and blue flames painted along the side between the wheels, a long sloping roof with an open side window, a yellow light at the front, chrome bumper ends",
+  "keep": "the outline exactly; the empty wheel arches (the wheels are drawn separately); the window openings stay empty and see-through; black paint (this car is not repainted); the flames in exactly their place and colours: yellow at the back, then green, then blue towards the front; the blower on the hood",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3448,11 +3448,11 @@
   "masked": 1
  },
  "3e21a9b6842871cbf6dfe9c7bc84e3f642c664c9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a small piece of a car's underside seen from below in greys on black: the rear axle differential, a round housing with a smooth cover and the pinion snout pointing right towards the driveshaft, a grey frame line at the left edge",
+  "keep": "a piece cut out of the underside picture: the lines at its edges stay exactly where they are so that it lines up with the picture around it; greys on black",
+  "sheet": "sr2-6-undercar-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3514,11 +3514,11 @@
   "pal_like": 1099
  },
  "3ec20df41e723d5c6cad8512fc8cb835bbd94677": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a chrome intake manifold for two four-barrel carburettors, seen from the side in perspective: two flat white carburettor pads with four black holes each on top, curved runners below them, a flat base flange with bolt holes along the bottom",
+  "keep": "two carburettor pads with four holes each, at exactly their place (the carburettors are seated on them); the base flange",
+  "sheet": "sr2-6-bay-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3552,10 +3552,10 @@
   "masked": 1
  },
  "3eeb9fc6f24fa492931126360ad0cb06faafa83c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 6,
+  "desc": "the chopped roof of a classic car seen from the side, cut out on its own: a low flat roof line in the body paint with a thin grey window frame under it, the window opening empty, the windshield pillar slanting down at the right",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the window opening and the area above the low roof line stay transparent (the piece replaces that part of the body and cuts the stock roof away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), chrome stays chrome, black stays black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3571,11 +3571,11 @@
   "masked": 1
  },
  "3fdbb75d8d345d1866090be0f5aeab178a744680": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "one of four rotation frames of the same car wheel seen from the side: a tyre with a wide white sidewall band and a dark alloy rim with eight grey spokes around a small hub",
+  "keep": "a round wheel the same size; the spokes at exactly the angle drawn (the four frames turn the wheel when the car rolls); the same wheel in every frame",
+  "sheet": "sr2-6-tyre-frames-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3590,11 +3590,11 @@
   "masked": 1
  },
  "403746419403a5e9d0c723ee7dc3e6c2715bc4d8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the top of a classic car body seen from the side with a chopped (lowered) roof, facing right like the car: the low roof line with its window pillars and chrome window frames, the grey glass of the windshield on the right (and of the rear window on some), the window openings empty, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the top of the car body at a fixed place and must join it without a seam; the window openings stay empty (see-through); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-roofs-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3628,10 +3628,10 @@
   "masked": 1
  },
  "410266d4fb62f8d2b5b18a7dd9f07a26d2f29eb9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "a thin strip of a car's roof seen from inside, above the windshield: a grey headliner with long light grey trim lines, dark speckled corners at both sides, and the chrome mount of the rear-view mirror at the right",
+  "keep": "grey; the mirror mount stays exactly where it is (the rear-view mirror hangs under it); a strip that thin",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3727,11 +3727,11 @@
   "masked": 1
  },
  "42f835d75deb2931c407e1242316b712c56264d5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a small chrome carburettor seen in perspective from the front left: a boxy body with a dark round throat opening at the left, a flat mounting base below and the throttle linkage at the right",
+  "keep": "the shape; grey, white and black only",
+  "sheet": "sr2-6-engineparts-1064",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3746,11 +3746,11 @@
   "masked": 1
  },
  "431bbf24bc089aba91ae3b34c6a4970926acc12d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a chrome supercharger on an engine seen from the side, a little from above: a long ribbed blower case with a round drive snout and pulley at the left, two carburettors with cross braces on top of it and a big oval chrome air scoop opening to the front on top",
+  "keep": "the shape and all its details; the round snout at the left; the flat bottom edge (it sits on the engine)",
+  "sheet": "sr2-6-manifolds-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3784,11 +3784,11 @@
   "masked": 1
  },
  "43d491cef445462ec99146851b82578a1193c308": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the front end of a 1963 Corvette Sting Ray body seen from the side with its front bumper taken off: the rounded lower front corner of the body panel with a dark edge, a row of dark shading dots along the bottom and a small grey bit at the right, cut out on its own",
+  "keep": "the outline exactly (it is pasted over the front of the car body at the same place); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome",
+  "sheet": "sr2-6-vette-ends-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3803,11 +3803,11 @@
   "masked": 1
  },
  "43f28e538ff47737036ce61c10762cf72ce036ff": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the top of a steering wheel's wide padded centre, turned a little one way, at the bottom of the view: a long rounded grey pad with a dark outline, tilted, between the two lower sides of the wheel's chrome rim at the left and right edges, in front of a black dashboard with a small square panel holding round knobs at the right",
+  "keep": "the shape; the padding smooth grey, not checkered; it is drawn into the dashboard picture, so the rim at both edges and the dashboard behind line up with it; the dashboard behind the wheel the same as in the other two wheel positions",
+  "sheet": "sr2-7-dash2-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3822,10 +3822,10 @@
   "masked": 1
  },
  "44bd76de9e7895b36d3f8ea91d6280cf901c3b21": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 5,
+  "desc": "a long low floor jack seen from the side: a flat brown body with a light red top edge and small grey rivets, a dark grey base and two small black caster wheels underneath",
+  "keep": "the shape and size; brown with the light red top edge",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -3860,11 +3860,11 @@
   "masked": 1
  },
  "4571d6bba00562ab4dafdfc3773c4da85f5373d4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a small oval dashboard clock face seen from the front: a black dial with green dots for the hours and short green bars at 12, 3, 6 and 9, a grey and white hub in the middle, in a grey and chrome oval bezel, with a bit of grey dashboard at the corners",
+  "keep": "no hands (the game draws them); the green marks where they are; the oval and its centre stay where they are (the hands turn around that centre); it is drawn into the dashboard picture, so the corners match the dashboard around it",
+  "sheet": "sr2-7-dashparts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3902,11 +3902,11 @@
   "masked": 1
  },
  "45d50d047deeae7a6010d488387be9cfc84c3ca1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a purple late-1960s fastback car (Mustang style) seen from behind and a little from its right side: sloping fastback roof with the driver's head in the see-through rear window, rectangular red and white tail lights in chrome frames, a chrome strip between them, chrome bumper, a yellow licence plate, the right rear wheel",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "sheet": "sr2-7-cars-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -3995,10 +3995,10 @@
   "masked": 1
  },
  "475a3269c01c64906284b29b2a18b020c2f733c6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "ui",
+  "batch": 5,
+  "desc": "the 'GRUDGE NIGHT' title in big chrome block letters with horizontal white and grey stripes, and 'Prize' in grey script below between two thin grey lines, on black inside a thin grey frame",
+  "keep": "the lettering 'GRUDGE NIGHT' and 'Prize' exactly; the black background; the thin grey frame along the edges stays plain and even all the way round (the game cuts its outer 4 rows at top and bottom and 8 columns at each side out to frame the photo and face panels)",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4061,10 +4061,10 @@
   "masked": 1
  },
  "4869d688b4824082c5de89ef8d42d91269cb76f0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "ui",
+  "batch": 5,
+  "desc": "a tall vertical grey metal tool bar: a light grey bevelled frame on dark grey, with three green push buttons labelled 'TUNE', 'DONE' and 'PARTS' in white letters, each set in a raised grey bevelled box, and short horizontal chrome slots above, between and below them",
+  "keep": "the labels TUNE, DONE and PARTS exactly, white on green; every button and slot in its place (they are click areas); straight frame lines, grey metal stays grey",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4099,11 +4099,11 @@
   "masked": 1
  },
  "48e5ba805e938bc5e20e231e3387819d979e5b19": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a white 1960s police car seen from behind and a little from its right side: a red, grey and red light bar on the roof, see-through rear window with the driver's head, red tail lights, a small emblem on the boot lid, chrome bumper, a black licence plate with yellow letters, the right rear wheel",
+  "keep": "white body, red lights, the plate lettering as it is; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "sheet": "sr2-7-cars-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4187,11 +4187,11 @@
   "masked": 1
  },
  "4a42314aa8aeb2a0727093119654d50f1212212c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a mid-1960s American fastback coupe body without its wheels, facing right: a long roof sloping down to the tail, door lines and a door handle, chrome bumpers at both ends, a grey rocker strip",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows stay see-through; the blue is the car's paint (the game repaints it): keep it blue; chrome stays chrome",
+  "sheet": "sr2-6-bodies-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4271,11 +4271,11 @@
   "masked": 1
  },
  "4b78df4f3b0d3a6949d751dbd05a8b1ffcecffd6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a classic car wheel seen from the side: a dark grey tyre with a broad white wall, a grey rim, a ring of black and grey hubcap ribs, and a light grey hubcap with a black centre ring around a small white cap; one frame of a turning wheel",
+  "keep": "a round wheel the same size; the ribs in the ring exactly where they are in this frame (the four frames animate a rolling wheel); white wall stays white",
+  "sheet": "sr2-6-wheels-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4309,10 +4309,10 @@
   "masked": 1
  },
  "4c6fdfff63330e5256293697338c13140ac33f8f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 6,
+  "desc": "a chrome V8 car engine seen from the left side in the engine bay: a long valve cover with round bolts on top, an exhaust manifold with four ports and spark plugs below it, pulleys and the fan belt at the left, two cylinders (starter and alternator) at the bottom, a mounting bracket at the right",
+  "keep": "the outline and all its details; grey, white and black only (not coloured)",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4328,11 +4328,11 @@
   "masked": 1
  },
  "4d3a59d169b4e3c1bb43f53c3965d04df5b3e6c5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the front corner (the right end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the front fender with its black edge and a black line along its top, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-bumpers-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4347,11 +4347,11 @@
   "masked": 1
  },
  "4d432b7b55dcbe437a8136f086e35b66b7a0349a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 5,
+  "desc": "a grey hydraulic bottle jack seen from the side: a rounded grey body on a wide flat base, a dark blue panel on its front, a short ram on top with a small brass cap and a white saddle, its pump handle raised high to the upper right",
+  "keep": "the shape and position; the handle angle; the body exactly where it is in the other two frames (the frames are swapped as the jack is pumped); grey stays grey, the panel dark blue",
+  "sheet": "sr2-5-jack-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4389,10 +4389,10 @@
   "masked": 1
  },
  "4dd41af00c566e7f4c383b9e085a22f1b776e09a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "a drag strip starting light tree drawn at three sizes, small, middle and large from the left: each a dark grey post with three rows of paired square lamp housings, unlit (round dark lenses with red rims at the top, amber in the middle, green at the bottom), on a red and white striped pole; at the right, the lit lamps alone at the same three sizes: pairs of glowing red lamps, pairs of glowing green lamps and pairs of glowing yellow lamps on short grey bars",
+  "keep": "every tree and every lamp piece in its exact place and size (the game copies the lit lamps onto the trees' lamp housings, so they must line up pixel for pixel; the trees are cut at fixed columns); unlit lenses stay dark with only coloured rims; the transparent gaps between the pieces",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4408,11 +4408,11 @@
   "masked": 1
  },
  "4dd63e9ddb16e3b277c355244d6b85e70c364bfb": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a thin strip of the top of the car's hood seen from the driver's seat through the bottom of the windshield: purple paint with lighter purple highlight lines, its top edge rising and falling a little",
+  "keep": "the purple is the car's paint (the game repaints it): keep it purple; a strip that thin; the uneven top edge and the transparent area above it; its bottom edge continues the hood at the top of the dashboard drawn just below it",
+  "sheet": "sr2-7-dash2-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4427,11 +4427,11 @@
   "masked": 1
  },
  "4eb5a478ca08540acfd205029e5e479479336af4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with curly black hair and a cigarette, a bright green shirt",
+  "keep": "the face, hair, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-3",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4465,10 +4465,10 @@
   "masked": 1
  },
  "4f565d9d1522ed54b018a8cfff912777ad082ec1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 6,
+  "desc": "two small bolts side by side, each standing upright: a brown hex head with a yellow highlight on top and a long threaded shank below in yellow, grey and black stripes",
+  "keep": "each bolt stays in its own 8-pixel wide half, upright and the same size, head at the top (the game cuts the bolts by rows to show them screwed in partway)",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4507,11 +4507,11 @@
   "masked": 1
  },
  "4f7d01e1622d23b0fc06d8dd298b61fc0ccdda57": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a chopped (lowered) car roof seen from the side, cut out on its own: a long painted fastback roof line sloping down to the left with a small dark quarter window, the top of the side window opening and the slanted chrome windshield pillar at the right",
+  "keep": "the outline and the see-through parts exactly (the picture replaces the top rows of the car body, so its see-through part cuts the old roof away, and its lower edge must meet the body); the window opening stays see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome",
+  "sheet": "sr2-6-roofs-1044",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4545,11 +4545,11 @@
   "masked": 1
  },
  "5087191ac3e8d0dbd5a84e3fb784c4334543a8e4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the bare front corner of a classic car body seen from the side with its bumper taken off, cut out on its own: a painted front panel with dotted dark shading, ending at the right in a rounded nose that curves under, with a dark lower edge",
+  "keep": "the outline exactly (it replaces the end of the car body where the bumper was, so its see-through parts cut the bumper away); no bumper or chrome; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it): keep it green; black stays black",
+  "sheet": "sr2-6-bumperless-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4564,11 +4564,11 @@
   "masked": 1
  },
  "50b68587cfa609a0c4a5ac277e01fe0f08998cfa": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a small far-away figure of the race starter seen from behind: a woman with brown hair, a black jacket and a red skirt, arms at her sides, standing",
+  "keep": "the outline and the colours; the same figure at each size",
+  "sheet": "sr2-7-startermirror-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4583,11 +4583,11 @@
   "masked": 1
  },
  "50d50c824251ed977fa49cbcd8651beac73d9807": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a purple late 1960s American sports coupe facing right, without its wheels: long curved front fenders with a pointed nose, a low roof with the side window and a small mirror at the foot of the windshield, four vertical gill vents behind the front wheel arch with a small script badge above them, a chrome rocker strip under the door, small chrome bumpers at both ends",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the window opening stays transparent (the driver is drawn behind it); the outline exactly; keep every colour exactly as in the picture: the purple is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-bodies-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4602,11 +4602,11 @@
   "masked": 1
  },
  "513cbe6a22f5ebe5100e8e617243bc71a582c369": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a thin strip of a car's teal hood seen from inside over the dashboard: the hood's upper edge with two low bulges and bright highlight lines along it",
+  "keep": "the teal is the car's paint (the game repaints it): keep it teal; the outline of the hood edge exactly; its bottom edge meets the hood at the top of the dashboard picture; a strip that thin",
+  "sheet": "sr2-7-cockpit-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4621,11 +4621,11 @@
   "masked": 1
  },
  "514d5946354d38ae6d56d84fd61a74bb70dfb82b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a classic car wheel seen from the side, one frame of it rolling: a thin dark grey tyre, a broad white whitewall and chrome wire spokes around a small hub",
+  "keep": "the oval outline the same size; the spoke pattern as drawn (the four pictures are frames of the wheel turning); grey, white and black only",
+  "sheet": "sr2-6-wheels-1050",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4663,11 +4663,11 @@
   "masked": 0
  },
  "521c58a338ef5a23c1906efed69d830c5b7ed7b9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the King's car, a grey 1969 Shelby GT500 fastback, seen from behind and a little from its right: sloping fastback rear window with the driver's head inside, a wide tail panel with two long rows of red lamps and a round badge between them, a chrome bumper, a yellow licence plate, the right side of the car and the right rear wheel",
+  "keep": "grey body, chrome stays chrome; the red tail lamps; the green lower half of every tail lamp stays green (the game recolours that colour)",
+  "sheet": "sr2-7-king-car-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4683,11 +4683,11 @@
  },
  "52442193c0c53e681c3de5cdad0994d70846f2e0": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
+  "batch": 8,
+  "desc": "kept original: a paragraph of the game's text (the ending text 'Well, you've done it...'), for the later text stage",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "sr2": [
     1083
@@ -4724,10 +4724,10 @@
   "masked": 1
  },
  "536b380bb6a9f289ff169b1ff419c2df5e73a59d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "six animation frames side by side of a grey-haired, grey-bearded gas station attendant in a light blue shirt and dark blue trousers behind the counter of the station shop: in the first only the top of his head shows over the counter, then he rises, stands up and raises one hand to wave; behind him brown shelves with red edges full of bottles and cans",
+  "keep": "each frame stays in its own sixth of the strip (the game steps through them 24 pixels at a time), the same man in every frame; the shelves, bottles and counter stay exactly where they are in every frame, so they line up with the shop of the gas station picture they are drawn over",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -4869,11 +4869,11 @@
   "masked": 1
  },
  "56760b53e10d3697ad71779ad4b35d4c9fe6c7ed": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a purple late-1960s sports car (Corvette Stingray style) seen from behind and a little from its right side: flat see-through rear window with the driver's head, four round red tail lights, a row of small grey vents between them, chrome bumpers, a grey licence plate, the right rear wheel",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; red tail lights; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "sheet": "sr2-7-cars-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -4949,11 +4949,11 @@
   "masked": 1
  },
  "575331a0f6f1ea9dcfe4fd4d193e5597413ba677": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the front corner (the right end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the front fender with its black edge and the end of a grey trim strip at the bottom left, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), black stays black, grey trim stays grey",
+  "sheet": "sr2-6-bumpers-teal-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5098,10 +5098,10 @@
   "masked": 1
  },
  "5ae0997a367c5a7807a01c1efcc2a1791bf66da5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper headline strip: the two-line headline 'U.S. says \"Soviets not trying' and 'to gain 'first strike'\"' in bold black letters on white",
+  "keep": "the headline exactly, letter by letter, with its quotation marks; black on plain white; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5117,11 +5117,11 @@
   "masked": 1
  },
  "5b4aa35d5d121f08db952978743bd37afbb9ff8c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a late-1950s full-size American sedan body without its wheels: a long flat body with a chrome side spear and chrome trim along the top edge, a flat roof with thin pillars and wraparound windows with chrome corners at both ends, door lines and handles, chrome bumpers at both ends",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows stay see-through (the driver and the background show through them); keep every colour exactly as in the picture: the red is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "sr2-6-bodies-red-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5239,11 +5239,11 @@
   "masked": 1
  },
  "5ec6b2b869f66a14bfc27a10a4031ef980735869": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner (the left end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the rear fender with its black edge and the end of a grey trim strip across it, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), black stays black, grey trim stays grey",
+  "sheet": "sr2-6-bumpers-teal-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5300,11 +5300,11 @@
   "masked": 1
  },
  "619251f8cdee7eaa6f5b7e9fd7d926c290143398": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner (the left end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the rear fender with its black edge and a small grey spot at the top left, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black, grey stays grey",
+  "sheet": "sr2-6-bumpers-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5342,10 +5342,10 @@
   "masked": 1
  },
  "621119aad9dfac591a9db2d8ea98b3e724f9529e": {
-  "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "sprite",
+  "batch": 7,
+  "desc": "the horizon at night above Los Angeles from Mulholland Drive: a black sky over a range of grey rocky mountains, and below them hills covered with red, brown and green scrub, a grey reservoir in a valley at the left, a grey speckled valley floor in the middle, a green slope with blue specks at the right and a few yellow lights of houses at the far right",
+  "keep": "the sky stays plain black; the mountain line; red, brown and green stay as they are; the blue specks on the green slope are in the opponent car's paint colour (the game recolours them): keep them small blue specks",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5408,11 +5408,11 @@
  },
  "6388389bae8aa15fa841d5d064aedbf959ffa3fb": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
+  "batch": 5,
+  "desc": "kept original: a flat one-colour mask (the shapes of the two parked cars, the lamp post and the man at the drive-in that the car-hop passes behind)",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "sr2": [
     1112
@@ -5426,11 +5426,11 @@
   "masked": 2
  },
  "63beca457dd8275c0c19a295854b79b59ef6cd84": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a classic car wheel seen from the side: a dark grey tyre with a broad white wall, a grey rim, a ring of black and grey hubcap ribs, and a light grey hubcap with a black centre ring around a small white cap; one frame of a turning wheel",
+  "keep": "a round wheel the same size; the ribs in the ring exactly where they are in this frame (the four frames animate a rolling wheel); white wall stays white",
+  "sheet": "sr2-6-wheels-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5445,10 +5445,10 @@
   "masked": 1
  },
  "63c8a71eaf1555b0933bb9be59e80b593349a044": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper strip with two headlines side by side separated by a thin vertical rule: \"Nasa puts monkey in space\" on two lines and \"Israelis shoot down three MIG's\" on two lines, black letters on white",
+  "keep": "the headlines exactly; the vertical rule in the middle; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5488,11 +5488,11 @@
   "pal_like": 1080
  },
  "6449df6b27ddc2cb94c433b0a938f30282ab6920": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the lower half of a chrome steering wheel turned a little, with a teal centre hub, one spoke going down to the left and the other level to the right, in front of the bottom strip of a dashboard: a teal chequered panel with round chrome knobs and chrome trim lines",
+  "keep": "it is drawn into the dashboard at its place: the wheel rim, the dashboard edges and the knobs line up exactly with the dashboard around it; the teal is the car's paint (the game repaints it): keep it teal",
+  "sheet": "sr2-7-cockpit-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5606,11 +5606,11 @@
   "masked": 1
  },
  "668c4832d26c904c60763cec4242eeba6a240833": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a square dashboard clock face seen from the front: black, with green numbers 12, 3, 6 and 9, green dots for the other hours and short thin green rays around a small centre; down the left a grey frame strip with the right edge of the green-lit speedometer beside it (the ends of its green numbers), and a grey bevel at the top right corner",
+  "keep": "the numbers 12 3 6 9 exactly; no hands (the game draws them); the short rays are part of the dial, not hands; the centre stays where it is; green on black; it is drawn into the dashboard picture, so the strip at the left matches the speedometer beside it",
+  "sheet": "sr2-7-dashparts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5690,10 +5690,10 @@
   "masked": 1
  },
  "6945d80c1373ba669fe0bea1bdb42a1ca2cfacca": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 6,
+  "desc": "a big chrome V8 car engine seen from the left side in the engine bay: a tall valve cover with round bolts on top, a big exhaust manifold with four ports and spark plugs below it, large pulleys and the fan belt at the left, two cylinders (starter and alternator) at the bottom, a mounting bracket at the right",
+  "keep": "the outline and all its details; grey, white and black only (not coloured)",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5709,11 +5709,11 @@
   "masked": 1
  },
  "69ea4fe457b78442db8fc3b7f85d732dab3de4d0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the chopped (lowered) roof of a classic American car seen from the side, cut out on its own: a long flat roof panel with a slanted chrome-edged rear pillar at the left, the open side window space under it and the chrome windshield frame with a thin vent window post at the right",
+  "keep": "the outline exactly (it replaces the top of the car body, so its see-through parts cut the old roof away and must stay see-through); the window space stays empty; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it): keep it green; chrome stays chrome, white stays white, black stays black",
+  "sheet": "sr2-6-choptops-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5774,11 +5774,11 @@
   "masked": 0
  },
  "6aaebc32a259e94b49d9202f87deeb7ccc139b08": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a chrome two-barrel carburettor seen from the front at an angle from above: a round open air horn on top, the float bowl and throttle body below, a small linkage block at the right, on a flat base plate",
+  "keep": "the shape and the flat base (it sits on the manifold's carburettor pad)",
+  "sheet": "sr2-6-bay-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5911,11 +5911,11 @@
   "masked": 1
  },
  "6d503afe76d3b7590743b360e145b0549e710875": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a 1969 Pontiac Firebird coupe body without its wheels, front to the right: long hood with two small vents on the front fender, the windshield and door window, a sloping roof line to the short rear deck, door line and door handle, a chrome rocker strip along the bottom, the chrome rear bumper at the left and the front bumper and lights at the right",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows stay see-through; keep every colour exactly as in the picture: the red is the car's paint (the game repaints it), chrome stays chrome, white stays white",
+  "sheet": "sr2-6-bodies-red-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5949,11 +5949,11 @@
   "masked": 1
  },
  "6dab14e8db831e997e93d7eddf6875a9821ac15e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a classic car wheel seen from the side, one frame of it rolling: a thin dark grey tyre, a broad white whitewall and chrome wire spokes around a small hub",
+  "keep": "the oval outline the same size; the spoke pattern as drawn (the four pictures are frames of the wheel turning); grey, white and black only",
+  "sheet": "sr2-6-wheels-1050",
   "status": "new",
   "ids": {
    "sr2": [
@@ -5968,10 +5968,10 @@
   "masked": 1
  },
  "6de265d3becf40abe8b02f04c94f843e10a9ed38": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "the dashboard of a 1950s car seen from the driver's seat: a big chrome steering wheel whose rim arches over the instruments, with its hub and two spokes at the bottom middle; inside the rim a long horizontal speedometer strip with green numbers, a small oval rev gauge at the left with green numbers and a red zone, a slot with a dotted indicator in the middle, an oval gauge at the right with a green and a red mark, a grey chequered panel with round chrome knobs; a chrome radio at the right, the door with its window frame, armrest and handle at the left, and the edge of the teal hood at the top",
+  "keep": "the teal at the top is the car's paint (the game repaints it): keep it teal; the gauges have no needles (the game draws them); the speedometer numbers 0 10 20 30 40 50 60 70 80 90 100 110 120 and the rev gauge numbers 0 10 20 30 40 50 60 with its red zone from 50 to 60 exactly; the steering wheel rim, hub and spokes stay exactly in place (separate steering wheel pictures are drawn over its lower part); the black areas stay plain black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -5987,11 +5987,11 @@
   "masked": 0
  },
  "6f454c8adfa02343e6a9e2d5c52dabf9e01839e8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a small piece of a classic car body seen from the side: the rounded painted lower corner of a fender where the chrome bumper was taken off, with a tiny grey and white trim bit at the top left and black checker shading along its curved edge, cut out on its own",
+  "keep": "the outline and the see-through part exactly (the picture replaces this corner of the car body, so its see-through part is where the bumper is cut away, and its painted edges must meet the body around it); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black, the little grey trim stays grey",
+  "sheet": "sr2-6-parts-1037",
   "status": "new",
   "ids": {
    "sr2": [
@@ -6006,11 +6006,11 @@
   "masked": 1
  },
  "6fb89ca24cab157e8e2d7a8eaf5510f0b75eec58": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the centre of a chrome steering wheel turned a little the other way, at the bottom of the view: a round chrome hub with its two chrome spokes and ribbed chrome arc tilted, the two lower sides of the wheel's chrome rim at the left and right edges, and behind it the dashboard with a black mesh grille and round white knobs",
+  "keep": "the shape; it is drawn into the dashboard picture, so the rim at both edges and the dashboard behind line up with it; the dashboard behind the wheel the same as in the other two wheel positions",
+  "sheet": "sr2-7-dash0-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -6026,9 +6026,9 @@
  },
  "6fc364a5579c23b29855ecd3a92ef664ee3e2c7a": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 7,
+  "desc": "the same roadside billboard drawn seven times, from large on the left to tiny on the right, each copy in its own place and size: a black 'GAS' billboard with a yellow outer frame and a green inner frame, big red and yellow letters G, A, S running diagonally, a green chequered arrow pointing right at the top and one pointing left at the bottom, grey gas pump nozzles on hoses in two corners",
+  "keep": "every copy's place and size, the letters G A S exactly; the black around the copies stays black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6151,10 +6151,10 @@
   "masked": 1
  },
  "72e17a16885687ed0d039f39645e53606ce85631": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 5,
+  "desc": "the transmission screen: a black window with the end of a chrome car engine where the gearbox bolts on (a big oval housing with bolt lugs and a short shaft in the middle, the ribbed block and pipes behind, a green ribbed air cleaner on top) cut off at its right edge, and below it a grey metal control bar with two green buttons labelled \"SELECT\" and \"DONE\" and an empty dark grey slot between them",
+  "keep": "the labels \"SELECT\" and \"DONE\" exactly; the green buttons and the green air cleaner stay green; the oval end of the engine exactly where it is (the gearbox slides in from the left to meet it); the black window stays plain black left of the engine (the gearbox is drawn there); the engine stays cut off at the right edge",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6170,11 +6170,11 @@
   "masked": 0
  },
  "72eb104a4af7fa46973478db17c1e8c17dab9661": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a late-1960s American fastback muscle car body without its wheels, front at the right: a long roof sloping down to the tail at the left, chrome window trim, a slanted windshield, a door line, chrome bumpers and a small red marker light at the front end",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows stay see-through (the driver and the background show through them); keep every colour exactly as in the picture: the purple is the car's paint (the game repaints it), chrome stays chrome, white stays white, the red light stays red",
+  "sheet": "sr2-6-bodies-purple-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -6189,10 +6189,10 @@
   "masked": 1
  },
  "738640b3614011c740c58d86f2bd7724eae895d4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "a very close view of the front half of a black sports car right alongside, seen from the side: the long curved front fender and hood pointing right, the windshield pillar at the top left, a thin chrome trim line along the side, a big front wheel with a spoked chrome hub in a black tyre, and a small chrome bumper tip at the front",
+  "keep": "black paint, chrome stays chrome; the outline and the transparent area around the car",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6208,11 +6208,11 @@
   "masked": 1
  },
  "73a3d52988ffa9463a04d32bfad674d0ea6e46d6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a classic car wheel seen from the side, one frame of it rolling: a thin dark grey tyre, a broad white whitewall and chrome wire spokes around a small hub",
+  "keep": "the oval outline the same size; the spoke pattern as drawn (the four pictures are frames of the wheel turning); grey, white and black only",
+  "sheet": "sr2-6-wheels-1050",
   "status": "new",
   "ids": {
    "sr2": [
@@ -6246,11 +6246,11 @@
   "masked": 1
  },
  "74c38a1b9fe0005b6ed2437fd9832a24348e61bb": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner of a classic car body seen from the side with its bumper removed, cut out on its own: a small piece of dark purple paint with a black edge slanting down to the left",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the transparent part stays transparent (the piece replaces that corner and cuts the bumper away); keep every colour exactly as in the picture: the purple is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-chops-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -6284,11 +6284,11 @@
   "masked": 1
  },
  "769214dcfe68911a2da89cb1cc3f8bb425a6b685": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "three frames side by side, each one third of the width, of the race starter's right arm in a red leather jacket sleeve: in the first it hangs down with the hand at her hip, in the second it is bent with the fist held out in front, in the third it is raised with the hand up at the top; a bit of her grey skirt at the bottom left of each frame",
+  "keep": "each frame exactly one third of the width, in its place; in every frame the sleeve's left edge and the skirt meet her body (drawn just left of it) at the same place; red sleeve with lighter red highlights; transparent around the arm",
+  "sheet": "sr2-7-starterbody-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -6342,9 +6342,9 @@
  },
  "76ec6a90f2d9b8178a933752d88296591f7c6f2b": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 5,
+  "desc": "the Street Rod II title screen: the big 'Street Rod II' logo in pale yellow script letters with orange shading at the top left, with white sparkle stars around it; below it a black early-1970s sports car seen at an angle from the front, its nose toward the lower right, with grey and white highlights on its curved body, a tall aerial, a hood bulge, a small orange ornament hanging behind the windscreen, a small colourful flame emblem on the bonnet, yellow lights and a red side marker; a magenta oval sign on two grey posts reading 'by', 'CALIFORNIA' in yellow between two green lines and 'Dreams' in pink-red script; on the right a blonde woman in a black leather jacket with a belt and a red mini skirt, raising one hand with the palm out; '(c)1990 LOGICAL DESIGN WORKS, Inc.' in small orange letters along the bottom; black background",
+  "keep": "all the lettering exactly: 'Street Rod II', 'by', 'CALIFORNIA', 'Dreams' and the copyright line with its (c) sign; the car stays black with grey highlights, the jacket black, the skirt red, the sign magenta; the black background",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6438,10 +6438,10 @@
   "masked": 0
  },
  "79dcdcf5918022bb8a090b7ecc1e29d366846397": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 5,
+  "desc": "four narrow vertical strips cut from the front of the gas station's two blue gas pumps, side by side with transparent gaps: on the left two strips a chrome fuel nozzle hangs in its holder against the dark blue edge of a pump (the second strip also shows part of the pump's dark grey front panel), on the right two strips the same pump edges with the nozzle taken out, only the small empty holder hook left",
+  "keep": "each strip's place and width exactly (the game cuts the strips at fixed positions and lays them over the gas station picture), the transparent gaps, the blue pump edges and grey panel exactly where they are so they line up with the pumps",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6457,11 +6457,11 @@
   "masked": 1
  },
  "79e6be5264db487b1dc82030e1a52f614d6f3e65": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "three frames side by side, each one third of the width, of the race starter's right arm in a black leather jacket sleeve: in the first it hangs down with the hand at her hip, in the second it is bent with the fist held out in front, in the third it is raised with the hand up at the top; a bit of her red skirt at the bottom left of each frame",
+  "keep": "each frame exactly one third of the width, in its place; in every frame the sleeve's left edge and the skirt meet her body (drawn just left of it) at the same place; black sleeve with grey highlights; transparent around the arm",
+  "sheet": "sr2-7-starterbody-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -6495,11 +6495,11 @@
   "masked": 1
  },
  "7aa6a776d86b452cb01f2cedeca716a651d8c760": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer with long straight brown hair streaked with grey falling past the shoulders, blue eyes, a blue top",
+  "keep": "the face, hair and clothes as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -6537,10 +6537,10 @@
   "masked": 1
  },
  "7b5d7bb2b7d841d2bebc044e1042d499077f16d1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a full-length figure of a young man with black hair, seen from the front, leaning back casually with one leg crossed in front of the other: a white T-shirt, faded blue jeans with grey highlights and black shoes, one arm held out to the side and the other hanging down by his hip",
+  "keep": "the outline exactly (it stands in front of the blue post at the right of the drive-in); white T-shirt, blue jeans; it stays one figure the same size",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6575,11 +6575,11 @@
   "masked": 1
  },
  "7bdaced850189eccd0600700900035f3d44812c3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a part of a classic car body seen from the side, cut out on its own: a roof with its pillars, or a smooth painted lower front or rear corner of the body (a roll pan in place of a bumper)",
+  "keep": "the outline exactly; the window openings stay see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, white stays white, the small grey grille bars and lights stay grey",
+  "sheet": "sr2-6-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -6755,10 +6755,10 @@
   "masked": 1
  },
  "7f3379be861a92f5749c29629d95073db77b8b9b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper strip of two columns of small article text (rows of tiny black print) separated by a thin vertical black line",
+  "keep": "the layout of the text rows and the column line; black on plain white; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -6931,10 +6931,10 @@
   "masked": 1
  },
  "8235da8b52664222fc75b38c9e47ade749f1e4f2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 6,
+  "desc": "the front corner (the right end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the front fender with its black edge and the end of a grey trim strip across it, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the blue is the car's paint (the game repaints it), black stays black, grey trim stays grey",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7019,11 +7019,11 @@
   "masked": 1
  },
  "82f70da48734e60bf50de8e5728d1973bf2eed0b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with short brown hair and a long face, a grey and white shirt collar",
+  "keep": "the face, hair and shirt as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7081,10 +7081,10 @@
   "masked": 1
  },
  "8514540653a0cd3b91e2d481f47390f14c54b77f": {
-  "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "sprite",
+  "batch": 8,
+  "desc": "a sprite sheet for the ending: in three rows, a dark 1970s fastback sports car with red tail lights and a yellow licence plate seen from behind and a little from the right, driving away with grey dust behind it, drawn smaller and smaller frame by frame down to tiny specks; at the bottom left a strip of the car's rear (tail lights and bumper) and a small piece of it; in the bottom middle a framed piece of the dusk landscape: a dark rocky hillside in red and grey above a black road with red gravel along it; at the right a man in a dark jacket and blue jeans standing, seen from the side",
+  "keep": "every frame in its exact place, shape and size (the game cuts the frames out by fixed rectangles); the landscape piece lines up exactly with the ending backdrop (the game pastes it there over the car at the end), its road stays black and the thin blue lines around it stay where they are",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7123,11 +7123,11 @@
   "masked": 0
  },
  "85e194df5eef0af9ae2a18e3cb66c851210215d7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with black hair and a full black beard, a green checked shirt with a white collar",
+  "keep": "the face, hair, beard and shirt as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-3",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7227,9 +7227,9 @@
  },
  "8810f1ff9b2a6acf189a2b3e2e3ce48e42701bb6": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 8,
+  "desc": "a sprite sheet of the ending animation frames, figures lit from behind by a sunset with a red rim light, on a flat background: at the top left a small car seen from behind with its tail lights and small pieces of a car door; a man in a jacket and jeans walking toward the viewer, in frames that grow from tiny to full size across the top two rows; in the third row the same man climbing out of the driver's seat behind an open car door, then standing, holding out a hand with car keys and finally turned away with his back to us; in the bottom row small pieces of the door and a long-haired woman behind the top edge of a car door raising her hand to wave",
+  "keep": "every frame in its exact place, size and pose (the game cuts the frames out of the sheet by fixed rectangles), the same man and the same woman in every frame; keep every colour exactly as in the picture, with the red rim light; nothing added between the frames",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7436,11 +7436,11 @@
   "masked": 1
  },
  "8c7af862e878465340339dc9f1df0d87aec6a57e": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a woman with long wavy blonde hair streaked with grey, purple lipstick, bare shoulders with small green straps",
+  "keep": "the face, hair and clothes as drawn; she stays a woman; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7474,11 +7474,11 @@
   "masked": 1
  },
  "8d5de89eb4bac34f9eaf818c086d35671913ebca": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a woman with long black hair swept to one side with a grey streak, purple lipstick, a magenta top",
+  "keep": "the face, hair and clothes as drawn; she stays a woman; the magenta top stays magenta (it is not the background); it stays a portrait the same size",
+  "sheet": "sr2-8-racers-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7567,9 +7567,9 @@
  },
  "8fd5a8f936c1534dcc53d9c885a770ee288f6147": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 8,
+  "desc": "the ending: a desert road at dusk; a black night sky with a few stars and big dark clouds edged in red and grey, a glowing purple, pink and yellow sunset low over a range of dark grey and red rocky mountains; at the bottom a black road where a dark 1970s fastback sports car seen from behind and a little from the right drives away with its red tail lights and a yellow licence plate, a cloud of grey dust behind it, a smaller car further ahead on the left, red gravel along the roadside on the right",
+  "keep": "the car, the dust and the small car stay exactly where they are, the same size (animation frames are drawn over them and a piece of empty road replaces the car at the end); the road stays black; the sky stays black with its few stars",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7627,11 +7627,11 @@
   "masked": 1
  },
  "8ff7543422e0fad399fe2aaa46373e8a1e048e9b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a part of a classic car body seen from the side, cut out on its own: a roof with its pillars, or a smooth painted lower front or rear corner of the body (a roll pan in place of a bumper)",
+  "keep": "the outline exactly; the window openings stay see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, white stays white, the small grey grille bars and lights stay grey",
+  "sheet": "sr2-6-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7646,11 +7646,11 @@
   "masked": 1
  },
  "909ad2e76308ef657a9e069905aa098b02bd003b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the lower half of a chrome steering wheel turned the other way, with a teal centre hub, one spoke going down to the right and the other level to the left, in front of the bottom strip of a dashboard: a teal chequered panel with round chrome knobs and chrome trim lines",
+  "keep": "it is drawn into the dashboard at its place: the wheel rim, the dashboard edges and the knobs line up exactly with the dashboard around it; the teal is the car's paint (the game repaints it): keep it teal",
+  "sheet": "sr2-7-cockpit-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7665,11 +7665,11 @@
   "masked": 0
  },
  "90b9ed8d87dae4b615a29d17206bb6cf7148a45d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a mid-1960s American pony car fastback body without its wheels, facing right: a sloping roof with louvres behind the side window, a chrome window frame, door lines and handle, a small running horse badge on the front fender, chrome bumpers at both ends",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows and louvre gaps stay see-through; the blue is the car's paint (the game repaints it): keep it blue; chrome stays chrome",
+  "sheet": "sr2-6-bodies-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7684,11 +7684,11 @@
   "masked": 1
  },
  "90c690e3549019fca0d7c8a3fc680a8b6e8cca96": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the lower front end of a classic car body seen from the side with the bumper taken off: the bare painted end of the front fender with its black edge, rounded at both lower corners, with a small bit of chrome at the top left, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black, chrome stays chrome",
+  "sheet": "sr2-6-bumpers-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7703,10 +7703,10 @@
   "masked": 1
  },
  "90f043e15229f14ffcbd1a56f3dd4ce80ba7b346": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper headline strip with two headlines side by side, separated by a thin vertical black line: 'Nixon Visits Marcos' on the left and 'Nixon Visits Rumania' on the right, each on two lines in bold black letters on white",
+  "keep": "both headlines exactly, letter by letter; the vertical line between them; black on plain white; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7722,10 +7722,10 @@
   "masked": 1
  },
  "90f0d213cdf534e8055320c2d104b3e2056a6207": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper headline strip: the two-line headline 'Thousands At Woodstock' and 'For Rock Concert' in bold black letters on white",
+  "keep": "the headline exactly, letter by letter; black on plain white; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -7741,11 +7741,11 @@
   "masked": 1
  },
  "912207d8761fabb7342da17b7a4c4291dc545f82": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a chrome tunnel ram intake manifold seen from the side, a little from above: four tall curved runners down to the engine, a plenum box on top with one carburettor opening (a small grille)",
+  "keep": "the shape and all its details; the one carburettor opening on top; the flat bottom edge (it sits on the engine)",
+  "sheet": "sr2-6-manifolds-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7760,11 +7760,11 @@
   "masked": 1
  },
  "91d433a76194fe938ef921ab8f660a46d56b278d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with long blond hair, dark eyes and a cigarette, a blue shirt",
+  "keep": "the face, hair, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7844,11 +7844,11 @@
   "masked": 1
  },
  "94531dead4f9bf3246506052bee37e905b980333": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the top of a classic car body seen from the side with a chopped (lowered) roof, facing right like the car: the low roof line with its window pillars and chrome window frames, the grey glass of the windshield on the right (and of the rear window on some), the window openings empty, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the top of the car body at a fixed place and must join it without a seam; the window openings stay empty (see-through); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-roofs-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7863,11 +7863,11 @@
   "masked": 1
  },
  "94732b0607c904692cd4239316a9734c4a1664f1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a part of a classic car body seen from the side, cut out on its own: a roof with its pillars, or a smooth painted lower front or rear corner of the body (a roll pan in place of a bumper)",
+  "keep": "the outline exactly; the window openings stay see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, white stays white, the small grey grille bars and lights stay grey",
+  "sheet": "sr2-6-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -7951,11 +7951,11 @@
   "masked": 1
  },
  "964302df781aefe1bc03ea6145aa8494ca80feb9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a purple late-1960s coupe (Mercury Cougar style) seen from behind and a little from its right side: see-through rear window with the driver's head, a full-width tail light panel with fine vertical ribs, a yellow licence plate in its middle, chrome bumper, the right rear wheel",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "sheet": "sr2-7-cars-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8081,11 +8081,11 @@
   "masked": 1
  },
  "98a159f8c9512a0d0ba59dc55ac31e96390a3e5c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a plain stock muffler seen from below: a long dark grey box with a light grey lower edge and a black outline",
+  "keep": "a piece cut out of the underside picture: the black edges stay where they are so that it lines up with the picture around it; greys",
+  "sheet": "sr2-6-undercar-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8100,11 +8100,11 @@
   "masked": 0
  },
  "9937350bfa2ad06fa8148e2fba44955e8f7ed821": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a small piece of a classic car body seen from the side: the rounded painted lower corner of a fender where the chrome bumper was taken off, with a light green body crease line and black checker shading along its curved edge, cut out on its own",
+  "keep": "the outline and the see-through part exactly (the picture replaces this corner of the car body, so its see-through part is where the bumper is cut away, and its painted edges must meet the body around it); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-parts-1037",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8119,11 +8119,11 @@
   "masked": 1
  },
  "9962795b361ef6c224264993503f85b085c97b32": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the King's car, a grey 1969 Shelby GT500 fastback, seen straight from behind: sloping fastback rear window with the driver's head inside, a small side mirror at the top left, a wide tail panel with two long rows of red lamps and a round badge between them, a chrome bumper, a grey licence plate, the tyres under the bumper",
+  "keep": "grey body, chrome stays chrome; the red tail lamps; the thin green line along the bottom of every tail lamp stays green (the game recolours that colour)",
+  "sheet": "sr2-7-king-car-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8138,10 +8138,10 @@
   "masked": 1
  },
  "99840942d18644abf8f83b9bbe8b4e96a86388ac": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper headline strip: the two-line headline 'Green Beret charged with murder' and 'in Saigon' in bold black letters on white",
+  "keep": "the headline exactly, letter by letter; black on plain white; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -8157,10 +8157,10 @@
   "masked": 1
  },
  "99f084451f34ab8410c4c1634fadec23d24aa8e1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper strip with the headline \"Nixon Orders Bombing of North Vietnam\" across the full width and two columns of tiny article text below, split by a thin vertical rule, black on white",
+  "keep": "the headline exactly; the tiny article text stays small unreadable print, no new words; the vertical rule; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -8177,11 +8177,11 @@
   "masked": 0
  },
  "9a2c5463dff825005f9b9dbd79ea70a9f2e7d7a7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 5,
+  "desc": "a grey hydraulic bottle jack seen from the side: a rounded grey body on a wide flat base, a dark blue panel on its front, a short ram on top with a small brass cap and a white saddle, its long pump handle sticking out level to the right",
+  "keep": "the shape and position; the handle angle; the body exactly where it is in the other two frames (the frames are swapped as the jack is pumped); grey stays grey, the panel dark blue",
+  "sheet": "sr2-5-jack-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8215,11 +8215,11 @@
   "masked": 1
  },
  "9a6bcdee849255d866cf56cc2fb6fd0a1f1c7f9d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with spiky blond hair, black sunglasses and a cigarette, a black leather jacket with grey studs",
+  "keep": "the face, hair, sunglasses, cigarette and jacket as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8261,11 +8261,11 @@
   "masked": 0
  },
  "9c20c91a5bdf46d1e25479d8871bcdcf75ae70a8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a strip of a car's underside seen from below: a light grey and white chrome tube header exhaust pipe rising from the lower left and running along the top to the right, over grey frame and cross member lines on black, a small brown pipe end at the bottom left corner",
+  "keep": "a piece cut out of the underside picture: the pipe ends and the grey lines at the edges stay exactly where they are so that it lines up with the picture around it; chrome stays chrome; the small brown bit at the bottom left",
+  "sheet": "sr2-6-undercar-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8280,11 +8280,11 @@
   "masked": 0
  },
  "9cb18be26733820951524a6ae9da3101f40008b6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear end of a 1963 Corvette Sting Ray body seen from the side with its rear bumper taken off: the rounded lower rear corner of the body panel with a dark edge, a row of dark shading dots along the bottom and a small chrome tip at the left, cut out on its own",
+  "keep": "the outline exactly (it is pasted over the rear of the car body at the same place); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome",
+  "sheet": "sr2-6-vette-ends-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8299,11 +8299,11 @@
   "masked": 1
  },
  "9cdaf269ecea9b12616ca747b3f0b63a7b4edd35": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a big chrome four-barrel carburettor seen from the front at an angle from above: a round flat lid on top, two square float bowls one above the other on its front, the linkage and a small fitting at the right, on a flat base plate",
+  "keep": "the shape and the flat base (it sits on the manifold's carburettor pad)",
+  "sheet": "sr2-6-bay-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8318,11 +8318,11 @@
   "masked": 1
  },
  "9cf18ede0f9805da20a572cd4692970ed19701bf": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "one of four rotation frames of the same car wheel seen from the side: a tyre with a wide white sidewall band and a dark alloy rim with eight grey spokes around a small hub",
+  "keep": "a round wheel the same size; the spokes at exactly the angle drawn (the four frames turn the wheel when the car rolls); the same wheel in every frame",
+  "sheet": "sr2-6-tyre-frames-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8398,11 +8398,11 @@
   "masked": 1
  },
  "9e7e624c3bffd6a174a9107bcccb4a671df059d5": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with long black hair, a full black beard and moustache, an open white collar",
+  "keep": "the face, hair, beard and shirt as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8436,11 +8436,11 @@
   "masked": 1
  },
  "9ef9dfb9a9f4e774c96d8e05b5c8769139f283fd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the chopped (lowered) roof of a classic American car seen from the side, cut out on its own: the roof panel with a dark louvred rear pillar at the left, the open side window space under it and the chrome windshield pillar sloping down at the right",
+  "keep": "the outline exactly (it replaces the top of the car body, so its see-through parts cut the old roof away and must stay see-through); the window space stays empty; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it): keep it green; chrome stays chrome, white stays white, black stays black",
+  "sheet": "sr2-6-choptops-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8516,10 +8516,10 @@
   "masked": 1
  },
  "a0edd74f680bc27ab2cdfc9e64a77b4cc456b8b8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "the 'California Dreams presents' logo: 'CALIFORNIA' in big yellow block letters with orange shading between two bright green lines, a small yellow 'TM' at the top right, 'Dreams' in dark red script below and small white 'presents' at the bottom right, on black",
+  "keep": "the lettering exactly as it is; black background",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -8535,11 +8535,11 @@
   "masked": 0
  },
  "a0fabcb3e35a70e39af09f289a07fbde0d27b236": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a part of a classic car body seen from the side, cut out on its own: a roof with its pillars, or a smooth painted lower front or rear corner of the body (a roll pan in place of a bumper)",
+  "keep": "the outline exactly; the window openings stay see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, white stays white, the small grey grille bars and lights stay grey",
+  "sheet": "sr2-6-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8662,10 +8662,10 @@
   "pal_like": 1085
  },
  "a442749f12f0f776eb8f8539fac84927341fe668": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper headline strip with two headlines side by side, separated by a thin vertical black line: 'Khadafy Takes Power in Libya' on two lines on the left and 'Ho Chi Minh Dies' on the right with a line of small article text under it, in bold black letters on white",
+  "keep": "both headlines exactly, letter by letter; the small text line and the vertical line; black on plain white; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -8681,10 +8681,10 @@
   "masked": 1
  },
  "a4fb67c68afb0bc6b13a4e68ec785da0e397b1d2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "a small round dashboard clock: a black face with the numbers 12, 3, 6 and 9 and white dots for the other hours, a white centre, a chrome rim, set in a red painted dashboard corner with a bit of the chrome steering wheel rim at the top right",
+  "keep": "no hands (the game draws them); the numbers 12 3 6 9 exactly; it is pasted over the rev gauge of the dashboard: everything around the clock face (the paint corners, the chrome rim and the edges) lines up exactly with that dashboard; the red is the car's paint (the game repaints it): keep it red",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -8700,11 +8700,11 @@
   "masked": 0
  },
  "a50b9988350490d01f2d177d679a1d6431005038": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a woman with long straight black hair, purple lipstick, a black top with a white collar",
+  "keep": "the face, hair and clothes as drawn; she stays a woman; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8742,11 +8742,11 @@
   "masked": 1
  },
  "a54865fada8b9fa9ac5e6c3f1a957323aceddd54": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a long 1961 Chrysler Imperial four-door hardtop body facing right (front on the right), without its wheels: green paint, big pointed rear fins, a chrome side spear, two open side windows with a grey pillar between them, the grey glass of the rear window and the windshield, three door lines with two chrome door handles, a big chrome rear bumper end with a tail lamp, a free-standing chrome headlamp and a chrome front bumper end",
+  "keep": "the outline exactly (the game draws a chopped roof and bumperless ends over it at fixed places); the empty wheel arches (the wheels are drawn separately); the window openings stay empty and see-through; the fins and the free-standing headlamp; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, black edges stay black",
+  "sheet": "sr2-6-imperial-charger-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8780,11 +8780,11 @@
   "masked": 1
  },
  "a581295fc5ce0ccad21a3d564489ca0783b2622c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "one of four rotation frames of the same car wheel seen from the side: a tyre with a wide white sidewall band and a dark alloy rim with eight grey spokes around a small hub",
+  "keep": "a round wheel the same size; the spokes at exactly the angle drawn (the four frames turn the wheel when the car rolls); the same wheel in every frame",
+  "sheet": "sr2-6-tyre-frames-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -8976,10 +8976,10 @@
   "masked": 1
  },
  "a76c89ca8909da2ce9b46180144dc81e1a6c8cc8": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of the King and his girl, cheek to cheek: on the left a woman with long yellow blonde hair and blue eyes, a cigarette with grey smoke at her mouth, a green top; on the right a man with black hair, a thick black moustache and sideburns, a purple and blue shirt",
+  "keep": "the faces, hair, moustache and cigarette as drawn; it stays a portrait the same size",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -8995,11 +8995,11 @@
   "masked": 1
  },
  "aa11e3dd760ff7c628462817110fba711f7e394d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner (the left end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the rear fender with its black edge and the end of the grey rocker strip at the bottom right, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), black stays black, grey trim stays grey",
+  "sheet": "sr2-6-bumpers-teal-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -9014,10 +9014,10 @@
   "masked": 1
  },
  "aa230ee16c28ce5b8ed34d39280201d8001916ad": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a late-1950s American two-door hardtop body without its wheels, facing right: long tail fin with a pointed chrome tail light at the left, a grey and white roof with a wrap-around rear window pillar and a slanted windscreen pillar, chrome side spear and door lines, a big chrome front bumper and grille at the right",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows stay see-through; the red is the car's paint (the game repaints it): keep it red; chrome stays chrome, white stays white",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -9098,11 +9098,11 @@
   "masked": 1
  },
  "acb18e6f96fe56b97a691f40806b75e9e48adf78": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a small far-away figure of the race starter seen from behind: a woman with brown hair, a black jacket and a red skirt, arms at her sides, standing",
+  "keep": "the outline and the colours; the same figure at each size",
+  "sheet": "sr2-7-startermirror-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -9117,10 +9117,10 @@
   "masked": 1
  },
  "acbf6d5d637fea87e4996790378697d6906f4bc1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper strip with two headlines side by side separated by a thin vertical rule: \"Judy Garland Found Dead\" on two lines and \"Arabs blow up oil pipeline\" on two lines, black letters on white",
+  "keep": "the headlines exactly; the vertical rule in the middle; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -9136,11 +9136,11 @@
   "masked": 0
  },
  "ad42fdfdaeba859bdae00d6e5a397c1c8797dfb1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a classic car wheel seen from the side: a dark grey tyre with a broad white wall, a grey rim, a ring of black and grey hubcap ribs, and a light grey hubcap with a black centre ring around a small white cap; one frame of a turning wheel",
+  "keep": "a round wheel the same size; the ribs in the ring exactly where they are in this frame (the four frames animate a rolling wheel); white wall stays white",
+  "sheet": "sr2-6-wheels-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -9155,11 +9155,11 @@
   "masked": 1
  },
  "ae195b10eac185f6d24bb2d846796756110443fd": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a tiny far-away black 1960s car seen from the front, coming towards us, with two white headlights and a grey grille",
+  "keep": "black paint, white headlights, chrome stays grey",
+  "sheet": "sr2-7-small-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -9220,11 +9220,11 @@
   "masked": 1
  },
  "ae499963ccea637dd0f7695b95d0f2c2fcd16697": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a woman with black hair edged in grey, purple lipstick, a small yellow earring and a yellow and green top",
+  "keep": "the face, hair and clothes as drawn; she stays a woman; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -9300,11 +9300,11 @@
   "masked": 0
  },
  "b16c9d5299b97ab7c3e67e00f4f10663e661f7a9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the front corner of a classic car body seen from the side with its bumper removed, cut out on its own: a small rounded nose of paint with a black outline curving down at the right",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the transparent part stays transparent (the piece replaces that corner and cuts the bumper away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-chops-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -9472,10 +9472,10 @@
   "masked": 1
  },
  "b5bd9aa28c4d9033cbe8ee7d246b46b749e4a62b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a wall calendar page in a grey frame: \"JUN\" with the weekday letters S M T W T F S and the dates 1 to 30 at the top, a picture of a dark-haired woman in a red two-piece swimsuit lying on a yellow beach in front of a green band in the middle, and \"JUL\" with the weekday letters and the dates 1 to 31 at the bottom; the Sunday column in red, the 14th of June circled in green, a curled-up page corner at the bottom left",
+  "keep": "every number, letter and month name exactly and in exactly the same place (the game draws an X over the current day at a fixed grid position); the Sunday column red; the green circle round 14; plain white paper around the dates; the frame and the curled corner",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -9492,9 +9492,9 @@
  },
  "b5d6c528739f9a99bdae2253ff210e0e7ef3dc99": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 5,
+  "desc": "Burger's Bungalow drive-in at night: on its flat roof a pink neon script sign 'Burger's' with a green 'bungalow' under it, a giant pink milkshake glass with a red and white straw and a giant hamburger; below, a long diner with blue window frames and lit yellow windows with customers inside, lamps under the eave, double glass doors with oval windows under a lit canopy at the right and a dark side passage beside them; a pink sports car and a white 1950s car with tail fins parked in front, a street lamp, a brown car and bushes at the far left, a starry black sky; a wide empty black street and a grey kerb with a short round grey post at the bottom left",
+  "keep": "the lettering 'Burger's' (pink neon script) and 'bungalow' (green) exactly; the wide black street band below the parked cars stays plain black and empty (the opponents' cars drive in there); the two parked cars stay pink and white; the right end of the diner front beside the last blue pillar keeps its place and shapes (a man is drawn standing there); no extra people; the black sky stays black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -9619,10 +9619,10 @@
   "masked": 1
  },
  "b76654eff5f4870036738ea46ec51b2d09a66ee3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a newspaper headline strip with two headlines side by side, separated by a thin vertical black line: 'Nasser calls for war on Israel' on the left and 'Plane Hijacked To Syria' on the right, each on two lines in bold black letters on white",
+  "keep": "both headlines exactly, letter by letter; the vertical line between them; black on plain white; this is a cut-out piece of a flat newspaper page that continues past every edge: no page curls, folded corners, shadows or borders at the edges",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -9680,11 +9680,11 @@
   "masked": 1
  },
  "b865d61c04ce468ca1ecf736f13d0f90916feea3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a tiny far-away purple late-1960s coupe seen from the front, coming towards us, with a wide chrome grille across the front",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome",
+  "sheet": "sr2-7-small-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -9941,10 +9941,10 @@
   "masked": 1
  },
  "bcf650c3ccf8a4f7ab0c2d254e9211499c000d61": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "the view behind the car at night as seen in the rear-view mirror: black night sky over a band of brown and green roadside scrub",
+  "keep": "the top stays plain black; brown and green",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -9960,11 +9960,11 @@
   "masked": 0
  },
  "bcfd70de43ce01670c2d225f342b5404107f50e2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a mid-1960s American full-size two-door hardtop body without its wheels, facing right: long flat body with chrome side trim lines along its length, a slim roof with thin pillars, door lines, chrome bumpers at both ends and a grey rocker strip",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the windows stay see-through; the purple is the car's paint (the game repaints it): keep it purple; chrome stays chrome",
+  "sheet": "sr2-6-bodies-purple-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10025,10 +10025,10 @@
   "masked": 1
  },
  "be5b9275f6f13a6f333777a9f8f1157e9002084f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner (the left end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the rear fender with its black edge and a few light highlights along its top, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the red is the car's paint (the game repaints it), black stays black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -10086,11 +10086,11 @@
   "masked": 0
  },
  "c02aa4c1ffbc98c31e1f200a08fefa1d2a6a10fc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with black hair, a black beard and a cigarette, a brown shirt",
+  "keep": "the face, hair, beard, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10105,11 +10105,11 @@
   "masked": 1
  },
  "c041b7e40ed9db850b86f0c071fb36df69fcb026": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the top of a classic car body seen from the side with a chopped (lowered) roof, facing right like the car: the low roof line with its window pillars and chrome window frames, the grey glass of the windshield on the right (and of the rear window on some), the window openings empty, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the top of the car body at a fixed place and must join it without a seam; the window openings stay empty (see-through); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-roofs-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10170,11 +10170,11 @@
   "masked": 1
  },
  "c11b24b47b979e281575fe6aa0bf063f6a5c1224": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a small piece of a classic car body seen from the side: the rounded painted lower corner of a fender where the chrome bumper was taken off, with a tiny grey and light green trim bit at the top right and black checker shading along its curved edge, cut out on its own",
+  "keep": "the outline and the see-through part exactly (the picture replaces this corner of the car body, so its see-through part is where the bumper is cut away, and its painted edges must meet the body around it); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black, the little grey trim stays grey",
+  "sheet": "sr2-6-parts-1037",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10227,11 +10227,11 @@
   "masked": 1
  },
  "c2f82b6192ce764e348778cd743389ebc6df6796": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "five frames side by side, 16 px each, of a bolt in the flange of a chrome gearbox seen from the side: the first shows the empty bolt hole between grey flange edges, the next three the bolt with a yellow washer screwed in further and further, the last one the loose bolt on its own: yellow washer and a chrome threaded shaft",
+  "keep": "each frame in its own 16 px cell, the bolt at the same height in every frame; the flange edges line up between frames; the transparent area around the loose bolt in the last frame",
+  "sheet": "sr2-6-bay-parts-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10269,11 +10269,11 @@
   "masked": 0
  },
  "c36ba20edb3a5b031dcb0cf90d7062ba815a3be3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the centre of a chrome steering wheel turned a little one way, at the bottom of the view: a round chrome hub with its two chrome spokes and ribbed chrome arc tilted, the two lower sides of the wheel's chrome rim at the left and right edges, and behind it the dashboard with a black mesh grille and round white knobs",
+  "keep": "the shape; it is drawn into the dashboard picture, so the rim at both edges and the dashboard behind line up with it; the dashboard behind the wheel the same as in the other two wheel positions",
+  "sheet": "sr2-7-dash0-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10307,11 +10307,11 @@
   "masked": 1
  },
  "c3ecbe997385fddd66093e669515113694917430": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a 1966 Dodge Charger fastback body facing right (front on the right), without its wheels: green paint, a long roof sloping all the way down to the tail, an open side window and a chrome windshield pillar, two small side vents on the rear fender, one door line with a chrome door handle, chrome bumper ends and a grey rocker strip along the bottom",
+  "keep": "the outline exactly (the game draws a chopped roof and bumperless ends over it at fixed places); the empty wheel arches (the wheels are drawn separately); the window openings stay empty and see-through; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, black edges stay black",
+  "sheet": "sr2-6-imperial-charger-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10326,11 +10326,11 @@
   "masked": 1
  },
  "c3ee210dfb2797839e2c7379abdc5d1f14b0d6c2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner (the left end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the rear fender with its black edge, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-bumpers-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10429,11 +10429,11 @@
   "masked": 1
  },
  "c6a503e03dcd603309bdf1d13e30dcb6b6520d3a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a 1966 Oldsmobile 4-4-2 two-door hardtop body facing right (front on the right), without its wheels: teal paint, a long flat hood and trunk, a square roof with an open side window, a thin pillar and a chrome windshield pillar, one door line, a chrome door handle, a grey trim line along the side, chrome bumper ends and a chrome rocker strip along the bottom",
+  "keep": "the outline exactly (the game draws a chopped roof and bumperless ends over it at fixed places); the empty wheel arches (the wheels are drawn separately); the window openings stay empty and see-through; keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, black edges stay black",
+  "sheet": "sr2-6-olds-fury-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10471,11 +10471,11 @@
   "masked": 1
  },
  "c6cb6ca067cbb87fe961c80feeefba41674b5ebe": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner of a classic car body seen from the side with its bumper removed, cut out on its own: a small rounded piece of paint with a black outline curving down at the left",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the transparent part stays transparent (the piece replaces that corner and cuts the bumper away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-chops-blue-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10490,10 +10490,10 @@
   "masked": 1
  },
  "c6eaebfaaa71e511a8a28c790f324737570f09c6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a strip of 10 animation frames in one row of the same blonde drive-in car-hop on roller skates in a green outfit and a green cap: turning round (facing us, then seen from behind), then skating away to the right seen from the side, holding an empty blue tray at her side",
+  "keep": "every figure stays in its own 32-pixel-wide cell, the same size and pose, with the skates on the same line, so the frames still line up; the tray as drawn; her skin, hair and outfit colours",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -10509,11 +10509,11 @@
   "masked": 1
  },
  "c701bab9ac55a0f8e98ab3ed0816e39841444fe7": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the chopped roof of a classic car seen from the side, cut out on its own: a low flat roof line in the body paint with a thin grey window frame and a door pillar under it, the window openings empty, a chrome windshield pillar slanting down at the right",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the window openings and the area above the low roof line stay transparent (the piece replaces that part of the body and cuts the stock roof away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-chops-blue-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10570,11 +10570,11 @@
   "masked": 1
  },
  "c78c7cadae2170863b8ea1766ef50805d9919ba3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a small piece of a classic car body seen from the side: the rounded painted lower corner of a fender where the chrome bumper was taken off, with black checker shading along its curved edge, cut out on its own",
+  "keep": "the outline and the see-through part exactly (the picture replaces this corner of the car body, so its see-through part is where the bumper is cut away, and its painted edges must meet the body around it); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-parts-1037",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10631,10 +10631,10 @@
   "masked": 1
  },
  "c9a6119309e3efb2f4f59c869e75f14a8a252b49": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "the lower corner of the car's cracked side window seen from the driver's seat after a crash: the chrome window frame down the left, the grey glass crazed by small white cracks, the window's lower chrome frame running diagonally across the bottom right, and a bit of grey door below it",
+  "keep": "the cracks stay small thin white lines on grey; it continues the cracked side window of the crash picture drawn just above it, so the frame lines and the glass meet it at its top edge",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -10650,11 +10650,11 @@
   "masked": 0
  },
  "c9b44d2d4812b0b00441bf37988e4f5633c7e2d1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a small piece of a classic car body seen from the side: the rounded painted lower corner of a fender where the chrome bumper was taken off, with a light green highlight line along the top, a tiny grey trim bit at the top left and black checker shading along its curved edge, cut out on its own",
+  "keep": "the outline and the see-through part exactly (the picture replaces this corner of the car body, so its see-through part is where the bumper is cut away, and its painted edges must meet the body around it); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black, the little grey trim stays grey",
+  "sheet": "sr2-6-parts-1037",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10715,11 +10715,11 @@
   "masked": 1
  },
  "caed78dbaf35a634662615b5bdc085a0022e4cec": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a thin strip of the top of the car's hood seen from the driver's seat through the bottom of the windshield: teal paint with lighter teal highlight lines, its top edge rising and falling a little",
+  "keep": "the teal is the car's paint (the game repaints it): keep it teal; a strip that thin; the uneven top edge and the transparent area above it; its bottom edge continues the hood at the top of the dashboard drawn just below it",
+  "sheet": "sr2-7-dash0-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10757,11 +10757,11 @@
   "masked": 2
  },
  "cbbda42139d984defa1798249143f551a7a287a9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a tiny far-away red 1960s car seen from the front, coming towards us, with two white headlights and a chrome grille",
+  "keep": "the red is the car's paint (the game repaints it): keep it red; chrome stays chrome",
+  "sheet": "sr2-7-cars-3",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10838,11 +10838,11 @@
   "masked": 1
  },
  "ce964c0f846fee9327ac450cbeb41836b8ba824d": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the top of a classic car body seen from the side with a chopped (lowered) roof, facing right like the car: the low roof line with its window pillars and chrome window frames, the grey glass of the windshield on the right (and of the rear window on some), the window openings empty, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the top of the car body at a fixed place and must join it without a seam; the window openings stay empty (see-through); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-roofs-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10968,11 +10968,11 @@
   "masked": 1
  },
  "d12196672b66c52695be35eb21a1b06429aff90c": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a very close view of the side of a purple late-1960s coupe (Mercury Cougar style) passing by, facing right: the door and windscreen pillar at the top left, the long flat body side with a sharp crease and a door seam, the front wheel with a chrome spoked rim and a black tyre, a dark chequered shadow along the sill, the tip of the chrome bumper at the right edge",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windscreen opening stays see-through (hot pink like the background); the outline where it is cut off at the picture edges",
+  "sheet": "sr2-7-close-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -10987,11 +10987,11 @@
   "masked": 1
  },
  "d1917fc4502bc9e9a5cacb72ccf4bc39365e65d6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "one of four rotation frames of the same car wheel seen from the side: a tyre with a wide white sidewall band and a dark alloy rim with eight grey spokes around a small hub",
+  "keep": "a round wheel the same size; the spokes at exactly the angle drawn (the four frames turn the wheel when the car rolls); the same wheel in every frame",
+  "sheet": "sr2-6-tyre-frames-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11029,11 +11029,11 @@
   "masked": 0
  },
  "d1e5e0ccbddb83c4c39865b524443c4ed8635763": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the top of a classic car body seen from the side with a chopped (lowered) roof, facing right like the car: the low, flat roof line with its window pillars and chrome window frames, the window openings empty, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the top of the car body at a fixed place and must join it without a seam; the window openings stay empty (see-through); keep every colour exactly as in the picture: the teal is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-bumpers-teal-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11072,11 +11072,11 @@
   "pal_like": 1224
  },
  "d347b4073d437de8a6c74ae4124de7f73f633cf0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the bare rear corner of a classic car body seen from the side with its bumper taken off, cut out on its own: a rounded painted rear panel at the left with a dotted dark seam and a dark lower edge",
+  "keep": "the outline exactly (it replaces the end of the car body where the bumper was, so its see-through parts cut the bumper away); no bumper or chrome; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it): keep it green; black stays black",
+  "sheet": "sr2-6-bumperless-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11207,11 +11207,11 @@
   "masked": 1
  },
  "d4b21a134ff7ba6dc84b8dccdd6a521523712adf": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a chrome intake manifold for a V6 engine seen from the side in perspective, with curved runners and three two-barrel carburettor pads on top",
+  "keep": "three carburettor pads with two holes each; the outline; grey, white and black only",
+  "sheet": "sr2-6-engineparts-1064",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11226,11 +11226,11 @@
   "masked": 1
  },
  "d689c034f494672576b3aaec7383eb54b1ed533f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with black hair, dark sunglasses and a cigarette, a grey shirt with yellow trim",
+  "keep": "the face, hair, sunglasses, cigarette and shirt as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-3",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11245,11 +11245,11 @@
   "masked": 1
  },
  "d69bd5e3e6248404fd75d1063074158324d8bee4": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the front corner (the right end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the front fender with its black edge and a light trim line across it, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-bumpers-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11264,11 +11264,11 @@
   "masked": 1
  },
  "d6dfafdf567391e53b465ad9ba831be683400939": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the lower front end of a classic car body seen from the side with the bumper taken off: the bare painted end of the front fender with its black edge, rounded at both lower corners, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-bumpers-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11386,10 +11386,10 @@
   "masked": 1
  },
  "d917e900baa14e3dc4d0d28e712a654d1d832b4b": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "race",
+  "batch": 7,
+  "desc": "the dashboard of a 1970s car seen from the driver's seat: a big chrome steering wheel rim in front of a black instrument cluster with a rectangular speedometer with green numbers and tick marks, a square rev gauge with green numbers at its right, small square gauges at the left, a small gauge with a red zone, a red and a green warning light and slider switches at the right, a round knob and a ring below them, a radio with buttons and a dial at the far right, the door with its window frame, armrest and handle at the left, and the edge of the purple hood at the top",
+  "keep": "the purple at the top is the car's paint (the game repaints it): keep it purple; the gauges have no needles (the game draws them); the speedometer numbers 0 10 20 30 40 50 60 70 80 90 100 110 120 and the rev gauge numbers 0 10 20 30 40 50 60 exactly; the steering wheel stays exactly in place (separate steering wheel pictures are drawn over its lower part); the black areas stay plain black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -11405,10 +11405,10 @@
   "masked": 0
  },
  "d986aa749467697e3e5f61070bd946a1c787cc56": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 5,
+  "desc": "a close view of the front of a chrome car engine on black, for the ignition timing screen: a big grooved crankshaft pulley at the lower left with a brown fan belt running up to a pulley at the top, a short shaft with a green ring and a brown toothed belt beside it at the upper left, the harmonic balancer in the middle with yellow timing marks, a brown hose across the middle, the grey ribbed engine block behind and a small black badge with grey cast marks at the top right, cut off by the edge",
+  "keep": "the yellow timing marks exactly where they are (the timing light flashes over them); the big pulley at the lower left exactly in place and the toothed belt beside the green ring exactly in place (their moving frames are drawn over them); brown belts and hose, green ring; the badge marks as drawn, no new lettering; the black background stays black",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -11509,11 +11509,11 @@
   "pal_like": 1099
  },
  "db6410724e835e1486b384ac072175d8cf2bc2c3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a tiny far-away figure of the race starter standing on the road, seen from the front: brown hair, a red jacket with dark folds, grey shorts, bare legs and grey shoes",
+  "keep": "the shape and size; it stays one small standing figure",
+  "sheet": "sr2-7-starter-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11566,11 +11566,11 @@
   "masked": 1
  },
  "dcf62e3fd1777911a75801ad09889732628d1cbc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the chopped roof of a classic car seen from the side, cut out on its own: a low flat roof line in the body paint with a thin black window frame under it, the window opening empty, a chrome windshield pillar slanting down at the right",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the window opening and the area above the low roof line stay transparent (the piece replaces that part of the body and cuts the stock roof away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-chops-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11613,9 +11613,9 @@
  },
  "dd92e8f6e54d779d9ab6cc7166e524cc82fe4e04": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 5,
+  "desc": "the Cheapskate Gas Co. gas station at night: a flat canopy with a blue edge carrying a big chrome script sign 'Cheapskate Gas Co.' and a brown shingle roof behind it; red and brown brick pillars; a lit shop window with shelves of oil cans and bottles behind a low counter; two white gas pumps with red frames at the back (one with a pink word over red lips, one with 'Ex'); two white gas pumps with blue frames in front (the left one with 'SUPER' over a red and blue chevron emblem, the right one with a red round emblem); a side building with a brown shingle roof, lit windows and a green bush on the left; a 'CAR WASH' bay with brick pillars, a blue car and green trees on the right; a starry black sky, a black forecourt and a speckled grey kerb along the bottom",
+  "keep": "the lettering 'Cheapskate Gas Co.', 'CAR WASH', 'SUPER' and 'Ex' exactly, and the pump emblems as drawn; the black forecourt between the front pumps stays plain and empty (the player's car is drawn there); the two blue front pumps keep their exact place and outline (the game draws the pump strips with the hoses and the counters over them); no extra cars or people",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -11631,10 +11631,10 @@
   "masked": 0
  },
  "ddd5714a7735ffa777d565adba1f1d4a91a98b81": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "a sprite sheet of 11 animation frames of a blonde drive-in car-hop on roller skates in a green outfit and a green cap, in two rows (six above, five below, the last cell empty): skating along seen from the side facing left, holding out a blue tray with a purple milkshake and food, then turning to face us with the tray held at her side",
+  "keep": "every figure stays in its own 32-pixel-wide cell, the same size and pose, with the skates on the same line, so the frames still line up; the bottom right cell stays empty; the tray and the drink as drawn; her skin, hair and outfit colours",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -11803,11 +11803,11 @@
   "masked": 1
  },
  "e23db9b5a11626933851e99e9adf4b9235595cba": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a close view of the race starter standing right beside the car, seen from her neck down to her hips: a young woman in a black leather biker jacket with grey and white highlights on its creases and zips, a chrome belt buckle, a red skirt at the bottom; at the top her bare neck framed by brown hair, with red and yellow at both shoulders",
+  "keep": "the jacket stays black, the skirt red; the right edge, where her arm (drawn beside it) joins, stays where it is; it fills the whole picture, no background",
+  "sheet": "sr2-7-starterbody-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11910,11 +11910,11 @@
   "masked": 1
  },
  "e319e3dfcb3b9d075f000f283a9c4a14e2a675d2": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a very close view of the side of a purple late-1960s sports car (Corvette Stingray style) passing by, facing right: the door and windscreen pillar at the top left, the long curved front fender with four black vent slots, the front wheel with a chrome spoked rim and a black tyre, the tip of the chrome bumper at the right edge",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windscreen opening stays see-through (hot pink like the background); the outline where it is cut off at the picture edges",
+  "sheet": "sr2-7-close-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11929,11 +11929,11 @@
   "masked": 1
  },
  "e3667c3fdd32426ee5fe52758246f9f1ddf2fef9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a long chrome intake manifold for a V8 engine seen from the side in perspective, with curved runners and one two-barrel carburettor pad on top",
+  "keep": "one carburettor pad with two holes; the outline; grey, white and black only",
+  "sheet": "sr2-6-engineparts-1064",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11967,11 +11967,11 @@
   "masked": 1
  },
  "e397e6b23391cc86fe6c37c387607698288df0ce": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a long chrome intake manifold for a V8 engine seen from the side in perspective, with curved runners and two four-barrel carburettor pads on top",
+  "keep": "two carburettor pads with four holes each; the outline; grey, white and black only",
+  "sheet": "sr2-6-engineparts-1064",
   "status": "new",
   "ids": {
    "sr2": [
@@ -11986,11 +11986,11 @@
   "masked": 1
  },
  "e414f25f63adc336b08ad4e5a3b4d902590726ef": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a purple late 1960s American sports coupe facing right, without its wheels: a long hood, a short sloping roof with the side window and a quarter window, door lines and a door handle, a small badge behind the front wheel arch, chrome bumpers at both ends",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the window openings stay transparent (the driver is drawn behind them); the outline exactly; keep every colour exactly as in the picture: the purple is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-bodies-purple-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -12005,10 +12005,10 @@
   "masked": 1
  },
  "e41848515d953629cc574e0c06c4a0a325315de1": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 5,
+  "desc": "two animation frames side by side of the big grooved chrome crankshaft pulley from the engine front picture, with the engine parts around it and a bit of the brown fan belt at the lower right of each; the second frame is turned a little",
+  "keep": "two frames, each exactly half the width, side by side; each frame is an opaque piece of the engine front picture swapped over it to make the pulley spin, so the pulley at exactly the same place and size and everything around it exactly as in the engine front picture; the brown belt and its salmon edge where they are",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -12198,11 +12198,11 @@
   "masked": 1
  },
  "ea9cc678250af6ae3156caba3e5b76251f751843": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "garage",
+  "batch": 6,
+  "desc": "a long chrome intake manifold for a V8 engine seen from the side in perspective, with curved runners and one four-barrel carburettor pad on top",
+  "keep": "one carburettor pad with four holes; the outline; grey, white and black only",
+  "sheet": "sr2-6-engineparts-1064",
   "status": "new",
   "ids": {
    "sr2": [
@@ -12412,11 +12412,11 @@
   "masked": 0
  },
  "ecfad6fef480f58a76a411b6a5a148aab52475a0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a small far-away figure of the race starter seen from behind: a woman with brown hair, a red jacket and a grey skirt, arms at her sides, standing",
+  "keep": "the outline and the colours; the same figure at each size",
+  "sheet": "sr2-7-starter-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -12432,9 +12432,9 @@
  },
  "ee76fa98473fc77dd9d79f27d663414be5364be4": {
   "group": "screen",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "batch": 5,
+  "desc": "the empty garage at night: on the left the open roll-up door showing a starry night sky, a grey picket fence, green bushes and a small yellow garden lamp, with a red door post; a brown wooden ceiling over the door and a speckled grey ceiling with a round caged yellow ceiling lamp; a blue pipe along the top of the grey back wall; a long empty white name banner with a brown frame; a chain hoist hanging in a V with a hook and a round block; a small wall calendar with a green top edge: rows of tiny dates above and below a small beach picture (a blonde figure in red lying on yellow sand, green plants, a blue sky); a light switch; a grey fire extinguisher with a red and yellow label; a red-edged open chest on the floor; a grey metal drum; a clamp lamp on the wall; a green framed clipboard; a pink oval wall clock; paint cans on a shelf with tools hanging below it; a blue workbench with crossed legs; a blue bench grinder throwing sparks on a small wooden stand under a pin-up picture of a blonde girl; a shelf hung on wires with a grey and yellow radio with an aerial, an open green manual and an oil can; a white box on a grey crate marked 'GM' in red; a wire waste basket with a blue rag; a wooden shelf unit with parts; a tall blue locker door on the right; a dark speckled concrete floor with a grey floor grate at the bottom left, a spray gun with a purple paint cup and hose at the bottom middle and two green jerry cans at the bottom right. No car in the garage",
+  "keep": "the name banner stays empty and white; the floor stays empty and plain in the middle, where the car is parked and where the game draws the bottle jack and the creeper over this picture; the spray gun's paint cup takes the car's colour (the game recolours it): keep it purple; the clock face stays pink; the 'GM' on the crate exactly; the calendar's tiny dates stay tiny unreadable marks, no new words; the radio stays a radio with a speaker grille and an aerial",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -12493,11 +12493,11 @@
   "masked": 1
  },
  "f04c8b6c4f813c07ef93eebc40da8c4811c8bf50": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with thick wavy brown hair with a grey streak and dark eyes, a pink shirt with green lapels",
+  "keep": "the face, hair and shirt as drawn; the pink shirt stays pink (it is not the background); it stays a portrait the same size",
+  "sheet": "sr2-8-racers-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -12569,11 +12569,11 @@
   "masked": 1
  },
  "f1df80b35813be6712ed9655c59f92f842798b98": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a red early-1960s full-size car (Ford Galaxie style) seen from behind and a little from its right side: see-through rear window with the driver's head, big round red tail lights at both ends, a dark chequered trim panel between them, a long chrome bumper, a yellow licence plate, the right rear wheel",
+  "keep": "the red is the car's paint (the game repaints it): keep it red; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "sheet": "sr2-7-cars-3",
   "status": "new",
   "ids": {
    "sr2": [
@@ -12588,11 +12588,11 @@
   "masked": 1
  },
  "f1ff217c5ce8e7c1592b428fcf710976320d7ca6": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "the lower half of a chrome steering wheel held straight: the sides of its rim at both edges, two spokes going out to the left and right and a teal centre hub with a chrome horn ring, in front of the bottom strip of a dashboard: a teal chequered panel with round chrome knobs and chrome trim lines",
+  "keep": "it is drawn into the dashboard at its place: the wheel rim, the dashboard edges and the knobs line up exactly with the dashboard around it (this one is the same as the dashboard's own bottom strip); the teal is the car's paint (the game repaints it): keep it teal",
+  "sheet": "sr2-7-cockpit-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -12752,11 +12752,11 @@
   "masked": 1
  },
  "f460407780e76803acdf2aa5fd4b52d3921ce652": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a 1958 Plymouth Belvedere hardtop body facing right (front on the right), without its wheels: blue paint, tall pointed rear tail fins with a white and grey insert and a row of chrome slots, a long chrome side spear, a thin curved roof with a big open side window and the grey glass of the rear window, a wraparound windshield with a chrome pillar, two door lines, a chrome door handle and chrome bumper ends",
+  "keep": "the outline exactly (the game draws a chopped roof and bumperless ends over it at fixed places); the empty wheel arches (the wheels are drawn separately); the window openings stay empty and see-through; the tail fins; keep every colour exactly as in the picture: the blue is the car's paint (the game repaints it), chrome stays chrome, white stays white, black edges stay black",
+  "sheet": "sr2-6-gto-belvedere-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -12794,10 +12794,10 @@
   "masked": 1
  },
  "f4fbab66d674e48945f9b5d054e71af781d3e990": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "garage",
+  "batch": 6,
+  "desc": "a chrome V6 car engine seen from the left side in the engine bay: a long valve cover with round bolts on top, an exhaust manifold with three ports and spark plugs below it, pulleys and the fan belt at the left, two cylinders (starter and alternator) at the bottom, a mounting bracket at the right",
+  "keep": "the outline and all its details; grey, white and black only (not coloured)",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -12832,11 +12832,11 @@
   "masked": 1
  },
  "f60c7a98cfa8e439b15289f46eed81565e78fb45": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a close view of the race starter standing right beside the car, seen from her neck down to her hips: a young woman in a red leather biker jacket with lighter red and white highlights on its creases and zips, a chrome belt buckle, a grey skirt at the bottom; at the top her bare neck framed by brown hair, with red and yellow at both shoulders",
+  "keep": "the jacket stays red, the skirt grey; the right edge, where her arm (drawn beside it) joins, stays where it is; it fills the whole picture, no background",
+  "sheet": "sr2-7-starterbody-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -12870,11 +12870,11 @@
   "masked": 1
  },
  "f6eff7b1c9685785887b22cdf94fe5ea0f67810a": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with curly black hair, round dark sunglasses, a black moustache and goatee, a yellow and grey checked shirt",
+  "keep": "the face, hair, sunglasses, beard and shirt as drawn; it stays a portrait the same size",
+  "sheet": "sr2-8-racers-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -12974,10 +12974,10 @@
   "masked": 1
  },
  "f9e4cd5a9f10921f7c5bb4bfc63ec967749d5205": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
+  "group": "screen",
+  "batch": 5,
+  "desc": "the Under the Car screen: the underside of a classic car seen from below, front to the right, on black: the body edge and grey chrome bumpers at both ends, four dark grey tyres, a grey ladder frame with a big X-shaped cross member, the transmission and the driveshaft along the middle, the rear axle at the left, a brown exhaust pipe with light red highlights running from the rear to the middle; below it a grey control bar with two empty dark grey panels and a blue button 'DONE' in a bevelled grey frame, all inside a thin grey border",
+  "keep": "the label DONE exactly; the black around the car stays plain black; the two dark grey panels stay empty (text is written there); the teal is the car's paint (the game repaints it); every line of the frame, axle and exhaust stays exactly where it is (the differential, muffler and exhaust manifold are pasted over it as separate pictures, and a removed part is erased with this picture)",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -12993,11 +12993,11 @@
   "masked": 0
  },
  "fa029949d500703e4658e01adb3865278392931f": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a purple late-1960s coupe (Mercury Cougar style) seen straight from behind: see-through rear window with the driver's head, a full-width tail light panel with fine vertical ribs, a yellow licence plate, chrome bumper, both rear tyres",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "sheet": "sr2-7-cars-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -13035,11 +13035,11 @@
   "masked": 1
  },
  "fa7969525714a32a6676d00d259c518235e769ba": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the side view of a red 1960s American two-door hardtop facing right, without its wheels: long hood and trunk, a sloping roof with the side window, door lines and a door handle, a chrome rear bumper and tail light at the left end, a chrome front bumper at the right end",
+  "keep": "the empty wheel arches (the wheels are drawn separately); the window opening stays transparent (the driver is drawn behind it); the outline exactly; keep every colour exactly as in the picture: the red is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-bodies-red-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -13147,11 +13147,11 @@
   "masked": 1
  },
  "fd1257aa5eec6bc5e59fe813501f360a03fc44d3": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "ui",
+  "batch": 8,
+  "desc": "a tiny head-and-shoulders portrait of a late-1960s street racer: a man with wavy brown hair streaked with grey, a pink, purple and white checked shirt",
+  "keep": "the face, hair and shirt as drawn; the pink stays pink (it is not the background); it stays a portrait the same size",
+  "sheet": "sr2-8-racers-2",
   "status": "new",
   "ids": {
    "sr2": [
@@ -13227,11 +13227,11 @@
   "masked": 1
  },
  "feaee162ddc4fd612f8be2b7ade601f87ac746b9": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the front corner of a classic car body seen from the side with its bumper removed, cut out on its own: a small rounded nose of paint with a bit of chrome trim along its top edge and a black outline curving down at the right",
+  "keep": "the outline exactly, so it lines up with the car body it is drawn over; the transparent part stays transparent (the piece replaces that corner and cuts the bumper away); keep every colour exactly as in the picture: the body colour is the car's paint (the game repaints it), chrome stays chrome, black stays black",
+  "sheet": "sr2-6-chops-blue-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -13265,11 +13265,11 @@
   "masked": 1
  },
  "ff272a86a24ca54a6a3a0bd8e3c653dd91cb5bfc": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "the rear corner (the left end) of a classic car body seen from the side with the bumper taken off: the bare painted end of the rear fender with its black edge and a dark grey trim line along its top, cut out on its own",
+  "keep": "the outline exactly: it is drawn over the end of the car body at a fixed place and must join it without a seam; no bumper; keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black, grey trim stays grey",
+  "sheet": "sr2-6-bumpers-late-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -13303,11 +13303,11 @@
   "masked": 1
  },
  "ff69d4902e427d3346807a10b0db3846d47025e0": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "race",
+  "batch": 7,
+  "desc": "a purple late-1960s fastback car (Mustang style) seen straight from behind: sloping roof with the driver's head in the see-through rear window, rectangular red and white tail lights, a chrome strip between them, chrome bumper, a yellow licence plate, both rear tyres",
+  "keep": "the purple and its light grey highlights are the car's paint (the game repaints them): keep them purple and grey; chrome stays chrome; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "sheet": "sr2-7-cars-1",
   "status": "new",
   "ids": {
    "sr2": [
@@ -13322,11 +13322,11 @@
   "masked": 1
  },
  "ffa694340963410f47ece616ee75e64b095cc232": {
-  "group": "sprite",
-  "batch": null,
-  "desc": "",
-  "keep": "",
-  "sheet": null,
+  "group": "car",
+  "batch": 6,
+  "desc": "a small piece of a classic car body seen from the side: the rounded painted lower corner of a fender where the chrome bumper was taken off, with a light green body crease line and black checker shading along its curved edge, cut out on its own",
+  "keep": "the outline and the see-through part exactly (the picture replaces this corner of the car body, so its see-through part is where the bumper is cut away, and its painted edges must meet the body around it); keep every colour exactly as in the picture: the green is the car's paint (the game repaints it), black stays black",
+  "sheet": "sr2-6-parts-1037",
   "status": "new",
   "ids": {
    "sr2": [
@@ -13342,11 +13342,11 @@
  },
  "ffd5a8a3fb8072fc2ac5c3f3a8a609b38df2bf32": {
   "group": "sprite",
-  "batch": null,
-  "desc": "",
+  "batch": 5,
+  "desc": "kept original: a flat black sliver 4 pixels high, too small to carry detail",
   "keep": "",
   "sheet": null,
-  "status": "new",
+  "status": "original",
   "ids": {
    "sr2": [
     1151
