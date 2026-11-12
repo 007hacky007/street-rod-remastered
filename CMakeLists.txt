@@ -70,7 +70,7 @@ endif()
 # Street Rod 2: The Next Generation, its own engine (src2/, ENGINE2.md) on the shared host.
 file(GLOB_RECURSE SR2_SOURCES CONFIGURE_DEPENDS src2/*.c)
 list(FILTER SR2_SOURCES EXCLUDE REGEX "/src2/main\\.c$")
-add_library(sr2_core OBJECT ${SR2_SOURCES} ${SR_BAND_SOURCES} ${SR_ENH_CORE_SOURCES})
+add_library(sr2_core OBJECT ${SR2_SOURCES} ${SR_BAND_SOURCES} ${SR_RM_CORE_SOURCES} ${SR_ENH_CORE_SOURCES})
 target_include_directories(sr2_core PUBLIC src2 common/band common/enhanced)
 target_link_libraries(sr2_core PUBLIC sre_host SDL3::SDL3)
 add_executable(streetrod2-enhanced src2/main.c)

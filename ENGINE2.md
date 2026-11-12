@@ -34,7 +34,9 @@ What differs from upstream:
   `race_road.c` (`road_frame`: the frame's state after `road_project_front`, the layers around the sky, the rows'
   objects and the opponent, the foreground from the mirror on; `road_page_flip`: presented) and `race_phys.c`
   (the physics step); the written / foreground / object layers in `platform/ega.c` and `vga.c`; the options in
-  `main.c`. `src2/remaster/` holds stand-ins until Street Rod 2 has remastered pictures.
+  `main.c`. The remastered pictures' core (tags, art pack, colour) is Street Rod 1's, built from
+  `common/remaster`; `src2/remaster/rm_dump.c` is Street Rod 2's picture dump (`--dump-pictures DIR`: LIB1, LIB2,
+  LIB3 in Street Rod 1's dump format).
 * Deliberate changes are marked `ENH:`, port fixes `PORT:` (as upstream marks its own).
 
 Developer aids kept from upstream: `SR_TRACE`, `SR_KEYS`, `SR_DEBUG_RACE`, `SR_DEBUG_END`, `SR_DEBUG_OPP`,

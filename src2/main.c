@@ -6,6 +6,7 @@
  *   --fullscreen  start in full screen (Alt+Enter switches)
  *   --check       load and verify the original executable, print a summary and exit (no window)
  *   --run-ms N    developer aid: exit after N ms (headless snapshot runs)
+ *   --dump-pictures DIR  ENH: write every picture of LIB1/LIB2/LIB3 to DIR for the remaster and exit (no window)
  *   --music-volume N  ENH: volume of the music, percent 0..100 (default 100)
  *   --sfx-volume N    ENH: volume of the sound effects and the engine, 0..100 (default 100)
  *   --music original|remastered  ENH: the music as the game plays it (default), or played by a small band
@@ -29,13 +30,14 @@
 #include "mem.h"
 #include "platform/ega.h"
 #include "enhanced/enhanced.h"
+#include "remaster/rm_dump.h"
 #include "sound/band.h"
 
 #define APP_TITLE "Street Rod 2 Enhanced"
 
 static int usage(const char *prog)
 {
-    fprintf(stderr, "usage: %s [--game-dir DIR] [--scale N] [--fullscreen] [--check] [--run-ms N] "
+    fprintf(stderr, "usage: %s [--game-dir DIR] [--scale N] [--fullscreen] [--check] [--run-ms N] [--dump-pictures DIR] "
                     "[--music-volume N] [--sfx-volume N] [--music original|remastered] "
                     "[--classic] [--res-scale N] [--aa N] [--motion-delay P] [--town on|off] "
                     "[1] [nomouse] [demo] [nouemem] [e|c|v|h|t] [adlib|speaker]\n", prog);
@@ -61,6 +63,7 @@ int main(int argc, char **argv)
     game_argv[game_argc++] = argv[0];
     int scale = 3;
     bool check = false, fullscreen = false;
+    const char *dump_dir = NULL;                                 /* ENH: the remaster's picture dump */
     int music_volume = 100, sfx_volume = 100;
     bool band = false;
     bool classic = false, town = true;                           /* ENH: the enhanced race view */
@@ -72,6 +75,7 @@ int main(int argc, char **argv)
         else if (!strcmp(a, "--run-ms") && v) { game_run_ms = atoi(v); i++; }
         else if (!strcmp(a, "--fullscreen")) fullscreen = true;
         else if (!strcmp(a, "--check")) check = true;
+        else if (!strcmp(a, "--dump-pictures") && v) { dump_dir = v; i++; }          /* ENH */
         else if (!strcmp(a, "--music-volume") && v) { music_volume = atoi(v); i++; }   /* ENH */
         else if (!strcmp(a, "--sfx-volume") && v) { sfx_volume = atoi(v); i++; }       /* ENH */
         else if (!strcmp(a, "--music") && v && (!strcmp(v, "original") || !strcmp(v, "remastered"))) {   /* ENH */
@@ -96,6 +100,12 @@ int main(int argc, char **argv)
     }
     if (check) {
         printf("%s ok: image %u bytes at %04X:0000, DGROUP %04X\n", SR_EXE_NAME, mem_image_size, LOAD_SEG, DGROUP);
+        return 0;
+    }
+    if (dump_dir) {                                              /* ENH */
+        int n = rm_dump_pictures(dir, dump_dir);
+        if (n < 0) return 1;
+        printf("%d pictures written to %s\n", n, dump_dir);
         return 0;
     }
 

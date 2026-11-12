@@ -138,8 +138,14 @@ if(SRE_TEST_GAME2_DIR)
         add_test(NAME sr2_check COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_check.sh
                  $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR} $<TARGET_FILE:streetrod-enhanced>
                  ${SRE_TEST_GAME_DIR})
+        # The remaster's picture dump, and the pictures both games share against Street Rod 1's dump.
+        add_test(NAME sr2_dump COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_dump.sh
+                 $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR} $<TARGET_FILE:streetrod-enhanced>
+                 ${SRE_TEST_GAME_DIR})
     else()
         add_test(NAME sr2_check COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_check.sh
+                 $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR})
+        add_test(NAME sr2_dump COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_sr2_dump.sh
                  $<TARGET_FILE:streetrod2-enhanced> ${SRE_TEST_GAME2_DIR})
     endif()
 endif()
