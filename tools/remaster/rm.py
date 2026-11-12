@@ -103,9 +103,7 @@ def cmd_ingest(name, result, again=False):
         rows.append((orig, rgba, why))
     review_sheet(name, rows)
     if again:                                    # an earlier result again: not a new try
-        j = pr.jobs[name]
-        j['status'], j['reasons'] = ('done' if all_ok else j['status']), reasons
-        pr.save()
+        pr.settle(name, all_ok, reasons)
     else:
         pr.result(name, all_ok, reasons)
     print(name, 'ok' if all_ok else 'FAILED', pr.jobs[name]['status'])
@@ -163,11 +161,8 @@ def cmd_repair(name, only=None, whole=False):
         reasons += ['%s: %s' % (s[:8], r) for r in m['reasons']]
         rows.append((jobs.picture_rgb(p, ref), rgba, m['reasons']))
     review_sheet(name, rows)
-    j = pr.jobs[name]
-    j['reasons'] = reasons
-    j['status'] = 'done' if all_ok else 'attention'
-    pr.save()
-    print(name, 'repaired' if all_ok else 'still failing', j['status'])
+    pr.settle(name, all_ok, reasons)
+    print(name, 'repaired' if all_ok else 'still failing', pr.jobs[name]['status'])
     for r in reasons[:12]:
         print('  ', r)
 
@@ -327,6 +322,7 @@ def main():
     sp.add_argument('--common', action='store_true', help="not near the scene's own figure (two frames differ from the scene there)")
     sp.add_argument('--margin', type=int, default=0, help="with --common: keep this far from the scene's own figure")
     sp.add_argument('--max-diff', type=float, default=None, help='only where the two drawings agree (mean RGB difference)')
+    sub.add_parser('retry', help='a job set aside back in the queue for one more generation').add_argument('name')
     sub.add_parser('reindex', help='texel indices again from the art as it is (after repairs)')
     sub.add_parser('pack').add_argument('out')
     sub.add_parser('status')
@@ -352,6 +348,9 @@ def main():
         cmd_job(a.name)
     elif a.cmd == 'next':
         print(progress().next() or '')
+    elif a.cmd == 'retry':
+        progress().retry(a.name)
+        print(a.name, 'failed, one more try')
     elif a.cmd == 'reindex':
         cmd_reindex()
     elif a.cmd == 'ingest':

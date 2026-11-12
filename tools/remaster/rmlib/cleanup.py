@@ -46,6 +46,40 @@ def assign_index(rgb, alpha, orig_idx, ref):
     return idx.astype(np.uint8)
 
 
+SPILL_MIN_T = 0.25      # at least this far from the original colour towards the key
+SPILL_RESID = 0.25      # and this close to that line (share of the distance to the key)
+
+
+def despill(rgb, orig_rgb, inside):
+    """The generation's background key (hot pink) bleeding inside the outline, whole or mixed into a thin
+    line: a texel on the line from its original colour to the key loses the key's share."""
+    c = rgb.astype(np.float32)
+    o = orig_rgb.astype(np.float32)
+    d = KEY.astype(np.float32) - o
+    dd = (d * d).sum(-1)
+    t = np.clip((((c - o) * d).sum(-1)) / np.maximum(dd, 1), 0, 1)
+    resid = c - o - t[..., None] * d
+    spill = inside & (t > SPILL_MIN_T) & (np.sqrt((resid * resid).sum(-1)) < SPILL_RESID * np.sqrt(dd)) \
+        & (dd > 120 * 120)
+    out = rgb.copy()
+    out[spill] = np.clip(c - t[..., None] * d, 0, 255)[spill].astype(np.uint8)
+    return out
+
+
+def quantize(rgb, ref_rgb):
+    """At most MAX_COLOURS colours: a median cut plus the picture's own reference colours, every texel on
+    its nearest one (a small area of a reference colour is not merged into a big neighbour's shade)."""
+    n = max(1, MAX_COLOURS - len(ref_rgb))
+    mc = Image.fromarray(rgb).quantize(n, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    cols = np.array(mc.getpalette()[:3 * n], np.uint8).reshape(-1, 3)
+    cols = np.unique(np.vstack([cols, ref_rgb]), axis=0)[:256]
+    pal = np.vstack([cols, np.repeat(cols[:1], 256 - len(cols), 0)])
+    pim = Image.new('P', (1, 1))
+    pim.putpalette(pal.reshape(-1).tolist())
+    q = Image.fromarray(rgb).quantize(palette=pim, dither=Image.Dither.NONE)
+    return np.asarray(q.convert('RGB')).copy()
+
+
 def cleanup(orig_idx, transparent, result, rect, ref):
     """orig_idx: h x w original indices; transparent: h x w (masked pictures, else all False); result: the
     generated image; rect: (x, y, w, h) of the picture in it (register); ref: 16 x 0xRRGGBB, the colours the
@@ -55,13 +89,9 @@ def cleanup(orig_idx, transparent, result, rect, ref):
     x, y, rw, rh = rect
     im = Image.fromarray(res.astype(np.uint8))
     big = np.asarray(im.resize((w * SCALE, h * SCALE), Image.LANCZOS, box=(x, y, x + rw, y + rh)))
-    rgb = big[..., :3]
-    q = Image.fromarray(rgb).quantize(MAX_COLOURS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
-    rgb = np.asarray(q.convert('RGB')).copy()
-    # the generation's background key (hot pink) bleeding inside the outline: the original colour there
     pal0 = np.array([[c >> 16, c >> 8 & 255, c & 255] for c in ref], np.uint8)
-    bleed = (np.abs(rgb.astype(np.int32) - KEY).sum(-1) < 120) & _up(~transparent)
-    rgb[bleed] = pal0[_up(orig_idx)][bleed]
+    rgb = despill(big[..., :3], pal0[_up(orig_idx)], _up(~transparent))
+    rgb = quantize(rgb, pal0[np.unique(orig_idx[~transparent])])
     opaque = _up(~transparent).astype(np.float32)
     alpha = opaque * np.clip(_box3(opaque) * 1.5 - 0.5, 0, 1)      # soft only inside the outline
     if big.shape[2] == 4:

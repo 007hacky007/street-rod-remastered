@@ -51,7 +51,9 @@ Needs Python 3 with Pillow and numpy (tests: pytest).
    `remaster-art/review/NAME.png` (original beside the art). A failed job is retried up to three times, then
    listed under `attention` by `status`. The checks cannot tell what an object is (the radio drawn as a rack
    passes them), so every review sheet is also looked at: `reject SHA1 NOTE` sends a picture back,
-   `accept SHA1 NOTE` takes one the checks flagged.
+   `accept SHA1 NOTE` takes one the checks flagged. `retry NAME` puts a job listed under `attention` back in
+   the queue for one more generation; `ingest NAME RAW --again` checks a result kept in `raw/` again
+   without counting a try (after a fix to the tools, say).
 
    Repairs: `repair NAME` (hue lock of the tiles that failed for colour; `--all` for UI chrome that lines up
    exactly) and `splice SHA1 SCENE_SHA1 --cell W --common --margin 3` for opaque animation frames that carry

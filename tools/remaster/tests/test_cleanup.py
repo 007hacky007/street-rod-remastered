@@ -44,3 +44,31 @@ def test_dark_shade_keeps_its_colour_index():
     assert (ix[:, 6:8] == 0).all()
     assert (ix[0, 0:2] == 0).all()                    # far from cyan: no colour index to take
     assert (ix[:, 10:] == 3).all()
+
+
+def test_small_reference_colour_survives_quantize():
+    """A few yellow marks among many shades: the 64-colour palette must not merge them into an orange."""
+    idx = np.full((40, 40), 6, np.uint8)              # brown
+    idx[20:22, 20:22] = 14                            # small yellow marks
+    idx[5:7, 30:32] = 14
+    yy, xx = np.mgrid[0:160, 0:160]
+    res = np.dstack([90 + xx // 2, 40 + yy // 3, 20 + (xx + yy) // 8]).astype(np.uint8)   # many shades
+    res[80:88, 80:88] = (255, 255, 85)
+    res[20:28, 120:128] = (255, 255, 85)
+    rgba, ix = cleanup(idx, np.zeros(idx.shape, bool), res, (0, 0, 160, 160), EGA_PALETTE)
+    c = rgba[82:86, 82:86, :3].reshape(-1, 3).astype(int)
+    assert (np.abs(c - (255, 255, 85)).sum(-1) < 40).all()
+    assert len(np.unique(rgba[..., :3].reshape(-1, 3), axis=0)) <= 64
+
+
+def test_key_spill_removed_from_thin_white():
+    """A thin white crack the generator tinted with its pink background goes back to white."""
+    idx = np.full((10, 10), 8, np.uint8)              # dark grey
+    idx[:, 5] = 15                                    # a white crack
+    res = np.zeros((40, 40, 3), np.uint8)
+    res[...] = (85, 85, 85)
+    res[:, 20:24] = (255, 150, 200)                   # white mixed with the key
+    rgba, ix = cleanup(idx, np.zeros(idx.shape, bool), res, (0, 0, 40, 40), EGA_PALETTE)
+    c = rgba[10:30, 21:23, :3].reshape(-1, 3).astype(int)
+    assert (np.abs(c - 255).max(-1) < 40).all(), c[:3]
+    assert (ix[10:30, 21:23] == 15).all()
