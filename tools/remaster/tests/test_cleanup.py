@@ -58,7 +58,7 @@ def test_small_reference_colour_survives_quantize():
     rgba, ix = cleanup(idx, np.zeros(idx.shape, bool), res, (0, 0, 160, 160), EGA_PALETTE)
     c = rgba[82:86, 82:86, :3].reshape(-1, 3).astype(int)
     assert (np.abs(c - (255, 255, 85)).sum(-1) < 40).all()
-    assert len(np.unique(rgba[..., :3].reshape(-1, 3), axis=0)) <= 64
+    assert len(np.unique(rgba[..., :3].reshape(-1, 3), axis=0)) <= 64 + 2      # the cut and brown, yellow
 
 
 def test_key_spill_removed_from_thin_white():

@@ -66,18 +66,25 @@ def despill(rgb, orig_rgb, inside):
     return out
 
 
+MERGED = 48             # a texel this far from its median-cut colour was merged into another colour's box
+
+
 def quantize(rgb, ref_rgb):
-    """At most MAX_COLOURS colours: a median cut plus the picture's own reference colours, every texel on
-    its nearest one (a small area of a reference colour is not merged into a big neighbour's shade)."""
-    n = max(1, MAX_COLOURS - len(ref_rgb))
-    mc = Image.fromarray(rgb).quantize(n, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
-    cols = np.array(mc.getpalette()[:3 * n], np.uint8).reshape(-1, 3)
-    cols = np.unique(np.vstack([cols, ref_rgb]), axis=0)[:256]
-    pal = np.vstack([cols, np.repeat(cols[:1], 256 - len(cols), 0)])
-    pim = Image.new('P', (1, 1))
-    pim.putpalette(pal.reshape(-1).tolist())
-    q = Image.fromarray(rgb).quantize(palette=pim, dither=Image.Dither.NONE)
-    return np.asarray(q.convert('RGB')).copy()
+    """MAX_COLOURS colours by median cut, and the picture's own reference colours: a texel the cut merged
+    into a far colour (a few yellow marks among brown shades) takes the nearest reference colour instead
+    when that is closer."""
+    q = Image.fromarray(rgb).quantize(MAX_COLOURS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    out = np.asarray(q.convert('RGB')).copy()
+    if len(ref_rgb) == 0:
+        return out
+    f = rgb.astype(np.float32)
+    d_cut = np.sqrt(((f - out) ** 2).sum(-1))
+    r = ref_rgb.astype(np.float32)
+    d_ref = np.sqrt(((f[..., None, :] - r) ** 2).sum(-1))
+    near = d_ref.argmin(-1)
+    take = (d_cut > MERGED) & (d_ref.min(-1) < d_cut)
+    out[take] = ref_rgb[near[take]]
+    return out
 
 
 def cleanup(orig_idx, transparent, result, rect, ref):
