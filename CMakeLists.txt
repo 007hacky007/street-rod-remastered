@@ -28,10 +28,13 @@ target_link_libraries(sre_host PUBLIC SDL3::SDL3 nuked_opl3)
 # The remastered music's band (common/band): built into each game's core, because its score reader
 # (arrange.c) reads the game's memory through that game's mem.h.
 file(GLOB SR_BAND_SOURCES CONFIGURE_DEPENDS common/band/*.c)
+# The remastered pictures' core (common/remaster: tags, pack, colour): built into each game's core, because
+# it reads the game's memory and VGA model through that game's mem.h and platform/ headers.
+file(GLOB SR_RM_CORE_SOURCES CONFIGURE_DEPENDS common/remaster/*.c)
 
 # Everything but main.c in an object library, so the unit tests can link the engine.
 list(FILTER SR_SOURCES EXCLUDE REGEX "/src/main\\.c$")
-add_library(sre_core OBJECT ${SR_SOURCES} ${SR_BAND_SOURCES} ${SR_ENH_CORE_SOURCES})
+add_library(sre_core OBJECT ${SR_SOURCES} ${SR_BAND_SOURCES} ${SR_RM_CORE_SOURCES} ${SR_ENH_CORE_SOURCES})
 target_include_directories(sre_core PUBLIC src common/band common/enhanced)
 target_link_libraries(sre_core PUBLIC sre_host SDL3::SDL3)
 add_executable(streetrod-enhanced src/main.c)

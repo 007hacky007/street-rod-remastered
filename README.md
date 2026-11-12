@@ -221,7 +221,7 @@ itself, `nomouse`. See [ENGINE2.md](ENGINE2.md).
 * `common/`: the host both games run on (window, sound, input, files); `third_party/nuked-opl3/`: the AdLib
   chip of Street Rod 2.
 * `src/enhanced/`: the enhanced road view ([ENHANCED.md](ENHANCED.md)).
-* `src/remaster/`, `tools/remaster/`: the remastered pictures and the tools that build the art pack
+* `common/remaster/`, `src/remaster/`, `tools/remaster/`: the remastered pictures and the tools that build the art pack
   ([REMASTER.md](REMASTER.md)).
 * `launcher/`: the launcher ([launcher/README.md](launcher/README.md)).
 * `tools/macos/`, `tools/windows/`: packaging.

@@ -14,3 +14,9 @@ linear-light resolve (`enh_raster.c`), and the picture decoding and scaled drawi
 in `enh_draw.h`. Like the band it is built into each game's core, because it reads pictures through that
 game's `mem.h` and `platform/video.h` and the remaster through its `remaster/` headers. What each game draws
 with it (the road from its own race data) stays in `src/enhanced` and `src2/enhanced`.
+
+`remaster/` is the remastered pictures' core: the per-pixel tags (`rm_tags.c`), the art pack and the art
+sampling (`rm_pack.c`) and the palette-relative colour (`rm_color.c`). Like `enhanced/` it is built into each
+game's core, because it includes that game's `mem.h`, `platform/vga.h`, `platform/ega.h` and
+`remaster/rm_dump.h` (for `rm_sha1_hex`). Each game's picture dump (`rm_dump.c`) stays in its own
+`remaster/` folder.

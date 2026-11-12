@@ -1,4 +1,4 @@
-/* test_color.c -- the remaster's palette-relative colour (src/remaster/rm_color.c). */
+/* test_color.c -- the remaster's palette-relative colour (common/remaster/rm_color.c). */
 #include <stdio.h>
 
 #include "remaster/rm_color.h"
