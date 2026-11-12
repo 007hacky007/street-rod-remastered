@@ -415,8 +415,14 @@ static void cut_xf(const EnhObjGeo *f, const EnhObjGeo *g, double m[6])
     m[3] = -S; m[4] = C; m[5] = g->yg + S * f->a - C * f->yg;
 }
 
+/* The Aqueduct's row cuts (front and mirror): aq_draw_row_shape's picture of the row's shape group, at row index
+ * seg - base in front (group (seg - base) >> 1), base - seg in the mirror (group (base - seg - 1) >> 1). The picture
+ * is the group's fixed one (shp_b_draw takes no depth), so the cut moves with its anchor and turns, it does not
+ * scale. */
+static bool aq_row_kind(const ObjCut *c) { return c->geo.xf && (c->kind == ENH_CUT_ROW || c->kind == ENH_CUT_MIR); }
+
 /* A cut at view v: moved and scaled from its place in the frame's view to the same place in v, the Aqueduct's also
- * turned (cut_xf). A fixed cut keeps its frame geometry. */
+ * turned (cut_xf), its row cuts unscaled (aq_row_kind). A fixed cut keeps its frame geometry. */
 static void draw_cut(const EnhView *v, int id)
 {
     ObjCut *c = &cuts[id];
@@ -426,6 +432,7 @@ static void draw_cut(const EnhView *v, int id)
     const EnhObjGeo *f = &c->geo;
     if (g.xf && !c->fixed) {
         double m[6];
+        if (aq_row_kind(c)) g.z = f->z;
         cut_xf(f, &g, m);
         enh_draw_image_xf(&c->img, c->x0, c->y0, m);
         if (enh_cut_log_n < ENH_OBJ_IDS) enh_cut_log[enh_cut_log_n++] = id;
@@ -640,9 +647,6 @@ static bool cut_judged(const ObjCut *c, int y_end)
 
 static int compare_y_end(void) { return SDL_min(ENH_VIEW_Y1, ega_line_compare()); }
 
-/* The Aqueduct's row cuts (front and mirror): aq_draw_row_shape's picture of the row's shape group, at row index
- * seg - base in front (group (seg - base) >> 1), base - seg in the mirror (group (base - seg - 1) >> 1). */
-static bool aq_row_kind(const ObjCut *c) { return c->geo.xf && (c->kind == ENH_CUT_ROW || c->kind == ENH_CUT_MIR); }
 static int shape_group(const ObjCut *c, double pos)
 {
     int base = (int)floor(pos);
@@ -674,9 +678,9 @@ static void predict_cuts(void)
         if (g.xf) {                                 /* the bottom's centre through draw_cut's map */
             double m[6];
             EnhObjGeo gs = g;
-            /* a rotated row's picture is its shape group's (aq_draw_row_shape), the same while the group is: it moves
-             * with its anchor, it does not scale */
-            if (aq_row_kind(c) && rotated(c)) gs.z = f->z;
+            /* a row's picture is its shape group's (aq_draw_row_shape), the same while the group is: it moves with
+             * its anchor, it does not scale (draw_cut) */
+            if (aq_row_kind(c)) gs.z = f->z;
             cut_xf(f, &gs, m);
             p->bottom = m[3] * bx + m[4] * by + m[5];
             p->cx = m[0] * bx + m[1] * by + m[2];

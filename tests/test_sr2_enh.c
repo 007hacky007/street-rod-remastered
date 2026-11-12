@@ -2417,6 +2417,96 @@ static void sr2_enh_aq_cut_turns(void)
     aq_restore();
 }
 
+/* the tagged pixels of sr2_enh_aq_row_cut_size's frames: a 12x8 cut of row 5 in front, a 10x6 cut of the mirror's
+ * row 3 (id ENH_OBJ_OPP + 3) in the glass */
+static void row_size_draw(void)
+{
+    ega_set_layer(EGA_LAYER_OFF);
+    for (int j = 0; j < 8; j++) wr_span_col(0, 60, 44 + j, 12, 0);
+    for (int j = 0; j < 6; j++) wr_span_col(0, 0x100, 0x1C + j, 10, 0);
+    ega_clear_obj(0, 0x2000);
+    ega_clear_fg(0, 0x2000);
+    ega_set_layer(EGA_LAYER_OBJ);
+    ega_set_obj(5);
+    for (int j = 0; j < 8; j++) wr_span(0, 60, 44 + j, 12);
+    ega_set_obj(ENH_OBJ_OPP + 3);
+    for (int j = 0; j < 6; j++) wr_span(0, 0x100, 0x1C + j, 10);
+    ega_set_layer(EGA_LAYER_OFF);
+}
+
+/* Cut `id` (frame geometry f, rectangle x0, y0, w x h) drawn alone in view v (geometry g): its samples' bounding box
+ * is within 0.5 px of the box of the rectangle moved with its anchor and turned, unscaled (aq_draw_row_shape draws
+ * its shape group's fixed picture, whatever the depth). */
+static bool row_cut_unscaled(const EnhView *v, int id, EnhObjGeo f, EnhObjGeo g, int x0, int y0, int w, int h)
+{
+    double a = (g.rot - f.rot) * SDL_PI_D / 180.0, C = cos(a), S = sin(a);
+    double m[6] = { C, S, g.a - C * f.a - S * f.yg, -S, C, g.yg + S * f.a - C * f.yg };
+    double fx[4] = { x0, x0 + w, x0 + w, x0 }, fy[4] = { y0, y0, y0 + h, y0 + h };
+    double qx0 = 1e9, qx1 = -1e9, qy0 = 1e9, qy1 = -1e9;
+    for (int k = 0; k < 4; k++) {
+        double X = m[0] * fx[k] + m[1] * fy[k] + m[2], Y = m[3] * fx[k] + m[4] * fy[k] + m[5];
+        qx0 = SDL_min(qx0, X); qx1 = SDL_max(qx1, X); qy0 = SDL_min(qy0, Y); qy1 = SDL_max(qy1, Y);
+    }
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0xEE);
+    enh_cuts_begin();
+    enh_cut_id(v, id);
+    int sa = enh_buf.sa, i0 = INT_MAX, i1 = -1, j0 = INT_MAX, j1 = -1;
+    for (int j = 0; j < enh_buf.h; j++)
+        for (int i = 0; i < enh_buf.w; i++)
+            if (enh_buf.px[(size_t)j * enh_buf.w + i] != 0xEE) {
+                i0 = SDL_min(i0, i); i1 = SDL_max(i1, i); j0 = SDL_min(j0, j); j1 = SDL_max(j1, j);
+            }
+    if (i1 < 0) { printf("  id %d: nothing drawn\n", id); return false; }
+    double bx0 = (double)i0 / sa, bx1 = (double)(i1 + 1) / sa;
+    double by0 = ENH_VIEW_Y0 + (double)j0 / sa, by1 = ENH_VIEW_Y0 + (double)(j1 + 1) / sa;
+    printf("  id %d: depth %.2f -> %.2f (s %.3f), turned %.1f, drawn %.2f..%.2f x %.2f..%.2f, unscaled %.2f..%.2f x "
+           "%.2f..%.2f\n", id, f.z, g.z, f.z / g.z, g.rot - f.rot, bx0, bx1, by0, by1, qx0, qx1, qy0, qy1);
+    return fabs(f.z / g.z - 1) > 0.08 && fabs(bx0 - qx0) <= 0.5 && fabs(bx1 - qx1) <= 0.5 && fabs(by0 - qy0) <= 0.5
+           && fabs(by1 - qy1) <= 0.5;
+}
+
+/* A smooth view half a row behind the newest frame draws the Aqueduct's row cuts (front and mirror) at their
+ * frame size, unrolled and rolled: aq_draw_row_shape's picture is its shape group's, it does not scale with depth
+ * (a depth scale made the shapes shrink at each frame and grow back). */
+static void sr2_enh_aq_row_cut_size(void)
+{
+    static const s16 def[6] = { 0, 0, 0, 0, 0, 0 };
+    for (int r = 0; r < 2; r++) {
+        s16 roll = (s16)(r ? 20 : 0);
+        aq_save();
+        Keep k = keep_ds();
+        aq_setup();
+        aq_frame_draw = row_size_draw;
+        aq_frame(def, 3, 0, roll, 0xA0, 0x3F);
+        aq_frame(def, 3, 0, roll, 0xA0, 0x3F);
+        aq_frame_draw = NULL;
+        EnhView nv, v;
+        CHECK(enh_view_newest(&nv));
+        v = nv;
+        v.exact = false;
+        v.pos -= 0.5;
+        EnhOptions keep = enh_opt;
+        enh_opt.res_scale = 4;
+        enh_opt.aa = 1;
+        enh_buf_setup();
+        enh_clip_view();
+        int base = (int)floor(nv.pos);
+        EnhObjGeo f = enh_obj_geo(&nv, ENH_CUT_ROW, base + 5, 0), g = enh_obj_geo(&v, ENH_CUT_ROW, base + 5, 0);
+        CHECK(f.ok && g.ok && g.xf);
+        CHECK(row_cut_unscaled(&v, 5, f, g, 60, 44, 12, 8));
+        f = enh_obj_geo(&nv, ENH_CUT_MIR, base - 3, 0);
+        g = enh_obj_geo(&v, ENH_CUT_MIR, base - 3, 0);
+        CHECK(f.ok && g.ok && g.xf);
+        CHECK(row_cut_unscaled(&v, ENH_OBJ_OPP + 3, f, g, 0x100, 0x1C, 10, 6));
+        enh_opt = keep;
+        enh_buf_setup();
+        ega_set_layer(EGA_LAYER_OFF);
+        enh_race_end();
+        restore_ds(&k);
+        aq_restore();
+    }
+}
+
 /* The sky's cuts in smooth views at headings h and h + 3, roll 0: the stars' anchor moves by 3 (plot_points does not
  * rotate at roll 0), the clouds' by 6 x 255/256 (shp_b_draw always rotates, with the shrink). */
 static void sr2_enh_aq_sky_cuts(void)
@@ -2572,6 +2662,7 @@ int main(int argc, char **argv)
     RUN(sr2_enh_aq_cut_hood);
     RUN(sr2_enh_image_xf);
     RUN(sr2_enh_aq_cut_turns);
+    RUN(sr2_enh_aq_row_cut_size);
     RUN(sr2_enh_aq_sky_cuts);
     RUN(sr2_enh_aq_bounce_persists);
     RUN(sr2_enh_aq_starter);
