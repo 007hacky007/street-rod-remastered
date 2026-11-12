@@ -94,7 +94,11 @@ def cleanup(orig_idx, transparent, result, rect, ref):
     h, w = orig_idx.shape
     res = np.asarray(result)
     x, y, rw, rh = rect
+    pad = int(np.ceil(max(0.0, -x, -y, x + rw - res.shape[1], y + rh - res.shape[0])))   # past the edge
+    if pad:
+        res = np.pad(res, ((pad, pad), (pad, pad), (0, 0)), mode='edge')
     im = Image.fromarray(res.astype(np.uint8))
+    x, y = x + pad, y + pad
     big = np.asarray(im.resize((w * SCALE, h * SCALE), Image.LANCZOS, box=(x, y, x + rw, y + rh)))
     pal0 = np.array([[c >> 16, c >> 8 & 255, c & 255] for c in ref], np.uint8)
     rgb = despill(big[..., :3], pal0[_up(orig_idx)], _up(~transparent))

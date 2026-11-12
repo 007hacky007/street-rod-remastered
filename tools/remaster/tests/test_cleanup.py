@@ -72,3 +72,12 @@ def test_key_spill_removed_from_thin_white():
     c = rgba[10:30, 21:23, :3].reshape(-1, 3).astype(int)
     assert (np.abs(c - 255).max(-1) < 40).all(), c[:3]
     assert (ix[10:30, 21:23] == 15).all()
+
+
+def test_cleanup_rect_past_the_edge():
+    """Registration may place the picture a little past the result's edge: the edge pixels extend it."""
+    idx = np.full((10, 10), 2, np.uint8)
+    res = np.zeros((40, 40, 3), np.uint8)
+    res[...] = (0, 170, 0)
+    rgba, ix = cleanup(idx, np.zeros(idx.shape, bool), res, (-3.0, -2.0, 44.0, 43.0), EGA_PALETTE)
+    assert rgba.shape == (40, 40, 4) and tuple(rgba[0, 0, :3]) == (0, 0xAA, 0)

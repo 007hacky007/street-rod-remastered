@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Street Rod Enhanced remaster pipeline. See tools/remaster/README.md."""
-import argparse, collections, json, os, shutil, sys
+import argparse, collections, json, os, re, shutil, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np  # noqa: E402
@@ -69,17 +69,41 @@ def cmd_job(name):
     print(d)
 
 
+def next_raw_path(raw, name):
+    """raw/<name>.<n>.png with n one past the highest kept: a reset job never overwrites an earlier result."""
+    pat = re.compile(re.escape(name) + r'\.(\d+)\.png$')
+    nums = [int(m.group(1)) for f in (os.listdir(raw) if os.path.isdir(raw) else []) for m in [pat.match(f)] if m]
+    return os.path.join(raw, '%s.%d.png' % (name, max(nums, default=0) + 1))
+
+
+CROP_ASPECT = 0.25      # a result within this of the picture's shape (relative) may be the picture, cropped
+CANVAS_ASPECT = 0.03    # and one within this of the canvas's shape is the canvas
+
+
+def place_guesses(rect, canvas, res_hw, n_cells, pic_wh):
+    """Where to look for a picture in the result: its cell scaled from the job's canvas; for a one-picture
+    job whose result has about the picture's shape (returned cropped, without the canvas) also the largest
+    rectangle of the picture's shape centred in it."""
+    H, W = res_hw
+    sx, sy = W / canvas[0], H / canvas[1]
+    x, y, w, h = rect
+    g = [(x * sx, y * sy, w * sx, h * sy)]
+    a, pa = W / H, pic_wh[0] / pic_wh[1]
+    if n_cells == 1 and abs(a - pa) / pa <= CROP_ASPECT and abs(a - canvas[0] / canvas[1]) / (canvas[0] / canvas[1]) > CANVAS_ASPECT:
+        w, h = (W, W / pa) if W / pa <= H else (H * pa, H)
+        g.append(((W - w) / 2, (H - h) / 2, w, h))
+    return [tuple(float(v) for v in r) for r in g]
+
+
 def cmd_ingest(name, result, again=False):
     cat, pal, pr = load_catalog(), palettes(), progress()
     meta = json.load(open(os.path.join(ART, 'jobs', name, 'job.json')))
     raw = os.path.join(ART, 'raw')
     os.makedirs(raw, exist_ok=True)
-    tries = pr.jobs[name]['tries']
-    kept = result if again else os.path.join(raw, '%s.%d.png' % (name, tries + 1))
+    kept = result if again else next_raw_path(raw, name)
     if not again:
         shutil.copyfile(result, kept)
     res = np.asarray(Image.open(kept).convert('RGBA'))
-    sx, sy = res.shape[1] / meta['canvas'][0], res.shape[0] / meta['canvas'][1]
     pics = unique_pictures(DUMPS)
     os.makedirs(os.path.join(ART, 'art'), exist_ok=True)
     all_ok, reasons, rows = True, [], []
@@ -88,8 +112,10 @@ def cmd_ingest(name, result, again=False):
         p = pics[s]
         ref = jobs.palette_of(s, pal)
         orig = jobs.picture_rgb(p, ref)
-        x, y, w, h = cell['rect']
-        rect = register(jobs.target_rgb(p, ref), res[..., :3], (x * sx, y * sy, w * sx, h * sy))
+        target = jobs.target_rgb(p, ref)
+        rect = max((register(target, res[..., :3], g)
+                    for g in place_guesses(cell['rect'], meta['canvas'], res.shape[:2], len(meta['cells']), (p.w, p.h))),
+                   key=lambda r: r[4])
         ok, why = rect[4] >= MIN_SCORE, [] if rect[4] >= MIN_SCORE else ['not found (score %.2f)' % rect[4]]
         rgba, ix = cleanup(p.idx, p.transparent, res, rect[:4], ref)
         if ok:
