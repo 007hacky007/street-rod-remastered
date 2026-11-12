@@ -17,6 +17,8 @@
 #include "platform/platform.h"
 #include "platform/video.h"
 
+#include <stdlib.h>   /* PORT: developer aid */
+
 #define MODE   DSS(DS_road_mode)
 #define XMIN   DSS(DS_clip_xmin)
 #define YMIN   DSS(DS_clip_ymin)
@@ -1478,6 +1480,9 @@ void road_frame(void)
     pace_ticks(8);
 }
 
+/* SR_DEBUG_AQ_WALL=<seg>: from that segment on the Aqueduct's autopilot drifts left into the wall */   /* PORT: developer aid */
+static s16 aq_wall_aid(void) { const char *s = getenv("SR_DEBUG_AQ_WALL"); return s && *s ? (s16)atoi(s) : 0; }   /* PORT: developer aid */
+
 /* 0dcb:12ca road_advance_segment */
 void road_advance_segment(void)
 {
@@ -1501,6 +1506,7 @@ void road_advance_segment(void)
         t = (s16)(t + (DSS(DS_opp_lat) > t ? -0x140 : 0xA0));
     if (MODE == 8) {
         t = (s16)(aq_lane_target(DSS(DS_cam_x), sub16(t, DSS(DS_cam_x)), DSS(DS_seg), DSS(DS_opp_lat), DSS(DS_opp_seg)) + DSS(DS_cam_x));
+        if (aq_wall_aid() && DSS(DS_seg) >= aq_wall_aid()) t = sub16(DSS(DS_cam_x), 0x40);   /* PORT: developer aid */
         DSS(DS_cam_x) = t;
     } else if (abs16(sub16(DSS(DS_cam_x), t)) > 100) DSS(DS_cam_x) = (s16)(t + (DSS(DS_cam_x) > t ? 100 : -100));
     else DSS(DS_cam_x) = t;

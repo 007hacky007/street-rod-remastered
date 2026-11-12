@@ -91,6 +91,32 @@ police_in_mirror() {  # police_in_mirror <kind>: a frame with the police out (po
     else echo "FAIL police in the mirror (${n:-0} frames)"; fail=1; fi
 }
 
+# count_frames <kind> <mode> <awk condition on b (bounce) and r (roll)>: frame lines of the mode that hold it
+count_frames() {
+    awk -v m="$2" '/^frame / && $4 == m { b = 0; r = 0
+        for (i = 1; i < NF; i++) { if ($i == "bounce") b = $(i + 1); if ($i == "roll") r = $(i + 1) }
+        if ('"$3"') c++ } END { print c + 0 }' "$tmp/$1.cmp" 2>/dev/null
+}
+
+bounced() {  # bounced <kind> <mode> <min>: at least min frame lines of the mode with the view bounced (bounce not 0)
+    n=$(count_frames "$1" "$2" 'b != 0')
+    if [ -n "$n" ] && [ "$n" -ge "$3" ]; then echo "ok   $1 mode $2 bounced ($n frames)"
+    else echo "FAIL $1 mode $2 bounced (${n:-0} frames, want $3)"; fail=1; fi
+}
+
+steep() {  # steep <kind> <mode> <min>: at least min frame lines of the mode with |roll| >= 55 (shp_b_draw's steep path)
+    n=$(count_frames "$1" "$2" 'r >= 55 || r <= -55')
+    if [ -n "$n" ] && [ "$n" -ge "$3" ]; then echo "ok   $1 mode $2 steep ($n frames)"
+    else echo "FAIL $1 mode $2 steep (${n:-0} frames, want $3)"; fail=1; fi
+}
+
+kept() {  # kept <kind> <mode>: the mode's last frame line still has the bounce's offset (critic D2)
+    b=$(awk -v m="$2" '/^frame / && $4 == m { for (i = 1; i < NF; i++) if ($i == "bounce") b = $(i + 1) }
+        END { print b + 0 }' "$tmp/$1.cmp" 2>/dev/null)
+    if [ -n "$b" ] && [ "$b" != 0 ]; then echo "ok   $1 mode $2 bounce kept"
+    else echo "FAIL $1 mode $2 bounce kept (last bounce ${b:-0})"; fail=1; fi
+}
+
 none() {  # none <kind> <mode>
     s=$(mode_line "$1" "$2")
     if [ ! -f "$tmp/$1.cmp" ]; then echo "FAIL $1 mode $2 (no log)"; fail=1
@@ -106,6 +132,7 @@ run bridge 110 mulholland SR_SEED=4     # seed 2's track has no bridge; seed 4's
 run police 110 mulholland SR_DEBUG_POLICE=480
 run aqueduct 80
 run aqking 80 aqueduct SR_DEBUG_OPP=21     # the King's rotated sprites
+run aqwall 60 aqueduct SR_DEBUG_AQ_WALL=60     # drifts into the left wall: the bounce
 wait
 
 check cruise 0 20 enh
@@ -123,5 +150,9 @@ police_in_mirror police
 check aqueduct 8 20 orig lines
 rolled aqueduct 8 20
 check aqking 8 20 orig lines
+check aqwall 8 20 orig lines
+bounced aqwall 8 8
+steep aqwall 8 1
+kept aqwall 8
 check aqueduct 0 0 enh
 exit $fail

@@ -2339,6 +2339,51 @@ static void sr2_enh_aq_sky_cuts(void)
     aq_restore();
 }
 
+/* A fast wall bounce as aq_wall_bounce makes it (eight frames spinning 32 degrees each, view_bounce_y up and down by
+ * speed / 6 = 12, then the frame after it at the climb's roll): the view snaps back with the original and keeps the
+ * bounce's last offset (critic D2), which moves the exact front rows as aq_project_front does. */
+static void sr2_enh_aq_bounce_persists(void)
+{
+    static const s16 def[6] = { 20, 10, -30, 50, 0, 0 };
+    aq_save();
+    Keep k = keep_ds();
+    aq_setup();
+    DSS(DS_cur_height) = 3;
+    DSS(DS_aq_pitch) = 0;
+    aq_frame(def, 3, 0, 48, 0x50, 0x3F);
+    for (s16 i = 0; i < 8; i++)
+        aq_frame(def, 3, (s16)(12 * (i < 4 ? i : 8 - i)), (s16)(80 + 32 * i), 0x50, 0x3F);
+    DSS(DS_wall_hit_shift) = 0;
+    aq_frame(def, 3, 12, 48, 0x50, 0x3F);            /* the frame after the bounce */
+    Uint64 t = host_tick_time_ns();
+    EnhView v;
+    CHECK(enh_view_newest(&v));
+    printf("  newest: bounce %.1f roll %.1f raw %.1f\n", v.bounce, v.roll, v.roll_raw);
+    CHECK(v.bounce == 12 && v.roll == 408 && v.roll_raw == 48);
+    bool kept = true;
+    EnhView w;
+    for (int i = 0; i < 4; i++) {
+        kept = kept && enh_view_at(t + (Uint64)i * 60000000ull, &w) && w.roll == 408;
+        printf("  at +%d ms: roll %.2f bounce %.2f\n", 60 * i, w.roll, w.bounce);
+    }
+    CHECK(kept);
+    EnhRowTab r;
+    memset(&r, 0, sizeof r);
+    enh_rows_exact_aq(&v, false, &r);
+    DSS(DS_view_bounce_y) = 12;
+    aq_project_front();
+    s16 y12 = DSS(DS_row_y + 28);
+    DSS(DS_view_bounce_y) = 0;
+    aq_project_front();
+    s16 y0 = DSS(DS_row_y + 28);
+    printf("  row 14 y: view %d, game bounce 12 %d, bounce 0 %d\n", r.y[14], y12, y0);
+    CHECK(r.y[14] == y12 && r.y[14] != y0);
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_race_end();
+    restore_ds(&k);
+    aq_restore();
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -2419,6 +2464,7 @@ int main(int argc, char **argv)
     RUN(sr2_enh_image_xf);
     RUN(sr2_enh_aq_cut_turns);
     RUN(sr2_enh_aq_sky_cuts);
+    RUN(sr2_enh_aq_bounce_persists);
     host_shutdown();
     return failures ? 1 : 0;
 }
