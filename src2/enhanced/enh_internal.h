@@ -83,6 +83,8 @@ void enh_rows_exact_front(const EnhView *v, EnhRowTab *t);
 /* An exact view's town facade or storey as town_walls_front's quad_fill draws it: side 0 left, 1 right; n the near
  * row, f the far one; x the face's outer x, y its bottom, yt its top (integer rows). */
 void enh_town_face_exact(int side, int xn, int xf, int yn, int yf, int ytf, int ytn, u8 col);
+/* The same clipped to x0..x1, y0..y1 (inclusive): clip_polygon on another clip (the mirror's F0h..13Fh x 16h..2Ah). */
+void enh_town_face_clip(int side, int xn, int xf, int yn, int yf, int ytf, int ytn, u8 col, int x0, int y0, int x1, int y1);
 /* road_draw_sky's top_band_row: from row 14 down to row 1, a row whose line y is above the ground so far
  * (strictly) lowers the ground to it; bands of rows above the result are not drawn. y: the rows' line y, ground0:
  * the horizon strip's bottom; *ground: the ground's top row. */
@@ -93,6 +95,14 @@ double enh_dash_width(int k, double q, bool exact);
 /* sky_scroll's shift a (race_road.c): the screen x of the sheet's column 0, for heading h and shift sh (1 the sky,
  * 2 the horizon strip). */
 int enh_sky_shift(s16 h, int sh);
+/* enh_mirror2.c: the rear-view mirror (road_project_mirror, road_draw_mirror), in its glass F2h..13Dh x 16h..2Ah.
+ * Row k (0..7) at segment base - k, depth enh_mirror_z; the flags of a band one segment off (base - k - 1). */
+double enh_mirror_z(int k, double q);   /* 8; 8k + q for k 1..4; 40, 48, 56 for k 5..7 (the k == 5 freeze); 8k beyond */
+int enh_proj_x_mirror_i(int z, int X, int dx, int cx);      /* road_proj_x_mirror (modes other than 8: no clamp) */
+int enh_proj_y_mirror_i(int z, int Y, int dy, int cam_y);   /* road_proj_y_mirror (no bounce) */
+/* road_project_mirror's rows 0..7 of an exact view, and YK 0..14 with its quirk (row k >= 1 writes 2k - 1, 2k). */
+void enh_rows_exact_mirror(const EnhView *v, EnhRowTab *t);
+void enh_draw_mirror(const EnhView *v);
 /* The captured objects (enhanced.c). A cut is one id's pixels of the frame shown; its kind says how it is placed,
  * its segment (absolute) where in the band loop it is drawn. */
 enum { ENH_CUT_ROW, ENH_CUT_OPP, ENH_CUT_MIR, ENH_CUT_STARTER };
@@ -103,7 +113,11 @@ enum { ENH_PASS_FRONT, ENH_PASS_MIRROR };
  * 16 more for the side view 0, 8 more for the rear view 2 close behind), x relative to its lane (seg unused, the
  * view's opp_seg is the game's). */
 typedef struct { double z, yg, a, b; bool ok; } EnhObjGeo;
-EnhObjGeo enh_obj_geo(const EnhView *v, int kind, int seg, int sprite);   /* MIR and STARTER: ok = false until the mirror is drawn */
+EnhObjGeo enh_obj_geo(const EnhView *v, int kind, int seg, int sprite);   /* the mirror's: enh_obj_geo_mirror */
+/* enh_obj_geo of the mirror's cuts: ENH_CUT_MIR and ENH_CUT_STARTER at segment seg (k = base - seg, depth
+ * enh_mirror_z, 8k beyond row 7; the starter's bottom pinned at row 27h), ENH_CUT_OPP with picture >= 9 at
+ * -d / 8 (opponent_draw: x by proj_x_mirror(z, opp_lat, 10 - dx), the exact view's at opp_sx; no row clamp). */
+EnhObjGeo enh_obj_geo_mirror(const EnhView *v, int kind, int seg, int sprite);
 bool enh_in_mirror_rect(int x, int y);        /* the body F0h..13Fh x 14h..2Ch, or the mount 110h..11Fh x 12h..13h */
 bool enh_in_glass(int x, int y);              /* F2h..13Dh x 16h..2Ah */
 bool enh_tag_kept(int id, int opp_sprite, int x, int y);   /* the capture's region rule */

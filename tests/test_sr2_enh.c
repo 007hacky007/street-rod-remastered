@@ -652,6 +652,138 @@ static void sr2_enh_fallen_not_composed(void)
     DSS(DS_road_mode) = keep_mode; DSS(DS_shown_page) = keep_page; DSB(DS_racing) = keep_racing;
 }
 
+/* ---------------------------------------------------------------- the rear-view mirror */
+
+/* road_project_mirror's depths: row 0 at 8, rows 1..4 at 8k + q, rows 5..7 frozen at 40, 48, 56 (the k == 5
+ * `z -= q`). */
+static void sr2_enh_mirror_depths(void)
+{
+    static const int qs[] = { 0, 3, 7 };
+    int bad = 0;
+    for (int i = 0; i < 3; i++) {
+        int q = qs[i];
+        const double want[8] = { 8, 8 + q, 16 + q, 24 + q, 32 + q, 40, 48, 56 };
+        for (int k = 0; k < 8; k++) if (enh_mirror_z(k, q) != want[k]) bad++;
+    }
+    CHECK(bad == 0);
+}
+
+/* The exact mirror projections are the game's road_proj_x_mirror and road_proj_y_mirror. */
+static void sr2_enh_proj_mirror_exact(void)
+{
+    s16 keep_cx = DSS(DS_cam_x), keep_cy = DSS(DS_cam_y), keep_mode = DSS(DS_road_mode);
+    DSS(DS_road_mode) = 1;
+    static const s16 xs[] = { -2000, 0, 0x5DC, 0xCE4, 400 + 0xCE4, 0x5DC - 400 }, cxs[] = { 0x500, 0xA00, 0xCE1 };
+    static const s16 ys[] = { 2000, 0x76C, 0x79E, 2000 - 4000 }, cys[] = { 0x76C, 0x74A };
+    int bad = 0, n = 0;
+    for (int z = 2; z <= 56; z++) {
+        for (int i = 0; i < 6; i++)
+            for (int dx = -0x60; dx <= 0x60; dx += 0x18)
+                for (int c = 0; c < 3; c++) {
+                    DSS(DS_cam_x) = cxs[c];
+                    n++;
+                    if (enh_proj_x_mirror_i(z, xs[i], dx, cxs[c]) != road_proj_x_mirror((s16)z, xs[i], (s16)dx)) bad++;
+                }
+        for (int i = 0; i < 4; i++)
+            for (int dy = -40; dy <= 40; dy += 10)
+                for (int c = 0; c < 2; c++) {
+                    DSS(DS_cam_y) = cys[c];
+                    n++;
+                    if (enh_proj_y_mirror_i(z, ys[i], dy, cys[c]) != road_proj_y_mirror((s16)z, ys[i], (s16)dy)) bad++;
+                }
+    }
+    printf("  %d of %d differ\n", bad, n);
+    CHECK(bad == 0);
+    DSS(DS_cam_x) = keep_cx; DSS(DS_cam_y) = keep_cy; DSS(DS_road_mode) = keep_mode;
+}
+
+/* road_project_mirror's YK quirk: row 0 writes YK[0], row k >= 1 both YK[2k - 1] and YK[2k]. */
+static void sr2_enh_mirror_yk(void)
+{
+    static const u16 arrs[] = { TRK_C, TRK_L, TRK_R, TRK_YAW, TRK_HGT, TRK_BL, TRK_BR };
+    u16 keep[7][30];
+    for (int a = 0; a < 7; a++)
+        for (int i = 0; i < 30; i++) { keep[a][i] = TRKW(arrs[a], 40 + i); TRKW(arrs[a], 40 + i) = 0; }
+    EnhView v;
+    memset(&v, 0, sizeof v);
+    v.pos = 55.375;                                 /* q 3 */
+    v.lat = 0xA00;
+    v.cam_y = 0x76C;
+    v.mode = 1;
+    v.exact = true;
+    EnhRowTab t;
+    memset(&t, 0, sizeof t);
+    enh_rows_exact_mirror(&v, &t);
+    int bad = t.yk[0] != enh_proj_y_mirror_i(8, 0x79E, 0, 0x76C);
+    for (int k = 1; k < 8; k++) {
+        int want = enh_proj_y_mirror_i((int)enh_mirror_z(k, 3), 0x79E, 0, 0x76C);
+        if (t.yk[2 * k - 1] != want || t.yk[2 * k] != want) bad++;
+    }
+    printf("  yk %d %d %d .. %d\n", t.yk[0], t.yk[1], t.yk[2], t.yk[14]);
+    CHECK(bad == 0);
+    CHECK(t.yk[0] == 0x24 + 50 / 8 && t.yk[1] == 0x24 + 50 / 11 && t.yk[14] == 0x24 + 50 / 56);
+    for (int a = 0; a < 7; a++)
+        for (int i = 0; i < 30; i++) TRKW(arrs[a], 40 + i) = keep[a][i];
+}
+
+/* The opponent behind (pictures 9 and up) stands at the mirror's depth -d / 8, at the x it was drawn at. */
+static void sr2_enh_mirror_opp_geo(void)
+{
+    EnhView v = view_at(100.0);
+    v.mode = 1;
+    v.exact = true;
+    v.opp_seg = 98;
+    v.opp_d = -100;
+    v.opp_sx = 0x120;
+    EnhObjGeo g = enh_obj_geo(&v, ENH_CUT_OPP, 98, 10);
+    printf("  ok %d z %.2f a %.2f b %.4f\n", g.ok, g.z, g.a, g.b);
+    CHECK(g.ok && g.z == 12 && g.a == 0x120 && g.b == 1.0 / 12);
+}
+
+/* The mirror is drawn into the background; only its frame and mount stay the game's. */
+static void sr2_enh_mirror_hooks(void)
+{
+    Keep k = keep_ds();
+    race_setup();
+    enh_draw_begin();
+    enh_mirror_begin();
+    wr_span(0x4000, 0x100, 0x20, 1);
+    CHECK(!fg_at(0x4000, 0x100, 0x20));
+    enh_mirror_end();
+    CHECK(fg_at(0x4000, 0xF0, 0x20) && fg_at(0x4000, 0x100, 0x14) && fg_at(0x4000, 0x115, 0x12));
+    CHECK(fg_at(0x4000, 0x100, 0x2C) && fg_at(0x4000, 0x13F, 0x20));
+    CHECK(!fg_at(0x4000, 0x100, 0x20) && tag_at(0x4000, 0x100, 0x20) == 0);
+    CHECK(!fg_at(0x4000, 0x105, 0x12));            /* beside the mount: the front view's sky */
+    wr_span_col(0x4000, 0x80, 0x40, 1, 3);          /* the hood and the cockpit after it stay the game's */
+    CHECK(fg_at(0x4000, 0x80, 0x40));
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_race_end();
+    restore_ds(&k);
+}
+
+/* The mirror's objects are drawn at their own row, far (row 7) to near (row 1). */
+static void sr2_enh_mirror_cut_order(void)
+{
+    static const u32 rgb[16];
+    Keep k = keep_ds();
+    race_setup();
+    DSS(DS_opp_seg) = 120;
+    DSS(DS_opp_sprite) = 5;
+    DSS(DS_opp_last_d) = 0x500;
+    ega_clear_obj(0, 0x2000);
+    ega_set_layer(EGA_LAYER_OBJ);
+    ega_set_obj(ENH_OBJ_MIR(2)); wr_span(0, 0x110, 0x26, 3);
+    ega_set_obj(ENH_OBJ_MIR(5)); wr_span(0, 0x100, 0x1E, 3);
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_frame_built();
+    enh_frame_presented();
+    CHECK(enh_compose(small, rgb));
+    printf("  log n %d: %d %d\n", enh_cut_log_n, enh_cut_log[0], enh_cut_log[1]);
+    CHECK(enh_cut_log_n == 2 && enh_cut_log[0] == ENH_OBJ_MIR(5) && enh_cut_log[1] == ENH_OBJ_MIR(2));
+    enh_race_end();
+    restore_ds(&k);
+}
+
 /* As Street Rod 1: out-of-range values are clamped; res scale x aa stays within 16 samples. */
 static void sr2_enh_options(void)
 {
@@ -832,6 +964,12 @@ int main(int argc, char **argv)
     RUN(sr2_enh_top_band_row);
     RUN(sr2_enh_dash_width);
     RUN(sr2_enh_sky_shift);
+    RUN(sr2_enh_mirror_depths);
+    RUN(sr2_enh_proj_mirror_exact);
+    RUN(sr2_enh_mirror_yk);
+    RUN(sr2_enh_mirror_opp_geo);
+    RUN(sr2_enh_mirror_hooks);
+    RUN(sr2_enh_mirror_cut_order);
     RUN(sr2_enh_sky_tags);
     RUN(sr2_enh_compare_rows);
     RUN(sr2_enh_compare_log);

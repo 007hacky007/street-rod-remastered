@@ -34,9 +34,9 @@ void enh_frame_built(void);
 void enh_phys_step(void);
 
 /* road_draw_frame (race_road.c): what the engine draws next into the back page is replaced by the enhanced
- * view (bg: sky, ground, road bands) or stays the original's picture (fg: road-side objects, the opponent,
- * the town walls, the mirror, the cockpit), until the enhanced renderer draws those too. begin = a new
- * frame into the back page (all its marks cleared, background). */
+ * view (bg: sky, ground, road bands, walls, the mirror's glass) or stays the original's picture (fg: the
+ * mirror's frame, the hood, the cockpit). begin = a new frame into the back page (all its marks cleared,
+ * background). */
 void enh_draw_begin(void);
 void enh_draw_fg(bool fg);
 /* road_draw_front, road_draw_sky: on = the sky's blits follow (the SKY layer: background, every pixel tagged as
@@ -53,7 +53,12 @@ void enh_draw_sky(bool on);
 #define ENH_OBJ_CLOUDS   25          /* part C: its clouds */
 #define ENH_OBJ_IDS      26
 void enh_draw_objects(int id);
-/* road_frame: the rectangle x0..x1, y0..y1 (inclusive) of the back page stays the original's picture. */
+/* road_frame, around road_project_mirror and road_draw_mirror: the mirror is drawn into the background (begin);
+ * end: its frame and mount stay the game's (the mount 110h..11Fh x 12h..13h, the body's rows 14h..15h and
+ * 2Bh..2Ch, its columns F0h..F1h and 13Eh..13Fh), and what follows (the hood, the cockpit) is the foreground. */
+void enh_mirror_begin(void);
+void enh_mirror_end(void);
+/* The rectangle x0..x1, y0..y1 (inclusive) of the back page stays the original's picture. */
 void enh_mark_fg(int x0, int y0, int x1, int y1);
 
 /* road_page_flip (race_road.c): the frame just drawn is now the shown page. */

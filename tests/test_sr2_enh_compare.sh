@@ -72,15 +72,15 @@ run mulholland 110
 run aqueduct 80
 wait
 
-check cruise 0 20 orig
-check drag 1 20 orig
-check drag 0 0 orig
-check grudge 0 20 orig       # the location-4 routes, there and back
+check cruise 0 20 enh
+check drag 1 20 enh
+check drag 0 0 enh
+check grudge 0 20 enh        # the location-4 routes, there and back
 after grudge 0 4 20
 none grudge 2
 none grudge 4
-check mulholland 0 0 orig
+check mulholland 0 0 enh
 none mulholland 16
 none aqueduct 8
-check aqueduct 0 0 orig
+check aqueduct 0 0 enh
 exit $fail

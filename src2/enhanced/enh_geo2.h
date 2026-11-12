@@ -1,0 +1,115 @@
+#pragma once
+/* Street Rod 2's road geometry shared by the enhanced front view (enh_road2.c) and the mirror (enh_mirror2.c): the
+ * camera of a view, its rows, the track tables, the front projection (exact and smooth) and the faces drawn as the
+ * game's quad_fill draws them. */
+#include <math.h>
+
+#include "enhanced/enh_internal.h"
+#include "game/race_int.h"
+#include "mem.h"
+
+#define SEG_LAST     (TRK_N - 1)
+#define FAR_ROWS     14
+#define COL_ROAD     1
+#define COL_FINISH   15
+#define COL_KERB     4
+#define COL_GRASS    9
+#define COL_WALL_A   2
+#define COL_WALL_B   3
+#define COL_STOREY   4
+#define Y_ROAD       2000
+#define Y_EYE        0x76C
+#define Y_KERB       0x79E
+#define SKY_SCROLL   0.125     /* as Street Rod 1's enhanced view: the sky turns at this fraction of the original's */
+
+typedef struct {
+    int base;
+    double pos, lat, hv, hpos;
+    double cam_y, bounce;
+    double heading;            /* the view's DS_heading, unwrapped */
+    int mode, w;               /* DS_road_mode; the outer edges' w (road_project_front): 200 in Mulholland, else 400 */
+    bool exact;                /* the game's integer arithmetic (the compare tool, at a game frame's own position) */
+} Cam;
+
+static inline int segc(int i) { return i < 0 ? 0 : i > SEG_LAST ? SEG_LAST : i; }
+static inline u16 trk(u16 arr, int i) { return TRKW(arr, segc(i)); }
+
+static inline double yaw_rel(const Cam *c, int i) { return (s16)(trk(TRK_YAW, i) - trk(TRK_YAW, c->base)); }
+static inline double hgt_rel(const Cam *c, int i) { return (s16)(trk(TRK_HGT, i) - trk(TRK_HGT, c->base)); }
+
+static inline double interp(const Cam *c, double s, double (*f)(const Cam *, int))
+{
+    double fl = floor(s);
+    int i = (int)fl;
+    return f(c, i) + (f(c, i + 1) - f(c, i)) * (s - fl);
+}
+
+/* edges_of (race_road.c): flags 20h and 40h give zero-width roads in Street Rod 2 (spec §5 quirk) */
+static inline void edges(u16 cm, double *xl, double *xr)
+{
+    cm &= 0xE0;
+    if (cm == 0)        { *xl = 0x5DC; *xr = 0xCE4; }
+    else if (cm & 0x80) { *xl = 0x7D0; *xr = 0xAF0; }
+    else if (cm & 0x20) { *xl = 0xCE4; *xr = 0xCE4; }
+    else                { *xl = 0x5DC; *xr = 0x5DC; }
+}
+
+typedef struct { double z, dx, dy; int n, k; } Row;    /* k: the row index, -1 for a depth off the rows */
+
+/* The original's line y is pixel row y from its top: the drawn shapes sit half a row lower than the projected
+ * value, so that a sample at a row's centre meets the edge where the original's line starts. */
+#define ROW_TOP 0.5
+
+static inline int i16(double v) { return (s16)(u16)(int)v; }   /* an integer value as the game's s16 */
+
+static inline int px_i(const Cam *c, const Row *r, double X) { return enh_proj_x_i((int)r->z, (int)X, i16(r->dx), (int)c->lat); }
+static inline int py_i(const Cam *c, const Row *r, double Y)
+{
+    return enh_proj_y_i((int)r->z, (int)Y, i16(r->dy), (int)c->cam_y, (int)c->bounce);
+}
+
+static inline double px(const Cam *c, const Row *r, double X)
+{
+    if (c->exact) return px_i(c, r, X);
+    return 160.0 - 4.0 * (c->lat - (X + r->z * r->dx / 4.0)) / r->z;
+}
+static inline double py(const Cam *c, const Row *r, double Y)
+{
+    if (c->exact) return py_i(c, r, Y) + ROW_TOP;
+    return 2.0 * r->dy + 4.0 * (Y - c->cam_y) / r->z + c->bounce + 60.0 + ROW_TOP;
+}
+
+/* A wall's or storey's face as the game's quad_fill draws it: x = xa (from ya_top to ya_bot) to xb (yb_top to
+ * yb_bot), its last row and column included (poly_fill_pts), unlike the road bands' lines. */
+static inline void face(double xa, double xb, double ya_bot, double yb_bot, double yb_top, double ya_top, u8 col)
+{
+    double l = xa < xb ? xa : xb, r = (xa < xb ? xb : xa) + 1.0;
+    double xs[4] = { xa == l ? l : r, xb == l ? l : r, xb == l ? l : r, xa == l ? l : r };
+    double ys[4] = { ya_bot + 1.0, yb_bot + 1.0, yb_top, ya_top };
+    enh_fill_poly(xs, ys, 4, col);
+}
+
+static inline void quad(double xa0, double xa1, double ya, double xb0, double xb1, double yb, u8 col)
+{
+    double xs[4] = { xb0, xb1, xa1, xa0 }, ys[4] = { yb, yb, ya, ya };
+    enh_fill_poly(xs, ys, 4, col);
+}
+
+/* The camera of a view, for the road and the objects alike. dy = height - HGT(s): the game's height is HGT[seg]
+ * (road_advance_segment) plus hoff (the cliff fall); between frames the track's height at pos keeps the view
+ * smooth. dx = heading - YAW(s), the heading unwrapped. */
+static inline void cam_of(const EnhView *v, Cam *c)
+{
+    c->base = segc((int)floor(v->pos));
+    c->pos = v->pos;
+    c->lat = v->lat;
+    c->hpos = v->exact ? v->hoff : interp(c, v->pos, hgt_rel) + v->hoff;
+    double hf = floor(v->heading);
+    c->hv = (s16)(u16)(enh_s16_of(hf) - (s16)trk(TRK_YAW, c->base)) + (v->heading - hf);
+    c->cam_y = v->cam_y;
+    c->bounce = v->bounce;
+    c->heading = v->heading;
+    c->mode = v->mode;
+    c->w = v->mode == 0x10 ? 200 : 400;
+    c->exact = v->exact;
+}

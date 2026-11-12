@@ -3,7 +3,7 @@
  * bands between them drawn as the original draws them (straight edges from row to row), the sky and the
  * horizon scrolled continuously. At a game frame's own position the result is the original's geometry. Road modes 0 (the
  * town) and 1 (the street drag); the objects and the opponent the game drew are drawn again in the band loop at
- * their own segment (enh_cuts_at); the mirror is the game's own until it is drawn here too.
+ * their own segment (enh_cuts_at); the mirror is drawn after it (enh_mirror2.c).
  *
  * Projection (road_proj_x / road_proj_y, src2/game/race_road.c), a point at world x X, height Y, on the road
  * at continuous segment position s, seen from position pos:
@@ -14,6 +14,7 @@
  * The road edges come from the centre flags as edges_of has them, with its zero-width quirk. */
 #include "enhanced/enh_internal.h"
 #include "enhanced/enhanced.h"
+#include "enhanced/enh_geo2.h"
 
 #include <limits.h>
 #include <math.h>
@@ -23,56 +24,8 @@
 #include "mem.h"
 #include "platform/ega.h"
 
-#define SEG_LAST     (TRK_N - 1)
-#define FAR_ROWS     14
-#define COL_ROAD     1
-#define COL_FINISH   15
-#define COL_KERB     4
-#define COL_GRASS    9
-#define COL_WALL_A   2
-#define COL_WALL_B   3
-#define COL_STOREY   4
-#define Y_ROAD       2000
-#define Y_EYE        0x76C
-#define Y_KERB       0x79E
-#define SKY_SCROLL   0.125     /* as Street Rod 1's enhanced view: the sky turns at this fraction of the original's */
-
 const u8 enh_road_colours[2] = { COL_ROAD, COL_FINISH };
 double enh_ground_y;           /* the first row below the horizon strip (the compare tool starts there) */
-
-typedef struct {
-    int base;
-    double pos, lat, hv, hpos;
-    double cam_y, bounce;
-    double heading;            /* the view's DS_heading, unwrapped */
-    int mode, w;               /* DS_road_mode; the outer edges' w (road_project_front): 200 in Mulholland, else 400 */
-    bool exact;                /* the game's integer arithmetic (the compare tool, at a game frame's own position) */
-} Cam;
-
-static int segc(int i) { return i < 0 ? 0 : i > SEG_LAST ? SEG_LAST : i; }
-static u16 trk(u16 arr, int i) { return TRKW(arr, segc(i)); }
-
-static double yaw_rel(const Cam *c, int i) { return (s16)(trk(TRK_YAW, i) - trk(TRK_YAW, c->base)); }
-static double hgt_rel(const Cam *c, int i) { return (s16)(trk(TRK_HGT, i) - trk(TRK_HGT, c->base)); }
-
-static double interp(const Cam *c, double s, double (*f)(const Cam *, int))
-{
-    double fl = floor(s);
-    int i = (int)fl;
-    return f(c, i) + (f(c, i + 1) - f(c, i)) * (s - fl);
-}
-
-/* edges_of (race_road.c): flags 20h and 40h give zero-width roads in Street Rod 2 (spec §5 quirk) */
-static void edges(u16 cm, double *xl, double *xr)
-{
-    cm &= 0xE0;
-    if (cm == 0)        { *xl = 0x5DC; *xr = 0xCE4; }
-    else if (cm & 0x80) { *xl = 0x7D0; *xr = 0xAF0; }
-    else if (cm & 0x20) { *xl = 0xCE4; *xr = 0xCE4; }
-    else                { *xl = 0x5DC; *xr = 0x5DC; }
-}
-
-typedef struct { double z, dx, dy; int n, k; } Row;    /* k: the row index, -1 for a depth off the rows */
 
 /* road_project_front's row k: depth 4 for row 0, 12 - q for row 1 and 8 more for each row after, row 14 at a
  * fixed 116; dx and dy from the row's own segment. */
@@ -88,12 +41,6 @@ static Row row_k(const Cam *c, int k)
     return r;
 }
 
-/* The original's line y is pixel row y from its top: the drawn shapes sit half a row lower than the projected
- * value, so that a sample at a row's centre meets the edge where the original's line starts. */
-#define ROW_TOP 0.5
-
-static int i16(double v) { return (s16)(u16)(int)v; }   /* an integer value as the game's s16 */
-
 int enh_proj_x_i(int z, int X, int dx, int cx)              /* road_proj_x */
 {
     s16 x = add16((s16)X, (s16)((s16)(z * dx) >> 2));
@@ -106,22 +53,6 @@ int enh_proj_y_i(int z, int Y, int dy, int cam_y, int bounce)   /* road_proj_y *
     s16 t = add16(shl16((s16)((s16)(z * dy) & 0xFFFE), 1), shl16(sub16((s16)Y, (s16)cam_y), 2));
     if (z == 0) z = 1;
     return add16(add16(cdiv16(t, (s16)z), (s16)bounce), 0x3C);
-}
-static int px_i(const Cam *c, const Row *r, double X) { return enh_proj_x_i((int)r->z, (int)X, i16(r->dx), (int)c->lat); }
-static int py_i(const Cam *c, const Row *r, double Y)
-{
-    return enh_proj_y_i((int)r->z, (int)Y, i16(r->dy), (int)c->cam_y, (int)c->bounce);
-}
-
-static double px(const Cam *c, const Row *r, double X)
-{
-    if (c->exact) return px_i(c, r, X);
-    return 160.0 - 4.0 * (c->lat - (X + r->z * r->dx / 4.0)) / r->z;
-}
-static double py(const Cam *c, const Row *r, double Y)
-{
-    if (c->exact) return py_i(c, r, Y) + ROW_TOP;
-    return 2.0 * r->dy + 4.0 * (Y - c->cam_y) / r->z + c->bounce + 60.0 + ROW_TOP;
 }
 
 /* The outer edges' world x (the town's facades, the crossings' kerbs, the shoulders): 5DCh - w on the left,
@@ -249,16 +180,6 @@ static void draw_sky(const Cam *c, bool town, double hy, double ground)
 
 /* ---------------------------------------------------------------- road */
 
-/* A wall's or storey's face as the game's quad_fill draws it: x = xa (from ya_top to ya_bot) to xb (yb_top to
- * yb_bot), its last row and column included (poly_fill_pts), unlike the road bands' lines. */
-static void face(double xa, double xb, double ya_bot, double yb_bot, double yb_top, double ya_top, u8 col)
-{
-    double l = xa < xb ? xa : xb, r = (xa < xb ? xb : xa) + 1.0;
-    double xs[4] = { xa == l ? l : r, xb == l ? l : r, xb == l ? l : r, xa == l ? l : r };
-    double ys[4] = { ya_bot + 1.0, yb_bot + 1.0, yb_top, ya_top };
-    enh_fill_poly(xs, ys, 4, col);
-}
-
 /* clip_polygon (race_gfx.c) on the view's clip (clip_set_view: x 0..13Fh, y 12h..65h): one Sutherland-Hodgman stage
  * per side, the new vertices by the game's integer line_y_at_x / line_x_at_y from the previous vertex. */
 static int clip_stage_i(const int *in, int n, int *out, int edge, int e)
@@ -282,13 +203,13 @@ static int clip_stage_i(const int *in, int n, int *out, int edge, int e)
     return cnt;
 }
 
-static int clip_poly_i(const int *in, int n, int *out)
+static int clip_poly_i(const int *in, int n, int *out, int x0, int y0, int x1, int y1)
 {
     int a[64], b[64], c[64];
-    int na = clip_stage_i(in, n, a, 0, 0);
-    int nb = clip_stage_i(a, na, b, 1, 0x13F);
-    int nc = clip_stage_i(b, nb, c, 2, ENH_VIEW_Y0);
-    return clip_stage_i(c, nc, out, 3, 0x65);
+    int na = clip_stage_i(in, n, a, 0, x0);
+    int nb = clip_stage_i(a, na, b, 1, x1);
+    int nc = clip_stage_i(b, nb, c, 2, y0);
+    return clip_stage_i(c, nc, out, 3, y1);
 }
 
 /* poly_fill with its edge pixels, at integer vertices: each pixel row y is filled from the leftmost to the rightmost
@@ -313,19 +234,19 @@ static void fill_poly_incl_i(const int *p, int n, u8 col)
     }
 }
 
-void enh_town_face_exact(int side, int xn, int xf, int yn, int yf, int ytf, int ytn, u8 col)
+void enh_town_face_clip(int side, int xn, int xf, int yn, int yf, int ytf, int ytn, u8 col, int x0, int y0, int x1, int y1)
 {
-    /* quad_fill's points in town_walls_front's order: left from the near row, right from the far one */
+    /* quad_fill's points in town_walls_front's (and town_walls_mirror's) order: left from the near row, right
+     * from the far one */
     int pts[8] = { xn, yn, xf, yf, xf, ytf, xn, ytn };
     if (side) { int r[8] = { xf, yf, xn, yn, xn, ytn, xf, ytf }; memcpy(pts, r, sizeof pts); }
-    int out[64], n = clip_poly_i(pts, 4, out);
+    int out[64], n = clip_poly_i(pts, 4, out, x0, y0, x1, y1);
     fill_poly_incl_i(out, n, col);
 }
 
-static void quad(double xa0, double xa1, double ya, double xb0, double xb1, double yb, u8 col)
+void enh_town_face_exact(int side, int xn, int xf, int yn, int yf, int ytf, int ytn, u8 col)
 {
-    double xs[4] = { xb0, xb1, xa1, xa0 }, ys[4] = { yb, yb, ya, ya };
-    enh_fill_poly(xs, ys, 4, col);
+    enh_town_face_clip(side, xn, xf, yn, yf, ytf, ytn, col, 0, ENH_VIEW_Y0, 0x13F, 0x65);
 }
 
 /* town_walls_front's extras, drawn once per segment band (near row m = n - 1, far row n) as the game does:
@@ -442,25 +363,6 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
     }
 }
 
-/* The camera of a view, for the road and the objects alike. dy = height - HGT(s): the game's height is HGT[seg]
- * (road_advance_segment) plus hoff (the cliff fall); between frames the track's height at pos keeps the view
- * smooth. dx = heading - YAW(s), the heading unwrapped. */
-static void cam_of(const EnhView *v, Cam *c)
-{
-    c->base = segc((int)floor(v->pos));
-    c->pos = v->pos;
-    c->lat = v->lat;
-    c->hpos = v->exact ? v->hoff : interp(c, v->pos, hgt_rel) + v->hoff;
-    double hf = floor(v->heading);
-    c->hv = (s16)(u16)(enh_s16_of(hf) - (s16)trk(TRK_YAW, c->base)) + (v->heading - hf);
-    c->cam_y = v->cam_y;
-    c->bounce = v->bounce;
-    c->heading = v->heading;
-    c->mode = v->mode;
-    c->w = v->mode == 0x10 ? 200 : 400;
-    c->exact = v->exact;
-}
-
 void enh_rows_exact_front(const EnhView *v, EnhRowTab *t)
 {
     Cam c;
@@ -517,7 +419,8 @@ void enh_draw_road(const EnhView *v)
 EnhObjGeo enh_obj_geo(const EnhView *v, int kind, int seg, int sprite)
 {
     EnhObjGeo g = { 0, 0, 0, 0, false };
-    if (kind != ENH_CUT_ROW && kind != ENH_CUT_OPP) return g;   /* the mirror's cuts: not placed until the mirror is drawn */
+    if (kind == ENH_CUT_MIR || kind == ENH_CUT_STARTER || (kind == ENH_CUT_OPP && sprite >= 9))
+        return enh_obj_geo_mirror(v, kind, seg, sprite);
     bool opp = kind == ENH_CUT_OPP;
     Cam c;
     cam_of(v, &c);

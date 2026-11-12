@@ -247,10 +247,13 @@ static int cut_pass(const ObjCut *c)
     return c->kind == ENH_CUT_ROW ? ENH_PASS_FRONT : ENH_PASS_MIRROR;
 }
 
-/* b is drawn after a in the band loop (enh_draw_road): far to near, at one segment the row's objects first. */
+/* b is drawn after a in its pass's band loop: far to near (the front's far rows at larger segments, the mirror's
+ * at smaller ones), at one segment the row's objects first, then the starter, then the opponent. */
+static int kind_rank(int kind) { return kind == ENH_CUT_OPP ? 2 : kind == ENH_CUT_STARTER ? 1 : 0; }
 static bool drawn_after(const ObjCut *a, const ObjCut *b)
 {
-    return b->seg < a->seg || (b->seg == a->seg && a->kind == ENH_CUT_ROW && b->kind == ENH_CUT_OPP);
+    if (b->seg != a->seg) return cut_pass(a) == ENH_PASS_MIRROR ? b->seg > a->seg : b->seg < a->seg;
+    return kind_rank(b->kind) > kind_rank(a->kind);
 }
 
 /* The cut of `id` holds, within its rectangle, the foreground or a pixel of a cut of its pass drawn after it. */
@@ -355,17 +358,39 @@ void enh_cuts_at(const EnhView *v, int pass, int lo, int hi, bool opp)
     }
 }
 
-/* One picture of view v: the front pass draws the road and the cuts at their rows (enh_road2.c). */
+/* One picture of view v: the front pass draws the road and the cuts at their rows (enh_road2.c), then the mirror
+ * pass its glass (enh_mirror2.c). */
 static void draw_view(const EnhView *v)
 {
     enh_cuts_begin();
     enh_draw_road(v);
+    enh_draw_mirror(v);
 }
 
 void enh_draw_fg(bool fg)
 {
     if (!active) return;
     base_layer = fg ? EGA_LAYER_FG : EGA_LAYER_BG;
+    ega_set_layer(base_layer);
+}
+
+void enh_mirror_begin(void)
+{
+    if (!active) return;
+    base_layer = EGA_LAYER_BG;
+    ega_set_layer(base_layer);
+}
+
+void enh_mirror_end(void)
+{
+    if (!active) return;
+    u16 page = DSS(DS_back_page) == 1 ? 0x2000 : 0x4000;
+    ega_mark_fg_rect(page, 0x110, 0x12, 0x11F, 0x13);   /* the mount */
+    ega_mark_fg_rect(page, 0xF0, 0x14, 0x13F, 0x15);    /* the frame around the glass */
+    ega_mark_fg_rect(page, 0xF0, 0x2B, 0x13F, 0x2C);
+    ega_mark_fg_rect(page, 0xF0, 0x16, 0xF1, 0x2A);
+    ega_mark_fg_rect(page, 0x13E, 0x16, 0x13F, 0x2A);
+    base_layer = EGA_LAYER_FG;                          /* the hood and the cockpit stay the game's */
     ega_set_layer(base_layer);
 }
 
@@ -539,14 +564,14 @@ static int reprojection_err(void)
     return err < 0 ? -1 : (int)floor(err + 0.5);
 }
 
-/* the largest difference between the enhanced exact rows and the game's row tables */
-static int rows_err(const EnhRowTab *a, const EnhRowTab *b)
+/* the largest difference between the enhanced exact rows and the game's row tables, rows 0..n-1 */
+static int rows_err(const EnhRowTab *a, const EnhRowTab *b, int n)
 {
     const s16 *ta[9] = { a->xl, a->xr, a->y, a->xol, a->xor_, a->ye, a->yk, a->ybl, a->ybr };
     const s16 *tb[9] = { b->xl, b->xr, b->y, b->xol, b->xor_, b->ye, b->yk, b->ybl, b->ybr };
     int err = 0;
     for (int t = 0; t < 9; t++)
-        for (int k = 0; k < 15; k++) err = SDL_max(err, abs(ta[t][k] - tb[t][k]));
+        for (int k = 0; k < n; k++) err = SDL_max(err, abs(ta[t][k] - tb[t][k]));
     return err;
 }
 
@@ -610,9 +635,13 @@ static void compare_frame(void)
     c.m_pixels = mc.pixels;
     c.m_mismatched = mc.mismatched;
     c.mirror_cov = mirror_cov;
-    EnhRowTab rows;
+    EnhRowTab rows, mrows;
     enh_rows_exact_front(&v, &rows);
-    c.geo_err = rows_err(&rows, &snap.game_front);
+    c.geo_err = rows_err(&rows, &snap.game_front, 15);
+    mrows = snap.game_mirror;                       /* rows 8..14 are the front's: only rows 0..7 and YK compared */
+    enh_rows_exact_mirror(&v, &mrows);
+    c.geo_err = SDL_max(c.geo_err, rows_err(&mrows, &snap.game_mirror, 8));
+    for (int k = 0; k < 15; k++) c.geo_err = SDL_max(c.geo_err, abs(mrows.yk[k] - snap.game_mirror.yk[k]));
     c.obj_err = reprojection_err();
     c.police = snap.police;
     c.opp_sprite = snap.opp_sprite;
@@ -621,7 +650,7 @@ static void compare_frame(void)
     /* SR_ENH_COMPARE_DUMP=<dir>: every 40th frame, the original (left) and the enhanced view (right) */
     const char *dir = SDL_getenv("SR_ENH_COMPARE_DUMP");
     static int bad_dumped;
-    bool bad = (c.edge_err_max > 1 || c.geo_err > 0 || c.obj_err > 1) && bad_dumped < 10;
+    bool bad = (c.edge_err_max > 1 || c.m_edge_err_max > 1 || c.geo_err > 0 || c.obj_err > 1) && bad_dumped < 10;
     if (dir && *dir && (compared % 40 == 1 || bad)) {
         if (bad) bad_dumped++;
         SDL_Surface *sf = SDL_CreateSurface(640, ENH_VIEW_Y1 - ENH_VIEW_Y0, SDL_PIXELFORMAT_XRGB8888);

@@ -1397,8 +1397,11 @@ static void mirror_objects(s16 row, s16 d)
     if (C & 0x200) scenery_draw_shape(XRp, Y, d, 1, 0x10, 0);
     if (C & 0x400) scenery_draw_shape(XRp, Y, d, 1, 0x11, 0);
     if (C & 0x800) scenery_draw_shape(XRp, Y, d, 1, 0xF, 0);
-    if ((MODE & 0x11) && sub16(DSS(DS_seg), row) == DSS(DS_starter_seg))
+    if ((MODE & 0x11) && sub16(DSS(DS_seg), row) == DSS(DS_starter_seg)) {
+        enh_draw_objects(ENH_OBJ_STARTER);                  /* ENH: its y is pinned */
         starter_draw_mirror((s16)(add16(XRp, XLp) >> 1), Y, (s16)(row - 1));
+        enh_draw_objects(ENH_OBJ_MIR(row));                 /* ENH */
+    }
 }
 
 static void mulholland_extras_mirror(s16 row)
@@ -1419,12 +1422,15 @@ static void road_draw_mirror(void)
     flag_ptrs(-0x10);
     clip_set_mirror();
     road_fillmode_end();
+    enh_draw_sky(true);                                     /* ENH: the backdrop is tagged the sky's */
     mirror_draw_backdrop();
+    enh_draw_sky(false);                                    /* ENH */
     road_fillmode_begin();
     for (s16 row = 7; row != 0; row--) {
         DSS(DS_mirror_row_seg) = sub16(DSS(DS_seg), row);
         if ((MODE & 0x10) && !(fw(DS_centre_ptr, 0) & 0x80)) mirror_hillsides(row);
         road_draw_row_mirror();
+        enh_draw_objects(ENH_OBJ_MIR(row));                 /* ENH: the row's objects, drawn again at its smooth position */
         u16 C = fw(DS_centre_ptr, 0);
         if (!((C & 4) && (C & 1))) {
             if ((C & 0xF000) && !(MODE & 0x16))
@@ -1432,7 +1438,9 @@ static void road_draw_mirror(void)
             if (row < 7) mirror_objects(row, (s16)((row >> 1) + 7));
             if (!(C & 1) && MODE == 0x10) mulholland_extras_mirror(row);
         }
+        enh_draw_objects(ENH_OBJ_OPP);                      /* ENH */
         if (sub16(DSS(DS_seg), row) == DSS(DS_opp_seg) && DSB(DS_racing)) opponent_draw();
+        enh_draw_objects(0);                                /* ENH */
         if (MODE & 6) road_draw_barrier_walls(DSS(DS_rail_phase_seg), 7, row);
         row_ptrs_step();
         flag_step(2);
@@ -1453,7 +1461,7 @@ void road_frame(void)
         ds_far_wr(DS_aq_flags_ptr, trk_ptr(TRK_AQ, DSS(DS_seg)));
         aq_draw_front();
     } else { road_set_seg_ptrs(DSS(DS_seg)); road_draw_front(); }
-    enh_draw_fg(true);                                      /* ENH: the mirror, the hood and the cockpit stay original */
+    enh_mirror_begin();                                     /* ENH: the mirror is drawn again by the enhanced view */
     if (MODE == 8) aq_project_mirror();
     else { road_set_seg_ptrs(DSS(DS_seg)); road_project_mirror(); }
     if (MODE == 8) {
@@ -1461,7 +1469,7 @@ void road_frame(void)
         ds_far_wr(DS_aq_flags_ptr, far_make(SEG(TRK_SEG), (u16)(0x6570 - 2 * DSS(DS_seg))));
         aq_draw_mirror();
     } else { road_set_seg_ptrs(DSS(DS_seg)); road_draw_mirror(); }
-    enh_mark_fg(0xF0, 0x12, 0x13F, 0x2C);                   /* ENH: the whole mirror stays the game's (its backdrop is opaque) */
+    enh_mirror_end();                                       /* ENH: its frame and mount, the hood and the cockpit stay original */
     road_fillmode_end();
     road_draw_hood_overlay();
     if (DSB(DS_racing) && !(MODE & 6)) road_draw_starter_slide();
