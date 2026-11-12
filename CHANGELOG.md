@@ -26,6 +26,8 @@
   rate above 125 Hz too, and the waits no longer overrun by a system timer period (which held the game near
   30 FPS on Windows). `--fps N|auto` caps it, `--vsync on|off`; the launcher's **Frame rate** offers the
   refresh rate (VSync) or uncapped. `SR_FPS` and `SR_DEBUG_FPS` are developer aids.
+- Street Rod: the dashboard's side mirror shows the enhanced rear-view mirror at the output resolution, no
+  longer the original's low-resolution copy (also from bsvdoom's change to kylofon/streetrod-enhanced).
 
 ## 0.4.2
 

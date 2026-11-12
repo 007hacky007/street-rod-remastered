@@ -101,6 +101,9 @@ add_test(NAME music COMMAND test_music)
 add_executable(test_compose test_compose.c)
 target_link_libraries(test_compose PRIVATE sre_core)
 add_test(NAME compose COMMAND test_compose)
+add_executable(test_side_mirror test_side_mirror.c)
+target_link_libraries(test_side_mirror PRIVATE sre_core)
+add_test(NAME side_mirror COMMAND test_side_mirror)
 
 # The shared host: Street Rod 1's audio pinned, the AdLib chip, voice volumes, the mouse space.
 add_executable(test_host test_host.c)

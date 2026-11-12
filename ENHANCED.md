@@ -14,10 +14,15 @@ comes along with it: at 8 frames a second, a high-resolution picture only makes 
 Stage 1 is done; stage 2 (the longer draw distance) is not started.
 
 * Done: the scaled output frame and the coverage (§2), smooth motion, the road, sky and horizon, the road-side
-  objects, signs, banners, town walls, the opponent and the police car, the rear-view mirror, the town cruise,
-  the options and the launcher's Picture box.
+  objects, signs, banners, town walls, the opponent and the police car, the rear-view mirror and the dashboard's
+  side mirror, the town cruise, the options and the launcher's Picture box.
 * Still the original's picture, laid over the enhanced view: the cockpit (A-pillar, hood), the drag race's start
-  light, the messages, and the dashboard below the split with its side mirror.
+  light, the messages, and the dashboard below the split.
+* **The side mirror** (`enh_mirror.c`, from bsvdoom's change to upstream streetrod-enhanced): the original copies
+  the rear-view mirror's (248, 22) 32 x 19 to (8, 103) below the split while it draws the road; `enh_compose`
+  copies the enhanced rear-view mirror there at the output resolution after the resolve. While a dialog of the
+  UI stack covers the rear-view mirror, the side mirror keeps its last copy; a dialog over the side mirror
+  itself is left alone. After the road view the original's own copy shows again (the crash, the ticket).
 * Changes from the plan below, made while testing:
   * **Coverage by layer.** `road_draw_frame` marks what it draws: `enh_draw_begin` / `enh_draw_fg` switch the EGA
     model between a background layer (replaced by the enhanced view) and a foreground layer (kept). The
@@ -73,6 +78,7 @@ References:
 |---|---|
 | `enhanced.c` | hooks, options, snapshots, compose/coverage |
 | `enh_road.c` | road geometry: the segment table turned into a continuous road strip |
+| `enh_mirror.c` | the dashboard's side mirror from the enhanced rear-view mirror |
 | `enh_raster.c` | sample buffers, polygon fill, resolve, worker bands |
 | `enh_sprite.c` | LIB2 picture decode, scaled sprite drawing, mips |
 | `enh_internal.h` | shared declarations |
@@ -285,7 +291,8 @@ shapes.
   within a segment (the k == 5 depth freeze), a band's flags one segment off, the banks read forward and YK
   written twice per row, the strip's walls coloured by the front's phase, Mulholland's shoulders not stepped over
   a band, the finish band white only from segment 169h (3ADh in Mulholland). The dashboard's side mirror (the
-  page-0 copy of `mirror_finish`) stays the original's picture, as in Street Rod 1.
+  page-0 copy of `mirror_finish`) stays the original's picture (Street Rod 1 draws its own from the enhanced
+  rear-view mirror).
 * **The Aqueduct** (8, `enh_aq2.c`): `aq_project_front`, `aq_project_mirror`, `aq_draw_sky` and `aq_draw_scene`
   ported in one code path, with the game's integer arithmetic (exact) and in floating point (smooth). The front
   rows 12..14 are fixed at depth 100, 108, 116 and the channel ends at row 14; the projection's cam_x is clamped

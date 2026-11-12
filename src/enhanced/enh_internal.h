@@ -24,3 +24,9 @@ bool enh_view_at(Uint64 now_ns, EnhView *v);
 
 /* enh_road.c */
 void enh_draw_road(const EnhView *v);
+
+/* enh_mirror.c: the dashboard's left side mirror (8, 103) 32 x 19, the original's copy of the rear-view mirror
+ * (248, 22), drawn from the enhanced one over xrgb after the resolve; its last copy kept while a dialog covers the
+ * rear-view mirror, nothing under a dialog over itself. reset: a new road view. */
+void enh_side_mirror_reset(void);
+void enh_side_mirror(u32 *xrgb, int res_scale);
