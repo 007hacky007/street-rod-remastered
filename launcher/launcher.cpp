@@ -377,8 +377,8 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     pictureBox->Add(pgrid, 0, wxLEFT | wxRIGHT | wxTOP, gap);
     town_ = new wxCheckBox(pb, wxID_ANY, "Drives through &town enhanced too");
     pictureBox->Add(town_, 0, wxALL, gap);
-    pictureNote_ = GreyText(pb, "Street Rod 2: the art, and the race view of the Grudge drag strip, Mulholland\n"
-                                "and the Aqueduct are original for now.");
+    pictureNote_ = GreyText(pb, "Street Rod 2: pictures not redrawn yet show the original; the race view of the\n"
+                                "Grudge drag strip, Mulholland and the Aqueduct is original for now.");
     pictureBox->Add(pictureNote_, 0, wxLEFT | wxRIGHT | wxBOTTOM, gap);
     graphics_->Bind(wxEVT_CHOICE, [this](wxCommandEvent&) { UpdateState(); });
 

@@ -30,8 +30,9 @@ like the Street Rod and Test Drive III launchers it is modelled on.
   default) or PC speaker (`speaker`), and **Start in full screen** (`--fullscreen`; Alt+Enter switches).
   Street Rod 2 always gets `v` too, so its start-up menus for the picture and the sound are answered.
 * **Keys in the game**: a reminder of the game's keys, including Street Rod's A / Z gear keys.
-* **Picture**: **Art** remastered (`--remaster-dir`: every picture redrawn, the default) or original. The art
-  pack is a download from the latest release of
+* **Picture**: **Art** remastered (`--remaster-dir`: every picture redrawn, the default) or original, for
+  both games (each remembers its own choice, `Art` under `[Game]` or `[Game2]`). The art
+  pack, one for both games, is a download from the latest release of
   [street-rod-remastered-art](https://github.com/007hacky007/street-rod-remastered-art) (`artpack.cpp`): the
   launcher offers it on its first start and a newer one when it is out ("Not Now" is remembered under
   `[Art]`), and **Download Pictures...** / **Update Pictures...** beside Art fetch it at any time. The download is
@@ -41,9 +42,9 @@ like the Street Rod and Test Drive III launchers it is modelled on.
   smooth, high-resolution road view, the default) or original (`--classic`); **Resolution** of the picture, 640 × 400 to 2560 × 1600 (`--res-scale`, default 1280 × 800);
   **Anti-aliasing** off, 2 × 2 (default), 3 × 3 or 4 × 4 (`--aa`); **Drives through town enhanced too**
   (`--town`). The last three are greyed out with the original graphics.
-* Street Rod 2 doesn't have the remastered art yet, and its enhanced race view covers the town and the street
-  drags so far (the Grudge drag strip, Mulholland and the Aqueduct are shown as the original): Art is greyed
-  for it and a note says so.
+* Street Rod 2 shows the original for every picture the pack has not redrawn yet, and its enhanced race view
+  covers the town and the street drags so far (the Grudge drag strip, Mulholland and the Aqueduct are shown as
+  the original): a note says so.
 * **Play** starts the game; the launcher stays open.
 
 ## On a Mac
@@ -69,7 +70,7 @@ Everything is remembered in `%APPDATA%\Street Rod Enhanced\settings.ini` (`~/Lib
 on a Mac, `~/.config/street-rod-enhanced` on Linux), the volumes
 under `[Sound]`. `[Launcher] Game` is the game chosen (1 Street Rod, 2 Street Rod 2). Street Rod's own settings
 (folder, program, cars, switches, art) are under `[Game]` as before, Street Rod 2's (folder, program, switches,
-`Sound`: 0 AdLib, 1 PC speaker) under `[Game2]`; the window size, full screen and picture settings in `[Game]`
+`Sound`: 0 AdLib, 1 PC speaker, art) under `[Game2]`; the window size, full screen and picture settings in `[Game]`
 and the volumes are shared. A folder or program left at its default is stored empty, so it follows the launcher if the whole
 folder moves. Delete the file to go back to the defaults.
 
