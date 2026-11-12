@@ -1,11 +1,11 @@
 #!/bin/sh
 # Street Rod 2's enhanced race view against the original frame (SR_ENH_COMPARE, src2/enhanced/enh_compare.h):
 # headless drives of each race kind with the demo autopilot (SR_SEED 2; Mulholland's bridges SR_SEED 4), judged
-# mode by mode from the compare log's per-mode lines. An enhanced mode must match (road edges within 1 px in every
-# frame, the median frame within 10 permille of mismatched pixels and every frame within 20, the same for the
-# mirror's glass, the game's row tables, the objects re-projected within 1 px), be on the screen (composed at
-# least once per game frame) and leave the mirror the game's (orig) or draw its glass (enh); a mode not enhanced
-# yet must not be logged at all.
+# mode by mode from the compare log's per-mode lines. Every mode must match (road edges within 1 px in every
+# frame, in the Aqueduct's mode 8 the line metric's black and white lines and sky border instead, the median
+# frame within 10 permille of mismatched pixels and every frame within 20, the same for the mirror's glass, the
+# game's row tables, the objects re-projected within 1 px), be on the screen (composed at least once per game
+# frame) and leave the mirror the game's (orig) or draw its glass (enh).
 #   test_sr2_enh_compare.sh <streetrod2-enhanced> <SR2 game dir>
 set -u
 exe=$1 dir=$2
@@ -76,8 +76,8 @@ rolled() {  # rolled <kind> <mode> <min>: at least min frame lines of the mode w
     else echo "FAIL $1 mode $2 rolled (${n:-0} frames, want $3)"; fail=1; fi
 }
 
-after() {  # after <kind> <mode> <last mode> <min>: frames of <mode> after the last frame (or race start, a mode not
-           # enhanced logs no frames) of <last mode>
+after() {  # after <kind> <mode> <last mode> <min>: frames of <mode> after the last frame (or the race start) of
+           # <last mode>
     n=$(awk -v m="$2" -v l="$3" '/^race / && $2 == l { c = 0 }
         /^frame / { if ($4 == l) c = 0; else if ($4 == m) c++ } END { print c + 0 }' "$tmp/$1.cmp" 2>/dev/null)
     if [ -n "$n" ] && [ "$n" -ge "$4" ]; then echo "ok   $1 mode $2 after mode $3 ($n frames)"
@@ -115,13 +115,6 @@ kept() {  # kept <kind> <mode>: the mode's last frame line still has the bounce'
         END { print b + 0 }' "$tmp/$1.cmp" 2>/dev/null)
     if [ -n "$b" ] && [ "$b" != 0 ]; then echo "ok   $1 mode $2 bounce kept"
     else echo "FAIL $1 mode $2 bounce kept (last bounce ${b:-0})"; fail=1; fi
-}
-
-none() {  # none <kind> <mode>
-    s=$(mode_line "$1" "$2")
-    if [ ! -f "$tmp/$1.cmp" ]; then echo "FAIL $1 mode $2 (no log)"; fail=1
-    elif [ -z "$s" ]; then echo "ok   $1 mode $2 not enhanced"
-    else echo "FAIL $1 mode $2 ($s)"; fail=1; fi
 }
 
 run cruise 90

@@ -35,7 +35,9 @@ What differs from upstream:
   backdrop in the SKY layer; the rows' objects, the opponent, the mirror's rows and its starter figure tagged by
   their id; Mulholland's guard rails and bridges (`mulholland_extras_front`, `_mirror`) drawn as background; the
   mirror's glass into the background, its frame and mount and the hood and cockpit after it the foreground;
-  `road_page_flip`: presented) and `race_phys.c` (the physics step); the written / foreground / object / SKY
+  `road_page_flip`: presented), `race_aq.c` (`aq_draw_front`: `enh_aq_begin`, the Aqueduct's frame, its roll
+  and pivot; its stars, clouds, the rows' shapes, the opponent, the mirror's starter figure and the mirror's
+  stars tagged by their id) and `race_phys.c` (the physics step); the written / foreground / object / SKY
   layers in `platform/ega.c` and `vga.c`; the options in `main.c`. `src2/remaster/` holds stand-ins until
   Street Rod 2 has remastered pictures.
 * Deliberate changes are marked `ENH:`, port fixes `PORT:` (as upstream marks its own).
@@ -43,7 +45,9 @@ What differs from upstream:
 Developer aids kept from upstream: `SR_TRACE`, `SR_KEYS`, `SR_DEBUG_RACE`, `SR_DEBUG_END`, `SR_DEBUG_OPP`,
 `SR_SEED`, `SR_SNAPSHOT_DIR`/`SR_SNAPSHOT_MS`, `SR_AUDIO_DUMP`/`SR_AUDIO_WAV`, `--run-ms N`. The port adds
 `SR_DEBUG_POLICE=<seg>` (`race_phys.c`): the police come out at that segment, from 8 segments behind, in every
-Mulholland race not against the King, for the enhanced view's check; unset, it changes nothing. The smoke paths
+Mulholland race not against the King, for the enhanced view's check; unset, it changes nothing. It also adds
+`SR_DEBUG_AQ_WALL=<seg>` (`race_road.c`): from that segment on, the Aqueduct's demo autopilot drifts into the
+left wall and the view bounces, for the same check; unset, it changes nothing. The smoke paths
 run as the test `sr2_smoke` (`tests/sr2_smoke.py`).
 
 The rules as written for the faithful port (`sr2port/PORTING.md` at `9a3d488`); its Layout section describes

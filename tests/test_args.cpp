@@ -83,7 +83,7 @@ static void traits_table() {
     CHECK(wxString(b.folder) == "Game2");
     CHECK(wxString(b.section) == "Game2");
     CHECK(b.soundDevice && b.remasteredMusic && b.enhanced && !b.cars && !b.autoDrive && !b.art && !b.gearKeys);
-    CHECK(wxString(b.pictureNote) == "Street Rod 2: the art, and the race view of the Aqueduct are original for now.");
+    CHECK(wxString(b.pictureNote) == "Street Rod 2: the art is original for now.");
 }
 
 static void game_from_setting() {

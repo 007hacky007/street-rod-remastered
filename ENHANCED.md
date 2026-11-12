@@ -257,8 +257,9 @@ The road ahead exists in the table, so the geometry comes almost for free. The w
 `src2/enhanced/` gives Street Rod 2 the same stage 1: the same options (`--classic`, `--res-scale`, `--aa`,
 `--motion-delay`, `--town`), the same layers, and the drawing core shared with Street Rod 1 (`common/enhanced`:
 `enh_raster.c`, `enh_sprite.c`). Done: the town drive (road mode 0), the street drag (1), the Grudge drag strip
-(2 and 4), Mulholland (10h) and the rear-view mirror in each of them. The Aqueduct (8), its front view and its
-mirror, is still the original picture, scaled.
+(2 and 4), Mulholland (10h), the Aqueduct (8) and the rear-view mirror in each of them: every race kind. Still
+the original's: the dashboard's side mirror, and the art until Street Rod 2 has its remastered pictures and
+shapes.
 
 * **Road** (`enh_road2.c`): Street Rod 2's own 15 rows, row 0 at depth 4, row k at 8k + 4 - q, row 14 fixed at
   116, with its projection (half Street Rod 1's height term, the moving eye `DS_cam_y`, `DS_view_bounce_y`), its
@@ -285,16 +286,34 @@ mirror, is still the original picture, scaled.
   written twice per row, the strip's walls coloured by the front's phase, Mulholland's shoulders not stepped over
   a band, the finish band white only from segment 169h (3ADh in Mulholland). The dashboard's side mirror (the
   page-0 copy of `mirror_finish`) stays the original's picture, as in Street Rod 1.
+* **The Aqueduct** (8, `enh_aq2.c`): `aq_project_front`, `aq_project_mirror`, `aq_draw_sky` and `aq_draw_scene`
+  ported in one code path, with the game's integer arithmetic (exact) and in floating point (smooth). The front
+  rows 12..14 are fixed at depth 100, 108, 116 and the channel ends at row 14; the projection's cam_x is clamped
+  to 564h..D5Ch. The roll is a rotation of the projected picture about a pivot (`DS_rot_cx`, `_cy`): exact from
+  the game's own sine table, smooth from the interpolated roll and pivot, the 255/256 shrink kept, also at roll 0;
+  the opponent turns about the pivot of the pass that draws it (the mirror's when it is behind). The original's
+  two constructions are both kept, keyed on the game's roll value: the unrotated sky fill, floor fill and wall
+  quads at roll exactly 0, the extended rolled polygons otherwise. The roll, the pivot and the six channel
+  deformations are per-frame series. The sky is its fill with the stars and clouds captured from the game's
+  drawing (ids 24, 25, the mirror's stars 26), scrolled with the heading and turned with the roll. A roll step of
+  more than 60 degrees (wrapped to -180..180) is the bounce's snap back and is not interpolated; the bounce's
+  offset (`DS_view_bounce_y`) is kept after it, as the original keeps it. The mirror keeps the original's quirks:
+  rows 5..7 at depth 40, 48, 56, XC with +heading, its wall tops from `DS_aq_wall_l_shift` / `_r_shift`, its flags
+  `AQM[179h - seg - k]`, the starter at raw row `N - i` of the row it is drawn at.
 * **Objects**: not drawn again from the flags. A third display layer (`EGA_LAYER_OBJ`) tags every pixel the game
   draws for an object with its id, one table for the front view, the mirror and the Aqueduct: 1..14 the front
   rows, 15 the opponent (or the police in its slot), 16..22 the mirror's rows 1..7, 23 the mirror's starter
-  figure (24 and 25 are kept for the Aqueduct's stars and clouds). Nearer road drawn later clears the tags. When
-  the frame is shown, each id's pixels are cut out of the page and drawn again in the band loop at their own
-  segment, moved and scaled from their place in the frame to their smooth place (the opponent from its own
-  position and lane, by the place it was drawn at): band, row objects, rails, opponent, walls, in the original's
-  order, so nearer bands, walls and hillsides cover farther cuts. All of Street Rod 2's object logic (shapes and
-  their sizes, signs, billboards, banners, the start tree, the police) stays the game's own, and every drawing
-  routine of the game still runs: the enhanced view only captures.
+  figure, 24 and 25 the Aqueduct's stars and clouds, 26 its mirror's stars (`ENH_OBJ_IDS` 27). Nearer road drawn
+  later clears the tags. When the frame is shown, each id's pixels are cut out of the page and drawn again in the
+  band loop at their own segment, moved and scaled from their place in the frame to their smooth place (the
+  opponent from its own position and lane, by the place it was drawn at): band, row objects, rails, opponent,
+  walls, in the original's order, so nearer bands, walls and hillsides cover farther cuts. All of Street Rod 2's
+  object logic (shapes and their sizes, signs, billboards, banners, the start tree, the police) stays the game's
+  own, and every drawing routine of the game still runs: the enhanced view only captures. In the Aqueduct a cut is
+  rotated as well: it maps from its frame to the view by a similarity about its rotated anchor (the row shapes at
+  `aq_draw_row_shape`'s own anchor), turned by the change of its angle, the view's roll or, for the opponent, its
+  bank. The opponent's pre-rotated pictures (`opp_bank_variant`) still change where the game changes them; that
+  pop is the original's and is accepted.
 * **Check** (`enh_compare.c`): `SR_ENH_COMPARE=<file>` draws every enhanced frame again at scale 1, aa 1, from that
   frame's state without interpolation and with the game's integer rounding (the sky scrolled as `sky_scroll`
   does), and compares it with the page shown, for the front view and for the mirror's glass apart. It measures
@@ -305,7 +324,16 @@ mirror, is still the original picture, scaled.
   cut's re-projection: the old cut placed in the new frame by the drawing's own mapping against the new cut's
   bottom (the opponent's centre too), for cuts not cut off or partly hidden. The log has a line per frame and a
   summary per road mode. `SR_ENH_COMPARE_ROWS=1` logs the rows that differ, `SR_ENH_COMPARE_DUMP=<dir>` writes the
-  original and the enhanced view side by side. The test `sr2_enh_compare` (label `slow`) drives each race kind,
-  the town and the police (`SR_DEBUG_POLICE`), and judges each enhanced mode: road edges within 1 px in every
-  frame, front and mirror, the median frame within 10 per mille of mismatched pixels, the row tables exactly,
-  the objects within 1 px, the mirror's glass drawn; the Aqueduct's mode 8 must log no frames.
+  original and the enhanced view side by side. In mode 8, where per-row edges cannot measure the shallow,
+  rotated lines, a line metric takes their place: the Chebyshev distance of each black and white line pixel to
+  the nearest of its colour in the other picture, and in the front view the sky's border as well (the channel's
+  far end has no line, only the sky meets the concrete there); the mirror's glass is measured without the
+  border. The geometry check compares the rotated row table (the trough included); the opponent's exact anchor
+  takes the byte snap of `drv_blit_masked` (`(sx + g_px_shift) & ~7`); a rotated cut is judged only while its
+  angle (and for a row its shape group, for the opponent its picture and variant) is unchanged and nothing of
+  the foreground lies right below it, the sky's cuts never. Each frame line logs the roll and the bounce. The
+  test `sr2_enh_compare` (label `slow`) drives each race kind, the town and the police (`SR_DEBUG_POLICE`), the
+  Aqueduct three times (`aqueduct`, `aqking` against the King's rotated pictures, `aqwall` into the wall with
+  `SR_DEBUG_AQ_WALL`: bounced, steep, the bounce kept), and judges each mode: road edges (mode 8: the line
+  metric) within 1 px in every frame, front and mirror, the median frame within 10 per mille of mismatched
+  pixels and every frame within 20, the row tables exactly, the objects within 1 px, the mirror's glass drawn.

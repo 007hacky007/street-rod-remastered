@@ -29,8 +29,8 @@ for you, and on Windows you unzip them into a folder (see below).
 * **Separate music and sound effects volumes.**
 * **The Street Rod SE data disk's 25 cars**, one click away.
 * **Street Rod 2: The Next Generation**, the sequel, with its songs played by the band too, or its AdLib or PC
-  speaker music as it was, and the enhanced race view in town, on the drags, on Mulholland and in the mirror
-  (the Aqueduct is still the original picture).
+  speaker music as it was, and the enhanced race view in town, on the drags, on Mulholland, on the Aqueduct and
+  in the mirror.
 * **A launcher** for all of it, and a Mac app that downloads the games for you.
 
 ![Original and remastered, side by side](https://raw.githubusercontent.com/007hacky007/street-rod-remastered-art/main/screenshots/original-vs-remastered.png)
@@ -212,8 +212,8 @@ files come from the official `sr2pc.zip` (streetrodonline.com); unpack them into
 
 It takes `--game-dir`, `--scale`, `--fullscreen`, `--check`, `--classic`, `--res-scale`, `--aa`,
 `--motion-delay`, `--town`, `--music-volume`, `--sfx-volume` and `--music original|remastered` as above (the
-band plays its AdLib songs, or with `speaker` its PC speaker tune; the enhanced race view covers the town, the
-drags, the Grudge drag strip, Mulholland and the mirror, the Aqueduct is still the original picture), and the
+band plays its AdLib songs, or with `speaker` its PC speaker tune; the enhanced race view covers every race kind,
+the town, the drags, the Grudge drag strip, Mulholland and the Aqueduct, and the mirror in each), and the
 original's switches: `v` (VGA) and `adlib` or `speaker` skip its start-up menus, `demo` plays by
 itself, `nomouse`. See [ENGINE2.md](ENGINE2.md).
 

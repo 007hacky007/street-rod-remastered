@@ -8,7 +8,7 @@ const GameTraits& Traits(Game game) {
                                 true, true, false, true, true, true, true, ""};
     static const GameTraits sr2{"Street Rod 2", "streetrod2-enhanced", "Game2", "Game2",
                                 false, false, true, true, false, true, false,
-                                "Street Rod 2: the art, and the race view of the Aqueduct are original for now."};
+                                "Street Rod 2: the art is original for now."};
     return game == Game::SR2 ? sr2 : sr1;
 }
 
