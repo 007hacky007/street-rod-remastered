@@ -51,16 +51,19 @@
 
 ## Decisions this plan takes (owner rulings are in Global Constraints)
 
-- **A line metric for mode 8.** The channel's lines are shallow even at roll 0 (the floor edges at about 5 degrees, the wall tops at about 9), and floor and walls share colour 5, so a per-row first/last scan is off by a whole run whenever a line is one row off. In mode 8 the per-row edge passes are not run; the line metric measures every covered, non-object pixel of colour 0 or 15 against the nearest pixel of the same colour in the other picture, both ways, Chebyshev distance, capped at 8. `line_err_max <= 1` in every frame is the mode's "edges within 1 px".
+- **A line metric for mode 8.** The channel's lines are shallow even at roll 0 (the floor edges at about 5 degrees, the wall tops at about 9), and floor and walls share colour 5, so a per-row first/last scan is off by a whole run whenever a line is one row off. In mode 8 the per-row edge passes are not run; the line metric measures every covered, non-object pixel of colour 0 or 15 against the nearest pixel of the same colour in the other picture, both ways, Chebyshev distance, capped at 8. `line_err_max <= 1` in every frame is the mode's "edges within 1 px". The distance is measured across a line, not along it (a shallow line moved sideways scores its vertical offset), which is the error the eye sees.
 - **Rotation.** Exact mode uses the frame's own `DS_rot_sin`, `DS_rot_cos` and pivot (snapshotted), with `rotate_about_centre`'s arithmetic (`mul8`, floor). Smooth mode uses c = 255 cos(roll), s = 255 sin(roll), divided by 256 (the 255/256 shrink kept), about the interpolated pivot. The mirror's pivot is computed from the view's own mirror rows.
 - **Series.** `ENH_SER_N` grows by two pivot channels. `enh_frame_built` writes aq_dy and the six deformations (the values this frame's projection used). `enh_aq_begin`, called by `aq_draw_front` after the rotation, patches the newest sample's roll (unwrapped) and pivot.
 - **Constructions keyed on the game's roll value:** the unrotated sky fill, floor fill and wall quads when the view's `roll_raw` is exactly 0, the extended rolled polygons otherwise. `roll_raw` is the unwrapped roll moved back to the game's range by the newest frame's offset (a multiple of 360).
-- **Cut mapping.** `M(p) = A_v + s Rot(theta_v - theta_f) (p - A_f)`, s = z_f / z_v, A the anchor rotated as the game rotates it (always for row shapes, clouds and the opponent; for stars and the starter only when the roll is not 0). theta is the view's roll for row shapes, stars, clouds and the starter, and for the opponent its bank (`opp_bank_variant`'s formula, recomputed, never the pre-rotated variant's angle), so the exact view maps every cut to itself. Pictures turn the same way as the view: `pic_rotate_planar`'s inverse map (race_aq.c:800-829) is the transpose of `rotate_about_centre`'s matrix. A cut pops when the game changes a pre-rotated variant; that is accepted.
+- **Cut mapping.** `M(p) = A_v + s Rot(theta_v - theta_f) (p - A_f)`, s = z_f / z_v, A the anchor rotated as the game rotates it (always for row shapes, clouds and the opponent; for stars and the starter only when the roll is not 0). theta is the view's roll for row shapes, stars and clouds, for the starter the roll once |roll| > 5 (else 0: `drv_rotate` leaves it upright), and for the opponent its bank (`opp_bank_variant`'s formula, recomputed, never the pre-rotated variant's angle), so the exact view maps every cut to itself. Pictures turn the same way as the view: `pic_rotate_planar`'s inverse map (race_aq.c:801-829: u += c, v += s along a row, u -= s, v += c down) is the transpose of `rotate_about_centre`'s matrix. A cut pops when the game changes a pre-rotated variant; that is accepted.
 - **Sky cuts.** Stars, clouds and the mirror's stars are one cut each, s = 1, their anchor `(sky_x, 0)`: stars `sc >> 1`, clouds `sc`, mirror stars `-(sc >> 2)`, with `sc = cmod16(shl16(heading, 1), 140h)` (the smooth view adds 2 frac(heading)). They are drawn right after the sky fill (front) or the backdrop (mirror), so the walls cover them as in the original.
-- **Object ids.** 24 the stars, 25 the clouds (front, outside the mirror rectangle), 26 the mirror's stars (inside the glass); `ENH_OBJ_IDS` 27.
-- **Re-projection in mode 8.** A cut is judged only when its angle did not change between the two frames (and, for the opponent, its sprite and `DS_opp_variant` did not); the sky cuts are never judged. The demo's lanes hold the car on a wall top at a steady roll (48 or -30), so judged frames occur.
-- **The opponent's place.** From `DS_opp_last_d` as in part B; pictures 9 and up through the mirror projection (10 - heading, -aq_dy) rotated about the mirror's pivot, the others about the front's. Exact mode also repeats `opponent_draw`'s averaging with the last sx (picture 2 off the right side), from `DS_opp_last_sx` read at `enh_frame_built`.
-- **Developer aid** `SR_DEBUG_AQ_WALL=<seg>`: from that segment on, the demo autopilot moves cam_x 40h left at every segment, so the car climbs the left wall and bounces off it. It is the only way the compare sees a bounce (the demo's lanes never touch 439h / DEDh).
+- **Object ids.** 24 the stars, 25 the clouds (front, outside the mirror rectangle), 26 the mirror's stars (inside the glass); `ENH_OBJ_IDS` 27. The sky cuts' segment is `INT_MAX` (front) and `INT_MIN` (mirror): the first thing of their pass in `drawn_after`'s far-to-near order, so a row's cut whose rectangle holds star pixels is not taken as covered by them (`cut_covered`). `enh_cuts_at` never draws them; `enh_cut_id` does, right after the sky fill or the backdrop.
+- **The sky's border in the line metric.** The far end of the channel (the floor's far edge and the walls' far ends, `Lf`-`Rf`, `TLf`-`Lf`) has no line drawn on it: only the sky (colour 1) meets the concrete there. The front's line metric therefore also measures the sky's border: a covered pixel of colour 1 with a covered 4-neighbour (inside rows y0..y1 - 1) of another colour, matched against such pixels of the other picture. Uncovered neighbours (the foreground, objects) never make a border, so the mirror's frame and the stars do not. The mirror's glass is measured without it (its backdrop is a picture, not one colour).
+- **Re-projection in mode 8.** A cut is judged only when its angle did not change between the two frames (and, for the opponent, its sprite and `DS_opp_variant` did not); the sky cuts are never judged. `cut_judged`'s two tests of the cut's bottom against `yg` (enhanced.c:530-532) hold only for an unrotated cut (rot 0): a rotated row cut holds both of its row's shapes, at heights the roll moves apart, and the anchor (world x 0) is off to the side, so its bottom is nowhere near `yg`; a rotated cut is judged on the hidden and overdrawn tests alone. The demo's lanes hold the car on a wall top at a steady roll (48 or -30) and drive the middle lanes at roll 0, so judged frames occur.
+- **Anchors' y.** `yg` is the rotated anchor's line y plus `ROW_TOP` (part B's convention, enh_geo2.h:74): the rotation is applied to the game's line coordinates, then `ROW_TOP` added.
+- **The opponent's place.** From `DS_opp_last_d` as in part B; pictures 9 and up through the mirror projection (10 - heading, -aq_dy), the others through the front's. The rotation is about the pivot of the pass that draws it (race_opp.c:234 rotates about whatever `DS_rot_cx` / `_cy` hold): the front's when `opp_seg >= seg` (aq_draw_scene :500, :506), the mirror's when `opp_seg < seg` (:503), whatever the picture. So a picture below 9 drawn by the mirror's pass (the opponent just behind, d about -1..-127, the sprite still stepping down) lands in the front view rotated about the mirror's pivot; a picture 9 and up drawn by the front's pass (`opp_seg == seg`) goes into the mirror rectangle and the mirror's backdrop covers it (no cut). Exact mode also repeats `opponent_draw`'s averaging with the last sx (picture 2 off the right side), from `DS_opp_last_sx` read at `enh_frame_built`.
+- **The opponent's byte snap.** Pictures below 9 are blitted by `drv_blit_masked` at `r.dx = sx + DS_g_px_shift` (race_opp.c:253), and `clip_rect` keeps whole bytes (gfx.c:164), so the picture's left edge lands at `(sx + g_px_shift) & ~7`, sx being `DS_opp_last_sx` (the rotated sx minus adx). As part B's `enh_opp_drawn_sx` does for the other modes, the exact anchor x takes that snap (`((opp_sx + g_px_shift) & ~7) - opp_sx`, `snap.opp_sx` kept raw in mode 8); without it the re-projection check is off by up to 7 px between two frames. The mirror's pictures go through `bitmap_blit_masked_shift` (pixel exact).
+- **Developer aid** `SR_DEBUG_AQ_WALL=<seg>`: from that segment on, the demo autopilot's lane step is replaced by a drift of 40h left at every segment, so the car climbs the left wall and hits it (car_xl below 439h, cam_x below 4A7h, at most about 30 segments later). It is the only way the compare sees a bounce (the demo's lanes never touch 439h / DEDh). A push of 40h added after the lane step would not do: `aq_lane_target` steps back by (target - x) / 7 with no obstacle ahead, so the car settles 1C0h left of its lane and never reaches the wall from the middle lanes. The hit sets the crash bits (race_phys.c:478), so a run sees one bounce.
 - **Staging.** Task 3 records the Aqueduct's state with its picture still the game's; Task 4 composes the front view (the mirror stays the game's); Task 7 the mirror.
 
 ## File map
@@ -132,9 +135,11 @@ Line numbers below are those of HEAD 2739cab.
   double enh_aq_sky_x(double heading, int which, bool exact);
   double enh_aq_opp_bank(const AqCam *front, double opp_lat);   /* opp_bank_variant's DS_opp_bank, from roll_raw */
   double enh_aq_opp_wy(const AqCam *front, double opp_lat);     /* opponent_draw's wy up the walls */
-  /* opponent_draw's place in mode 8: z (|z| + 4 front, -z mirror), sx, sy, then rotated; false when not drawn */
+  /* opponent_draw's place in mode 8: z (|z| + 4 front, -z mirror), sx, sy, then rotated about the pivot of the pass
+   * that draws it (mirror_pass: opp_seg < seg, the mirror's; else the front's), whatever the picture; false when
+   * not drawn */
   bool enh_aq_opp_anchor(const AqCam *front, const AqCam *mirror, double d, int sprite, double opp_lat, int prev_sx,
-                         double *ax, double *ay, double *z);
+                         bool mirror_pass, double *ax, double *ay, double *z);
   void enh_rows_exact_aq(const EnhView *v, bool mirror, EnhRowTab *t);   /* y, xl, xr into their slots, XC into ybl,
                          YT into ye, XTL into xol, XTR into xor_ (race_aq.c's A_*); rows 0..n; yk and ybr untouched */
   ```
@@ -151,12 +156,12 @@ Line numbers below are those of HEAD 2739cab.
   - Rows: dx = heading, dy = aq_dy; front Y = proj_y(z, def[0] + 2000), XL = def[1] + 5C8h, XR = def[2] + CF8h, XC = mid + def[2], YT = def[3] + 67Ch, XTL = def[4] + 438h, XTR = def[5] + E88h, mid = `(def[2] + def[1] + 12C0h) >> 1` (s16); trough near at z 4 (mid + def[1] - 28h, def[2] + mid + 28h), far at z 116, tny = Y[0], tfy = Y[14].
   - Mirror: dx = -heading, dy = -aq_dy, no bounce, XC with +heading, XTL = wall_l + 438h, XTR = wall_r + E88h, trough near at z 2, far at 56, tfy = Y[7].
   - Exact: every value through the game's s16 operations (`add16`, `sub16`, `>> 1` on s16) and the integer projections with cx clamped. Smooth: the same formulas in doubles.
-  - Rotation exact: `ox = (s16)(mul8(dx, cs) + mul8(dy, sn) + pcx)`, `oy = (s16)(mul8(dy, cs) + mul8(-dx, sn) + pcy)`, dx = (s16)(x - pcx), `mul8(a, b) = (s32)a * b >> 8`. Smooth: `ox = pcx + (dx cs + dy sn) / 256`, `oy = pcy + (dy cs - dx sn) / 256`.
+  - Rotation exact: `ox = (s16)(mul8(dx, cs) + mul8(dy, sn) + pcx)`, `oy = (s16)(mul8(dy, cs) + mul8((s16)-dx, sn) + pcy)`, dx = (s16)(x - pcx), dy = (s16)(y - pcy), `mul8(a, b) = (s16)((s32)a * b >> 8)` (race_gfx.c:58-67). Smooth: `ox = pcx + (dx cs + dy sn) / 256`, `oy = pcy + (dy cs - dx sn) / 256`.
   - `enh_aq_roll_unwrap`: d = raw - prev_raw wrapped to -180..180; `*snap = |d| > ENH_AQ_ROLL_SNAP`; returns prev + d.
   - `enh_aq_sky_x`: sc = `cmod16(shl16(enh_s16_of(h), 1), 0x140)`; exact: stars `sc >> 1`, clouds `sc`, mirror `-(sc >> 2)` (arithmetic shifts); smooth: sc + 2 (h - floor h), then sc / 2, sc, -sc / 4.
-  - Bank: as `opp_bank_variant` with sxl = def[1], sxr = def[2]; exact s16 and `roll >> 2`; smooth: e clamped 0..100, times 0.45, roll / 4; both wrap at +-167h.
+  - Bank: as `opp_bank_variant` with sxl = def[1], sxr = def[2] (the saved values are this frame's def); exact s16 and `roll >> 2`; smooth: e clamped 0..100, times 0.45, roll / 4; the roll term only while -5Ah < roll < 0 (race_aq.c:149); both wrap at +-167h.
   - wy: `def[0] + 2000`, lifted on the left wall when `lat < sxl + 5C8h` by `(s16)(sxl - lat + 5A0h) * th / (s16)(400 - wall_l + sxl)`, on the right when `lat > sxr + CF8h` by `th * (s16)(lat - sxr - CF8h) / (s16)(400 - sxr + wall_r)`, th = def[3] - def[0] + 154h; exact truncating s32 division, 0 when the divisor is 0.
-  - Anchor: z = `cdiv16(d, 8)` (smooth d / 8), +16 for sprite 0, +8 for sprite 2 when z < -2. Pictures below 9: z = |z| + 4, `sx = proj_x(z, opp_lat, heading)`, `sy = proj_y(z, wy, aq_dy)` with the bounce; exact only: sprite 2 with sx > 13Fh and prev_sx < 200 takes `sx = (sx + prev_sx) / 2`; pictures 2 and 3 clamp sy to 100; rotated with `front`. Pictures 9 and up: z = -z (smooth: false when z < 1), the mirror projections with dx `10 - heading`, dy `-aq_dy`, rotated with `mirror`. Pictures above 12 or below 0: false.
+  - Anchor: z = `cdiv16(d, 8)` (smooth d / 8), +16 for sprite 0, +8 for sprite 2 when z < -2. Pictures below 9: z = |z| + 4, `sx = proj_x(z, opp_lat, heading)`, `sy = proj_y(z, wy, aq_dy)` with the bounce; exact only: sprite 2 with sx > 13Fh and prev_sx < 200 takes `sx = (sx + prev_sx) / 2`; pictures 2 and 3 clamp sy to 100. Pictures 9 and up: z = -z (smooth: false when z < 1), the mirror projections with dx `10 - heading`, dy `-aq_dy`. Then rotated with `mirror` when `mirror_pass`, else with `front` (both kinds of picture). Pictures above 12 or below 0: false. The byte snap of pictures below 9 is not applied here (it needs the drawn sx): `enh_obj_geo_aq` adds it in exact mode.
 
 - [ ] **Step 1: Write the failing tests** in `tests/test_sr2_enh.c` (each restores every DS word it sets):
   - `sr2_enh_aq_depths`: `enh_aq_z(i, q)` for q in {0, 3, 7} is {4, 12 - q, 20 - q, ..., 92 - q, 100, 108, 116}; `enh_aq_mz(i, q)` is {2, 8 + q, 16 + q, 24 + q, 32 + q, 40, 48, 56}.
@@ -180,7 +185,7 @@ Line numbers below are those of HEAD 2739cab.
   - `sr2_enh_aq_flags`: after `aq_build()`, a front cam at base 100: `enh_aq_flag(c, i) == TRKW(TRK_AQ, 100 + i)` for i 0..14, and equals the word `aq_flag(14 - i)` reads after road_frame's pointer set-up (`trk_ptr(TRK_AQ, 100)`, offset + 1Ch - 2k). A mirror cam: `== TRKW(TRK_AQ, 100 - 1 - i)` for i 0..7 (the critic's identity) and the word read through `far_make(SEG(TRK_SEG), 0x6570 - 2 * 100)` + 10h - 2k with k = 7 - i.
   - `sr2_enh_aq_opp_bank`: for opp_lat in {400h, 5A0h, 600h, 900h, CC0h, D40h, E00h}, sxl = sxr in {0, 40, -60} and roll in {0, 48, -30, -100, 200}: set `DS_opp_lat`, `DS_aq_saved_xl`, `DS_aq_saved_xr`, `DS_rot_enable`, call `opp_bank_variant()`; `enh_aq_opp_bank` of an exact cam (def[1] = sxl, def[2] = sxr, roll_raw = roll) equals `DSS(DS_opp_bank)`. Some cases give |bank| >= 56 (variant -1).
   - `sr2_enh_aq_opp_wy`: def all 0, wall shifts 0: lat 500h gives 1864, D00h gives 1994, A00h gives 2000. def {20, 10, 0, 50, 0, 0}, wall_l 20h: lat 500h gives 1854.
-  - `sr2_enh_aq_opp_anchor`: an exact front cam (case 3 of the rows test, roll 48 with its `sin256` values, pivot (7Ah, 3Fh)). Sprite 5, d 300: z == 41 and (ax, ay) equals `road_proj_x(41, lat, heading)`, `road_proj_y(41, wy, aq_dy)` rotated by `rotate_about_centre` with the same DS state. Sprite 2 with sx beyond 13Fh and prev_sx 150 gives the averaged x. Sprite 10, d -100: z == 12, the mirror projections with dx `10 - heading`, rotated about the mirror cam's pivot.
+  - `sr2_enh_aq_opp_anchor`: an exact front cam (case 3 of the rows test, roll 48 with its `sin256` values, pivot (7Ah, 3Fh)) and its mirror cam. Sprite 5, d 300, front pass: z == 41 and (ax, ay) equals `road_proj_x(41, lat, heading)`, `road_proj_y(41, wy, aq_dy)` rotated by `rotate_about_centre` with the same DS state. Sprite 2 with sx beyond 13Fh and prev_sx 150 gives the averaged x. Sprite 10, d -100, mirror pass: z == 12, the mirror projections with dx `10 - heading`, rotated about the mirror cam's pivot. Sprite 3, d -40, mirror pass (the opponent just behind, still a rear picture): z == 9, the front projections rotated about the mirror cam's pivot (`DS_rot_cx` / `_cy` set to it for the reference `rotate_about_centre`), not the front's.
   - `sr2_enh_aqtab_exact`: rows test case 3 with the rotation of `sr2_enh_aq_rot`'s roll 48: after `aq_project_front()` the test fills the `AQ_R_*` arrays as `aq_rotate_rows(14)` does (`rotate_about_centre` of raw row i into k = 14 - i) and `enh_aqtab_read`; `enh_aqtab_err(&mine, &read, 14) == 0` with `enh_aqtab_exact(&v, false, &mine)`.
 
   Run: `cmake --build build-mac && ctest --test-dir build-mac -R 'sr2_enh$' --output-on-failure`
@@ -206,10 +211,12 @@ Line numbers below are those of HEAD 2739cab.
   int roll, bounce;                 /* DS_rot_enable of the frame (mode 8; else 0), DS_view_bounce_y */
   #define ENH_LINE_CAP 8
   /* Every covered pixel of either picture whose colour is one of cols, against the nearest covered pixel of the same
-   * colour in the other picture (Chebyshev distance, ENH_LINE_CAP when none is that near). *px: such pixels in orig;
-   * *err: the largest distance. Rows y0..y1 - 1 of 320-wide pictures. */
+   * colour in the other picture (Chebyshev distance, ENH_LINE_CAP when none is that near); and, when border >= 0,
+   * every covered pixel of colour `border` with a covered 4-neighbour (rows y0..y1 - 1) of another colour, against
+   * the nearest such border pixel of the other picture. *px: such pixels in orig; *err: the largest distance. Rows
+   * y0..y1 - 1 of 320-wide pictures; `covered` is the one mask of both pictures. */
   void enh_compare_lines(const u8 *orig, const u8 *enh, const u8 *covered, int y0, int y1, const u8 *cols, int n,
-                         int *px, int *err);
+                         int border, int *px, int *err);
   /* enh_poly2.h: poly_fill_pts with an edge colour, on a polygon already clipped (game coordinates: x the pixel, y
    * the line y): filled as enh_fill_poly_incl fills it (y + 0.5), then each edge as enh_line1 in `edge`; edge == fill
    * fills only. */
@@ -221,17 +228,20 @@ Line numbers below are those of HEAD 2739cab.
 - Log: every frame line ends with ` line_px %d line_err_max %d mirror_line_px %d mirror_line_err_max %d roll %d bounce %d`; every mode line ends with ` line_worst %d mirror_line_worst %d` (the largest `line_err_max`, `m_line_err_max`). The totals line is unchanged.
 
 - [ ] **Step 1: Write the failing tests:**
-  - `sr2_enh_compare_lines` (10 rows x 320, all covered, cols {0}):
-    - the same diagonal line of colour 0 in both: `px` = its length, `err` 0;
+  - `sr2_enh_compare_lines` (10 rows x 320, all covered, cols {0}, border -1 unless said):
+    - the same vertical line of colour 0 (x 50, rows 0..9) in both: `px` 10, `err` 0;
     - the enhanced line one column right: `err` 1; three columns right: `err` 3;
     - one colour-0 pixel only in the enhanced picture, nothing near: `err` 8;
-    - the same pixel left uncovered: `err` 0.
+    - the same pixel left uncovered: `err` 0;
+    - border 1: rows 0..4 colour 1 and 5..9 colour 5 in the original, the enhanced picture's boundary one row lower:
+      `err` 1; three rows lower: `err` 3; the same boundary in both, with column 200 of the original uncovered and
+      colour 7: `err` 0 (an uncovered neighbour makes no border).
   - `sr2_enh_poly_edge`: three polygons inside the view at res 1, aa 1:
     - a triangle with a shallow edge (10,20)-(200,40)-(30,60);
     - a quad (50,30)-(90,25)-(95,70)-(45,80);
     - a thin quad 2 px wide (120,20)-(121,20)-(130,80)-(129,80).
 
-    Each is drawn by the game's `poly_fill(pts, n, 2, 0)` (declare `void poly_fill(const s16 *, s16, s16, s16);` in the test: race_gfx.c's slot-18 driver; `DSW(DS_draw_seg) = 0xA400`, `DSB(0x81DE) = 0x28`, `DSW(0x81DF) = 0`, after `vga_mode_0d()`) into page 2, and by `enh_fill_poly_edge(.., 2, 0)` into the buffer. Read both pictures into 320-wide arrays. `enh_compare_lines` with cols {0} and with cols {2} gives `err <= 1` both ways.
+    Each is drawn by the game's `poly_fill(pts, n, 2, 0)` (declare `void poly_fill(const s16 *, s16, s16, s16);` in the test: race_gfx.c's slot-18 driver; `DSW(DS_draw_seg) = 0xA400`, `DSB(0x81DE) = 0x28`, `DSW(0x81DF) = 0`, after `vga_mode_0d()`) into page 2, and by `enh_fill_poly_edge(.., 2, 0)` into the buffer. Read both pictures into 320-wide arrays. `enh_compare_lines` with cols {0} and with cols {2} (border -1) gives `err <= 1` both ways, and `px` > 0 for each polygon (an empty enhanced fill scores 8).
   - `sr2_enh_clip_poly_f`: the four polygons of `sr2_enh_clip_poly_i` give the same point count as `enh_clip_poly_i`, every coordinate within 1.
   - `sr2_enh_compare_log`: frames a, b, c keep their values (the new fields 0), and frame d is new:
     `EnhCompare d = { .rows = 84, .pixels = 26880, .mismatched = 81, .m_rows = 21, .m_pixels = 1596, .m_mismatched = 8, .mirror_cov = 1596, .obj_err = -1, .opp_sprite = 5, .line_px = 900, .line_err_max = 1, .m_line_px = 120, .m_line_err_max = 0, .roll = 48, .bounce = 12 };`
@@ -273,7 +283,7 @@ Line numbers below are those of HEAD 2739cab.
    * page starts (as enh_draw_begin), and its roll and pivot join the newest snapshot. */
   void enh_aq_begin(void);
   ```
-  - `EnhSnap` gains: `EnhAqTab aq_front` (read at `enh_aq_begin`), `EnhAqTab aq_mirror` (read at `enh_frame_presented`), `s16 opp_sx_prev` (`DS_opp_last_sx` at `enh_frame_built`, before `opponent_draw` writes it), `s16 opp_variant` (`DS_opp_variant` at presentation).
+  - `EnhSnap` gains: `EnhAqTab aq_front` (read at `enh_aq_begin`), `EnhAqTab aq_mirror` (read at `enh_frame_presented`), `s16 opp_sx_prev` (`DS_opp_last_sx` at `enh_frame_built`, before `opponent_draw` writes it), `s16 opp_variant` (`DS_opp_variant` at presentation), `bool opp_mpass` (`DS_opp_seg < DS_seg` at presentation: the mirror's pass drew the opponent); `EnhView` gains `opp_mpass` from it. `snap_fill` keeps `snap.opp_sx` raw in mode 8 (its byte snap is `enh_obj_geo_aq`'s, Task 4).
   - `enh_frame_built`, in mode 8: `ENH_F_AQ_DY` = `DS_aq_dy`, `ENH_F_DEF0..+5` = `DS_aq_def_floor_h`, `_xl`, `_xr`, `_top_h`, `_top_xl`, `_top_xr` (this frame's projection used them; `aq_draw_front` zeroes them later), `ENH_F_HOFF` 0; the roll and pivot channels carry the previous sample's values (a picture composed before the hook stays continuous).
   - `enh_aq_begin`: does `enh_draw_begin`'s work; then the newest sample's `ENH_F_ROLL` = `enh_aq_roll_unwrap(v[1][ROLL], last_raw, DS_rot_enable)` (the raw value itself when the series has one sample), `enh_ser_snap(&frames, ENH_F_ROLL)` when it reports a snap; `ENH_F_PIV_X/Y` = `DS_rot_cx`, `DS_rot_cy`; `enh_aqtab_read(&snap.aq_front)`.
   - `view_of`: `piv_x`, `piv_y` from the channels; `roll_raw = roll + (snap.aq_front.roll - frames.v[0][ENH_F_ROLL])`; `rot_sin`, `rot_cos` = `snap.aq_front.sn`, `.cs`; `opp_sx_prev` from the snapshot.
@@ -302,13 +312,13 @@ Line numbers below are those of HEAD 2739cab.
 - Modify: `src2/enhanced/enh_aq2.c`, `enh_aq2.h` (the scene, `enh_draw_aq`, `enh_obj_geo_aq`)
 - Modify: `src2/enhanced/enh_internal.h`: `EnhObjGeo` (:138) gains `bool xf; double rot;`; the cut enum (:131) gains `ENH_CUT_STARS, ENH_CUT_CLOUDS`; `enh_cut_id`.
 - Modify: `src2/enhanced/enhanced.c`:
-  - `cut_kind` / `cut_pass` (:243-252) and `capture_objects` (:282-332) for the sky kinds (seg 0, front pass);
+  - `cut_kind` / `cut_pass` (:243-252) and `capture_objects` (:282-332) for the sky kinds (seg `INT_MAX`, front pass; `cut_kind` maps 24 and 25 before its `id > ENH_OBJ_OPP` mirror branch);
   - `enh_cut_id` (new) and `enh_cuts_at` (:358-365: never the sky kinds);
   - `draw_view` (:369-374): mode 8 draws `enh_draw_aq` only;
   - `enh_frame_presented`: mode 8 composed again;
-  - `ObjCut` and `CutPred` gain `variant`; `cut_judged` (:523-533) and `reprojection_err` (:559-575) take the mode-8 rule;
+  - `ObjCut` and `CutPred` gain `variant` and `rot`; `cut_judged` (:523-533) and `reprojection_err` (:559-575) take the mode-8 rule (Decisions: equal rot, the bottom tests only at rot 0);
   - `compare_frame` (:591-687): the mode-8 branch.
-- Modify: `src2/enhanced/enh_road2.c` `enh_obj_geo` (:464): mode 8 returns `enh_obj_geo_aq`.
+- Modify: `src2/enhanced/enh_road2.c` `enh_obj_geo` (:462): in mode 8 it returns `enh_obj_geo_aq` first, before its dispatch of the mirror kinds to `enh_obj_geo_mirror` (:465-466), which knows nothing of mode 8.
 - Modify: `src2/game/race_aq.c`, each line `ENH:`:
   - `aq_draw_night_sky` (:235-243): `enh_draw_objects(ENH_OBJ_STARS)` before the first `drv_plot_points`, `enh_draw_objects(ENH_OBJ_CLOUDS)` before the first `shp_b_draw`, `enh_draw_objects(0)` at the end;
   - `aq_draw_scene` row shapes (:448-451): `if (N == 14) enh_draw_objects(i);` before the two `if`s, `if (N == 14) enh_draw_objects(0);` after them;
@@ -327,8 +337,9 @@ Line numbers below are those of HEAD 2739cab.
   - `EnhObjGeo` with `xf`: (a, yg) is the rotated anchor, rot its angle in degrees, `b` = 4 / z (front), so part B's axis-aligned mapping in `draw_cut` is exact while the angle does not change (Task 5 adds the rotation).
   - `enh_obj_geo_aq`, front kinds:
     - ROW at seg: k = seg - base, z = `enh_aq_z(k, q)` for 0..14, else 8 (seg - pos) + 4 (not ok below 1); anchor = rotated (x of world 0, y of `def[0] + 2000`) at z; rot = roll;
-    - OPP: `enh_aq_opp_anchor` with `v->opp_d`, `v->opp_sprite`, `v->opp_lat`, `v->opp_sx_prev`; b = (sprite < 9 ? 4 : 1) / z; rot = `enh_aq_opp_bank`;
-    - STARS: anchor (sky_x stars, 0), rotated only when not roll0; CLOUDS: (sky_x clouds, 0), always rotated; z = 1, b = 1, rot = roll.
+    - OPP: `enh_aq_opp_anchor` with `v->opp_d`, `v->opp_sprite`, `v->opp_lat`, `v->opp_sx_prev`, `v->opp_mpass`; b = (sprite < 9 ? 4 : 1) / z; rot = `enh_aq_opp_bank`; in exact mode a picture below 9 adds the byte snap to a (`((v->opp_sx + DSS(DS_g_px_shift)) & ~7) - v->opp_sx`);
+    - STARS: anchor (sky_x stars, 0), rotated only when not roll0; CLOUDS: (sky_x clouds, 0), always rotated; z = 1, b = 1, rot = roll;
+    - the mirror kinds (MIR, STARTER, MIR_STARS, OPP with sprite >= 9 drawn in the mirror): not ok until Task 7 (the mirror is the game's picture until then and holds no cuts: its foreground clears the tags).
 - The scene (`enh_draw_aq`), a port of `aq_draw_sky` and `aq_draw_scene` (race_aq.c:255-265, 392-507), statement by statement, with these substitutions:
 
   | the game's | the enhanced view's |
@@ -347,13 +358,15 @@ Line numbers below are those of HEAD 2739cab.
 
   Before the band loop, after the wall lines: `enh_cuts_at(v, FRONT, base + 15, INT_MAX, false)` and `(.., true)`.
 
+  An opponent picture below 9 drawn by the mirror's pass (`opp_mpass`: opp_seg behind the car) is a front cut (kept outside the mirror rectangle, `cut_pass` front) at a segment below base: the front scene draws it with the cuts after the loop, as the original draws it after the front view (from the mirror's pass, on the view's clip). Until Task 7 the game draws it in the foreground (its hook is Task 7's), so it stays the game's pixels.
+
 - `compare_frame` in mode 8:
   - the two mismatch passes as now; the per-row edge passes are not run (edge fields 0);
-  - `enh_compare_lines` with cols {0, 15} over `cov_fe` rows 12h..y_end into `line_px` / `line_err_max`, and over `cov_me` rows 16h..2Ah into `m_line_px` / `m_line_err_max`;
+  - `enh_compare_lines` with cols {0, 15} and border 1 (the sky) over `cov_fe` rows 12h..y_end - 1 (y0 12h, y1 y_end) into `line_px` / `line_err_max`, and with cols {0, 15}, border -1 over `cov_me` rows 16h..2Ah (y0 16h, y1 2Bh) into `m_line_px` / `m_line_err_max`;
   - `geo_err`: `rows = snap.game_front`, `enh_rows_exact_aq(&v, false, &rows)`, `rows_err(&rows, &snap.game_front, 15)`, and `enh_aqtab_err` of `enh_aqtab_exact(&v, false, ..)` against `snap.aq_front` over rows 0..14; the mirror's stays out until Task 7;
   - `roll` = `snap.aq_front.roll`;
   - the dump's "bad" frames include `line_err_max > 1` and `m_line_err_max > 1`.
-- Re-projection in mode 8: a cut is judged as in part B, and only when the old and new geometry's `rot` are equal; the opponent also needs the same `variant` (`snap.opp_variant`); sky kinds never.
+- Re-projection in mode 8: a cut is judged as in part B, and only when the old and new geometry's `rot` are equal; the opponent also needs the same `variant` (`snap.opp_variant`); sky kinds never. `cut_judged`'s tests of the bottom against `yg` (:530-532) apply only to a cut of rot 0 (Decisions).
 - `tests/test_sr2_enh_compare.sh`:
   - `check` takes the options after `<orig|enh>` as a list: `noobj` as now, and `lines`. With `lines`, `line_worst <= 1` is required, and `mirror_line_worst <= 1` with `enh`; "measured something" counts frames with `line_px > 0` (and `mirror_line_px > 0` with `enh`) instead of `edge_rows` / `mirror_edge_rows`.
   - `rolled <kind> <mode> <min>`: at least min frame lines of the mode with `roll` not 0; prints `ok   <kind> mode <m> rolled (<n> frames)` or `FAIL ...`.
@@ -362,8 +375,8 @@ Line numbers below are those of HEAD 2739cab.
 
 - [ ] **Step 1: Write the failing tests:**
   - `sr2_enh_aq_frame_state` (Task 3): `CHECK(enh_compose(small, rgb))` now.
-  - `sr2_enh_aq_roll_zero_continuous`: `aq_setup()`, seg 100 (`aq_build` flags), res 1, aa 1. A smooth view (exact false) with roll_raw 0 and roll 0, and the same with roll and roll_raw 1e-6 (the rolled construction), each drawn by `enh_draw_aq` (no cuts) into a 320-wide picture. Over rows 12h..63h: `enh_compare_rows` mismatch at most 10 per mille, `enh_compare_lines` cols {0, 15} err at most 1.
-  - `sr2_enh_aq_cut_geo`: the exact newest view of an `aq_frame` with roll 48: `enh_obj_geo(&v, ENH_CUT_ROW, base + 5, 0)` is ok, xf, rot 48, z `enh_aq_z(5, q)`; `ENH_CUT_OPP` with sprite 5 and opp_d 300 has z 41 and rot `enh_aq_opp_bank`; `ENH_CUT_STARS` has z 1 and a = the rotated `enh_aq_sky_x`.
+  - `sr2_enh_aq_roll_zero_continuous`: `aq_setup()`, seg 100 (`aq_build` flags), res 1, aa 1. A smooth view (exact false) with roll_raw 0 and roll 0, and the same with roll and roll_raw 1e-6 (the rolled construction), each drawn by `enh_draw_aq` (no cuts) into a 320-wide picture. Over rows 12h..63h: `enh_compare_rows` mismatch at most 10 per mille, `enh_compare_lines` cols {0, 15}, border 1, err at most 1 (both constructions put the far end and the walls' tops in the same place).
+  - `sr2_enh_aq_cut_geo`: the exact newest view of an `aq_frame` with roll 48: `enh_obj_geo(&v, ENH_CUT_ROW, base + 5, 0)` is ok, xf, rot 48, z `enh_aq_z(5, q)`, yg the rotated row-5 floor y plus `ROW_TOP`; `ENH_CUT_OPP` with sprite 5 and opp_d 300 has z 41 and rot `enh_aq_opp_bank`, and its a moves by the byte snap: with `DS_opp_last_sx` 101 at presentation (`DS_g_px_shift` 3) a is the rotated sx plus 3 (104 & ~7 = 104), with 100 the rotated sx minus 4 (103 & ~7 = 96); `ENH_CUT_STARS` has z 1 and a = the rotated `enh_aq_sky_x`.
   - The compare script as in the Interfaces.
 
   Run: `cmake --build build-mac && ctest --test-dir build-mac -R 'sr2_enh' --output-on-failure`. Expected: build FAIL, then `FAIL aqueduct mode 8 (no frames)`.
@@ -398,10 +411,10 @@ Line numbers below are those of HEAD 2739cab.
   - `sr2_enh_image_xf` (res 2, aa 1):
     - a 5x3 image with distinct colours at (40, 30): the identity m gives exactly the samples of `enh_draw_image(img, 40, 30, 45, 33)`;
     - a 2x1 image {3, 4} at (100, 50) with the +90-degree map about (100, 50), `m = { 0, 1, 50, -1, 0, 150 }`, at res 1: sample (100, 49) is 3, (100, 48) is 4, nothing else is drawn.
-  - `sr2_enh_aq_cut_turns`: one `aq_frame` with roll 0 captures a 3x3 tagged row cut (id 5) and the opponent (id 15, sprite 5, opp_d 300); a smooth view between it and a second frame of roll 20, at a moment where the view's roll is 10:
-    - the row cut's drawn samples lie inside the quadrilateral its frame rectangle's corners go to under `M` (the anchor turned by 10 degrees), and its centre sample is within 1 px of `M` of the frame centre;
-    - with the opponent on the floor (opp_lat A00h), `g.rot - f.rot` is exactly 10 (a positive roll adds no roll / 4 term).
-  - `sr2_enh_aq_sky_cuts`: views at heading h and h + 3, roll 0: the stars' anchor moves by exactly 3 in x (plot_points does not rotate at roll 0), the clouds' by 6 x 255/256 (shp_b_draw always rotates its anchor).
+  - `sr2_enh_aq_cut_turns`: two `aq_frame`s, roll 0 then roll 20, each writing the same tagged pixels into the shown page (a 3x3 row cut, id 5, and the opponent, id 15, sprite 5, opp_d 300, opp_seg ahead); the cuts are the newest frame's (roll 20). A smooth view between the two at a moment where the view's roll is 10:
+    - the row cut's drawn samples lie inside the quadrilateral its frame rectangle's corners go to under `M` (the anchor turned by -10 degrees), and its centre sample is within 1 px of `M` of the frame centre;
+    - with the opponent on the floor (opp_lat A00h), `g.rot - f.rot` is exactly -10 (a positive roll adds no roll / 4 term).
+  - `sr2_enh_aq_sky_cuts`: smooth views (exact false, so no `mul8` floors) at heading h and h + 3, roll 0: the stars' anchor moves by exactly 3 in x (plot_points does not rotate at roll 0), the clouds' by 6 x 255/256 (shp_b_draw always rotates its anchor).
 
   Run: `cmake --build build-mac && ctest --test-dir build-mac -R 'sr2_enh$' --output-on-failure`. Expected: build FAIL (`enh_draw_image_xf` undeclared).
 - [ ] **Step 2: Implement.**
@@ -411,7 +424,7 @@ Line numbers below are those of HEAD 2739cab.
 ### Task 6: The wall bounce
 
 **Files:**
-- Modify: `src2/game/race_road.c` `road_advance_segment` (:1502-1505), the developer aid, each line `PORT: developer aid`: a helper `static s16 aq_wall_aid(void)` reading `SR_DEBUG_AQ_WALL` (`<stdlib.h>`), and after `DSS(DS_cam_x) = t;` in the mode-8 branch `if (aq_wall_aid() && DSS(DS_seg) >= aq_wall_aid()) DSS(DS_cam_x) = sub16(DSS(DS_cam_x), 0x40);`
+- Modify: `src2/game/race_road.c` `road_advance_segment` (:1502-1505), the developer aid, each line `PORT: developer aid`: a helper `static s16 aq_wall_aid(void)` reading `SR_DEBUG_AQ_WALL` (`<stdlib.h>`, as race_phys.c's `police_aid_seg`), and in the mode-8 branch, between the `aq_lane_target` line and `DSS(DS_cam_x) = t;`, `if (aq_wall_aid() && DSS(DS_seg) >= aq_wall_aid()) t = sub16(DSS(DS_cam_x), 0x40);` (the drift replaces the lane step; Decisions)
 - Modify: `tests/test_sr2_enh_compare.sh`
 - Test: `tests/test_sr2_enh.c`
 
@@ -423,7 +436,7 @@ Line numbers below are those of HEAD 2739cab.
   - `kept <kind> <mode>`: the last frame line of the mode has `bounce` not 0 (D2: the offset stays after the bounce); `ok   <kind> mode <m> bounce kept`.
 
 - [ ] **Step 1: Write the failing tests:**
-  - `sr2_enh_aq_bounce_persists`: `aq_setup()`, frames with bounce 0, 12, 24, 36, 48, 36, 24, 12 and the roll spinning +32 from 48, then the frame after the bounce: roll 48, `DS_wall_hit_shift` 0, bounce 12. The newest view: bounce 12, roll snapped (`enh_view_at` gives the newest roll at every time), and `enh_rows_exact_aq(newest)` row 14's y equals `DSS(DS_row_y + 28)` after `aq_project_front()` with `DS_view_bounce_y` 12, and differs from it with 0.
+  - `sr2_enh_aq_bounce_persists`: `aq_setup()`, a frame of roll 48 and bounce 0, then the bounce's eight frames as `aq_wall_bounce` makes them (the shift added before each `road_frame`): bounce 0, 12, 24, 36, 48, 36, 24, 12 and roll 80, 112, ..., 304, then the frame after the bounce: roll 48, `DS_wall_hit_shift` 0, bounce 12. The newest view: bounce 12, roll snapped (`enh_view_at` gives the newest roll at every time), and `enh_rows_exact_aq(newest)` row 14's y equals `DSS(DS_row_y + 28)` after `aq_project_front()` with `DS_view_bounce_y` 12, and differs from it with 0.
   - The compare script:
     - `run aqwall 60 aqueduct SR_DEBUG_AQ_WALL=60`;
     - `check aqwall 8 20 orig lines`, `bounced aqwall 8 8`, `steep aqwall 8 1`, `kept aqwall 8`.
@@ -432,7 +445,7 @@ Line numbers below are those of HEAD 2739cab.
 - [ ] **Step 2: Implement** the aid and the script helpers.
 - [ ] **Step 3: Run** the Step 1 command, then `-L slow`. Expected: all `ok`, `100% tests passed`.
   - Run the `aqwall` drive by hand once (the script's `run` line, `SR_ENH_COMPARE` and the output in a scratch folder outside the repository): its output shows `race_debug: race_results` with the crash bits 21h in the player's result.
-  - A slow bounce (speed at most 1Eh) is one frame; then `bounced` fails. If so, raise the aid's segment until the log has at least 8 bounce frames; the 8-frame bounce is the one that spins and snaps.
+  - The fast bounce gives 8 frames with `bounce` not 0 (the loop's frames 2..8 and the frame after it; more only while the race goes on after the crash), so `bounced aqwall 8 8` has no slack: every one of them must be compared. A slow bounce (speed at most 1Eh) is one frame; then `bounced` and `steep` fail. If so, raise the aid's segment (a faster car) until the log has the 8-frame bounce, the one that spins and snaps.
   - Look at snapshots of the bounce at `--res-scale 4`: the view spins with the original and snaps back at the same frame.
 - [ ] **Step 4: Commit** `git commit -m "Check the Aqueduct's wall bounce"`. Codecheck: `0 differ`.
 
@@ -442,7 +455,7 @@ Line numbers below are those of HEAD 2739cab.
 - Modify: `src2/enhanced/enh_aq2.c`, `enh_aq2.h` (`enh_draw_aq_mirror`, the mirror kinds of `enh_obj_geo_aq`, `enh_aq_starter_k`)
 - Modify: `src2/enhanced/enhanced.h`: `#define ENH_OBJ_MIR_STARS 26` (the Aqueduct's mirror stars), `ENH_OBJ_IDS 27`.
 - Modify: `src2/enhanced/enh_internal.h`: `ENH_CUT_MIR_STARS`; `EnhSnap` / `EnhView` gain `s16 starter_seg` (`DS_starter_seg` at presentation).
-- Modify: `src2/enhanced/enhanced.c`: `enh_tag_kept` (26 only inside the glass), `cut_kind` / `cut_pass` (26: mirror pass), `enh_mirror_begin` (mode 8's FG branch of Task 3 goes), `draw_view` (mode 8 also `enh_draw_aq_mirror`), `compare_frame` (the mirror's geometry in mode 8).
+- Modify: `src2/enhanced/enhanced.c`: `enh_tag_kept` (26 only inside the glass), `cut_kind` / `cut_pass` (26: mirror pass, seg `INT_MIN`), `enh_mirror_begin` (mode 8's FG branch of Task 3 goes), `draw_view` (mode 8 also `enh_draw_aq_mirror`), `compare_frame` (the mirror's geometry in mode 8).
 - Modify: `src2/game/race_aq.c`, each line `ENH:`:
   - `aq_mirror_stars` (:246-252): `enh_draw_objects(ENH_OBJ_MIR_STARS)` first, `enh_draw_objects(0)` last;
   - the row shapes (:448-451, Task 4's lines): `enh_draw_objects(N == 14 ? i : ENH_OBJ_MIR(i))` and `enh_draw_objects(0)` for both passes;
@@ -459,21 +472,21 @@ Line numbers below are those of HEAD 2739cab.
                                                        reads (row N - i of the row i it is drawn at) */
   ```
 - The mirror pass (`aq_draw_mirror`, race_aq.c:633-647):
-  - the glass clip `enh_clip(0xF2, 0x16, 0x13E, 0x2B)`; polygons and lines clipped on the game's mirror clip F0h..13Fh x 16h..2Ah;
+  - the glass clip `enh_clip(0xF2, 0x16, 0x13E, 0x2B)`; polygons and lines clipped on the game's mirror clip F0h..13Fh x 16h..2Ah (what lands on columns F0h, F1h, 13Eh, 13Fh is `mirror_finish`'s frame, foreground);
   - the backdrop `enh_image_vram(0x4000, 0xEA, 0x6A, 76, 21)` at (F2h, 16h) (part B's, `mirror_bg_prepare(0)`: no sky strip in mode 8), then `enh_cut_id(v, ENH_OBJ_MIR_STARS)`;
   - the scene with n = 7 and the mirror cam: roll0's floor is the rows Y[7]..2Ah across F0h..13Fh (`drv_hspan`), not `fill_rows`; no sky fill;
   - cuts before the loop `(INT_MIN, base - 8)`; row shapes at row i (step 2) `enh_cuts_at(v, MIRROR, base - i, base - i, false)`; step 4 at row i: the starter by `enh_cut_id(v, ENH_OBJ_STARTER)` when `7 - i == enh_aq_starter_k(base, v->starter_seg)`, then the opponent `(base - i, base - i, true)`; after the loop `(base, INT_MAX)`.
-- Mirror kinds of `enh_obj_geo_aq` (b = 1 / z, rot = roll):
+- Mirror kinds of `enh_obj_geo_aq` (b = 1 / z, rot = roll unless said, yg + `ROW_TOP`):
   - MIR at seg: k = base - seg, z = `enh_aq_mz(k, q)` (not ok for k < 0), anchor the mirror cam's rotated (x of world 0, y of the floor);
-  - STARTER: k = `enh_aq_starter_k(base, seg)`, ok for 0 <= k <= 5; y = the mirror's raw Y[k], x = `line_x_at_y(tfl, tfy, tnl, tny, y) + 1` (the mirror's trough), z = `enh_aq_mz(k, q)`; rotated when not roll0;
-  - OPP with sprite >= 9: `enh_aq_opp_anchor` (the mirror's branch);
+  - STARTER: k = `enh_aq_starter_k(base, seg)`, ok for 0 <= k <= 5; y = the mirror's raw Y[k], x = `line_x_at_y(tfl, tfy, tnl, tny, y) + 1` (the mirror's trough, unrotated), z = `enh_aq_mz(k, q)`; the anchor rotated when not roll0 (race_aq.c:380); rot = roll while |roll_raw| > 5 (`drv_rotate` turns the picture only then, :371-376), else 0;
+  - OPP with sprite >= 9: `enh_aq_opp_anchor` (the mirror's projection, rotated about the pivot of `v->opp_mpass`'s pass: the mirror's for every cut that survives, since the front pass's pictures 9 and up are covered by the backdrop);
   - MIR_STARS: anchor (sky_x mirror stars, 0), rotated with the mirror cam when not roll0, z = 1.
 - `compare_frame`, mode 8: `mrows = snap.game_mirror`, `enh_rows_exact_aq(&v, true, &mrows)`, `rows_err(.., 8)`, and `enh_aqtab_err` of `enh_aqtab_exact(&v, true, ..)` against `snap.aq_mirror` over rows 0..7 join `geo_err` (part B's mirror rows and YK check is not run in mode 8).
 
 - [ ] **Step 1: Write the failing tests:**
   - `sr2_enh_aq_frame_state`: its mirror check becomes: a write after `enh_mirror_begin()` leaves fg clear (the glass enhanced), and after `enh_mirror_end()` sets it.
   - `sr2_enh_capture_regions` gains: `enh_tag_kept(ENH_OBJ_MIR_STARS, 0, 0x100, 0x20)` true, `(ENH_OBJ_MIR_STARS, 0, 0xF1, 0x20)` false, `(ENH_OBJ_MIR_STARS, 0, 0x80, 0x40)` false.
-  - `sr2_enh_aq_starter`: `enh_aq_starter_k(100, 95) == 4`; for an exact mirror cam of rows case 1 at roll 0, `enh_obj_geo(&v, ENH_CUT_STARTER, 95, 0)` has yg = the mirror's raw Y[4] and a = `line_x_at_y` of the mirror's trough at that y, plus 1.
+  - `sr2_enh_aq_starter`: `enh_aq_starter_k(100, 95) == 4`; for an exact mirror cam of rows case 1 at roll 0, `enh_obj_geo(&v, ENH_CUT_STARTER, 95, 0)` has yg = the mirror's raw Y[4] + `ROW_TOP` and a = `line_x_at_y` of the mirror's trough at that y, plus 1; `enh_obj_geo(&v, ENH_CUT_STARTER, 93, 0)` (k 6, where starter_draw_mirror_aq returns) is not ok.
   - `sr2_enh_aq_mirror_geo`: `enh_obj_geo(&v, ENH_CUT_MIR, base - 3, 0)` has z `enh_aq_mz(3, q)` and its anchor rotated about the mirror cam's pivot ((XL7 + XR7) >> 1, Y7).
   - The compare script: `check aqueduct 8 20 enh lines`, `check aqking 8 20 enh lines`, `check aqwall 8 20 enh lines`.
 
@@ -489,9 +502,9 @@ Line numbers below are those of HEAD 2739cab.
 - Test: `tests/test_args.cpp` :86: `CHECK(wxString(b.pictureNote) == "Street Rod 2: the art is original for now.");`
 - Modify: `ENHANCED.md` section 9:
   - the "Done" sentence: every race kind (town, street drag, Grudge drag strip, Mulholland, the Aqueduct) and the rear-view mirror in each; still original: the dashboard's side mirror, and the art until Street Rod 2's remastered pictures and shapes;
-  - an Aqueduct bullet: its rows (12..14 fixed), the clamp, the rotation (the game's sine table, the 255/256 shrink, the pivot), the two constructions, the sky with stars and clouds captured, the bounce's snap and its kept offset, the mirror's quirks (XC, the wall shifts, the flags, the starter's row);
+  - an Aqueduct bullet: its rows (12..14 fixed), the clamp, the rotation (the game's sine table, the 255/256 shrink, the pivot; the opponent about the pivot of the pass that draws it), the two constructions, the sky with stars and clouds captured, the bounce's snap and its kept offset, the mirror's quirks (XC, the wall shifts, the flags, the starter's row);
   - the objects bullet: ids 24, 25, 26 and `ENH_OBJ_IDS` 27; rotated cuts (the mapping, the opponent's bank, the variant pops accepted);
-  - the Check paragraph: the line metric in mode 8, the rotated table in the geometry check, the roll and bounce fields, the `aqueduct`, `aqking` and `aqwall` runs (`SR_DEBUG_AQ_WALL`); "the Aqueduct's mode 8 must log no frames" goes.
+  - the Check paragraph: the line metric in mode 8 (the black and white lines, and the sky's border in the front view), the rotated table in the geometry check, the opponent's byte snap and the rule for judging rotated cuts, the roll and bounce fields, the `aqueduct`, `aqking` and `aqwall` runs (`SR_DEBUG_AQ_WALL`); "the Aqueduct's mode 8 must log no frames" goes.
 - Modify: `ENGINE2.md` :33-37 (the `race_aq.c` hooks: `enh_aq_begin`, the stars, clouds, row shapes, opponent, starter and mirror stars tagged) and :44-47 (`SR_DEBUG_AQ_WALL=<seg>` in `race_road.c`: from that segment the demo autopilot drifts into the left wall and bounces; unset, it changes nothing).
 - Modify: `CHANGELOG.md` Unreleased (:15-19): the SR2 enhanced entry covers the Aqueduct (the rolled channel, its sky, the bounce) and the mirror in every race kind; "The Aqueduct is the original picture for now." goes.
 - Modify: `README.md` :31-33 and :216 (no Aqueduct exception), `launcher/README.md` :44-46 (the race view covers every race kind and the mirror; only the art is greyed, with the note).
