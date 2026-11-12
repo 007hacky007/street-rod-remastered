@@ -34,7 +34,8 @@ typedef struct {
     s16 opp_sprite;            /* DS_opp_sprite after the frame was drawn: the opponent's view */
     s16 opp_seg;               /* DS_opp_seg */
     s16 opp_d;                 /* DS_opp_last_d: the depth the opponent was drawn at (1/64 segment) */
-    s16 opp_sx;                /* DS_opp_last_sx: the screen x it was drawn at */
+    s16 opp_sx;                /* the screen x it was drawn at: DS_opp_last_sx, for pictures 2..8 where the picture
+                                  landed (enh_opp_drawn_sx) */
     bool opp_fixed;            /* drawn at a fixed screen spot: the side views 0 and 1, contact, result 3 */
     s16 fall_dir;              /* DS_fall_dir */
     bool fallen;               /* DS_fallen: no front view drawn */
@@ -46,6 +47,11 @@ typedef struct {
     EnhRowTab game_front;      /* read at enh_frame_built: the mirror overwrites rows 0..7 and all of YK later */
     EnhRowTab game_mirror;     /* read at enh_frame_presented */
 } EnhSnap;
+
+/* opponent_draw's front pictures 2..8 are blitted at whole bytes (clip_rect: x >> 3): the screen x their anchor
+ * landed at, from the projected sx and the width the picture is centred by (2, 3: its visible width; 4..8: its
+ * width). */
+int enh_opp_drawn_sx(int sx, int width);
 
 /* The smooth view at a moment: the road-curve part of the heading comes from YAW at pos. Positions in
  * segments (substep and the opponent's fraction are in 1/64 segment). */
@@ -74,6 +80,9 @@ int enh_proj_x_i(int z, int X, int dx, int cx);
 int enh_proj_y_i(int z, int Y, int dy, int cam_y, int bounce);
 /* road_project_front's 15 rows of an exact view, all nine tables, from the camera the drawing uses. */
 void enh_rows_exact_front(const EnhView *v, EnhRowTab *t);
+/* An exact view's town facade or storey as town_walls_front's quad_fill draws it: side 0 left, 1 right; n the near
+ * row, f the far one; x the face's outer x, y its bottom, yt its top (integer rows). */
+void enh_town_face_exact(int side, int xn, int xf, int yn, int yf, int ytf, int ytn, u8 col);
 /* road_draw_sky's top_band_row: from row 14 down to row 1, a row whose line y is above the ground so far
  * (strictly) lowers the ground to it; bands of rows above the result are not drawn. y: the rows' line y, ground0:
  * the horizon strip's bottom; *ground: the ground's top row. */
@@ -104,6 +113,10 @@ void enh_cuts_begin(void);
  * opponent when `opp`, the others otherwise. The opponent's pass is the mirror's for pictures 9 and up. */
 void enh_cuts_at(const EnhView *v, int pass, int lo, int hi, bool opp);
 extern int enh_cut_log[ENH_OBJ_IDS], enh_cut_log_n;   /* ids in the order the last picture drew them (tests) */
+/* The frame's cut of `id` is partly hidden: its rectangle holds the foreground, or pixels of a cut drawn after it
+ * in the band loop (a nearer segment's, or at its own segment the opponent over the row's objects). The compare
+ * tool's re-projection check does not judge such cuts. */
+bool enh_cut_partly_hidden(int id);
 
 /* The road colours of the compare tool's edges. */
 extern const u8 enh_road_colours[2];

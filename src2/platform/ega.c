@@ -105,12 +105,13 @@ void ega_mark_written(u16 offset, u8 pixels, u8 changed)
     /* The foreground takes only the pixels a write changed: masked blits (the cockpit, the sprites)
      * rewrite whole bytes with the background kept in the transparent pixels. */
     if (layer == EGA_LAYER_FG) fg[offset] |= changed;
-    else if (layer == EGA_LAYER_BG) fg[offset] &= (u8)~pixels;
+    else if (layer == EGA_LAYER_BG || layer == EGA_LAYER_SKY) fg[offset] &= (u8)~pixels;
     if (layer == EGA_LAYER_OBJ) {                    /* ENH: an object: its pixels carry the drawing row's tag */
         fg[offset] &= (u8)~changed;
         for (int b = 0; b < 8; b++) if (changed >> (7 - b) & 1) obj[(u32)offset * 8 + b] = obj_id;
-    } else if (layer == EGA_LAYER_BG) {
-        for (int b = 0; b < 8; b++) if (pixels >> (7 - b) & 1) obj[(u32)offset * 8 + b] = 0;
+    } else if (layer == EGA_LAYER_BG || layer == EGA_LAYER_SKY) {
+        u8 t = layer == EGA_LAYER_SKY ? EGA_TAG_SKY : 0;
+        for (int b = 0; b < 8; b++) if (pixels >> (7 - b) & 1) obj[(u32)offset * 8 + b] = t;
     } else if (layer == EGA_LAYER_FG) {              /* the foreground over an object: no longer the object's */
         for (int b = 0; b < 8; b++) if (changed >> (7 - b) & 1) obj[(u32)offset * 8 + b] = 0;
     }

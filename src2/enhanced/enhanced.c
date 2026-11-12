@@ -15,6 +15,7 @@
 #include "host.h"
 #include "mem.h"
 #include "platform/ega.h"
+#include "platform/video.h"
 
 EnhOptions enh_opt = { false, 1, ENH_DEFAULT_AA, ENH_DEFAULT_MOTION_DELAY, true };
 
@@ -39,10 +40,13 @@ typedef struct {
     bool fixed;                /* drawn where the frame had it: the opponent at a fixed screen spot (snap.opp_fixed) */
     EnhObjGeo geo;
     bool used;
+    bool hidden;               /* partly hidden in the frame (enh_cut_partly_hidden) */
     bool drawn;                /* in the picture being drawn */
+    unsigned gen;              /* the series' generation it was cut in (series_gen) */
 } ObjCut;
 static ObjCut cuts[ENH_OBJ_IDS];
 static EnhView cut_view;
+static unsigned series_gen;    /* counts the series' resets (a jump, a new race): cuts of an older one are another road */
 int enh_cut_log[ENH_OBJ_IDS], enh_cut_log_n;
 
 #define NOMINAL_FRAME_NS (8 * (double)PIT_DIV_GAME * 1e9 / PIT_HZ)    /* pace_ticks(8) at the game rate */
@@ -123,6 +127,8 @@ static bool mode_enhanced(s16 mode) { return mode == 0 || mode == 1; }
 
 void enh_race_begin(void)
 {
+    enh_compare_race(DSS(DS_road_mode));
+    series_gen++;
     frames.n = phys.n = 0;
     presented = false;
     base_layer = EGA_LAYER_BG;
@@ -163,8 +169,10 @@ void enh_frame_built(void)
     v[ENH_F_HOFF] = (s16)(u16)(DSW(DS_cur_height) - TRKW(TRK_HGT, SDL_clamp(hseg, 0, TRK_N - 1)));
     /* A jump (race start, reset, a drive-to entry) starts the motion anew. */
     if (frames.n > 0 && (SDL_fabs(v[ENH_F_POS] - frames.v[0][ENH_F_POS]) >= 2.0
-                         || abs((s16)(u16)(heading - last_heading)) >= 0x40))
+                         || abs((s16)(u16)(heading - last_heading)) >= 0x40)) {
         frames.n = phys.n = 0;
+        series_gen++;
+    }
     /* The heading is kept as it is (road_project_front: dx = heading - YAW[seg + k]), unwrapped against the last
      * frame, so the view equals the original's at each frame and turns smoothly between frames. */
     v[ENH_F_HEADING] = frames.n > 0 ? enh_unwrap(frames.v[0][ENH_F_HEADING], last_heading, heading) : heading;
@@ -189,6 +197,12 @@ void enh_draw_begin(void)
     ega_clear_obj(page, ENH_VIEW_Y1 * EGA_BYTES_PER_LINE);
     base_layer = EGA_LAYER_BG;
     ega_set_layer(EGA_LAYER_BG);
+}
+
+void enh_draw_sky(bool on)
+{
+    if (!active) return;
+    ega_set_layer(on ? EGA_LAYER_SKY : base_layer);
 }
 
 void enh_mark_fg(int x0, int y0, int x1, int y1)
@@ -231,6 +245,28 @@ static int cut_pass(const ObjCut *c)
 {
     if (c->kind == ENH_CUT_OPP) return c->sprite >= 9 ? ENH_PASS_MIRROR : ENH_PASS_FRONT;
     return c->kind == ENH_CUT_ROW ? ENH_PASS_FRONT : ENH_PASS_MIRROR;
+}
+
+/* b is drawn after a in the band loop (enh_draw_road): far to near, at one segment the row's objects first. */
+static bool drawn_after(const ObjCut *a, const ObjCut *b)
+{
+    return b->seg < a->seg || (b->seg == a->seg && a->kind == ENH_CUT_ROW && b->kind == ENH_CUT_OPP);
+}
+
+/* The cut of `id` holds, within its rectangle, the foreground or a pixel of a cut of its pass drawn after it. */
+static bool cut_covered(int id, const u8 *tag)
+{
+    const ObjCut *c = &cuts[id];
+    const u8 *fgm = ega_fg();
+    for (int y = c->y0; y < c->y0 + c->img.h; y++)
+        for (int x = c->x0; x < c->x0 + c->img.w; x++) {
+            u16 b = (u16)(shown_start + y * EGA_BYTES_PER_LINE + (x >> 3));
+            if (fgm[b] >> (7 - (x & 7)) & 1) return true;
+            int t = tag[(u32)b * 8 + (x & 7)];
+            if (t <= 0 || t == id || t >= ENH_OBJ_IDS || !cuts[t].used || cut_pass(&cuts[t]) != cut_pass(c)) continue;
+            if (enh_tag_kept(t, snap.opp_sprite, x, y) && drawn_after(c, &cuts[t])) return true;
+        }
+    return false;
 }
 
 /* Cuts each id's pixels (where enh_tag_kept keeps them) out of the page just shown. */
@@ -279,9 +315,14 @@ static void capture_objects(void)
             }
         c->x0 = x0[id];
         c->y0 = y0[id];
+        c->gen = series_gen;
         c->used = true;
     }
+    for (int id = 1; id < ENH_OBJ_IDS; id++)
+        if (cuts[id].used) cuts[id].hidden = cut_covered(id, tag);
 }
+
+bool enh_cut_partly_hidden(int id) { return id > 0 && id < ENH_OBJ_IDS && cuts[id].used && cuts[id].hidden; }
 
 void enh_cuts_begin(void)
 {
@@ -329,6 +370,13 @@ void enh_draw_fg(bool fg)
 }
 
 static void compare_frame(void);
+static void predict_cuts(void);
+
+int enh_opp_drawn_sx(int sx, int width)
+{
+    s16 dx = (s16)(sx - (width >> 1));
+    return sx - (dx & 7);
+}
 
 /* The newest frame's state that is not interpolated, after the frame was drawn. */
 static void snap_fill(void)
@@ -339,6 +387,10 @@ static void snap_fill(void)
     snap.opp_seg = DSS(DS_opp_seg);
     snap.opp_d = DSS(DS_opp_last_d);
     snap.opp_sx = DSS(DS_opp_last_sx);
+    if (snap.opp_sprite >= 2 && snap.opp_sprite <= 8 && snap.mode != 8) {   /* drv_blit_masked: whole bytes */
+        FarPtr pic = ds_far(DS_opp_pic);
+        snap.opp_sx = (s16)enh_opp_drawn_sx(snap.opp_sx, snap.opp_sprite > 3 ? desc_w(pic) : bitmap_visible_width(pic));
+    }
     /* opponent_draw puts these at fixed screen spots */
     snap.opp_fixed = snap.opp_sprite == 0 || snap.opp_sprite == 1 || DSW(DS_opp_contact) != 0
                      || PHW(PLAYER, PH_RESULT) == 3;
@@ -358,7 +410,12 @@ void enh_frame_presented(void)
     ega_set_layer(EGA_LAYER_OFF);
     /* After the cliff fall road_draw_front draws nothing (it returns before enh_draw_begin): the page keeps the
      * original's picture, and nothing of it is cut or composed. */
-    if (DSW(DS_fallen)) { snap.fallen = true; presented = false; return; }
+    if (DSW(DS_fallen)) {
+        snap.fallen = true;
+        presented = false;
+        enh_compare_skipped(DSS(DS_road_mode));
+        return;
+    }
     /* The page drawn by road_frame is shown: its view rows are the road frame. Whatever is written there from
      * now on (messages, the start light, the results) stays the original's picture. */
     shown_start = (u16)(DSS(DS_shown_page) * 0x2000);
@@ -366,6 +423,7 @@ void enh_frame_presented(void)
     presented = true;
     snap_fill();
     enh_sheets_read();
+    if (enh_compare_on()) predict_cuts();
     capture_objects();
     if (enh_compare_on()) compare_frame();
 }
@@ -418,6 +476,82 @@ bool enh_view_newest(EnhView *v)
     return true;
 }
 
+/* ---------------------------------------------------------------- the compare tool (enh_compare.h) */
+
+/* The re-projection check: before the new capture, each old cut placed in the new frame's exact view by the
+ * drawing's own mapping (draw_cut); after it, compared with the new cut of the same kind and segment. */
+typedef struct { bool ok; int kind, seg, sprite; double bottom, cx; } CutPred;
+static CutPred preds[ENH_OBJ_IDS];
+
+/* A cut the check can judge: placed by its geometry (not fixed), not cut off by its pass's border, and not partly
+ * hidden: neither its rectangle holds what was drawn after it (enh_cut_partly_hidden) nor is its bottom more than
+ * 1 px above the road row it stands on (nearer road, a wall). */
+static bool cut_judged(const ObjCut *c, int y_end)
+{
+    if (!c->used || c->fixed) return false;
+    int x1 = c->x0 + c->img.w - 1, y1 = c->y0 + c->img.h - 1;
+    if (cut_pass(c) == ENH_PASS_FRONT) {
+        if (c->x0 <= 0 || x1 >= 0x13F || c->y0 <= ENH_VIEW_Y0 || y1 >= y_end - 1) return false;
+    } else if (c->x0 <= 0xF2 || x1 >= 0x13D || c->y0 <= 0x16 || y1 >= 0x2A)
+        return false;
+    return !c->hidden && c->y0 + c->img.h >= c->geo.yg - 1.0;
+}
+
+static int compare_y_end(void) { return SDL_min(ENH_VIEW_Y1, ega_line_compare()); }
+
+static void predict_cuts(void)
+{
+    EnhView v;
+    bool have = enh_view_newest(&v);
+    for (int id = 1; id < ENH_OBJ_IDS; id++) {
+        const ObjCut *c = &cuts[id];
+        CutPred *p = &preds[id];
+        p->ok = false;
+        if (!have || c->gen != series_gen || !cut_judged(c, compare_y_end())) continue;
+        EnhObjGeo g = enh_obj_geo(&v, c->kind, c->seg, c->sprite);
+        if (!g.ok) continue;
+        const EnhObjGeo *f = &c->geo;
+        p->ok = true;
+        p->kind = c->kind;
+        p->seg = c->seg;
+        p->sprite = c->sprite;
+        p->bottom = g.yg + (c->y0 + c->img.h - f->yg) * (f->z / g.z);
+        p->cx = g.a + g.b * ((c->x0 + c->img.w / 2.0 - f->a) / f->b);
+    }
+}
+
+/* the largest error of the predicted cuts against the new ones; -1 when none matched */
+static int reprojection_err(void)
+{
+    double err = -1;
+    for (int i = 1; i < ENH_OBJ_IDS; i++) {
+        const CutPred *p = &preds[i];
+        if (!p->ok) continue;
+        for (int id = 1; id < ENH_OBJ_IDS; id++) {
+            const ObjCut *c = &cuts[id];
+            if (!cut_judged(c, compare_y_end()) || c->kind != p->kind || c->seg != p->seg) continue;
+            if (c->kind == ENH_CUT_OPP && c->sprite != p->sprite) continue;
+            double e = SDL_fabs(p->bottom - (c->y0 + c->img.h));
+            if (c->kind == ENH_CUT_OPP) e = SDL_max(e, SDL_fabs(p->cx - (c->x0 + c->img.w / 2.0)));
+            if (e > err) err = e;
+        }
+    }
+    return err < 0 ? -1 : (int)floor(err + 0.5);
+}
+
+/* the largest difference between the enhanced exact rows and the game's row tables */
+static int rows_err(const EnhRowTab *a, const EnhRowTab *b)
+{
+    const s16 *ta[9] = { a->xl, a->xr, a->y, a->xol, a->xor_, a->ye, a->yk, a->ybl, a->ybr };
+    const s16 *tb[9] = { b->xl, b->xr, b->y, b->xol, b->xor_, b->ye, b->yk, b->ybl, b->ybr };
+    int err = 0;
+    for (int t = 0; t < 9; t++)
+        for (int k = 0; k < 15; k++) err = SDL_max(err, abs(ta[t][k] - tb[t][k]));
+    return err;
+}
+
+#define NOT_ROAD 0xFD              /* a sky pixel in the edge pass: covered, never the road */
+
 /* SR_ENH_COMPARE: the newest frame drawn again at scale 1, aa 1, against the shown page's view rows. */
 static void compare_frame(void)
 {
@@ -427,43 +561,67 @@ static void compare_frame(void)
     enh_opt.res_scale = enh_opt.aa = 1;
     enh_buf_setup();
     draw_view(&v);
-    static u8 orig[200 * 320], enh[200 * 320], cov[200 * 320], cov_edge[200 * 320];
+    static u8 orig[200 * 320], enh[200 * 320], orig_e[200 * 320], enh_e[200 * 320];
+    static u8 cov_f[200 * 320], cov_fe[200 * 320], cov_m[200 * 320], cov_me[200 * 320];
     const u8 *fgm = ega_fg(), *tag = ega_obj();
     int mirror_cov = 0;
     for (int y = ENH_VIEW_Y0; y < ENH_VIEW_Y1; y++) {
         u16 row = (u16)(shown_start + y * EGA_BYTES_PER_LINE);
         for (int x = 0; x < 320; x++) {
             u16 b = (u16)(row + (x >> 3));
-            int bit = 7 - (x & 7), c = 0;
+            int bit = 7 - (x & 7), c = 0, i = y * 320 + x;
             for (int k = 0; k < 4; k++) c |= (ega_plane(k)[b] >> bit & 1) << k;
-            orig[y * 320 + x] = (u8)c;
-            enh[y * 320 + x] = enh_buf.px[(y - ENH_VIEW_Y0) * enh_buf.w + x];
-            cov[y * 320 + x] = !(fgm[b] >> bit & 1);
-            /* the road's edges are measured on the road itself: an object next to the edge is not the edge */
-            cov_edge[y * 320 + x] = cov[y * 320 + x] && !tag[(u32)b * 8 + (x & 7)];
-            if (cov[y * 320 + x] && x >= 0xF0 && y <= 0x2C) mirror_cov++;
+            u8 t = tag[(u32)b * 8 + (x & 7)];
+            bool cov = !(fgm[b] >> bit & 1), obj = t > 0 && t < ENH_OBJ_IDS, sky = t == EGA_TAG_SKY;
+            orig[i] = (u8)c;
+            enh[i] = enh_buf.px[(y - ENH_VIEW_Y0) * enh_buf.w + x];
+            /* the edges: the road itself (an object next to the edge is not the edge, the sky never the road) */
+            orig_e[i] = sky ? NOT_ROAD : orig[i];
+            enh_e[i] = sky ? NOT_ROAD : enh[i];
+            cov_f[i] = cov && !enh_in_mirror_rect(x, y);
+            cov_fe[i] = cov_f[i] && !obj;
+            cov_m[i] = cov && enh_in_glass(x, y);
+            cov_me[i] = cov_m[i] && !obj;
+            mirror_cov += cov_m[i];
         }
     }
     enh_opt = keep;
     enh_buf_setup();
-    EnhCompare c;
-    /* Mismatched pixels: in town over the whole view (its sky is fixed), in a race from below the horizon strip
-     * (the sky turns slower than the original's, SKY_SCROLL, as Street Rod 1). Road edges: from the ground down
-     * (the town's skyline has the road's colour in it). */
-    int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());   /* below the split the screen shows the dashboard */
-    int ground = SDL_clamp((int)ceil(enh_ground_y), ENH_VIEW_Y0, y_end);
-    EnhCompare edges;
-    enh_compare_rows(orig, enh, cov, v.town ? ENH_VIEW_Y0 : ground, y_end, enh_road_colours, 2, &c);
-    enh_compare_rows(orig, enh, cov_edge, ground, y_end, enh_road_colours, 2, &edges);
-    c.edge_rows = edges.edge_rows;
-    c.edge_err_max = edges.edge_err_max;
+    /* Front: mismatch over the whole view, edges from the ground down (in town the skyline has the road's colour
+     * in it; road_draw_sky does not write DS_ground_top_y there). Mirror: its glass, edges from its far row. */
+    int y_end = compare_y_end();   /* below the split the screen shows the dashboard */
+    int ground = SDL_clamp(v.town ? 0x3F : snap.ground_top_y, ENH_VIEW_Y0, y_end);
+    int m_ground = SDL_clamp(snap.game_mirror.y[7], 0x16, 0x2B);
+    static const u8 town_mirror_road[1] = { 4 };    /* the kerbs: the town mirror leaves its road unfilled */
+    const u8 *m_road = v.town ? town_mirror_road : enh_road_colours;
+    int m_n = v.town ? 1 : 2;
+    EnhCompare c, e, mc, me;
+    enh_compare_rows(orig, enh, cov_f, ENH_VIEW_Y0, y_end, enh_road_colours, 2, &c);
+    enh_compare_log_rows(true);
+    enh_compare_rows(orig_e, enh_e, cov_fe, ground, y_end, enh_road_colours, 2, &e);
+    enh_compare_rows(orig_e, enh_e, cov_me, m_ground, 0x2B, m_road, m_n, &me);
+    enh_compare_log_rows(false);
+    enh_compare_rows(orig, enh, cov_m, 0x16, 0x2B, m_road, m_n, &mc);
+    c.edge_rows = e.edge_rows;
+    c.edge_err_max = e.edge_err_max;
+    c.m_rows = mc.rows;
+    c.m_edge_rows = me.edge_rows;
+    c.m_edge_err_max = me.edge_err_max;
+    c.m_pixels = mc.pixels;
+    c.m_mismatched = mc.mismatched;
     c.mirror_cov = mirror_cov;
+    EnhRowTab rows;
+    enh_rows_exact_front(&v, &rows);
+    c.geo_err = rows_err(&rows, &snap.game_front);
+    c.obj_err = reprojection_err();
+    c.police = snap.police;
+    c.opp_sprite = snap.opp_sprite;
     enh_compare_frame(v.mode, &c);
     compared++;
     /* SR_ENH_COMPARE_DUMP=<dir>: every 40th frame, the original (left) and the enhanced view (right) */
     const char *dir = SDL_getenv("SR_ENH_COMPARE_DUMP");
     static int bad_dumped;
-    bool bad = c.edge_err_max > 5 && bad_dumped < 5;
+    bool bad = (c.edge_err_max > 1 || c.geo_err > 0 || c.obj_err > 1) && bad_dumped < 10;
     if (dir && *dir && (compared % 40 == 1 || bad)) {
         if (bad) bad_dumped++;
         SDL_Surface *sf = SDL_CreateSurface(640, ENH_VIEW_Y1 - ENH_VIEW_Y0, SDL_PIXELFORMAT_XRGB8888);
@@ -471,9 +629,11 @@ static void compare_frame(void)
             for (int y = ENH_VIEW_Y0; y < ENH_VIEW_Y1; y++) {
                 u32 *row = (u32 *)((u8 *)sf->pixels + (size_t)(y - ENH_VIEW_Y0) * sf->pitch);
                 for (int x = 0; x < 320; x++) {
-                    u8 e = enh[y * 320 + x];
-                    row[x] = ega_palette[orig[y * 320 + x] & 15];
-                    row[320 + x] = cov[y * 320 + x] ? (e < 16 ? ega_palette[e] : 0xFF00FF) : ega_palette[orig[y * 320 + x] & 15] / 2 & 0x7F7F7F;
+                    int i = y * 320 + x;
+                    u8 en = enh[i];
+                    bool cov = cov_f[i] || cov_m[i];
+                    row[x] = ega_palette[orig[i] & 15];
+                    row[320 + x] = cov ? (en < 16 ? ega_palette[en] : 0xFF00FF) : ega_palette[orig[i] & 15] / 2 & 0x7F7F7F;
                 }
             }
             char path[1024];

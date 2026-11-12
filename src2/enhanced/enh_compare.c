@@ -7,6 +7,7 @@
 
 static FILE *log_file;
 static bool log_rows;              /* SR_ENH_COMPARE_ROWS: the rows whose edges differ by more than 1 px */
+static bool rows_on;               /* enh_compare_log_rows: this pass's rows are logged */
 
 static bool is_road(u8 c, const u8 *road, int n)
 {
@@ -15,19 +16,24 @@ static bool is_road(u8 c, const u8 *road, int n)
     return false;
 }
 
-/* The first and last covered road pixel of a row; false if none. */
+/* The first and last pixel of a row's covered road runs at least ENH_EDGE_MIN_RUN long; false if none. */
 static bool edges(const u8 *row, const u8 *cov, const u8 *road, int n, int *l, int *r)
 {
     *l = -1;
-    for (int x = 0; x < 320; x++)
-        if (cov[x] && is_road(row[x], road, n)) { if (*l < 0) *l = x; *r = x; }
+    for (int x = 0; x < 320;) {
+        if (!(cov[x] && is_road(row[x], road, n))) { x++; continue; }
+        int e = x;
+        while (e + 1 < 320 && cov[e + 1] && is_road(row[e + 1], road, n)) e++;
+        if (e - x + 1 >= ENH_EDGE_MIN_RUN) { if (*l < 0) *l = x; *r = e; }
+        x = e + 1;
+    }
     return *l >= 0;
 }
 
 void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, int y1, const u8 *road_colours,
                       int n_road, EnhCompare *out)
 {
-    EnhCompare c = { 0, 0, 0, 0, 0, 0 };
+    EnhCompare c = { 0 };
     for (int y = y0; y < y1; y++) {
         const u8 *o = orig + (size_t)y * 320, *e = enh + (size_t)y * 320, *k = covered + (size_t)y * 320;
         c.rows++;
@@ -45,7 +51,7 @@ void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, 
             c.edge_rows++;
             int d = SDL_max(lv ? abs(ol - el) : 0, rv ? abs(or_ - er) : 0);
             if (d > c.edge_err_max) c.edge_err_max = d;
-            if (log_rows && log_file && d > 1) {
+            if (log_rows && rows_on && log_file && d > 1) {
                 fprintf(log_file, "  row %02X orig %d..%d enh %d..%d\n", y, ol, or_, el, er);
                 if (d > 5) {                                /* the colours around the right edges (hex; . = not covered) */
                     int a = SDL_max(0, SDL_min(or_, er) - 3), b = SDL_min(319, SDL_max(or_, er) + 3);
@@ -61,9 +67,18 @@ void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, 
     *out = c;
 }
 
-static int frames, worst_edge, mirror_cov_max, shown;
-static int *permille;              /* every frame's mismatch, for the median */
-static int permille_cap;
+/* Per road mode: the frames and their statistics. */
+typedef struct {
+    bool seen;
+    int frames, skipped, shown, worst_edge, m_worst_edge, cov_min, geo_max, obj_max;
+    int *pm, *m_pm, cap;           /* every frame's mismatch (front, glass), permille, for the median */
+} ModeStats;
+static ModeStats modes[256];
+static int frames, skipped, shown, last_mode;
+
+static ModeStats *mode_of(int mode) { return &modes[mode & 0xFF]; }
+
+static int permille(int bad, int all) { return all ? (int)((1000LL * bad + all / 2) / all) : 0; }
 
 bool enh_compare_open(void)
 {
@@ -71,43 +86,97 @@ bool enh_compare_open(void)
     if (!p || !*p) return false;
     log_file = fopen(p, "w");
     log_rows = SDL_getenv("SR_ENH_COMPARE_ROWS") != NULL;
-    frames = worst_edge = mirror_cov_max = shown = 0;
+    rows_on = false;
+    for (int m = 0; m < 256; m++) { free(modes[m].pm); free(modes[m].m_pm); modes[m] = (ModeStats){ 0 }; }
+    frames = skipped = shown = last_mode = 0;
     return log_file != NULL;
 }
 
 bool enh_compare_on(void) { return log_file != NULL; }
 
+void enh_compare_log_rows(bool on) { rows_on = on; }
+
 void enh_compare_frame(int mode, const EnhCompare *c)
 {
     if (!log_file) return;
-    int pm = c->pixels ? (int)((1000LL * c->mismatched + c->pixels / 2) / c->pixels) : 0;
-    if (frames == permille_cap) {
-        permille_cap = permille_cap ? permille_cap * 2 : 256;
-        permille = realloc(permille, sizeof *permille * (size_t)permille_cap);
+    ModeStats *m = mode_of(mode);
+    int pm = permille(c->mismatched, c->pixels), mpm = permille(c->m_mismatched, c->m_pixels);
+    if (m->frames == m->cap) {
+        m->cap = m->cap ? m->cap * 2 : 256;
+        m->pm = realloc(m->pm, sizeof *m->pm * (size_t)m->cap);
+        m->m_pm = realloc(m->m_pm, sizeof *m->m_pm * (size_t)m->cap);
     }
-    permille[frames++] = pm;
-    if (c->edge_err_max > worst_edge) worst_edge = c->edge_err_max;
-    if (c->mirror_cov > mirror_cov_max) mirror_cov_max = c->mirror_cov;
-    fprintf(log_file, "frame %d mode %d rows %d edge_rows %d edge_err_max %d mismatch %d mirror_cov %d\n", frames,
-            mode, c->rows, c->edge_rows, c->edge_err_max, pm, c->mirror_cov);
+    m->pm[m->frames] = pm;
+    m->m_pm[m->frames] = mpm;
+    if (!m->frames || c->mirror_cov < m->cov_min) m->cov_min = c->mirror_cov;
+    m->frames++;
+    m->seen = true;
+    if (c->edge_err_max > m->worst_edge) m->worst_edge = c->edge_err_max;
+    if (c->m_edge_err_max > m->m_worst_edge) m->m_worst_edge = c->m_edge_err_max;
+    if (c->geo_err > m->geo_max) m->geo_max = c->geo_err;
+    if (c->obj_err > m->obj_max) m->obj_max = c->obj_err;
+    frames++;
+    last_mode = mode;
+    fprintf(log_file,
+            "frame %d mode %d rows %d edge_rows %d edge_err_max %d mismatch %d mirror_rows %d mirror_edge_rows %d "
+            "mirror_edge_err_max %d mirror_mismatch %d mirror_cov %d geo_err %d obj_err %d police %d opp_sprite %d\n",
+            frames, mode, c->rows, c->edge_rows, c->edge_err_max, pm, c->m_rows, c->m_edge_rows, c->m_edge_err_max,
+            mpm, c->mirror_cov, c->geo_err, c->obj_err, c->police, c->opp_sprite);
     fflush(log_file);
 }
 
-void enh_compare_shown(void) { if (log_file) shown++; }
+void enh_compare_skipped(int mode)
+{
+    if (!log_file) return;
+    ModeStats *m = mode_of(mode);
+    m->seen = true;
+    m->skipped++;
+    skipped++;
+    last_mode = mode;
+}
+
+void enh_compare_race(int mode)
+{
+    if (!log_file) return;
+    fprintf(log_file, "race %d\n", mode);
+    fflush(log_file);
+}
+
+void enh_compare_shown(void)
+{
+    if (!log_file) return;
+    mode_of(last_mode)->shown++;
+    shown++;
+}
 
 static int cmp_int(const void *a, const void *b) { return *(const int *)a - *(const int *)b; }
+
+/* the median (sorted[(n - 1) / 2]) and the largest of n values, sorted in place */
+static void p50_max(int *v, int n, int *p50, int *max)
+{
+    *p50 = *max = 0;
+    if (!n) return;
+    qsort(v, (size_t)n, sizeof *v, cmp_int);
+    *p50 = v[(n - 1) / 2];
+    *max = v[n - 1];
+}
 
 void enh_compare_close(void)
 {
     if (!log_file) return;
-    int p50 = 0, max = 0;
-    if (frames) {
-        qsort(permille, (size_t)frames, sizeof *permille, cmp_int);
-        p50 = permille[(frames - 1) / 2];
-        max = permille[frames - 1];
+    for (int i = 0; i < 256; i++) {
+        ModeStats *m = &modes[i];
+        if (!m->seen) continue;
+        int p50, max, mp50, mmax;
+        p50_max(m->pm, m->frames, &p50, &max);
+        p50_max(m->m_pm, m->frames, &mp50, &mmax);
+        fprintf(log_file,
+                "mode %d frames %d skipped %d worst_edge %d mismatch_p50 %d mismatch_max %d mirror_worst_edge %d "
+                "mirror_mismatch_p50 %d mirror_mismatch_max %d mirror_cov_min %d geo_max %d obj_max %d shown %d\n",
+                i, m->frames, m->skipped, m->worst_edge, p50, max, m->m_worst_edge, mp50, mmax,
+                m->frames ? m->cov_min : 0, m->geo_max, m->obj_max, m->shown);
     }
-    fprintf(log_file, "frames %d worst_edge %d mismatch_p50 %d mismatch_max %d mirror_cov_max %d shown %d\n", frames,
-            worst_edge, p50, max, mirror_cov_max, shown);
+    fprintf(log_file, "frames %d skipped %d shown %d\n", frames, skipped, shown);
     fclose(log_file);
     log_file = NULL;
 }

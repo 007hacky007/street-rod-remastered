@@ -39,6 +39,9 @@ void enh_phys_step(void);
  * frame into the back page (all its marks cleared, background). */
 void enh_draw_begin(void);
 void enh_draw_fg(bool fg);
+/* road_draw_front, road_draw_sky: on = the sky's blits follow (the SKY layer: background, every pixel tagged as
+ * the sky's for the compare tool); off = back to the base layer. */
+void enh_draw_sky(bool on);
 /* road_draw_front: what the engine draws next is an object of row `id` (1..14), or the opponent
  * (ENH_OBJ_OPP); 0 = back to the base layer (the background after enh_draw_begin, the foreground after
  * enh_draw_fg(true)). The enhanced view draws those pixels again at the smooth position of their row (or of the

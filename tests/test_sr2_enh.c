@@ -5,6 +5,7 @@
 #include <SDL3/SDL.h>
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "enhanced/enhanced.h"
@@ -142,6 +143,23 @@ static void wr_span(u16 page, int x, int y, int n)
     for (int i = x; i < x + n; i++) wr_pixels((u16)(page + y * EGA_BYTES_PER_LINE + (i >> 3)), (u8)(0x80 >> (i & 7)));
 }
 
+/* The same in colour col: the planes of col set, the others cleared. */
+static void wr_span_col(u16 page, int x, int y, int n, u8 col)
+{
+    for (int i = x; i < x + n; i++) {
+        u16 o = (u16)(page + y * EGA_BYTES_PER_LINE + (i >> 3));
+        u8 m = (u8)(0x80 >> (i & 7));
+        vga_out(0x3CE, 8); vga_out(0x3CF, m);
+        vga_out(0x3C4, 2); vga_out(0x3C5, col & 15);
+        (void)vga_rd(o);
+        vga_wr(o, 0xFF);
+        vga_out(0x3C4, 2); vga_out(0x3C5, ~col & 15);
+        (void)vga_rd(o);
+        vga_wr(o, 0x00);
+    }
+    vga_out(0x3C4, 2); vga_out(0x3C5, 0x0F);
+}
+
 static u8 tag_at(u16 page, int x, int y) { return ega_obj()[(u32)(u16)(page + y * EGA_BYTES_PER_LINE + (x >> 3)) * 8 + (x & 7)]; }
 static bool fg_at(u16 page, int x, int y) { return ega_fg()[(u16)(page + y * EGA_BYTES_PER_LINE + (x >> 3))] >> (7 - (x & 7)) & 1; }
 
@@ -269,6 +287,43 @@ static void sr2_enh_cut_order(void)
     cut_order_frame();
     printf("  log n %d: %d %d %d\n", enh_cut_log_n, enh_cut_log[0], enh_cut_log[1], enh_cut_log[2]);
     CHECK(enh_cut_log_n == 3 && enh_cut_log[0] == 5 && enh_cut_log[1] == ENH_OBJ_OPP && enh_cut_log[2] == 3);
+    enh_race_end();
+    restore_ds(&k);
+}
+
+/* A cut is partly hidden when its rectangle holds the foreground or pixels of a cut drawn after it: a nearer
+ * row's, or the opponent's over the objects of its own row. Such cuts are not judged by the re-projection
+ * check. */
+static void sr2_enh_cut_hidden(void)
+{
+    static const u32 rgb[16];
+    Keep k = keep_ds();
+    race_setup();
+    DSS(DS_opp_seg) = 105;
+    DSS(DS_opp_sprite) = 5;
+    DSS(DS_opp_last_d) = 320;
+    ega_clear_obj(0, 0x2000);
+    ega_clear_fg(0, 0x2000);
+    ega_set_layer(EGA_LAYER_OBJ);
+    ega_set_obj(5); wr_span(0, 130, 60, 20);        /* row 5: 130..149 */
+    ega_set_obj(ENH_OBJ_OPP);                       /* the opponent over its middle: 136..143, rows 58..60 */
+    for (int y = 58; y <= 60; y++) wr_span_col(0, 136, y, 8, 4);
+    ega_set_obj(3); wr_span_col(0, 140, 59, 4, 2);  /* row 3 over the opponent's right half */
+    ega_set_obj(8); wr_span(0, 100, 50, 4);         /* row 8: alone */
+    ega_set_obj(9); wr_span(0, 60, 50, 4);          /* row 9: the foreground over its rectangle */
+    wr_span(0, 70, 50, 2);
+    ega_set_layer(EGA_LAYER_FG);
+    wr_span(0, 65, 50, 1);
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_frame_built();
+    enh_frame_presented();
+    CHECK(enh_compose(small, rgb));
+    printf("  hidden: row5 %d opp %d row3 %d row8 %d row9 %d\n", enh_cut_partly_hidden(5),
+           enh_cut_partly_hidden(ENH_OBJ_OPP), enh_cut_partly_hidden(3), enh_cut_partly_hidden(8),
+           enh_cut_partly_hidden(9));
+    CHECK(enh_cut_partly_hidden(5) && enh_cut_partly_hidden(ENH_OBJ_OPP));
+    CHECK(!enh_cut_partly_hidden(3) && !enh_cut_partly_hidden(8));
+    CHECK(enh_cut_partly_hidden(9));
     enh_race_end();
     restore_ds(&k);
 }
@@ -438,6 +493,16 @@ static void sr2_enh_opp_drawn_d(void)
     CHECK(ga.ok && gb.ok && ga.z == 41.5 && gb.z == 40.5);
 }
 
+/* The opponent's front pictures are blitted at whole bytes (clip_rect: x >> 3): its anchor is where the picture
+ * landed, not the projected sx. */
+static void sr2_enh_opp_drawn_sx(void)
+{
+    CHECK(enh_opp_drawn_sx(163, 40) == 156);        /* dx 143 drawn at 136 */
+    CHECK(enh_opp_drawn_sx(164, 40) == 164);        /* dx 144: on a byte */
+    CHECK(enh_opp_drawn_sx(-2, 10) == -3);          /* dx -7 drawn at -8 */
+    CHECK(enh_opp_drawn_sx(-3, 10) == -3);
+}
+
 /* The exact projections are the game's road_proj_x and road_proj_y, s16 arithmetic and all. */
 static void sr2_enh_proj_exact(void)
 {
@@ -497,6 +562,34 @@ static void sr2_enh_rows_front_row0(void)
     for (int a = 0; a < 7; a++)
         for (int i = 0; i < 30; i++) TRKW(arrs[a], 40 + i) = keep[a][i];
     DSS(DS_cam_x) = keep_cx; DSS(DS_cam_y) = keep_cy; DSS(DS_view_bounce_y) = keep_b; DSS(DS_road_mode) = keep_mode;
+}
+
+/* A town facade in exact mode is the game's quad_fill: clip_polygon's integer clip, then poly_fill with its edge
+ * pixels. The band of rows 4 and 3 at frame 148 of the location-4 return route (seed 2): the right facade from
+ * (284, 72) to (332, 76), its top at 60. Clipped at x 13Fh its bottom edge ends at (319, 74), and the original's
+ * row 74 starts at x 311 (its Bresenham run), not where the unclipped edge crosses it. */
+static void sr2_enh_town_face_clipped(void)
+{
+    EnhOptions keep = enh_opt;
+    enh_opt.res_scale = enh_opt.aa = 1;
+    enh_buf_setup();
+    enh_clip_view();
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+    enh_town_face_exact(1, 332, 284, 76, 72, 60, 60, 3);
+    static const int rows[] = { 60, 72, 73, 74 }, want[] = { 284, 284, 293, 311 };
+    int bad = 0;
+    for (int i = 0; i < 4; i++) {
+        const u8 *r = enh_buf.px + (size_t)(rows[i] - ENH_VIEW_Y0) * enh_buf.w;
+        int l = -1, rr = -1;
+        for (int x = 0; x < 320; x++) if (r[x] == 3) { if (l < 0) l = x; rr = x; }
+        printf("  row %d: %d..%d (the game's %d..319)\n", rows[i], l, rr, want[i]);
+        if (l < 0 || abs(l - want[i]) > 1 || rr != 319) bad++;
+    }
+    const u8 *r75 = enh_buf.px + (size_t)(75 - ENH_VIEW_Y0) * enh_buf.w;
+    for (int x = 0; x < 320; x++) if (r75[x] == 3) bad++;  /* nothing below the clipped corner */
+    CHECK(bad == 0);
+    enh_opt = keep;
+    enh_buf_setup();
 }
 
 /* road_draw_sky's top_band_row: from row 14 to row 1, the row whose y is the first strictly above all after it
@@ -615,6 +708,48 @@ static void sr2_enh_compare_rows(void)
     memset(enh + 7 * 320, 2, 320);
     enh_compare_rows(orig, enh, cov, 0, 10, road, 1, &c);
     CHECK(c.edge_rows == 8 && c.edge_err_max == 1);
+
+    /* A road-colour run shorter than ENH_EDGE_MIN_RUN is not the road's edge (the town ground between a kerb
+     * and a facade): */
+    for (int y = 0; y < 10; y++) { road_row(orig + y * 320, 100, 200); road_row(enh + y * 320, 100, 200); }
+    memset(cov, 1, sizeof cov);
+    orig[2 * 320 + 260] = orig[2 * 320 + 261] = 8;
+    enh_compare_rows(orig, enh, cov, 0, 10, road, 1, &c);
+    CHECK(c.edge_rows == 10 && c.edge_err_max == 0);
+    road_row(orig + 2 * 320, 100, 200);
+    memset(orig + 4 * 320, 2, 320);                 /* a row whose only road is 2 px wide: no edge row */
+    memset(enh + 4 * 320, 2, 320);
+    orig[4 * 320 + 150] = orig[4 * 320 + 151] = enh[4 * 320 + 150] = enh[4 * 320 + 151] = 8;
+    enh_compare_rows(orig, enh, cov, 0, 10, road, 1, &c);
+    CHECK(c.edge_rows == 9 && c.edge_err_max == 0);
+}
+
+/* The SKY layer: every pixel written is the sky's, whether its colour changed or not; the background drawn
+ * over it later is not. */
+static void sr2_enh_sky_tags(void)
+{
+    enh_init(true, 1, 2, 100, true);
+    ega_init();
+    vga_mode_0d();
+    vga_out(0x3C4, 2); vga_out(0x3C5, 0x0F);
+    vga_out(0x3CE, 8); vga_out(0x3CF, 0xFF);
+    ega_clear_obj(0, 0x2000);
+    ega_clear_fg(0, 0x2000);
+    ega_set_layer(EGA_LAYER_FG);
+    vga_wr(40, 0xFF);                               /* foreground first */
+    ega_set_obj(9);
+    ega_set_layer(EGA_LAYER_SKY);
+    vga_wr(40, 0xFF);                               /* the same colour again */
+    const u8 *t = ega_obj();
+    int sky = 0;
+    for (int b = 0; b < 8; b++) sky += t[40 * 8 + b] == EGA_TAG_SKY;
+    CHECK(sky == 8);
+    CHECK(ega_fg()[40] == 0);
+    ega_set_layer(EGA_LAYER_BG);
+    vga_out(0x3CE, 8); vga_out(0x3CF, 0xF0);
+    vga_wr(40, 0x00);
+    CHECK(t[40 * 8 + 0] == 0 && t[40 * 8 + 3] == 0 && t[40 * 8 + 4] == EGA_TAG_SKY);
+    ega_set_layer(EGA_LAYER_OFF);
 }
 
 static void sr2_enh_compare_log(void)
@@ -623,9 +758,19 @@ static void sr2_enh_compare_log(void)
     SDL_snprintf(path, sizeof path, "%stest_sr2_enh_compare.log", SDL_GetBasePath());
     SDL_setenv_unsafe("SR_ENH_COMPARE", path, 1);
     CHECK(enh_compare_open());
-    EnhCompare a = { 84, 80, 1, 26880, 27, 0 }, b = { 84, 82, 0, 26880, 54, 0 };
+    EnhCompare a = { .rows = 84, .edge_rows = 80, .edge_err_max = 1, .pixels = 26880, .mismatched = 27,
+                     .m_rows = 21, .m_edge_rows = 10, .m_edge_err_max = 0, .m_pixels = 1596, .m_mismatched = 16,
+                     .mirror_cov = 1596, .geo_err = 0, .obj_err = 1, .police = 0, .opp_sprite = 5 };
+    EnhCompare b = { .rows = 84, .edge_rows = 82, .edge_err_max = 0, .pixels = 26880, .mismatched = 54,
+                     .m_rows = 21, .m_edge_rows = 12, .m_edge_err_max = 1, .m_pixels = 1596, .m_mismatched = 0,
+                     .mirror_cov = 1596, .geo_err = 0, .obj_err = -1, .police = 2, .opp_sprite = 10 };
+    EnhCompare c = { .rows = 82, .edge_rows = 30, .edge_err_max = 1, .pixels = 26240, .mismatched = 0,
+                     .m_rows = 21, .m_edge_rows = 0, .m_edge_err_max = 0, .m_pixels = 1596, .m_mismatched = 3,
+                     .mirror_cov = 1596, .geo_err = 0, .obj_err = 0, .police = 0, .opp_sprite = 0 };
     enh_compare_frame(1, &a);
     enh_compare_frame(1, &b);
+    enh_compare_frame(0, &c);
+    enh_compare_skipped(16);
     enh_compare_close();
     SDL_unsetenv_unsafe("SR_ENH_COMPARE");
     size_t len = 0;
@@ -633,9 +778,21 @@ static void sr2_enh_compare_log(void)
     CHECK(text != NULL);
     if (!text) return;
     printf("%s", text);
-    CHECK(strstr(text, "frame 1 mode 1 rows 84 edge_rows 80 edge_err_max 1 mismatch 1 mirror_cov 0\n") != NULL);
-    CHECK(strstr(text, "frame 2 mode 1 rows 84 edge_rows 82 edge_err_max 0 mismatch 2 mirror_cov 0\n") != NULL);
-    CHECK(strstr(text, "frames 2 worst_edge 1 mismatch_p50 1 mismatch_max 2 mirror_cov_max 0 shown 0\n") != NULL);
+    static const char want[] =
+        "frame 1 mode 1 rows 84 edge_rows 80 edge_err_max 1 mismatch 1 mirror_rows 21 mirror_edge_rows 10 "
+        "mirror_edge_err_max 0 mirror_mismatch 10 mirror_cov 1596 geo_err 0 obj_err 1 police 0 opp_sprite 5\n"
+        "frame 2 mode 1 rows 84 edge_rows 82 edge_err_max 0 mismatch 2 mirror_rows 21 mirror_edge_rows 12 "
+        "mirror_edge_err_max 1 mirror_mismatch 0 mirror_cov 1596 geo_err 0 obj_err -1 police 2 opp_sprite 10\n"
+        "frame 3 mode 0 rows 82 edge_rows 30 edge_err_max 1 mismatch 0 mirror_rows 21 mirror_edge_rows 0 "
+        "mirror_edge_err_max 0 mirror_mismatch 2 mirror_cov 1596 geo_err 0 obj_err 0 police 0 opp_sprite 0\n"
+        "mode 0 frames 1 skipped 0 worst_edge 1 mismatch_p50 0 mismatch_max 0 mirror_worst_edge 0 "
+        "mirror_mismatch_p50 2 mirror_mismatch_max 2 mirror_cov_min 1596 geo_max 0 obj_max 0 shown 0\n"
+        "mode 1 frames 2 skipped 0 worst_edge 1 mismatch_p50 1 mismatch_max 2 mirror_worst_edge 1 "
+        "mirror_mismatch_p50 0 mirror_mismatch_max 10 mirror_cov_min 1596 geo_max 0 obj_max 1 shown 0\n"
+        "mode 16 frames 0 skipped 1 worst_edge 0 mismatch_p50 0 mismatch_max 0 mirror_worst_edge 0 "
+        "mirror_mismatch_p50 0 mirror_mismatch_max 0 mirror_cov_min 0 geo_max 0 obj_max 0 shown 0\n"
+        "frames 3 skipped 1 shown 0\n";
+    CHECK(strcmp(text, want) == 0);
     SDL_free(text);
     SDL_RemovePath(path);
 }
@@ -660,18 +817,22 @@ int main(int argc, char **argv)
     RUN(sr2_enh_capture_regions);
     RUN(sr2_enh_cut_order);
     RUN(sr2_enh_race_begin_resets);
+    RUN(sr2_enh_cut_hidden);
     RUN(sr2_enh_obj_geo_continuous);
     RUN(sr2_enh_opp_depth);
     RUN(sr2_enh_series_snap);
     RUN(sr2_enh_heading_wrap);
     RUN(sr2_enh_obj_geo_exact_slope);
     RUN(sr2_enh_opp_drawn_d);
+    RUN(sr2_enh_opp_drawn_sx);
     RUN(sr2_enh_fallen_not_composed);
     RUN(sr2_enh_proj_exact);
     RUN(sr2_enh_rows_front_row0);
+    RUN(sr2_enh_town_face_clipped);
     RUN(sr2_enh_top_band_row);
     RUN(sr2_enh_dash_width);
     RUN(sr2_enh_sky_shift);
+    RUN(sr2_enh_sky_tags);
     RUN(sr2_enh_compare_rows);
     RUN(sr2_enh_compare_log);
     host_shutdown();

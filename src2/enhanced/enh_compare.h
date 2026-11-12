@@ -6,23 +6,30 @@
 #include "types.h"
 
 typedef struct {
-    int rows;           /* rows compared */
-    int edge_rows;      /* of them, rows where both have a road among their covered pixels */
-    int edge_err_max;   /* the largest difference of the road's left or right edge, px */
-    int pixels;         /* covered pixels */
-    int mismatched;     /* covered pixels whose colour differs */
-    int mirror_cov;     /* covered pixels in the mirror's rectangle (must be none: the mirror stays the game's) */
+    int rows, edge_rows, edge_err_max, pixels, mismatched;            /* front view, outside the mirror rectangle */
+    int m_rows, m_edge_rows, m_edge_err_max, m_pixels, m_mismatched;  /* the mirror's glass */
+    int mirror_cov;         /* covered glass pixels: 1596 when the mirror is enhanced, 0 when it is the game's */
+    int geo_err;            /* largest |enhanced exact row value - game's row table value| */
+    int obj_err;            /* largest re-projection error of a cut's bottom (opponent: and centre x), px; -1 none */
+    int police, opp_sprite; /* DS_police_state, DS_opp_sprite */
 } EnhCompare;
+#define ENH_EDGE_MIN_RUN 3   /* road-colour runs shorter than this are not the road's edge */
 
 /* orig, enh: 320-wide rows of palette indices, rows y0..y1; covered: nonzero where the enhanced view replaces
- * the pixel. A row's road edges are its first and last covered pixel whose colour is one of road_colours. */
+ * the pixel. A row's road edges are the first and the last pixel of its covered runs of road_colours at least
+ * ENH_EDGE_MIN_RUN long. Fills rows, edge_rows, edge_err_max, pixels and mismatched (the rest 0). */
 void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, int y1, const u8 *road_colours,
                       int n_road, EnhCompare *out);
 
-/* The log: open reads SR_ENH_COMPARE (false: no comparing); frame appends a line; close writes the summary
- * (frames, the worst edge error, the median and largest mismatch in permille). */
+/* The log: open reads SR_ENH_COMPARE (false: no comparing); frame appends a line; close writes one summary line
+ * per mode seen, modes ascending (frames, skipped, the worst edge error, the median and largest mismatch in
+ * permille, the same for the mirror's glass, its least coverage, the largest geometry and re-projection errors,
+ * the compositions), then the totals. */
 bool enh_compare_open(void);
 bool enh_compare_on(void);
 void enh_compare_frame(int mode, const EnhCompare *c);
-void enh_compare_shown(void);  /* a composed picture showed the enhanced view (the summary's "shown") */
+void enh_compare_skipped(int mode);    /* a frame the enhanced view did not show (fallen) */
+void enh_compare_race(int mode);       /* a race of road mode `mode` starts, enhanced or not ("race <mode>") */
+void enh_compare_log_rows(bool on);    /* SR_ENH_COMPARE_ROWS logs rows only while on (the edge pass) */
+void enh_compare_shown(void);  /* a composed picture showed the enhanced view (counted under the last frame's mode) */
 void enh_compare_close(void);

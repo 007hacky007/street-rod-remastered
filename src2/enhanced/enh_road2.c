@@ -17,6 +17,7 @@
 
 #include <limits.h>
 #include <math.h>
+#include <string.h>
 
 #include "game/race_int.h"
 #include "mem.h"
@@ -258,6 +259,69 @@ static void face(double xa, double xb, double ya_bot, double yb_bot, double yb_t
     enh_fill_poly(xs, ys, 4, col);
 }
 
+/* clip_polygon (race_gfx.c) on the view's clip (clip_set_view: x 0..13Fh, y 12h..65h): one Sutherland-Hodgman stage
+ * per side, the new vertices by the game's integer line_y_at_x / line_x_at_y from the previous vertex. */
+static int clip_stage_i(const int *in, int n, int *out, int edge, int e)
+{
+    int cnt = 0;
+    for (int i = 0, pi = n - 1; i < n && cnt < 30; pi = i++) {
+        const int *P = in + 2 * pi, *C = in + 2 * i;
+        int k = edge < 2 ? 0 : 1;
+        bool pin = (edge & 1) ? P[k] <= e : P[k] >= e, cin = (edge & 1) ? C[k] <= e : C[k] >= e;
+        if (!pin && !cin) continue;
+        if (!pin || !cin) {
+            if (edge < 2) { out[2 * cnt] = e; out[2 * cnt + 1] = line_y_at_x((s16)P[0], (s16)P[1], (s16)C[0], (s16)C[1], (s16)e); }
+            else { out[2 * cnt + 1] = e; out[2 * cnt] = line_x_at_y((s16)P[0], (s16)P[1], (s16)C[0], (s16)C[1], (s16)e); }
+            cnt++;
+            if (!cin) continue;
+        }
+        out[2 * cnt] = C[0];
+        out[2 * cnt + 1] = C[1];
+        cnt++;
+    }
+    return cnt;
+}
+
+static int clip_poly_i(const int *in, int n, int *out)
+{
+    int a[64], b[64], c[64];
+    int na = clip_stage_i(in, n, a, 0, 0);
+    int nb = clip_stage_i(a, na, b, 1, 0x13F);
+    int nc = clip_stage_i(b, nb, c, 2, ENH_VIEW_Y0);
+    return clip_stage_i(c, nc, out, 3, 0x65);
+}
+
+/* poly_fill with its edge pixels, at integer vertices: each pixel row y is filled from the leftmost to the rightmost
+ * point of the polygon within y - 0.5 .. y + 0.5, the last pixel included. */
+static void fill_poly_incl_i(const int *p, int n, u8 col)
+{
+    if (n < 1) return;
+    int ymin = p[1], ymax = p[1];
+    for (int i = 1; i < n; i++) { ymin = SDL_min(ymin, p[2 * i + 1]); ymax = SDL_max(ymax, p[2 * i + 1]); }
+    for (int y = ymin; y <= ymax; y++) {
+        double lo = SDL_max(y - 0.5, (double)ymin), hi = SDL_min(y + 0.5, (double)ymax), xl = 1e9, xr = -1e9;
+        for (int i = 0, j = n - 1; i < n; j = i++) {
+            double x0 = p[2 * j], y0 = p[2 * j + 1], x1 = p[2 * i], y1 = p[2 * i + 1];
+            double a = SDL_max(lo, SDL_min(y0, y1)), b = SDL_min(hi, SDL_max(y0, y1));
+            if (a > b) continue;
+            double xa = y0 == y1 ? x0 : x0 + (a - y0) * (x1 - x0) / (y1 - y0);
+            double xb = y0 == y1 ? x1 : x0 + (b - y0) * (x1 - x0) / (y1 - y0);
+            xl = SDL_min(xl, SDL_min(xa, xb));
+            xr = SDL_max(xr, SDL_max(xa, xb));
+        }
+        if (xl <= xr) enh_fill_rect(xl, y, xr + 1.0, y + 1.0, col);
+    }
+}
+
+void enh_town_face_exact(int side, int xn, int xf, int yn, int yf, int ytf, int ytn, u8 col)
+{
+    /* quad_fill's points in town_walls_front's order: left from the near row, right from the far one */
+    int pts[8] = { xn, yn, xf, yf, xf, ytf, xn, ytn };
+    if (side) { int r[8] = { xf, yf, xn, yn, xn, ytn, xf, ytf }; memcpy(pts, r, sizeof pts); }
+    int out[64], n = clip_poly_i(pts, 4, out);
+    fill_poly_incl_i(out, n, col);
+}
+
 static void quad(double xa0, double xa1, double ya, double xb0, double xb1, double yb, u8 col)
 {
     double xs[4] = { xb0, xb1, xa1, xa0 }, ys[4] = { yb, yb, ya, ya };
@@ -332,6 +396,16 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
         for (int side = 0; side < 2; side++) {
             u16 F = side ? R : L;
             double xa = px(c, &ra, x_out(c, &ra, side)), xb = px(c, &rb, x_out(c, &rb, side));
+            if (c->exact) {                                 /* the game's integer quad_fill */
+                int yn = py_i(c, &ra, Y_ROAD), yf = py_i(c, &rb, Y_ROAD), en = py_i(c, &ra, Y_EYE), ef = py_i(c, &rb, Y_EYE);
+                enh_town_face_exact(side, (int)xa, (int)xb, yn, yf, ef, en, (F & 0x10) ? COL_WALL_A : COL_WALL_B);
+                if (F & 4) {
+                    s16 k = (F & 8) ? 1 : 2;
+                    enh_town_face_exact(side, (int)xa, (int)xb, en, ef, add16(cdiv16(sub16(ef, yf), k), ef),
+                                        add16(cdiv16(sub16(en, yn), k), en), COL_STOREY);
+                }
+                continue;
+            }
             face(xa, xb, ya, yb, yeb, yea, (F & 0x10) ? COL_WALL_A : COL_WALL_B);
             if (F & 4) {
                 double Yt = (F & 8) ? 2 * Y_EYE - Y_ROAD : Y_EYE - (Y_ROAD - Y_EYE) / 2;

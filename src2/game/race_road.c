@@ -474,7 +474,7 @@ static void road_draw_sky(void)
     blit_clip_y(&r);
     drv_blit(ds_far(DS_page1_ptr), back_page(), &r, 1);
     DSS(DS_top_band_row) = 0x0E;
-    if (!race) { drv_fill_rows(0x3F, 1); return; }
+    if (!race) { enh_draw_sky(false); drv_fill_rows(0x3F, 1); return; }     /* ENH: the ground is not the sky */
     r.w = a; r.sx = b; r.dx = 0;
     drv_blit(ds_far(DS_page1_ptr), back_page(), &r, 1);
     DSS(DS_ground_top_y) = add16(hy, 8);
@@ -483,6 +483,7 @@ static void road_draw_sky(void)
         if (yk < DSS(DS_ground_top_y)) { DSS(DS_ground_top_y) = yk; DSS(DS_top_band_row) = k; }
     }
     s16 top = DSS(DS_ground_top_y);
+    enh_draw_sky(false);                                    /* ENH: the ground is not the sky */
     drv_fill_rows(top < 0x12 ? 0x12 : top, 9);
 }
 
@@ -510,6 +511,7 @@ static void road_draw_sky_mulholland(void)
     DSS(DS_top_band_row) = 14;
     for (s16 k = 14; k != 0; k--)
         if (ROWT(T_Y, k) < DSS(DS_ground_top_y)) { DSS(DS_ground_top_y) = ROWT(T_Y, k); DSS(DS_top_band_row) = k; }
+    enh_draw_sky(false);                                    /* ENH: the fill below the backdrop is not the sky */
     if (DSS(DS_fall_dir) != 0 && bottom < 0x65) drv_fill_rows(bottom, 0x0E);
 }
 
@@ -1272,7 +1274,9 @@ static void road_draw_front(void)
     }
     clip_set_view();
     enh_draw_begin();                                       /* ENH: the enhanced view replaces the background */
+    enh_draw_sky(true);                                     /* ENH: the sky's blits are tagged the sky's */
     if (MODE == 0x10) road_draw_sky_mulholland(); else road_draw_sky();
+    enh_draw_sky(false);                                    /* ENH */
     road_fillmode_begin();
     s16 L16 = 0;
     for (s16 k = 14; k > 9; k--)
