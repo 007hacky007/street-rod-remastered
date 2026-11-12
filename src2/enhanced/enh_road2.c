@@ -33,8 +33,7 @@
 #define COL_STOREY   4
 #define Y_ROAD       2000
 #define Y_EYE        0x76C
-#define X_OUT_L      0x44C     /* -(400 - 5DCh): the town's façades, the shoulders' outer edge */
-#define X_OUT_R      0xE74     /* 400 + CE4h */
+#define Y_KERB       0x79E
 #define SKY_SCROLL   0.125     /* as Street Rod 1's enhanced view: the sky turns at this fraction of the original's */
 
 const u8 enh_road_colours[2] = { COL_ROAD, COL_FINISH };
@@ -44,6 +43,8 @@ typedef struct {
     int base;
     double pos, lat, hv, hpos;
     double cam_y, bounce;
+    double heading;            /* the view's DS_heading, unwrapped */
+    int mode, w;               /* DS_road_mode; the outer edges' w (road_project_front): 200 in Mulholland, else 400 */
     bool exact;                /* the game's integer arithmetic (the compare tool, at a game frame's own position) */
 } Cam;
 
@@ -70,7 +71,7 @@ static void edges(u16 cm, double *xl, double *xr)
     else                { *xl = 0x5DC; *xr = 0x5DC; }
 }
 
-typedef struct { double z, dx, dy; int n; } Row;
+typedef struct { double z, dx, dy; int n, k; } Row;    /* k: the row index, -1 for a depth off the rows */
 
 /* road_project_front's row k: depth 4 for row 0, 12 - q for row 1 and 8 more for each row after, row 14 at a
  * fixed 116; dx and dy from the row's own segment. */
@@ -79,6 +80,7 @@ static Row row_k(const Cam *c, int k)
     Row r;
     double q = 8.0 * (c->pos - c->base);
     r.n = c->base + k;
+    r.k = k;
     r.z = k == 0 ? 4.0 : k == FAR_ROWS ? 8.0 * FAR_ROWS + 4.0 : 8.0 * k + 4.0 - q;
     r.dx = c->hv - yaw_rel(c, r.n);
     r.dy = c->hpos - hgt_rel(c, r.n);
@@ -89,31 +91,60 @@ static Row row_k(const Cam *c, int k)
  * value, so that a sample at a row's centre meets the edge where the original's line starts. */
 #define ROW_TOP 0.5
 
+static int i16(double v) { return (s16)(u16)(int)v; }   /* an integer value as the game's s16 */
+
+int enh_proj_x_i(int z, int X, int dx, int cx)              /* road_proj_x */
+{
+    s16 x = add16((s16)X, (s16)((s16)(z * dx) >> 2));
+    s16 t = shl16(sub16((s16)cx, x), 2);
+    if (z == 0) z = 1;
+    return sub16(0xA0, cdiv16(t, (s16)z));
+}
+int enh_proj_y_i(int z, int Y, int dy, int cam_y, int bounce)   /* road_proj_y */
+{
+    s16 t = add16(shl16((s16)((s16)(z * dy) & 0xFFFE), 1), shl16(sub16((s16)Y, (s16)cam_y), 2));
+    if (z == 0) z = 1;
+    return add16(add16(cdiv16(t, (s16)z), (s16)bounce), 0x3C);
+}
+static int px_i(const Cam *c, const Row *r, double X) { return enh_proj_x_i((int)r->z, (int)X, i16(r->dx), (int)c->lat); }
+static int py_i(const Cam *c, const Row *r, double Y)
+{
+    return enh_proj_y_i((int)r->z, (int)Y, i16(r->dy), (int)c->cam_y, (int)c->bounce);
+}
+
 static double px(const Cam *c, const Row *r, double X)
 {
-    if (c->exact) {                                         /* road_proj_x */
-        int z = (int)r->z, x = (int)X + ((int)(s16)(z * (int)r->dx) >> 2);
-        return 160 - ((int)c->lat - x) * 4 / z;
-    }
+    if (c->exact) return px_i(c, r, X);
     return 160.0 - 4.0 * (c->lat - (X + r->z * r->dx / 4.0)) / r->z;
 }
 static double py(const Cam *c, const Row *r, double Y)
 {
-    if (c->exact) {                                         /* road_proj_y */
-        int z = (int)r->z, t = 2 * ((int)(s16)(z * (int)r->dy) & ~1) + 4 * ((int)Y - (int)c->cam_y);
-        return t / z + c->bounce + 60 + ROW_TOP;
-    }
+    if (c->exact) return py_i(c, r, Y) + ROW_TOP;
     return 2.0 * r->dy + 4.0 * (Y - c->cam_y) / r->z + c->bounce + 60.0 + ROW_TOP;
 }
 
-
-/* The centre dash's world width (px * z / 4), from the game's per-row table (DS_dash_width[row]: px at the
- * row's depth): the mean over the rows. */
-static double dash_half(void)
+/* The outer edges' world x (the town's facades, the crossings' kerbs, the shoulders): 5DCh - w on the left,
+ * w + CE4h on the right; row 0 has the original's quirk (road_project_front), -(w - cam_x) and
+ * (w - cam_x) + 19C8h, in s16 in exact mode. */
+static double x_out(const Cam *c, const Row *r, int side)
 {
-    double sum = 0;
-    for (int k = 1; k < FAR_ROWS; k++) sum += DSS((u16)(DS_dash_width + 2 * k)) * (8.0 * k + 4.0) / 4.0;
-    return sum / (FAR_ROWS - 1);
+    if (r->k == 0) {
+        if (c->exact) {
+            s16 d = sub16((s16)c->w, (s16)(int)c->lat);
+            return side ? (s16)(d + 0x19C8) : (s16)-d;
+        }
+        double d = c->w - c->lat;
+        return side ? d + 0x19C8 : -d;
+    }
+    return side ? c->w + 0xCE4 : 0x5DC - c->w;
+}
+
+double enh_dash_width(int k, double q, bool exact)
+{
+    double t = DSS((u16)(DS_dash_width + 2 * k));
+    if (exact) return t;
+    double tn = DSS((u16)(DS_dash_width + 2 * (k - 1)));
+    return t + (tn - t) * q / 8.0;
 }
 
 /* ---------------------------------------------------------------- sky and horizon */
@@ -148,17 +179,42 @@ static void sheet_row(int j, double syf, double shift)
     }
 }
 
-/* road_draw_sky: the horizon at road_proj_y(F0h, 2000, dy) with dy the climb from the segment behind, and
- * its clamp (a horizon above row 13h goes to 12h, one below 51h to 52h). */
+/* road_draw_sky: the horizon at road_proj_y(F0h, 2000, dy) with dy the climb from the segment behind (0 on the
+ * drag strip), and its clamp (a horizon above row 13h goes to 12h, one below 51h to 52h); in exact mode the
+ * game's integer row. */
 static double horizon_y(const Cam *c)
 {
-    double dy = c->hpos - hgt_rel(c, c->base - 1);
-    double hy = 2.0 * dy + 4.0 * (Y_ROAD - c->cam_y) / 240.0 + c->bounce + 60.0;
+    double hy;
+    if (c->exact) {
+        int dy = (c->mode & 6) ? 0 : i16(c->hpos - hgt_rel(c, c->base - 1));
+        hy = enh_proj_y_i(0xF0, Y_ROAD, dy, (int)c->cam_y, (int)c->bounce);
+    } else {
+        double dy = c->hpos - hgt_rel(c, c->base - 1);
+        hy = 2.0 * dy + 4.0 * (Y_ROAD - c->cam_y) / 240.0 + c->bounce + 60.0;
+    }
     if (hy > 0x51 || hy < 0x13) hy = hy < 0x12 ? 0x12 : 0x52;
     return hy;
 }
 
-static void draw_sky(const Cam *c, bool town)
+int enh_sky_shift(s16 h, int sh)                            /* sky_scroll's a */
+{
+    if (h > 0) return (s16)(cmod16(shl16(h, sh), 0x140) & 0xFFF8);
+    return sub16(0x140, (s16)(cmod16(shl16(abs16(h), sh), 0x140) & 0xFFF8));
+}
+
+int enh_top_band_row(const double y[15], double ground0, double *ground)
+{
+    int top = FAR_ROWS;
+    double g = ground0;
+    for (int k = FAR_ROWS; k >= 1; k--)
+        if (y[k] < g) { g = y[k]; top = k; }
+    *ground = g;
+    return top;
+}
+
+/* The sky and the horizon strip above hy + 8 (scrolled as sky_scroll does in exact mode, at SKY_SCROLL of it in
+ * a smooth view), then the grass from the ground's top row (road_draw_sky's fill from DS_ground_top_y). */
+static void draw_sky(const Cam *c, bool town, double hy, double ground)
 {
     EnhBuf *b = &enh_buf;
     if (town) {                    /* fixed: sky 1Dh rows from 66h, skyline 10h rows from A3h at 2Fh */
@@ -171,15 +227,23 @@ static void draw_sky(const Cam *c, bool town)
         enh_ground_y = 0x3F;
         return;
     }
-    double hy = horizon_y(c);
-    double heading = (s16)trk(TRK_YAW, c->base) + c->hv;
+    double heading = (s16)trk(TRK_YAW, c->base) + c->hv, sky, strip;
+    if (c->exact) {
+        s16 h = enh_s16_of(c->heading);
+        sky = enh_sky_shift(h, 1);
+        strip = enh_sky_shift(h, 2);
+    } else {
+        sky = 2.0 * SKY_SCROLL * heading;
+        strip = 4.0 * SKY_SCROLL * heading;
+    }
     for (int j = 0; j < b->h; j++) {
         double y = ENH_VIEW_Y0 + (j + 0.5) / b->sa;
-        if (y < hy - 12) sheet_row(j, y + 0xA6 - hy, 2.0 * SKY_SCROLL * heading);
-        else if (y < hy + 8) sheet_row(j, 0xA3 + (y - (hy - 12)), 4.0 * SKY_SCROLL * heading);
-        else { enh_fill_rows(y - 0.5 / b->sa, ENH_VIEW_Y1, COL_GRASS); break; }
+        if (y < hy - 12) sheet_row(j, y + 0xA6 - hy, sky);
+        else if (y < hy + 8) sheet_row(j, 0xA3 + (y - (hy - 12)), strip);
+        else break;
     }
-    enh_ground_y = hy + 8;
+    if (c->mode != 0x10) enh_fill_rows(ground < ENH_VIEW_Y0 ? ENH_VIEW_Y0 : ground, ENH_VIEW_Y1, COL_GRASS);
+    enh_ground_y = ground;
 }
 
 /* ---------------------------------------------------------------- road */
@@ -213,7 +277,7 @@ static void town_extras(const Cam *c, const Row *near_, const Row *far_)
     double ym = py(c, &rm, Y_ROAD), yem = py(c, &rm, Y_EYE);
     for (int side = 0; side < 2; side++) {
         u16 F = trk(side ? TRK_R : TRK_L, n), Fm = trk(side ? TRK_R : TRK_L, n - 1);
-        double X = side ? X_OUT_R : X_OUT_L, xm = px(c, &rm, X), xn = px(c, &rn, X);
+        double xm = px(c, &rm, x_out(c, &rm, side)), xn = px(c, &rn, x_out(c, &rn, side));
         if (Cm & 4) {                                       /* the side street beyond the corner */
             if (!side) {
                 enh_fill_rect(0, ym - 1, xm, ym, COL_KERB);
@@ -231,8 +295,22 @@ static void town_extras(const Cam *c, const Row *near_, const Row *far_)
     }
 }
 
+/* The centre dash between the near row (a) and the far row (b), x from a0 to a1 and b0 to b1: drawn on the lines
+ * where the road's left edge (xla to xlb) is left of 13Fh (road_draw_band_front). */
+static void dash_quad(double a0, double a1, double ya, double b0, double b1, double yb, double xla, double xlb)
+{
+    bool ina = xla < 0x13F, inb = xlb < 0x13F;
+    if (!ina && !inb) return;
+    if (ina != inb) {                                       /* cut where the left edge crosses 13Fh */
+        double t = (0x13F - xla) / (xlb - xla);
+        double ym = ya + (yb - ya) * t, m0 = a0 + (b0 - a0) * t, m1 = a1 + (b1 - a1) * t;
+        if (ina) { b0 = m0; b1 = m1; yb = ym; } else { a0 = m0; a1 = m1; ya = ym; }
+    }
+    quad(a0, a1, ya, b0, b1, yb, COL_KERB);
+}
+
 /* the band between row ra (near) and rb (far), with the far row's flags: road_draw_band_front, and in town
- * town_walls_front */
+ * town_walls_front; dash: the centre dash's width (enh_dash_width) */
 static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, double dash)
 {
     const Row ra = *pa, rb = *pb;
@@ -253,7 +331,7 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
         double yea = py(c, &ra, Y_EYE), yeb = py(c, &rb, Y_EYE);
         for (int side = 0; side < 2; side++) {
             u16 F = side ? R : L;
-            double X = side ? X_OUT_R : X_OUT_L, xa = px(c, &ra, X), xb = px(c, &rb, X);
+            double xa = px(c, &ra, x_out(c, &ra, side)), xb = px(c, &rb, x_out(c, &rb, side));
             face(xa, xb, ya, yb, yeb, yea, (F & 0x10) ? COL_WALL_A : COL_WALL_B);
             if (F & 4) {
                 double Yt = (F & 8) ? 2 * Y_EYE - Y_ROAD : Y_EYE - (Y_ROAD - Y_EYE) / 2;
@@ -267,8 +345,8 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
         quad(xla, xra, ya, xlb, xrb, yb, (C & 0x10) ? COL_FINISH : COL_ROAD);
     } else {
         if (C & 4) return;                                  /* intersection */
-        double xola = px(c, &ra, X_OUT_L), xolb = px(c, &rb, X_OUT_L);
-        double xora = px(c, &ra, X_OUT_R), xorb = px(c, &rb, X_OUT_R);
+        double xola = px(c, &ra, x_out(c, &ra, 0)), xolb = px(c, &rb, x_out(c, &rb, 0));
+        double xora = px(c, &ra, x_out(c, &ra, 1)), xorb = px(c, &rb, x_out(c, &rb, 1));
         if (L & 0x80) {
             double ma = (xola + xla) / 2, mb = (xolb + xlb) / 2;
             quad(xola, ma, ya, xolb, mb, yb, COL_KERB);
@@ -282,9 +360,11 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
         } else
             quad(xra, xora, ya, xrb, xorb, yb, COL_KERB);
     }
-    if (C & 8) {                                            /* centre dash: the row's table width, centred */
-        double ca = (xla + xra) / 2, cb = (xlb + xrb) / 2, wa = dash * 4.0 / ra.z, wb = dash * 4.0 / rb.z;
-        quad(ca - wa / 2, ca + wa / 2, ya, cb - wb / 2, cb + wb / 2, yb, COL_KERB);
+    if (C & 8) {                    /* centre dash: x from mid - (w >> 1) to mid - (w >> 1) + w, mid = (xl + xr) >> 1 */
+        double h = c->exact ? floor(dash / 2) : dash / 2;
+        double ca = (xla + xra) / 2, cb = (xlb + xrb) / 2;
+        if (c->exact) { ca = floor(ca); cb = floor(cb); }
+        dash_quad(ca - h, ca - h + dash + 1, ya, cb - h, cb - h + dash + 1, yb, xla, xlb);
     }
 }
 
@@ -301,7 +381,31 @@ static void cam_of(const EnhView *v, Cam *c)
     c->hv = (s16)(u16)(enh_s16_of(hf) - (s16)trk(TRK_YAW, c->base)) + (v->heading - hf);
     c->cam_y = v->cam_y;
     c->bounce = v->bounce;
+    c->heading = v->heading;
+    c->mode = v->mode;
+    c->w = v->mode == 0x10 ? 200 : 400;
     c->exact = v->exact;
+}
+
+void enh_rows_exact_front(const EnhView *v, EnhRowTab *t)
+{
+    Cam c;
+    cam_of(v, &c);
+    c.exact = true;
+    for (int k = 0; k <= FAR_ROWS; k++) {
+        Row r = row_k(&c, k);
+        double xl, xr;
+        edges(trk(TRK_C, r.n), &xl, &xr);
+        t->xl[k] = (s16)px_i(&c, &r, xl);
+        t->xr[k] = (s16)px_i(&c, &r, xr);
+        t->xol[k] = (s16)px_i(&c, &r, x_out(&c, &r, 0));
+        t->xor_[k] = (s16)px_i(&c, &r, x_out(&c, &r, 1));
+        t->y[k] = (s16)py_i(&c, &r, Y_ROAD);
+        t->ye[k] = (s16)py_i(&c, &r, Y_EYE);
+        t->yk[k] = (s16)py_i(&c, &r, Y_KERB);
+        t->ybl[k] = (s16)py_i(&c, &r, sub16(Y_ROAD, (s16)trk(TRK_BL, r.n)));
+        t->ybr[k] = (s16)py_i(&c, &r, sub16(Y_ROAD, (s16)trk(TRK_BR, r.n)));
+    }
 }
 
 void enh_draw_road(const EnhView *v)
@@ -310,17 +414,23 @@ void enh_draw_road(const EnhView *v)
     enh_clip_view();
     Cam c;
     cam_of(v, &c);
-    draw_sky(&c, v->town);
-    double dash = dash_half();
     Row rows[FAR_ROWS + 1];
-    for (int k = 0; k <= FAR_ROWS; k++) rows[k] = row_k(&c, k);
+    double ys[FAR_ROWS + 1], hy = horizon_y(&c), ground = 0x3F;
+    for (int k = 0; k <= FAR_ROWS; k++) {
+        rows[k] = row_k(&c, k);
+        ys[k] = py(&c, &rows[k], Y_ROAD) - ROW_TOP;         /* the line y: the integer row in exact mode */
+    }
+    /* a race hides the bands beyond a crest (road_draw_sky's top_band_row); the town draws them all */
+    int top = v->town ? FAR_ROWS : enh_top_band_row(ys, hy + 8, &ground);
+    draw_sky(&c, v->town, hy, ground);
+    double q = 8.0 * (c.pos - c.base);
     /* far to near, each segment's cuts after its band and the opponent after its row's objects (road_draw_front);
      * cuts beyond the far row first, those at or behind the near row last */
     int base = c.base;
     enh_cuts_at(v, ENH_PASS_FRONT, base + FAR_ROWS + 1, INT_MAX, false);
     enh_cuts_at(v, ENH_PASS_FRONT, base + FAR_ROWS + 1, INT_MAX, true);
     for (int k = FAR_ROWS; k >= 1; k--) {
-        draw_band(&c, &rows[k - 1], &rows[k], v->town, dash);
+        if (k <= top) draw_band(&c, &rows[k - 1], &rows[k], v->town, enh_dash_width(k, q, c.exact));
         enh_cuts_at(v, ENH_PASS_FRONT, base + k, base + k, false);
         enh_cuts_at(v, ENH_PASS_FRONT, base + k, base + k, true);
     }
@@ -338,6 +448,8 @@ EnhObjGeo enh_obj_geo(const EnhView *v, int kind, int seg, int sprite)
     Cam c;
     cam_of(v, &c);
     Row r;
+    r.n = seg;
+    r.k = -1;
     if (opp) {                                              /* the opponent (opponent_draw), at the d it was drawn at */
         double z = c.exact ? cdiv16((s16)v->opp_d, 8) : v->opp_d / 8.0;
         if (sprite == 0) z += 16;

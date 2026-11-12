@@ -438,6 +438,101 @@ static void sr2_enh_opp_drawn_d(void)
     CHECK(ga.ok && gb.ok && ga.z == 41.5 && gb.z == 40.5);
 }
 
+/* The exact projections are the game's road_proj_x and road_proj_y, s16 arithmetic and all. */
+static void sr2_enh_proj_exact(void)
+{
+    s16 keep_cx = DSS(DS_cam_x), keep_cy = DSS(DS_cam_y), keep_b = DSS(DS_view_bounce_y), keep_mode = DSS(DS_road_mode);
+    DSS(DS_road_mode) = 1;
+    static const s16 xs[] = { -2000, 0, 0x5DC, 0xCE4, 0x19C8 + 400 - 0xA00 }, cxs[] = { 0x500, 0xA00, 0xCE1 };
+    static const s16 ys[] = { 2000, 0x76C, 0x79E, 2000 - 4000 }, cys[] = { 0x76C, 0x74A }, bs[] = { 0, 10 };
+    int bad = 0, n = 0;
+    for (int z = 4; z <= 240; z = z == 116 ? 240 : z + 1) {
+        for (int i = 0; i < 5; i++)
+            for (int dx = -0x60; dx <= 0x60; dx += 0x18)
+                for (int c = 0; c < 3; c++) {
+                    DSS(DS_cam_x) = cxs[c];
+                    n++;
+                    if (enh_proj_x_i(z, xs[i], dx, cxs[c]) != road_proj_x((s16)z, xs[i], (s16)dx)) bad++;
+                }
+        for (int i = 0; i < 4; i++)
+            for (int dy = -40; dy <= 40; dy += 10)
+                for (int c = 0; c < 2; c++)
+                    for (int b = 0; b < 2; b++) {
+                        DSS(DS_cam_y) = cys[c];
+                        DSS(DS_view_bounce_y) = bs[b];
+                        n++;
+                        if (enh_proj_y_i(z, ys[i], dy, cys[c], bs[b]) != road_proj_y((s16)z, ys[i], (s16)dy)) bad++;
+                    }
+    }
+    printf("  %d of %d differ\n", bad, n);
+    CHECK(bad == 0);
+    DSS(DS_cam_x) = keep_cx; DSS(DS_cam_y) = keep_cy; DSS(DS_view_bounce_y) = keep_b; DSS(DS_road_mode) = keep_mode;
+}
+
+/* Row 0's outer edges are the original's quirk (they move with cam_x), the others the world's outer edges. */
+static void sr2_enh_rows_front_row0(void)
+{
+    static const u16 arrs[] = { TRK_C, TRK_L, TRK_R, TRK_YAW, TRK_HGT, TRK_BL, TRK_BR };
+    u16 keep[7][30];
+    for (int a = 0; a < 7; a++)
+        for (int i = 0; i < 30; i++) { keep[a][i] = TRKW(arrs[a], 40 + i); TRKW(arrs[a], 40 + i) = 0; }
+    s16 keep_cx = DSS(DS_cam_x), keep_cy = DSS(DS_cam_y), keep_b = DSS(DS_view_bounce_y), keep_mode = DSS(DS_road_mode);
+    DSS(DS_cam_x) = 0xCE1;
+    DSS(DS_cam_y) = 0x76C;
+    DSS(DS_view_bounce_y) = 0;
+    DSS(DS_road_mode) = 0;
+    EnhView v;
+    memset(&v, 0, sizeof v);
+    v.pos = 50.0;
+    v.lat = 0xCE1;
+    v.cam_y = 0x76C;
+    v.exact = true;
+    EnhRowTab t;
+    enh_rows_exact_front(&v, &t);
+    printf("  xol0 %d xor0 %d xor1 %d y14 %d\n", t.xol[0], t.xor_[0], t.xor_[1], t.y[14]);
+    CHECK(t.xor_[0] == road_proj_x(4, (s16)((400 - 0xCE1) + 0x19C8), 0));
+    CHECK(t.xol[0] == road_proj_x(4, (s16)-(400 - 0xCE1), 0));
+    CHECK(t.xor_[1] == road_proj_x(12, 400 + 0xCE4, 0));
+    CHECK(t.y[14] == road_proj_y(116, 2000, 0));
+    for (int a = 0; a < 7; a++)
+        for (int i = 0; i < 30; i++) TRKW(arrs[a], 40 + i) = keep[a][i];
+    DSS(DS_cam_x) = keep_cx; DSS(DS_cam_y) = keep_cy; DSS(DS_view_bounce_y) = keep_b; DSS(DS_road_mode) = keep_mode;
+}
+
+/* road_draw_sky's top_band_row: from row 14 to row 1, the row whose y is the first strictly above all after it
+ * (and above the horizon strip's bottom). */
+static void sr2_enh_top_band_row(void)
+{
+    double y[15] = { 160, 100, 80, 70, 65, 62, 61, 60.5, 60.4, 60.3, 60.2, 60.1, 60, 59, 58 }, g = 0;
+    CHECK(enh_top_band_row(y, 69, &g) == 14 && g == 58);
+    double c[15] = { 160, 100, 80, 70, 65, 62, 61, 63, 63, 63, 63, 63, 63, 63, 63 };
+    CHECK(enh_top_band_row(c, 69, &g) == 6 && g == 61);
+    y[13] = y[14] = 50;
+    CHECK(enh_top_band_row(y, 69, &g) == 14 && g == 50);
+}
+
+/* The centre dash's width is the game's per-row table, interpolated between rows in a smooth view. */
+static void sr2_enh_dash_width(void)
+{
+    int bad = 0;
+    for (int k = 1; k <= 14; k++)
+        if (enh_dash_width(k, 3, true) != DSS((u16)(DS_dash_width + 2 * k))) bad++;
+    CHECK(bad == 0);
+    double t5 = DSS(DS_dash_width + 10), t4 = DSS(DS_dash_width + 8);
+    CHECK(enh_dash_width(5, 4, false) == (t5 + t4) / 2);
+}
+
+/* sky_scroll's shift: where the sheet's column 0 lands. */
+static void sr2_enh_sky_shift(void)
+{
+    CHECK(enh_sky_shift(5, 1) == 8);
+    CHECK(enh_sky_shift(-5, 1) == 312);
+    CHECK(enh_sky_shift(0, 1) == 320);
+    CHECK(enh_sky_shift(165, 1) == 8);
+    CHECK(enh_sky_shift(200, 2) == 160);
+    CHECK(enh_sky_shift(-200, 2) == 160);
+}
+
 /* After the cliff fall the game draws no front view: the enhanced view is not composed over the stale page. */
 static void sr2_enh_fallen_not_composed(void)
 {
@@ -572,6 +667,11 @@ int main(int argc, char **argv)
     RUN(sr2_enh_obj_geo_exact_slope);
     RUN(sr2_enh_opp_drawn_d);
     RUN(sr2_enh_fallen_not_composed);
+    RUN(sr2_enh_proj_exact);
+    RUN(sr2_enh_rows_front_row0);
+    RUN(sr2_enh_top_band_row);
+    RUN(sr2_enh_dash_width);
+    RUN(sr2_enh_sky_shift);
     RUN(sr2_enh_compare_rows);
     RUN(sr2_enh_compare_log);
     host_shutdown();

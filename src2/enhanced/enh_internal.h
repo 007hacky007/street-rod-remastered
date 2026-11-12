@@ -68,6 +68,22 @@ bool enh_view_newest(EnhView *v);
 
 /* enh_road2.c: modes 0 (town) and 1 (street drag). */
 void enh_draw_road(const EnhView *v);
+/* The game's integer projections: road_proj_x with DS_cam_x = cx (modes other than 8: no clamp), road_proj_y
+ * with DS_cam_y = cam_y and DS_view_bounce_y = bounce. */
+int enh_proj_x_i(int z, int X, int dx, int cx);
+int enh_proj_y_i(int z, int Y, int dy, int cam_y, int bounce);
+/* road_project_front's 15 rows of an exact view, all nine tables, from the camera the drawing uses. */
+void enh_rows_exact_front(const EnhView *v, EnhRowTab *t);
+/* road_draw_sky's top_band_row: from row 14 down to row 1, a row whose line y is above the ground so far
+ * (strictly) lowers the ground to it; bands of rows above the result are not drawn. y: the rows' line y, ground0:
+ * the horizon strip's bottom; *ground: the ground's top row. */
+int enh_top_band_row(const double y[15], double ground0, double *ground);
+/* The centre dash's width of the band whose far row is k: DS_dash_width[k]; in a smooth view interpolated towards
+ * row k - 1 as the row nears it (q = 8 frac(pos), 0..8). */
+double enh_dash_width(int k, double q, bool exact);
+/* sky_scroll's shift a (race_road.c): the screen x of the sheet's column 0, for heading h and shift sh (1 the sky,
+ * 2 the horizon strip). */
+int enh_sky_shift(s16 h, int sh);
 /* The captured objects (enhanced.c). A cut is one id's pixels of the frame shown; its kind says how it is placed,
  * its segment (absolute) where in the band loop it is drawn. */
 enum { ENH_CUT_ROW, ENH_CUT_OPP, ENH_CUT_MIR, ENH_CUT_STARTER };
