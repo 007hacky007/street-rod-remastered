@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "enhanced/enh_aq2.h"
 #include "enhanced/enh_compare.h"
 #include "game/race_int.h"
 #include "host.h"
@@ -122,9 +123,12 @@ void enh_init(bool enabled, int res_scale, int aa, int motion_delay, bool town)
 bool enh_enabled(void) { return enh_opt.enabled; }
 int  enh_res_scale(void) { return enh_opt.res_scale; }
 
-/* The road modes drawn enhanced so far: the town (0), the street drag (1), the Grudge drag strip (2, 4) and
- * Mulholland (10h). */
-static bool mode_enhanced(s16 mode) { return mode == 0 || mode == 1 || mode == 2 || mode == 4 || mode == 0x10; }
+/* The road modes drawn enhanced so far: the town (0), the street drag (1), the Grudge drag strip (2, 4),
+ * Mulholland (10h); the Aqueduct (8) keeps its frame state, its picture stays the game's (enh_frame_presented). */
+static bool mode_enhanced(s16 mode)
+{
+    return mode == 0 || mode == 1 || mode == 2 || mode == 4 || mode == 8 || mode == 0x10;
+}
 
 void enh_race_begin(void)
 {
@@ -136,6 +140,8 @@ void enh_race_begin(void)
     for (int id = 0; id < ENH_OBJ_IDS; id++) cuts[id].used = false;
     enh_cut_log_n = 0;
     enh_images_reset();
+    memset(&snap.aq_front, 0, sizeof snap.aq_front);
+    memset(&snap.aq_mirror, 0, sizeof snap.aq_mirror);
     active = enh_opt.enabled && mode_enhanced(DSS(DS_road_mode)) && (DSB(DS_racing) != 0 || enh_opt.town);
 }
 
@@ -178,6 +184,21 @@ void enh_frame_built(void)
      * frame, so the view equals the original's at each frame and turns smoothly between frames. */
     v[ENH_F_HEADING] = frames.n > 0 ? enh_unwrap(frames.v[0][ENH_F_HEADING], last_heading, heading) : heading;
     last_heading = heading;
+    if (DSS(DS_road_mode) == 8) {
+        /* the Aqueduct: this frame's projection used these (aq_draw_front zeroes the shape words later); the roll
+         * and the pivot keep the last sample's until enh_aq_begin, so a picture composed before it stays continuous */
+        static const u16 defs[6] = { DS_aq_def_floor_h, DS_aq_def_xl, DS_aq_def_xr, DS_aq_def_top_h,
+                                     DS_aq_def_top_xl, DS_aq_def_top_xr };
+        v[ENH_F_AQ_DY] = DSS(DS_aq_dy);
+        for (int k = 0; k < 6; k++) v[ENH_F_DEF0 + k] = DSS(defs[k]);
+        v[ENH_F_HOFF] = 0;
+        if (frames.n > 0) {
+            v[ENH_F_ROLL] = frames.v[0][ENH_F_ROLL];
+            v[ENH_F_PIV_X] = frames.v[0][ENH_F_PIV_X];
+            v[ENH_F_PIV_Y] = frames.v[0][ENH_F_PIV_Y];
+        }
+    }
+    snap.opp_sx_prev = DSS(DS_opp_last_sx);   /* before opponent_draw writes this frame's */
     enh_ser_push(&frames, host_tick_time_ns(), v, NOMINAL_FRAME_NS);
     enh_rowtab_read(&snap.game_front);   /* before road_project_mirror overwrites rows 0..7 and YK */
     static const u16 tabs[5] = { DS_row_xl, DS_row_xr, DS_row_y, DS_row_ybank_l, DS_row_ybank_r };
@@ -201,6 +222,22 @@ void enh_draw_begin(void)
     ega_watch_overdraw(page, (u16)(page + ENH_VIEW_Y1 * EGA_BYTES_PER_LINE));
     base_layer = EGA_LAYER_BG;
     ega_set_layer(EGA_LAYER_BG);
+}
+
+static s16 aq_last_roll;       /* DS_rot_enable of the newest Aqueduct frame */
+
+void enh_aq_begin(void)
+{
+    if (!active || frames.n == 0) return;
+    enh_draw_begin();
+    s16 raw = DSS(DS_rot_enable);
+    bool jump = false;
+    frames.v[0][ENH_F_ROLL] = frames.n > 1 ? enh_aq_roll_unwrap(frames.v[1][ENH_F_ROLL], aq_last_roll, raw, &jump) : raw;
+    if (jump) enh_ser_snap(&frames, ENH_F_ROLL);   /* the bounce's snap back: not interpolated */
+    aq_last_roll = raw;
+    frames.v[0][ENH_F_PIV_X] = DSS(DS_rot_cx);
+    frames.v[0][ENH_F_PIV_Y] = DSS(DS_rot_cy);
+    enh_aqtab_read(&snap.aq_front);
 }
 
 void enh_draw_sky(bool on)
@@ -230,13 +267,14 @@ bool enh_in_mirror_rect(int x, int y)
 
 bool enh_in_glass(int x, int y) { return x >= 0xF2 && x <= 0x13D && y >= 0x16 && y <= 0x2A; }
 
-/* Front ids and the opponent's front pictures are kept outside the mirror (its backdrop covers what the front
- * drew there), the mirror's ids and the opponent's pictures 9 and up (drawn with the mirror's clip) inside its
- * glass. The Aqueduct's stars and clouds wait for part C. */
+/* Front ids (the rows', the Aqueduct's stars and clouds) and the opponent's front pictures are kept outside the
+ * mirror (its backdrop covers what the front drew there), the mirror's ids and the opponent's pictures 9 and up
+ * (drawn with the mirror's clip) inside its glass. */
 bool enh_tag_kept(int id, int opp_sprite, int x, int y)
 {
     bool mirror = (id >= ENH_OBJ_MIR(1) && id <= ENH_OBJ_STARTER) || (id == ENH_OBJ_OPP && opp_sprite >= 9);
-    bool front = (id >= 1 && id <= 14) || (id == ENH_OBJ_OPP && opp_sprite < 9);
+    bool front = (id >= 1 && id <= 14) || id == ENH_OBJ_STARS || id == ENH_OBJ_CLOUDS
+                 || (id == ENH_OBJ_OPP && opp_sprite < 9);
     return mirror ? enh_in_glass(x, y) : front && !enh_in_mirror_rect(x, y);
 }
 
@@ -383,7 +421,7 @@ void enh_draw_fg(bool fg)
 void enh_mirror_begin(void)
 {
     if (!active) return;
-    base_layer = EGA_LAYER_BG;
+    base_layer = DSS(DS_road_mode) == 8 ? EGA_LAYER_FG : EGA_LAYER_BG;   /* the Aqueduct's mirror stays the game's */
     ega_set_layer(base_layer);
 }
 
@@ -432,13 +470,22 @@ static void snap_fill(void)
     snap.ground_top_y = DSS(DS_ground_top_y);
     snap.top_band_row = DSS(DS_top_band_row);
     snap.police = DSS(DS_police_state);
+    snap.opp_variant = DSS(DS_opp_variant);
+    snap.opp_mpass = DSS(DS_opp_seg) < DSS(DS_seg);
     enh_rowtab_read(&snap.game_mirror);
+    if (snap.mode == 8) enh_aqtab_read(&snap.aq_mirror);
 }
 
 void enh_frame_presented(void)
 {
     if (!active) return;
     ega_set_layer(EGA_LAYER_OFF);
+    /* The Aqueduct keeps its frame state; its picture stays the game's (nothing cut, composed or compared). */
+    if (DSS(DS_road_mode) == 8) {
+        snap_fill();
+        presented = false;
+        return;
+    }
     /* After the cliff fall road_draw_front draws nothing (it returns before enh_draw_begin): the page keeps the
      * original's picture, and nothing of it is cut or composed. */
     if (DSW(DS_fallen)) {
@@ -473,12 +520,19 @@ static void view_of(const double *f, const double *p, EnhView *v)
     v->roll = f[ENH_F_ROLL];
     v->aq_dy = f[ENH_F_AQ_DY];
     for (int k = 0; k < 6; k++) v->aq_def[k] = f[ENH_F_DEF0 + k];
+    v->piv_x = f[ENH_F_PIV_X];
+    v->piv_y = f[ENH_F_PIV_Y];
+    v->roll_raw = v->roll + (snap.aq_front.roll - frames.v[0][ENH_F_ROLL]);   /* the game's range */
+    v->rot_sin = snap.aq_front.sn;
+    v->rot_cos = snap.aq_front.cs;
+    v->opp_sx_prev = snap.opp_sx_prev;
     /* the depth the opponent was drawn at, moved on by the cars' motion since the newest frame */
     v->opp_d = snap.opp_d + 64.0 * ((v->opp_pos - v->pos) - (frames.v[0][ENH_F_OPP_POS] - frames.v[0][ENH_F_POS]));
     v->opp_sprite = snap.opp_sprite;
     v->opp_seg = snap.opp_seg;
     v->opp_sx = snap.opp_sx;
     v->opp_fixed = snap.opp_fixed;
+    v->opp_mpass = snap.opp_mpass;
     v->fall_dir = snap.fall_dir;
     v->start_seg = snap.start_seg;
     v->rail_phase = snap.rail_phase;

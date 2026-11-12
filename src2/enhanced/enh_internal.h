@@ -8,9 +8,11 @@
 #include "enhanced.h"
 
 /* A smoothly interpolated series of samples: [0] = the newest, [1] and [2] the ones before. One channel per
- * quantity of a game frame; part C fills the roll and the Aqueduct's channels (0 until then). */
+ * quantity of a game frame; the roll, the pivot and the Aqueduct's channels are 0 in the other road modes. */
 enum { ENH_F_LAT, ENH_F_HEADING, ENH_F_POS, ENH_F_OPP_POS, ENH_F_OPP_LAT, ENH_F_CAM_Y, ENH_F_HOFF, ENH_F_BOUNCE,
-       ENH_F_ROLL, ENH_F_AQ_DY, ENH_F_DEF0, ENH_SER_N = ENH_F_DEF0 + 6 };   /* DEF0..+5: def_floor_h, def_xl, def_xr, def_top_h, def_top_xl, def_top_xr */
+       ENH_F_ROLL, ENH_F_AQ_DY, ENH_F_DEF0,      /* DEF0..+5: def_floor_h, def_xl, def_xr, def_top_h, def_top_xl, def_top_xr */
+       ENH_F_PIV_X = ENH_F_DEF0 + 6, ENH_F_PIV_Y, /* the roll unwrapped (degrees) and its pivot: DS_rot_cx, DS_rot_cy */
+       ENH_SER_N };
 typedef struct {
     Uint64 t[3];
     double v[3][ENH_SER_N];
@@ -26,6 +28,11 @@ double enh_unwrap(double prev, s16 prev_raw, s16 raw);   /* prev + (s16)(raw - p
 /* The game's row tables of a frame (road_project_front, road_project_mirror). */
 typedef struct { s16 xl[15], xr[15], y[15], xol[15], xor_[15], ye[15], yk[15], ybl[15], ybr[15]; } EnhRowTab;
 void enh_rowtab_read(EnhRowTab *t);           /* DS_row_xl, _xr, _y, _xol, _xor, _yeye, _ykerb, _ybank_l, _ybank_r now */
+
+/* The Aqueduct's rotated rows (race_aq.c's reversed arrays, k = 0 the farthest), its trough (unrotated) and the
+ * rotation of a frame. */
+typedef struct { s16 lx[15], ly[15], rx[15], ry[15], tlx[15], tly[15], trx[15], try_[15];
+                 s16 tnl, tnr, tfl, tfr, tny, tfy; s16 roll, sn, cs, cx, cy; } EnhAqTab;
 
 /* The newest frame's state that is not interpolated, filled when the frame is presented. */
 typedef struct {
@@ -48,6 +55,11 @@ typedef struct {
                                   front_hillsides and mirror_hillsides read them as row 1's "row -1" */
     EnhRowTab game_front;      /* read at enh_frame_built: the mirror overwrites rows 0..7 and all of YK later */
     EnhRowTab game_mirror;     /* read at enh_frame_presented */
+    EnhAqTab aq_front;         /* the Aqueduct: read at enh_aq_begin (the mirror overwrites rows 0..7 and the pivot) */
+    EnhAqTab aq_mirror;        /* read at enh_frame_presented */
+    s16 opp_sx_prev;           /* DS_opp_last_sx at enh_frame_built, before opponent_draw writes it */
+    s16 opp_variant;           /* DS_opp_variant */
+    bool opp_mpass;            /* DS_opp_seg < DS_seg: the mirror's pass drew the opponent (the Aqueduct) */
 } EnhSnap;
 
 /* opponent_draw's front pictures 2..8 are blitted at whole bytes (clip_rect: x >> 3): the screen x their anchor
@@ -60,9 +72,9 @@ int enh_opp_drawn_sx(int sx, int width);
 typedef struct {
     double pos, lat, heading, opp_pos, opp_lat;   /* heading: DS_heading, unwrapped (not relative to the road) */
     double cam_y, hoff, bounce;                   /* DS_cam_y; DS_cur_height - HGT[seg]; DS_view_bounce_y */
-    double roll, aq_dy, aq_def[6];                /* part C (0 in part B) */
+    double roll, aq_dy, aq_def[6];                /* the Aqueduct: the roll unwrapped, DS_aq_dy, DS_aq_def_* */
     double roll_raw, piv_x, piv_y;                /* the Aqueduct: the roll in the game's range, the rotation's
-                                                     pivot (0 until the frame state fills them) */
+                                                     pivot (0 in the other road modes) */
     s16 rot_sin, rot_cos, opp_sx_prev;            /* the frame's DS_rot_sin, DS_rot_cos; DS_opp_last_sx before it */
     double opp_d;              /* the opponent's depth in 1/64 segment: DS_opp_last_d at the newest frame, moved on
                                   by the cars' motion since then in a smooth view */
@@ -70,14 +82,11 @@ typedef struct {
     s16 opp_seg, opp_sx, fall_dir, start_seg, rail_phase, ground_top_y;
     s16 before[5];             /* EnhSnap.before */
     bool opp_fixed;
+    bool opp_mpass;            /* EnhSnap.opp_mpass */
     bool town;
     bool exact;                /* the newest frame itself (the compare tool): the game's integer projection */
 } EnhView;
 
-/* The Aqueduct's rotated rows (race_aq.c's reversed arrays, k = 0 the farthest), its trough (unrotated) and the
- * rotation of a frame. */
-typedef struct { s16 lx[15], ly[15], rx[15], ry[15], tlx[15], tly[15], trx[15], try_[15];
-                 s16 tnl, tnr, tfl, tfr, tny, tfy; s16 roll, sn, cs, cx, cy; } EnhAqTab;
 void enh_aqtab_read(EnhAqTab *t);     /* the rotated arrays, the trough, DS_rot_enable, _sin, _cos, _cx, _cy now */
 /* An exact view's rows 0..n (14 front, 7 mirror) rotated into k = n - i, the trough unrotated (as the game keeps
  * it), the view's roll, sin, cos and pivot. */

@@ -38,6 +38,9 @@ void enh_phys_step(void);
  * mirror's frame, the hood, the cockpit). begin = a new frame into the back page (all its marks cleared,
  * background). */
 void enh_draw_begin(void);
+/* aq_draw_front (race_aq.c), after the roll and the rotated rows: the Aqueduct's frame into the back page starts
+ * (as enh_draw_begin), and its roll and pivot join the newest snapshot. */
+void enh_aq_begin(void);
 void enh_draw_fg(bool fg);
 /* road_draw_front, road_draw_sky: on = the sky's blits follow (the SKY layer: background, every pixel tagged as
  * the sky's for the compare tool); off = back to the base layer. */
@@ -49,8 +52,8 @@ void enh_draw_sky(bool on);
 #define ENH_OBJ_OPP      15          /* the opponent, or the police in its slot */
 #define ENH_OBJ_MIR(r)   (15 + (r))  /* mirror rows 1..7: 16..22 */
 #define ENH_OBJ_STARTER  23          /* the starter figure in the mirror (its y pinned, starter_draw_mirror) */
-#define ENH_OBJ_STARS    24          /* part C: the Aqueduct's stars */
-#define ENH_OBJ_CLOUDS   25          /* part C: its clouds */
+#define ENH_OBJ_STARS    24          /* the Aqueduct's stars */
+#define ENH_OBJ_CLOUDS   25          /* the Aqueduct's clouds */
 #define ENH_OBJ_IDS      26
 void enh_draw_objects(int id);
 /* road_frame, around road_project_mirror and road_draw_mirror: the mirror is drawn into the background (begin);

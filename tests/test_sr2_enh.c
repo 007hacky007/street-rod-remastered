@@ -261,6 +261,10 @@ static void sr2_enh_capture_regions(void)
     CHECK(!enh_tag_kept(ENH_OBJ_OPP, 10, 0x80, 0x40));
     CHECK(!enh_tag_kept(ENH_OBJ_OPP, 5, 0x100, 0x20));
     CHECK(!enh_tag_kept(ENH_OBJ_MIR(2), 0, 0xF1, 0x20));
+    CHECK(enh_tag_kept(ENH_OBJ_STARS, 0, 0x80, 0x20));      /* the Aqueduct's sky: front ids */
+    CHECK(!enh_tag_kept(ENH_OBJ_STARS, 0, 0x100, 0x20));
+    CHECK(enh_tag_kept(ENH_OBJ_CLOUDS, 0, 0x80, 0x20));
+    CHECK(!enh_tag_kept(ENH_OBJ_CLOUDS, 0, 0x100, 0x20));
 }
 
 /* One frame of the street drag with three objects tagged in the shown page: row 3, row 5 and the opponent (its
@@ -1855,6 +1859,118 @@ static void sr2_enh_aqtab_exact(void)
     aq_restore();
 }
 
+/* An Aqueduct race at segment 100, its frames drawn into page 2 and shown from page 0. */
+static void aq_setup(void)
+{
+    enh_init(true, 1, 1, 100, true);
+    ega_init();
+    vga_mode_0d();
+    DSS(DS_road_mode) = 8;
+    DSB(DS_racing) = 1;
+    DSS(DS_seg) = 100;
+    DSS(DS_substep) = 0;
+    DSS(DS_heading) = 0;
+    DSS(DS_shown_page) = 0;
+    DSS(DS_back_page) = 2;
+    DSW(DS_fallen) = 0;
+    aq_build();
+    DSS(DS_cam_x) = 0xA00;
+    DSS(DS_cam_y) = 0x76C;
+    DSS(DS_aq_wall_l_shift) = DSS(DS_aq_wall_r_shift) = 0;
+    enh_race_begin();
+}
+
+/* One Aqueduct frame as road_frame and aq_draw_front make it: the projection's words, enh_frame_built, the roll and
+ * its pivot, enh_aq_begin, the presentation. */
+static void aq_frame(const s16 def[6], s16 aq_dy, s16 bounce, s16 roll, s16 cx, s16 cy)
+{
+    static const u16 defs[6] = { DS_aq_def_floor_h, DS_aq_def_xl, DS_aq_def_xr, DS_aq_def_top_h, DS_aq_def_top_xl,
+                                 DS_aq_def_top_xr };
+    for (int i = 0; i < 6; i++) DSS(defs[i]) = def[i];
+    DSS(DS_aq_dy) = aq_dy;
+    DSS(DS_view_bounce_y) = bounce;
+    enh_frame_built();
+    DSS(DS_rot_enable) = roll;
+    DSS(DS_rot_sin) = sin256(roll);
+    DSS(DS_rot_cos) = sin256((s16)(roll + 90));
+    DSS(DS_rot_cx) = cx;
+    DSS(DS_rot_cy) = cy;
+    enh_aq_begin();
+    enh_frame_presented();
+}
+
+/* The Aqueduct's frame state: the projection's words of the frame, the roll unwrapped (smooth between frames,
+ * snapped at a jump), its pivot and sin / cos; the picture stays the game's, the mirror the foreground. */
+static void sr2_enh_aq_frame_state(void)
+{
+    static const u32 rgb[16];
+    static const s16 def[6] = { 1, 2, 3, 4, 5, 6 };
+    aq_save();
+    Keep k = keep_ds();
+    aq_setup();
+    aq_frame(def, 3, 0, 48, 0x50, 0x3F);
+    EnhView v;
+    CHECK(enh_view_newest(&v));
+    printf("  roll %.1f raw %.1f piv %.0f,%.0f dy %.0f sin %d cos %d\n", v.roll, v.roll_raw, v.piv_x, v.piv_y, v.aq_dy,
+           v.rot_sin, v.rot_cos);
+    CHECK(v.roll == 48 && v.roll_raw == 48 && v.piv_x == 0x50 && v.piv_y == 0x3F);
+    bool defs_ok = true;
+    for (int i = 0; i < 6; i++) defs_ok = defs_ok && v.aq_def[i] == def[i];
+    CHECK(defs_ok);
+    CHECK(v.aq_dy == 3);
+    CHECK(v.rot_sin == sin256(48) && v.rot_cos == sin256(138));
+    CHECK(!enh_compose(small, rgb));                /* the Aqueduct's picture stays the game's */
+    for (s16 r = 80; r <= 304; r += 32) {
+        aq_frame(def, 3, 0, r, 0x50, 0x3F);
+        CHECK(enh_view_newest(&v) && v.roll == r && v.roll_raw == r);
+    }
+    Uint64 t = host_tick_time_ns() + (Uint64)(8.0 * PIT_DIV_GAME * 1e9 / PIT_HZ / 2);
+    CHECK(enh_view_at(t, &v));
+    printf("  between: roll %.2f\n", v.roll);
+    CHECK(v.roll > 272 && v.roll < 304);
+    aq_frame(def, 3, 0, 48, 0x50, 0x3F);            /* the bounce's snap back */
+    CHECK(enh_view_newest(&v));
+    printf("  snap: roll %.1f raw %.1f\n", v.roll, v.roll_raw);
+    CHECK(v.roll == 408 && v.roll_raw == 48);
+    bool snapped = true;
+    for (int i = 0; i < 4; i++) snapped = snapped && enh_view_at(t + (Uint64)i * 60000000ull, &v) && v.roll == 408;
+    CHECK(snapped);
+    enh_mirror_begin();                             /* the mirror stays the game's */
+    wr_span(0x4000, 0x100, 0x20, 1);
+    CHECK(fg_at(0x4000, 0x100, 0x20));
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_race_end();
+    restore_ds(&k);
+    aq_restore();
+}
+
+/* A race after the Aqueduct carries none of its roll, pivot or shape. */
+static void sr2_enh_aq_race_resets(void)
+{
+    static const s16 def[6] = { 1, 2, 3, 4, 5, 6 };
+    aq_save();
+    Keep k = keep_ds();
+    aq_setup();
+    aq_frame(def, 3, 0, 48, 0x50, 0x3F);
+    enh_race_end();
+    DSS(DS_road_mode) = 0;
+    DSB(DS_racing) = 0;
+    enh_race_begin();
+    enh_frame_built();
+    enh_frame_presented();
+    EnhView v;
+    CHECK(enh_view_newest(&v));
+    printf("  roll %.1f raw %.1f piv %.0f,%.0f\n", v.roll, v.roll_raw, v.piv_x, v.piv_y);
+    CHECK(v.roll == 0 && v.roll_raw == 0 && v.piv_x == 0 && v.piv_y == 0);
+    bool zero = true;
+    for (int i = 0; i < 6; i++) zero = zero && v.aq_def[i] == 0;
+    CHECK(zero);
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_race_end();
+    restore_ds(&k);
+    aq_restore();
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -1926,6 +2042,8 @@ int main(int argc, char **argv)
     RUN(sr2_enh_aq_opp_wy);
     RUN(sr2_enh_aq_opp_anchor);
     RUN(sr2_enh_aqtab_exact);
+    RUN(sr2_enh_aq_frame_state);
+    RUN(sr2_enh_aq_race_resets);
     host_shutdown();
     return failures ? 1 : 0;
 }

@@ -16,6 +16,7 @@
  * Row arrays (15 words, row 0 nearest) and the reversed rotated arrays live at their DGROUP addresses; the drawers
  * write physics state (player x DS:A564, heading DS:A56A, speed DS:A100, hit bits DS:A7D2) exactly as the original.
  * The CGA / Tandy rotators (c09a, c342) are not ported (VGA only). */
+#include "enhanced/enhanced.h"   /* ENH: the enhanced race view */
 #include "game/race_int.h"
 #include "game/race.h"
 
@@ -624,6 +625,7 @@ void aq_draw_front(void)
     DSS(DS_rot_cos) = sin256((s16)(ROLL + 0x5A));
     aq_rotate_rows(14);
     clip_set_view();
+    enh_aq_begin();   /* ENH: the Aqueduct's frame, its roll and pivot */
     aq_draw_sky();
     road_fillmode_begin();
     aq_draw_scene();
