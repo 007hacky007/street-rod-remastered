@@ -89,7 +89,7 @@ void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, 
 /* Per road mode: the frames and their statistics. */
 typedef struct {
     bool seen;
-    int frames, skipped, shown, worst_edge, m_worst_edge, cov_min, geo_max, obj_max;
+    int frames, skipped, shown, worst_edge, m_worst_edge, cov_min, geo_max, obj_max, line_worst, m_line_worst;
     int *pm, *m_pm, cap;           /* every frame's mismatch (front, glass), permille, for the median */
 } ModeStats;
 static ModeStats modes[256];
@@ -134,13 +134,17 @@ void enh_compare_frame(int mode, const EnhCompare *c)
     if (c->m_edge_err_max > m->m_worst_edge) m->m_worst_edge = c->m_edge_err_max;
     if (c->geo_err > m->geo_max) m->geo_max = c->geo_err;
     if (c->obj_err > m->obj_max) m->obj_max = c->obj_err;
+    if (c->line_err_max > m->line_worst) m->line_worst = c->line_err_max;
+    if (c->m_line_err_max > m->m_line_worst) m->m_line_worst = c->m_line_err_max;
     frames++;
     last_mode = mode;
     fprintf(log_file,
             "frame %d mode %d rows %d edge_rows %d edge_err_max %d mismatch %d mirror_rows %d mirror_edge_rows %d "
-            "mirror_edge_err_max %d mirror_mismatch %d mirror_cov %d geo_err %d obj_err %d police %d opp_sprite %d\n",
+            "mirror_edge_err_max %d mirror_mismatch %d mirror_cov %d geo_err %d obj_err %d police %d opp_sprite %d "
+            "line_px %d line_err_max %d mirror_line_px %d mirror_line_err_max %d roll %d bounce %d\n",
             frames, mode, c->rows, c->edge_rows, c->edge_err_max, pm, c->m_rows, c->m_edge_rows, c->m_edge_err_max,
-            mpm, c->mirror_cov, c->geo_err, c->obj_err, c->police, c->opp_sprite);
+            mpm, c->mirror_cov, c->geo_err, c->obj_err, c->police, c->opp_sprite, c->line_px, c->line_err_max,
+            c->m_line_px, c->m_line_err_max, c->roll, c->bounce);
     fflush(log_file);
 }
 
@@ -191,11 +195,86 @@ void enh_compare_close(void)
         p50_max(m->m_pm, m->frames, &mp50, &mmax);
         fprintf(log_file,
                 "mode %d frames %d skipped %d worst_edge %d mismatch_p50 %d mismatch_max %d mirror_worst_edge %d "
-                "mirror_mismatch_p50 %d mirror_mismatch_max %d mirror_cov_min %d geo_max %d obj_max %d shown %d\n",
+                "mirror_mismatch_p50 %d mirror_mismatch_max %d mirror_cov_min %d geo_max %d obj_max %d shown %d "
+                "line_worst %d mirror_line_worst %d\n",
                 i, m->frames, m->skipped, m->worst_edge, p50, max, m->m_worst_edge, mp50, mmax,
-                m->frames ? m->cov_min : 0, m->geo_max, m->obj_max, m->shown);
+                m->frames ? m->cov_min : 0, m->geo_max, m->obj_max, m->shown, m->line_worst, m->m_line_worst);
     }
     fprintf(log_file, "frames %d skipped %d shown %d\n", frames, skipped, shown);
     fclose(log_file);
     log_file = NULL;
+}
+
+static bool in_cols(u8 c, const u8 *cols, int n)
+{
+    for (int i = 0; i < n; i++)
+        if (cols[i] == c) return true;
+    return false;
+}
+
+/* the sky's border in pic: covered pixels of colour `border` with a covered 4-neighbour of another colour */
+static void border_mask(const u8 *pic, const u8 *cov, int y0, int y1, int border, u8 *out)
+{
+    static const int dx[4] = { -1, 1, 0, 0 }, dy[4] = { 0, 0, -1, 1 };
+    for (int y = y0; y < y1; y++)
+        for (int x = 0; x < 320; x++) {
+            size_t i = (size_t)y * 320 + x;
+            u8 b = 0;
+            if (cov[i] && pic[i] == border)
+                for (int k = 0; k < 4 && !b; k++) {
+                    int nx = x + dx[k], ny = y + dy[k];
+                    if (nx < 0 || nx >= 320 || ny < y0 || ny >= y1) continue;
+                    size_t j = (size_t)ny * 320 + nx;
+                    b = cov[j] && pic[j] != border;
+                }
+            out[(size_t)(y - y0) * 320 + x] = b;
+        }
+}
+
+/* The Chebyshev distance from (x, y) to the nearest covered pixel of colour col in pic (col < 0: the nearest pixel
+ * of the border mask bm), ENH_LINE_CAP when none is nearer. */
+static int nearest(const u8 *pic, const u8 *cov, const u8 *bm, int y0, int y1, int x, int y, int col)
+{
+    for (int d = 0; d < ENH_LINE_CAP; d++)
+        for (int yy = SDL_max(y - d, y0); yy <= SDL_min(y + d, y1 - 1); yy++)
+            for (int xx = SDL_max(x - d, 0); xx <= SDL_min(x + d, 319); xx++) {
+                if (SDL_max(abs(xx - x), abs(yy - y)) != d) continue;   /* the ring at distance d */
+                size_t i = (size_t)yy * 320 + xx;
+                if (col < 0 ? bm[(size_t)(yy - y0) * 320 + xx] != 0 : cov[i] && pic[i] == col) return d;
+            }
+    return ENH_LINE_CAP;
+}
+
+void enh_compare_lines(const u8 *orig, const u8 *enh, const u8 *covered, int y0, int y1, const u8 *cols, int n,
+                       int border, int *px, int *err)
+{
+    *px = *err = 0;
+    if (y1 <= y0) return;
+    size_t sz = (size_t)(y1 - y0) * 320;
+    u8 *bm[2] = { NULL, NULL };
+    const u8 *pic[2] = { orig, enh };
+    if (border >= 0) {
+        bm[0] = calloc(sz, 1);
+        bm[1] = calloc(sz, 1);
+        if (!bm[0] || !bm[1]) { free(bm[0]); free(bm[1]); bm[0] = bm[1] = NULL; border = -1; }
+        else for (int s = 0; s < 2; s++) border_mask(pic[s], covered, y0, y1, border, bm[s]);
+    }
+    for (int s = 0; s < 2; s++) {
+        const u8 *a = pic[s], *b = pic[1 - s];
+        for (int y = y0; y < y1; y++)
+            for (int x = 0; x < 320; x++) {
+                size_t i = (size_t)y * 320 + x;
+                if (!covered[i]) continue;
+                if (in_cols(a[i], cols, n)) {
+                    if (s == 0) (*px)++;
+                    *err = SDL_max(*err, nearest(b, covered, NULL, y0, y1, x, y, a[i]));
+                }
+                if (border >= 0 && bm[s][(size_t)(y - y0) * 320 + x]) {
+                    if (s == 0) (*px)++;
+                    *err = SDL_max(*err, nearest(b, covered, bm[1 - s], y0, y1, x, y, -1));
+                }
+            }
+    }
+    free(bm[0]);
+    free(bm[1]);
 }

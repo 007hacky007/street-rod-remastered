@@ -21,3 +21,11 @@ bool enh_clip_line_i(const s16 in[4], s16 out[4], int xmin, int xmax, int ymin, 
  * the far end from the left end). x, y: the original's pixel coordinates (the line y, without ROW_TOP). Under the
  * current clip. */
 void enh_line1(double x0, double y0, double x1, double y1, u8 col);
+/* poly_fill_pts with an edge colour, on a polygon already clipped (game coordinates: x the pixel, y the line y):
+ * filled as enh_fill_poly_incl fills it (y + ROW_TOP), then each edge as enh_line1 in `edge`; edge == fill fills
+ * only. Under the current clip. */
+void enh_fill_poly_edge(const double *x, const double *y, int n, u8 fill, u8 edge);
+/* clip_polygon's Sutherland-Hodgman in doubles (no truncation), on xmin..xmax, ymin..ymax in the same order;
+ * 64-point buffers. Returns the count of points in ox, oy (0: nothing left). */
+int enh_clip_poly_f(const double *x, const double *y, int n, double *ox, double *oy,
+                    double xmin, double xmax, double ymin, double ymax);

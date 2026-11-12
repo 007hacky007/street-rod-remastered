@@ -655,6 +655,7 @@ static void compare_frame(void)
     c.obj_err = reprojection_err();
     c.police = snap.police;
     c.opp_sprite = snap.opp_sprite;
+    c.bounce = (int)lround(v.bounce);               /* the newest frame's DS_view_bounce_y */
     enh_compare_frame(v.mode, &c);
     compared++;
     /* SR_ENH_COMPARE_DUMP=<dir>: every 40th frame, the original (left) and the enhanced view (right), and up to 10

@@ -133,3 +133,49 @@ void enh_line1(double x0, double y0, double x1, double y1, u8 col)
         for (int i = i0; i <= i1; i++) b->px[(size_t)j * b->w + i] = col;
     }
 }
+
+void enh_fill_poly_edge(const double *x, const double *y, int n, u8 fill, u8 edge)
+{
+    if (n < 1) return;
+    if (n > 64) n = 64;
+    double yc[64];
+    for (int i = 0; i < n; i++) yc[i] = y[i] + 0.5;  /* the pixel's centre: ROW_TOP (enh_geo2.h) */
+    enh_fill_poly_incl(x, yc, n, fill);
+    if (edge == fill) return;
+    for (int i = 0, k = n - 1; i < n; k = i++) enh_line1(x[k], y[k], x[i], y[i], edge);
+}
+
+/* clip_stage in doubles: the new vertex exactly on the clip line */
+static int clip_stage_f(const double *ix, const double *iy, int n, double *ox, double *oy, int edge, double e)
+{
+    int cnt = 0;
+    for (int i = 0, pi = n - 1; i < n; pi = i++) {
+        double P[2] = { ix[pi], iy[pi] }, C[2] = { ix[i], iy[i] };
+        int k = edge < 2 ? 0 : 1;
+        bool pin = (edge & 1) ? P[k] <= e : P[k] >= e, cin = (edge & 1) ? C[k] <= e : C[k] >= e;
+        if (pin || cin) {
+            bool keep = true;
+            if (!pin || !cin) {
+                double t = (e - P[k]) / (C[k] - P[k]);
+                if (edge < 2) { ox[cnt] = e; oy[cnt] = P[1] + t * (C[1] - P[1]); }
+                else { oy[cnt] = e; ox[cnt] = P[0] + t * (C[0] - P[0]); }
+                cnt++;
+                keep = cin;
+            }
+            if (keep) { ox[cnt] = C[0]; oy[cnt] = C[1]; cnt++; }
+        }
+        if (cnt >= 60) break;
+    }
+    return cnt;
+}
+
+int enh_clip_poly_f(const double *x, const double *y, int n, double *ox, double *oy,
+                    double xmin, double xmax, double ymin, double ymax)
+{
+    double ax[64], ay[64], bx[64], by[64], cx[64], cy[64];
+    if (n > 60) n = 60;
+    int na = clip_stage_f(x, y, n, ax, ay, 0, xmin);
+    int nb = clip_stage_f(ax, ay, na, bx, by, 1, xmax);
+    int nc = clip_stage_f(bx, by, nb, cx, cy, 2, ymin);
+    return clip_stage_f(cx, cy, nc, ox, oy, 3, ymax);
+}

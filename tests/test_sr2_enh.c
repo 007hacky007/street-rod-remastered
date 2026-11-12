@@ -792,20 +792,22 @@ static void sr2_enh_wall_colour(void)
     CHECK(enh_wall_colour(8, 7, 3, 20) == 4);
 }
 
+/* The view's clip and the mirror's, and four polygons for each: inside, crossing one edge, two, wholly outside. */
+static const s16 clips[2][4] = { { 0, 0x13F, 0x12, 0x65 }, { 0xF0, 0x13F, 0x16, 0x2A } };
+static const s16 polys[2][4][8] = {
+    { { 10, 30, 10, 40, 50, 45, 50, 30 },               /* inside */
+      { 300, 40, 300, 60, 343, 70, 341, 29 },           /* crossing the right edge */
+      { -23, 90, -20, 121, 31, 110, 30, 80 },           /* crossing the bottom and the left */
+      { 400, 10, 420, 10, 420, 0, 400, 0 } },           /* wholly outside */
+    { { 0x100, 0x18, 0x100, 0x20, 0x110, 0x22, 0x110, 0x18 },
+      { 0x130, 0x18, 0x130, 0x28, 0x153, 0x29, 0x151, 0x17 },
+      { 0xE3, 0x20, 0xE1, 0x41, 0x105, 0x30, 0x100, 0x1A },
+      { 10, 10, 30, 10, 30, 0, 10, 0 } } };
+
 /* enh_clip_poly_i is clip_polygon point for point, on the view's clip and on the mirror's. */
 static void sr2_enh_clip_poly_i(void)
 {
     s16 keep[4] = { DSS(DS_clip_xmin), DSS(DS_clip_xmax), DSS(DS_clip_ymin), DSS(DS_clip_ymax) };
-    static const s16 clips[2][4] = { { 0, 0x13F, 0x12, 0x65 }, { 0xF0, 0x13F, 0x16, 0x2A } };
-    static const s16 polys[2][4][8] = {
-        { { 10, 30, 10, 40, 50, 45, 50, 30 },               /* inside */
-          { 300, 40, 300, 60, 343, 70, 341, 29 },           /* crossing the right edge */
-          { -23, 90, -20, 121, 31, 110, 30, 80 },           /* crossing the bottom and the left */
-          { 400, 10, 420, 10, 420, 0, 400, 0 } },           /* wholly outside */
-        { { 0x100, 0x18, 0x100, 0x20, 0x110, 0x22, 0x110, 0x18 },
-          { 0x130, 0x18, 0x130, 0x28, 0x153, 0x29, 0x151, 0x17 },
-          { 0xE3, 0x20, 0xE1, 0x41, 0x105, 0x30, 0x100, 0x1A },
-          { 10, 10, 30, 10, 30, 0, 10, 0 } } };
     int bad = 0;
     for (int c = 0; c < 2; c++) {
         DSS(DS_clip_xmin) = clips[c][0]; DSS(DS_clip_xmax) = clips[c][1];
@@ -873,6 +875,89 @@ static void sr2_enh_poly_incl(void)
     n = count_col(7, rc, 2, &out);
     printf("  hexagon %d samples (%d outside)\n", n, out);
     CHECK(n == 96 && out == 0);                             /* its convex hull would fill more */
+    enh_opt = keep;
+    enh_buf_setup();
+}
+
+/* enh_clip_poly_f is clip_polygon's Sutherland-Hodgman without the truncation: the same points, each within 1. */
+static void sr2_enh_clip_poly_f(void)
+{
+    int bad = 0;
+    for (int c = 0; c < 2; c++)
+        for (int p = 0; p < 4; p++) {
+            s16 want[128];
+            double x[4], y[4], ox[64], oy[64];
+            for (int i = 0; i < 4; i++) { x[i] = polys[c][p][2 * i]; y[i] = polys[c][p][2 * i + 1]; }
+            int nw = enh_clip_poly_i(polys[c][p], 4, want, clips[c][0], clips[c][1], clips[c][2], clips[c][3]);
+            int ng = enh_clip_poly_f(x, y, 4, ox, oy, clips[c][0], clips[c][1], clips[c][2], clips[c][3]);
+            if (ng != nw) { printf("  clip %d poly %d: %d points, the integer clip's %d\n", c, p, ng, nw); bad++; continue; }
+            for (int i = 0; i < ng; i++)
+                if (fabs(ox[i] - want[2 * i]) > 1 || fabs(oy[i] - want[2 * i + 1]) > 1) {
+                    printf("  clip %d poly %d point %d: %.2f,%.2f, the integer clip's %d,%d\n", c, p, i, ox[i], oy[i],
+                           want[2 * i], want[2 * i + 1]);
+                    bad++;
+                }
+        }
+    CHECK(bad == 0);
+}
+
+void poly_fill(const s16 *pts, s16 n, s16 fill_colour, s16 edge_colour);   /* race_gfx.c: slot 18's driver */
+
+/* The outlined polygon is poly_fill's picture: its fill, its edge pixels and its whole shape each within 1 px of
+ * the game's. */
+static void sr2_enh_poly_edge(void)
+{
+    static const s16 shapes[3][8] = { { 10, 20, 200, 40, 30, 60 },                    /* a shallow edge */
+                                      { 50, 30, 90, 25, 95, 70, 45, 80 },
+                                      { 120, 20, 121, 20, 130, 80, 129, 80 } };       /* 2 px wide */
+    static const int counts[3] = { 3, 4, 4 };
+    static u8 orig[200 * 320], enh[200 * 320], cov[200 * 320];
+    EnhOptions keep = enh_opt;
+    u16 keep_seg = DSW(DS_draw_seg), keep_off = DSW(0x81DF);
+    u8 keep_stride = DSB(0x81DE);
+    enh_opt.res_scale = enh_opt.aa = 1;
+    enh_buf_setup();
+    enh_clip_view();
+    ega_init();
+    vga_mode_0d();
+    DSW(DS_draw_seg) = 0xA400;
+    DSB(0x81DE) = 0x28;
+    DSW(0x81DF) = 0;
+    memset(cov, 0, sizeof cov);
+    memset(cov + ENH_VIEW_Y0 * 320, 1, (size_t)(ENH_VIEW_Y1 - ENH_VIEW_Y0) * 320);
+    for (int s = 0; s < 3; s++) {
+        for (int k = 0; k < 4; k++) memset(ega_plane(k) + 0x4000, 9 >> k & 1 ? 0xFF : 0, 200 * EGA_BYTES_PER_LINE);
+        enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 9);
+        double x[4], y[4];
+        for (int i = 0; i < counts[s]; i++) { x[i] = shapes[s][2 * i]; y[i] = shapes[s][2 * i + 1]; }
+        poly_fill(shapes[s], (s16)counts[s], 2, 0);
+        enh_fill_poly_edge(x, y, counts[s], 2, 0);
+        for (int yy = ENH_VIEW_Y0; yy < ENH_VIEW_Y1; yy++)
+            for (int xx = 0; xx < 320; xx++) {
+                u16 b = (u16)(0x4000 + yy * EGA_BYTES_PER_LINE + (xx >> 3));
+                int c = 0;
+                for (int k = 0; k < 4; k++) c |= (ega_plane(k)[b] >> (7 - (xx & 7)) & 1) << k;
+                orig[yy * 320 + xx] = (u8)c;
+                enh[yy * 320 + xx] = enh_buf.px[(size_t)(yy - ENH_VIEW_Y0) * enh_buf.w + xx];
+            }
+        /* the edge (colour 0), the fill (colour 2) and the whole shape (both as one colour). The thin quad has no
+         * fill in the game's picture: poly_span_fill fills strictly between the edge pixels, adjacent there. */
+        for (int pass = 0; pass < 3; pass++) {
+            if (pass == 1 && s == 2) continue;
+            if (pass == 2)
+                for (int i = 0; i < 200 * 320; i++) { if (orig[i] == 2) orig[i] = 0; if (enh[i] == 2) enh[i] = 0; }
+            const u8 cols[1] = { pass == 1 ? 2 : 0 };
+            int px, err, px2, err2;
+            enh_compare_lines(orig, enh, cov, ENH_VIEW_Y0, ENH_VIEW_Y1, cols, 1, -1, &px, &err);
+            enh_compare_lines(enh, orig, cov, ENH_VIEW_Y0, ENH_VIEW_Y1, cols, 1, -1, &px2, &err2);
+            printf("  polygon %d %s: %d px, err %d (%d px, err %d the other way)\n", s,
+                   pass == 0 ? "edge" : pass == 1 ? "fill" : "shape", px, err, px2, err2);
+            CHECK(px > 0 && err <= 1 && px2 > 0 && err2 <= 1);
+        }
+    }
+    DSW(DS_draw_seg) = keep_seg;
+    DSW(0x81DF) = keep_off;
+    DSB(0x81DE) = keep_stride;
     enh_opt = keep;
     enh_buf_setup();
 }
@@ -1238,6 +1323,55 @@ static void sr2_enh_compare_rows(void)
     CHECK(c.edge_err_max == 0);
 }
 
+/* The line metric: each line pixel against the nearest of its colour in the other picture (Chebyshev, capped at
+ * ENH_LINE_CAP); with a border colour, its border with covered pixels of another colour as well. */
+static void sr2_enh_compare_lines(void)
+{
+    static u8 orig[10 * 320], enh[10 * 320], cov[10 * 320];
+    const u8 black[1] = { 0 };
+    int px, err;
+    memset(cov, 1, sizeof cov);
+    memset(orig, 5, sizeof orig);
+    memset(enh, 5, sizeof enh);
+    for (int y = 0; y < 10; y++) orig[y * 320 + 50] = enh[y * 320 + 50] = 0;
+    enh_compare_lines(orig, enh, cov, 0, 10, black, 1, -1, &px, &err);
+    CHECK(px == 10 && err == 0);
+    for (int y = 0; y < 10; y++) { enh[y * 320 + 50] = 5; enh[y * 320 + 51] = 0; }
+    enh_compare_lines(orig, enh, cov, 0, 10, black, 1, -1, &px, &err);
+    CHECK(err == 1);
+    for (int y = 0; y < 10; y++) { enh[y * 320 + 51] = 5; enh[y * 320 + 53] = 0; }
+    enh_compare_lines(orig, enh, cov, 0, 10, black, 1, -1, &px, &err);
+    CHECK(err == 3);
+    for (int y = 0; y < 10; y++) { enh[y * 320 + 53] = 5; enh[y * 320 + 50] = 0; }
+    enh[5 * 320 + 200] = 0;                         /* a pixel only in the enhanced picture, nothing near */
+    enh_compare_lines(orig, enh, cov, 0, 10, black, 1, -1, &px, &err);
+    CHECK(px == 10 && err == ENH_LINE_CAP);
+    cov[5 * 320 + 200] = 0;                         /* not covered: not measured */
+    enh_compare_lines(orig, enh, cov, 0, 10, black, 1, -1, &px, &err);
+    CHECK(err == 0);
+    cov[5 * 320 + 200] = 1;
+    enh[5 * 320 + 200] = 5;
+
+    /* the sky's border: colour 1 above colour 5, the enhanced boundary lower */
+    memset(cov, 1, sizeof cov);
+    for (int y = 0; y < 10; y++) {
+        memset(orig + y * 320, y < 5 ? 1 : 5, 320);
+        memset(enh + y * 320, y < 6 ? 1 : 5, 320);
+    }
+    enh_compare_lines(orig, enh, cov, 0, 10, black, 1, 1, &px, &err);
+    CHECK(err == 1);
+    for (int y = 0; y < 10; y++) memset(enh + y * 320, y < 8 ? 1 : 5, 320);
+    enh_compare_lines(orig, enh, cov, 0, 10, black, 1, 1, &px, &err);
+    CHECK(err == 3);
+    for (int y = 0; y < 10; y++) {
+        memset(enh + y * 320, y < 5 ? 1 : 5, 320);
+        orig[y * 320 + 200] = 7;                    /* an uncovered neighbour makes no border */
+        cov[y * 320 + 200] = 0;
+    }
+    enh_compare_lines(orig, enh, cov, 0, 10, black, 1, 1, &px, &err);
+    CHECK(err == 0);
+}
+
 /* The SKY layer: every pixel written is the sky's, whether its colour changed or not; the background drawn
  * over it later is not. */
 static void sr2_enh_sky_tags(void)
@@ -1283,7 +1417,11 @@ static void sr2_enh_compare_log(void)
                      .mirror_cov = 1596, .geo_err = 0, .obj_err = 0, .police = 0, .opp_sprite = 0 };
     enh_compare_frame(1, &a);
     enh_compare_frame(1, &b);
+    EnhCompare d = { .rows = 84, .pixels = 26880, .mismatched = 81, .m_rows = 21, .m_pixels = 1596, .m_mismatched = 8,
+                     .mirror_cov = 1596, .obj_err = -1, .opp_sprite = 5, .line_px = 900, .line_err_max = 1,
+                     .m_line_px = 120, .m_line_err_max = 0, .roll = 48, .bounce = 12 };
     enh_compare_frame(0, &c);
+    enh_compare_frame(8, &d);
     enh_compare_skipped(16);
     enh_compare_close();
     SDL_unsetenv_unsafe("SR_ENH_COMPARE");
@@ -1294,18 +1432,30 @@ static void sr2_enh_compare_log(void)
     printf("%s", text);
     static const char want[] =
         "frame 1 mode 1 rows 84 edge_rows 80 edge_err_max 1 mismatch 1 mirror_rows 21 mirror_edge_rows 10 "
-        "mirror_edge_err_max 0 mirror_mismatch 10 mirror_cov 1596 geo_err 0 obj_err 1 police 0 opp_sprite 5\n"
+        "mirror_edge_err_max 0 mirror_mismatch 10 mirror_cov 1596 geo_err 0 obj_err 1 police 0 opp_sprite 5 "
+        "line_px 0 line_err_max 0 mirror_line_px 0 mirror_line_err_max 0 roll 0 bounce 0\n"
         "frame 2 mode 1 rows 84 edge_rows 82 edge_err_max 0 mismatch 2 mirror_rows 21 mirror_edge_rows 12 "
-        "mirror_edge_err_max 1 mirror_mismatch 0 mirror_cov 1596 geo_err 0 obj_err -1 police 2 opp_sprite 10\n"
+        "mirror_edge_err_max 1 mirror_mismatch 0 mirror_cov 1596 geo_err 0 obj_err -1 police 2 opp_sprite 10 "
+        "line_px 0 line_err_max 0 mirror_line_px 0 mirror_line_err_max 0 roll 0 bounce 0\n"
         "frame 3 mode 0 rows 82 edge_rows 30 edge_err_max 1 mismatch 0 mirror_rows 21 mirror_edge_rows 0 "
-        "mirror_edge_err_max 0 mirror_mismatch 2 mirror_cov 1596 geo_err 0 obj_err 0 police 0 opp_sprite 0\n"
+        "mirror_edge_err_max 0 mirror_mismatch 2 mirror_cov 1596 geo_err 0 obj_err 0 police 0 opp_sprite 0 "
+        "line_px 0 line_err_max 0 mirror_line_px 0 mirror_line_err_max 0 roll 0 bounce 0\n"
+        "frame 4 mode 8 rows 84 edge_rows 0 edge_err_max 0 mismatch 3 mirror_rows 21 mirror_edge_rows 0 "
+        "mirror_edge_err_max 0 mirror_mismatch 5 mirror_cov 1596 geo_err 0 obj_err -1 police 0 opp_sprite 5 "
+        "line_px 900 line_err_max 1 mirror_line_px 120 mirror_line_err_max 0 roll 48 bounce 12\n"
         "mode 0 frames 1 skipped 0 worst_edge 1 mismatch_p50 0 mismatch_max 0 mirror_worst_edge 0 "
-        "mirror_mismatch_p50 2 mirror_mismatch_max 2 mirror_cov_min 1596 geo_max 0 obj_max 0 shown 0\n"
+        "mirror_mismatch_p50 2 mirror_mismatch_max 2 mirror_cov_min 1596 geo_max 0 obj_max 0 shown 0 "
+        "line_worst 0 mirror_line_worst 0\n"
         "mode 1 frames 2 skipped 0 worst_edge 1 mismatch_p50 1 mismatch_max 2 mirror_worst_edge 1 "
-        "mirror_mismatch_p50 0 mirror_mismatch_max 10 mirror_cov_min 1596 geo_max 0 obj_max 1 shown 0\n"
+        "mirror_mismatch_p50 0 mirror_mismatch_max 10 mirror_cov_min 1596 geo_max 0 obj_max 1 shown 0 "
+        "line_worst 0 mirror_line_worst 0\n"
+        "mode 8 frames 1 skipped 0 worst_edge 0 mismatch_p50 3 mismatch_max 3 mirror_worst_edge 0 "
+        "mirror_mismatch_p50 5 mirror_mismatch_max 5 mirror_cov_min 1596 geo_max 0 obj_max 0 shown 0 "
+        "line_worst 1 mirror_line_worst 0\n"
         "mode 16 frames 0 skipped 1 worst_edge 0 mismatch_p50 0 mismatch_max 0 mirror_worst_edge 0 "
-        "mirror_mismatch_p50 0 mirror_mismatch_max 0 mirror_cov_min 0 geo_max 0 obj_max 0 shown 0\n"
-        "frames 3 skipped 1 shown 0\n";
+        "mirror_mismatch_p50 0 mirror_mismatch_max 0 mirror_cov_min 0 geo_max 0 obj_max 0 shown 0 "
+        "line_worst 0 mirror_line_worst 0\n"
+        "frames 4 skipped 1 shown 0\n";
     CHECK(strcmp(text, want) == 0);
     SDL_free(text);
     SDL_RemovePath(path);
@@ -1747,6 +1897,8 @@ int main(int argc, char **argv)
     RUN(sr2_enh_wall_colour);
     RUN(sr2_enh_clip_poly_i);
     RUN(sr2_enh_poly_incl);
+    RUN(sr2_enh_clip_poly_f);
+    RUN(sr2_enh_poly_edge);
     RUN(sr2_enh_mulholland_rows);
     RUN(sr2_enh_hill_consts);
     RUN(sr2_enh_mulholland_sky_dy);
@@ -1761,6 +1913,7 @@ int main(int argc, char **argv)
     RUN(sr2_enh_mirror_cut_order);
     RUN(sr2_enh_sky_tags);
     RUN(sr2_enh_compare_rows);
+    RUN(sr2_enh_compare_lines);
     RUN(sr2_enh_compare_log);
     RUN(sr2_enh_aq_depths);
     RUN(sr2_enh_aq_rows_exact);
