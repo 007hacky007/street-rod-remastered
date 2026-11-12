@@ -12993,7 +12993,7 @@
   "group": "screen",
   "batch": 5,
   "desc": "the Under the Car screen: the underside of a classic car seen from below, front to the right, on black: the body edge and grey chrome bumpers at both ends, four dark grey tyres, a grey ladder frame with a big X-shaped cross member, the transmission and the driveshaft along the middle, the rear axle at the left, a brown exhaust pipe with light red highlights running from the rear to the middle; below it a grey control bar with two empty dark grey panels and a blue button 'DONE' in a bevelled grey frame, all inside a thin grey border",
-  "keep": "the label DONE exactly; the black around the car stays plain black; the two dark grey panels stay empty (text is written there); the teal is the car's paint (the game repaints it); every line of the frame, axle and exhaust stays exactly where it is (the differential, muffler and exhaust manifold are pasted over it as separate pictures, and a removed part is erased with this picture)",
+  "keep": "the label DONE exactly; the black around the car stays plain black; the two dark grey panels stay empty (text is written there); the teal is the car's paint (the game repaints it); every line of the frame, axle and exhaust stays exactly where it is (the differential, muffler and exhaust manifold are pasted over it as separate pictures, and a removed part is erased with this picture); the rear axle is a plain bar: no differential housing on it (the game draws the differential there as a separate picture, and only when the car has one)",
   "sheet": null,
   "status": "new",
   "ids": {
