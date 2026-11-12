@@ -73,8 +73,11 @@ void enh_bands_stats(EnhBandStats *out);
  * `bands` bands (0: SR_ENH_THREADS or one per core) with a list of cmd_max commands and arena bytes (0: the
  * defaults 32768 and 4 MiB); fail_after >= 0 makes thread creation fail after that many workers (-1: never). */
 void enh_bands_config(int bands, int cmd_max, size_t arena, int fail_after);
-/* SR_ENH_THREADS_CHECK: draw(v) once directly and once in bands, both over a copy of xrgb's picture, and the sample
- * buffers and resolved frames compared byte for byte (a line on stderr); xrgb ends as the banded frame. */
+/* SR_ENH_THREADS_CHECK: draw(v) once directly and once in bands (odd frames in bands first), both over a copy of
+ * xrgb's picture and over samples reset first (px and rgb), and the sample buffers and resolved frames compared byte
+ * for byte; xrgb ends as the banded frame. xrgb NULL with y_end <= ENH_VIEW_Y0: the samples only, no resolve. The
+ * line on stderr: frames compared, the fewest bands a banded pass ran in, frames differing, frames whose banded pass
+ * drew art (ENH_RGB), frames compared without xrgb (SR2's compare tool). */
 void enh_bands_check(void (*draw)(const void *v), const void *v, u32 *xrgb, const u32 *pal, int npal, u16 page,
                      int y_end);
 bool enh_bands_check_on(void);

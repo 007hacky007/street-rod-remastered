@@ -741,6 +741,8 @@ static int rows_err(const EnhRowTab *a, const EnhRowTab *b, int n)
 
 #define NOT_ROAD 0xFD              /* a sky pixel in the edge pass: covered, never the road */
 
+static void draw_view_of(const void *v) { draw_view(v); }
+
 /* SR_ENH_COMPARE: the newest frame drawn again at scale 1, aa 1, against the shown page's view rows. */
 static void compare_frame(void)
 {
@@ -752,7 +754,9 @@ static void compare_frame(void)
     const u32 *keep_rgb = enh_cur_rgb;
     enh_cur_rgb = NULL;
     enh_buf_setup();
-    draw_view(&v);
+    /* SR_ENH_THREADS_CHECK: these samples too, drawn directly and in bands (no resolve) */
+    if (enh_bands_check_on()) enh_bands_check(draw_view_of, &v, NULL, NULL, 0, shown_start, ENH_VIEW_Y0);
+    else draw_view(&v);
     enh_flush();                                    /* the samples are read below */
     enh_cur_rgb = keep_rgb;
     static u8 orig[200 * 320], enh[200 * 320], orig_e[200 * 320], enh_e[200 * 320];
@@ -870,8 +874,6 @@ static void compare_frame(void)
         }
     }
 }
-
-static void draw_view_of(const void *v) { draw_view(v); }
 
 bool enh_compose(u32 *xrgb, const u32 rgb[16])
 {

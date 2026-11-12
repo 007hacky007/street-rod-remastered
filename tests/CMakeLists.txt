@@ -183,7 +183,7 @@ if(SRE_TEST_GAME_DIR OR SRE_TEST_GAME2_DIR)
     endif()
     add_test(NAME enh_threads COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_enh_threads.sh ${enh_threads_sr1}
              ${enh_threads_sr2} ${CMAKE_SOURCE_DIR})
-    set_tests_properties(enh_threads PROPERTIES TIMEOUT 600 LABELS slow)
+    set_tests_properties(enh_threads PROPERTIES TIMEOUT 900 LABELS slow)
 endif()
 
 # --fps and --vsync (the frame pacing in common/host.c), both games.

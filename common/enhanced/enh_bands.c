@@ -123,7 +123,11 @@ static void start(void)
     }
     n = SDL_clamp(n, 1, MAX_BANDS);
     if (n == 1) return;
-    int cm = cfg_cmds > 0 ? cfg_cmds : CMD_MAX;
+    int cm = cfg_cmds;
+    if (cm <= 0) {                 /* SR_ENH_CMDS=N: a list of N commands (a developer aid: full lists, flushes) */
+        const char *c = SDL_getenv("SR_ENH_CMDS");
+        cm = c && *c ? SDL_max(SDL_atoi(c), 1) : CMD_MAX;
+    }
     size_t ar = cfg_arena > 0 ? cfg_arena : ARENA;
     if (!cmds || cm != cmd_max || ar != arena_size) {
         SDL_free(cmds);
@@ -256,11 +260,34 @@ bool enh_bands_check_on(void)
     return on;
 }
 
-static long frames, bad_frames;
-static int check_bands;
+static long frames, bad_frames, art_frames, cmp_frames;
+static int check_bands;            /* the fewest bands a banded pass ran in (0: none yet) */
 static void check_report(void)
 {
-    fprintf(stderr, "enh threads check: frames %ld bands %d differing %ld (at exit)\n", frames, check_bands, bad_frames);
+    fprintf(stderr, "enh threads check: frames %ld bands %d differing %ld art %ld cmp %ld (at exit)\n", frames,
+            check_bands, bad_frames, art_frames, cmp_frames);
+}
+
+/* one pass of the check over n samples, reset first (px and rgb, so a write missing in one pass differs): draw(v)
+ * directly or in bands, then resolved, or with no xrgb only run; the bands its commands ran in */
+static int check_pass(bool dir, void (*draw)(const void *v), const void *v, u32 *xrgb, const u32 *pal, int npal,
+                      u16 page, int y_end, size_t n)
+{
+    EnhBuf *b = &enh_buf;
+    memset(b->px, 0xFD, n);
+    if (b->rgb)
+        for (size_t i = 0; i < n; i++) b->rgb[i] = 0xDEADBEEF;
+    direct = dir;
+    draw(v);
+    if (xrgb) enh_resolve(xrgb, pal, npal, page, y_end);
+    else {                         /* the samples only (SR2's compare tool): run, and the pass's stats */
+        enh_flush();
+        freeze(dir || nworkers == 0 ? 1 : nworkers + 1);
+    }
+    direct = false;
+    EnhBandStats s;
+    enh_bands_stats(&s);
+    return s.bands;
 }
 
 void enh_bands_check(void (*draw)(const void *v), const void *v, u32 *xrgb, const u32 *pal, int npal, u16 page,
@@ -273,7 +300,7 @@ void enh_bands_check(void (*draw)(const void *v), const void *v, u32 *xrgb, cons
     EnhBuf *b = &enh_buf;
     int S = enh_opt.res_scale, W = 320 * S;
     size_t n = (size_t)b->w * b->h, fy0 = (size_t)ENH_VIEW_Y0 * S * W, fn = (size_t)(y_end - ENH_VIEW_Y0) * S * W;
-    if (y_end <= ENH_VIEW_Y0) fn = 0;
+    if (!xrgb || y_end <= ENH_VIEW_Y0) fn = 0;
     if (cap < n + fn) {
         cap = n + fn;
         SDL_free(px); SDL_free(rgb); SDL_free(orig); SDL_free(frame);
@@ -284,28 +311,27 @@ void enh_bands_check(void (*draw)(const void *v), const void *v, u32 *xrgb, cons
     }
     if (fn) memcpy(orig, xrgb + fy0, fn * sizeof *orig);
     enh_flush();
-    direct = true;                 /* the single-threaded frame */
-    memset(b->px, 0xFD, n);
-    draw(v);
-    enh_resolve(xrgb, pal, npal, page, y_end);
-    direct = false;
+    bool banded_first = frames & 1;    /* odd frames: in bands first, so a first use is not always on this thread */
+    int nb = check_pass(!banded_first, draw, v, xrgb, pal, npal, page, y_end, n), nb2;
     memcpy(px, b->px, n);
     if (b->rgb) memcpy(rgb, b->rgb, n * sizeof *rgb);
     if (fn) { memcpy(frame, xrgb + fy0, fn * sizeof *frame); memcpy(xrgb + fy0, orig, fn * sizeof *orig); }
-    memset(b->px, 0xFD, n);        /* the banded one */
-    draw(v);
-    enh_resolve(xrgb, pal, npal, page, y_end);
+    nb2 = check_pass(banded_first, draw, v, xrgb, pal, npal, page, y_end, n);
+    if (!banded_first) nb = nb2;
     long dpx = 0, drgb = 0, dout = 0;
     for (size_t i = 0; i < n; i++) {
         if (px[i] != b->px[i]) dpx++;
         else if (b->rgb && px[i] == ENH_RGB && rgb[i] != b->rgb[i]) drgb++;
     }
     for (size_t i = 0; i < fn; i++) dout += frame[i] != xrgb[fy0 + i];
+    if (banded_first && fn) memcpy(xrgb + fy0, frame, fn * sizeof *frame);   /* xrgb ends as the banded frame */
     if (frames++ == 0) atexit(check_report);
-    check_bands = nbands;
+    if (!check_bands || nb < check_bands) check_bands = nb;
+    if (memchr(banded_first ? px : b->px, ENH_RGB, n)) art_frames++;
+    if (!xrgb) cmp_frames++;
     bool bad = dpx || drgb || dout;
     if (bad) bad_frames++;
     if (bad || frames % 100 == 1)
-        fprintf(stderr, "enh threads check: frames %ld bands %d differing %ld (this frame: samples %ld art %ld "
-                "output %ld)\n", frames, nbands, bad_frames, dpx, drgb, dout);
+        fprintf(stderr, "enh threads check: frames %ld bands %d differing %ld art %ld cmp %ld (this frame: samples %ld "
+                "rgb %ld output %ld)\n", frames, check_bands, bad_frames, art_frames, cmp_frames, dpx, drgb, dout);
 }
