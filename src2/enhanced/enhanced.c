@@ -26,21 +26,24 @@ static u16 shown_start;        /* plane offset of the page the last road frame w
 static bool presented;         /* a road frame is shown and nothing has replaced the page since */
 static int compared;           /* frames the compare tool has logged */
 
-/* The objects of the frame shown: per id (row 1..14, the opponent), the pixels the game drew in the object
- * layer, cut out of the page, and where that row stood in the frame's view. */
-#define OBJ_IDS (ENH_OBJ_OPP + 1)
+static int base_layer = EGA_LAYER_BG;   /* the layer enh_draw_objects(0) returns to */
+
+/* The objects of the frame shown: per id (enhanced.h's table), the pixels the game drew in the object layer, cut
+ * out of the page, and where that object stood in the frame's view. */
 typedef struct {
     EnhImage img;
     int x0, y0;
-    int seg;                   /* the row's absolute segment, -1 for the opponent */
+    int kind;                  /* ENH_CUT_ */
+    int seg;                   /* the absolute segment it is drawn at in the band loop */
     int sprite;                /* the opponent's picture (DS_opp_sprite) */
-    bool fixed;                /* drawn where the frame had it: the opponent's side views (opponent_draw places them
-                                  at fixed screen spots) */
+    bool fixed;                /* drawn where the frame had it: the opponent at a fixed screen spot (snap.opp_fixed) */
     EnhObjGeo geo;
     bool used;
+    bool drawn;                /* in the picture being drawn */
 } ObjCut;
-static ObjCut cuts[OBJ_IDS];
+static ObjCut cuts[ENH_OBJ_IDS];
 static EnhView cut_view;
+int enh_cut_log[ENH_OBJ_IDS], enh_cut_log_n;
 
 #define NOMINAL_FRAME_NS (8 * (double)PIT_DIV_GAME * 1e9 / PIT_HZ)    /* pace_ticks(8) at the game rate */
 
@@ -122,6 +125,9 @@ void enh_race_begin(void)
 {
     frames.n = phys.n = 0;
     presented = false;
+    base_layer = EGA_LAYER_BG;
+    for (int id = 0; id < ENH_OBJ_IDS; id++) cuts[id].used = false;
+    enh_cut_log_n = 0;
     enh_images_reset();
     active = enh_opt.enabled && mode_enhanced(DSS(DS_road_mode)) && (DSB(DS_racing) != 0 || enh_opt.town);
 }
@@ -181,51 +187,82 @@ void enh_draw_begin(void)
     u16 page = DSS(DS_back_page) == 1 ? 0x2000 : 0x4000;
     ega_clear_fg(page, ENH_VIEW_Y1 * EGA_BYTES_PER_LINE);
     ega_clear_obj(page, ENH_VIEW_Y1 * EGA_BYTES_PER_LINE);
+    base_layer = EGA_LAYER_BG;
     ega_set_layer(EGA_LAYER_BG);
 }
 
 void enh_mark_fg(int x0, int y0, int x1, int y1)
 {
     if (!active) return;
-    u16 page = DSS(DS_back_page) == 1 ? 0x2000 : 0x4000;
-    u8 *fgm = (u8 *)ega_fg();
-    for (int y = y0; y <= y1; y++)
-        for (int x = x0; x <= x1; x++) fgm[(u16)(page + y * EGA_BYTES_PER_LINE + (x >> 3))] |= (u8)(0x80 >> (x & 7));
+    ega_mark_fg_rect(DSS(DS_back_page) == 1 ? 0x2000 : 0x4000, x0, y0, x1, y1);
 }
 
 void enh_draw_objects(int id)
 {
     if (!active) return;
-    if (id <= 0) { ega_set_layer(EGA_LAYER_BG); return; }
+    if (id <= 0) { ega_set_layer(base_layer); return; }
     ega_set_obj((u8)id);
     ega_set_layer(EGA_LAYER_OBJ);
 }
 
-/* Cuts each id's pixels out of the page just shown. */
+bool enh_in_mirror_rect(int x, int y)
+{
+    return (x >= 0xF0 && x <= 0x13F && y >= 0x14 && y <= 0x2C) || (x >= 0x110 && x <= 0x11F && y >= 0x12 && y <= 0x13);
+}
+
+bool enh_in_glass(int x, int y) { return x >= 0xF2 && x <= 0x13D && y >= 0x16 && y <= 0x2A; }
+
+/* Front ids and the opponent's front pictures are kept outside the mirror (its backdrop covers what the front
+ * drew there), the mirror's ids and the opponent's pictures 9 and up (drawn with the mirror's clip) inside its
+ * glass. The Aqueduct's stars and clouds wait for part C. */
+bool enh_tag_kept(int id, int opp_sprite, int x, int y)
+{
+    bool mirror = (id >= ENH_OBJ_MIR(1) && id <= ENH_OBJ_STARTER) || (id == ENH_OBJ_OPP && opp_sprite >= 9);
+    bool front = (id >= 1 && id <= 14) || (id == ENH_OBJ_OPP && opp_sprite < 9);
+    return mirror ? enh_in_glass(x, y) : front && !enh_in_mirror_rect(x, y);
+}
+
+static int cut_kind(int id)
+{
+    return id == ENH_OBJ_OPP ? ENH_CUT_OPP : id == ENH_OBJ_STARTER ? ENH_CUT_STARTER : id > ENH_OBJ_OPP ? ENH_CUT_MIR : ENH_CUT_ROW;
+}
+
+static int cut_pass(const ObjCut *c)
+{
+    if (c->kind == ENH_CUT_OPP) return c->sprite >= 9 ? ENH_PASS_MIRROR : ENH_PASS_FRONT;
+    return c->kind == ENH_CUT_ROW ? ENH_PASS_FRONT : ENH_PASS_MIRROR;
+}
+
+/* Cuts each id's pixels (where enh_tag_kept keeps them) out of the page just shown. */
 static void capture_objects(void)
 {
     const u8 *tag = ega_obj();
     int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());
-    int x0[OBJ_IDS], y0[OBJ_IDS], x1[OBJ_IDS], y1[OBJ_IDS];
-    for (int i = 0; i < OBJ_IDS; i++) { x0[i] = y0[i] = 1 << 20; x1[i] = y1[i] = -1; cuts[i].used = false; }
+    int x0[ENH_OBJ_IDS], y0[ENH_OBJ_IDS], x1[ENH_OBJ_IDS], y1[ENH_OBJ_IDS];
+    for (int i = 0; i < ENH_OBJ_IDS; i++) { x0[i] = y0[i] = 1 << 20; x1[i] = y1[i] = -1; cuts[i].used = false; }
+    s16 opp_sprite = snap.opp_sprite;
     for (int y = ENH_VIEW_Y0; y < y_end; y++)
         for (int x = 0; x < 320; x++) {
             int id = tag[((u32)(u16)(shown_start + y * EGA_BYTES_PER_LINE + (x >> 3))) * 8 + (x & 7)];
-            if (id <= 0 || id >= OBJ_IDS) continue;
+            if (id <= 0 || id >= ENH_OBJ_IDS || !enh_tag_kept(id, opp_sprite, x, y)) continue;
             if (x < x0[id]) x0[id] = x;
             if (x > x1[id]) x1[id] = x;
             if (y < y0[id]) y0[id] = y;
             if (y > y1[id]) y1[id] = y;
         }
     enh_view_newest(&cut_view);
-    for (int id = 1; id < OBJ_IDS; id++) {
+    int base = (int)floor(cut_view.pos);
+    for (int id = 1; id < ENH_OBJ_IDS; id++) {
         if (x1[id] < 0) continue;
         ObjCut *c = &cuts[id];
-        bool opp = id == ENH_OBJ_OPP;
-        c->seg = opp ? -1 : (int)floor(cut_view.pos) + id;
-        c->sprite = opp ? DSS(DS_opp_sprite) : 0;
-        c->fixed = opp && cut_view.opp_fixed;
-        c->geo = enh_obj_geo(&cut_view, c->seg, c->sprite);
+        c->kind = cut_kind(id);
+        c->seg = c->kind == ENH_CUT_ROW ? base + id
+               : c->kind == ENH_CUT_OPP ? snap.opp_seg
+               : c->kind == ENH_CUT_MIR ? base - (id - ENH_OBJ_OPP)
+               : DSS(DS_starter_seg);
+        c->sprite = c->kind == ENH_CUT_OPP ? opp_sprite : 0;
+        c->fixed = c->kind == ENH_CUT_OPP && snap.opp_fixed;
+        c->geo = enh_obj_geo(&cut_view, c->kind, c->seg, c->sprite);
         if (!c->geo.ok) continue;
         int w = x1[id] - x0[id] + 1, h = y1[id] - y0[id] + 1;
         c->img.px = SDL_realloc(c->img.px, (size_t)w * h);
@@ -238,7 +275,7 @@ static void capture_objects(void)
                 u16 b = (u16)(shown_start + y * EGA_BYTES_PER_LINE + (x >> 3));
                 int bit = 7 - (x & 7), col = 0;
                 for (int k = 0; k < 4; k++) col |= (ega_plane(k)[b] >> bit & 1) << k;
-                c->img.px[j * w + i] = tag[(u32)b * 8 + (x & 7)] == id ? (u8)col : ENH_CLEAR;
+                c->img.px[j * w + i] = tag[(u32)b * 8 + (x & 7)] == id && enh_tag_kept(id, opp_sprite, x, y) ? (u8)col : ENH_CLEAR;
             }
         c->x0 = x0[id];
         c->y0 = y0[id];
@@ -246,33 +283,49 @@ static void capture_objects(void)
     }
 }
 
-/* The cut objects at view v: each moved and scaled from its row in the frame's view to the same row in v, the
- * farthest first. */
-static void draw_objects(const EnhView *v)
+void enh_cuts_begin(void)
 {
-    int order[OBJ_IDS], n = 0;
-    EnhObjGeo now[OBJ_IDS];
-    for (int id = 1; id < OBJ_IDS; id++) {
-        if (!cuts[id].used) continue;
-        now[id] = cuts[id].fixed ? cuts[id].geo : enh_obj_geo(v, cuts[id].seg, cuts[id].sprite);
-        if (!now[id].ok) continue;
-        int k = n++;
-        while (k > 0 && now[order[k - 1]].z < now[id].z) { order[k] = order[k - 1]; k--; }
-        order[k] = id;
+    for (int id = 0; id < ENH_OBJ_IDS; id++) cuts[id].drawn = false;
+    enh_cut_log_n = 0;
+}
+
+/* A cut at view v: moved and scaled from its place in the frame's view to the same place in v. A fixed cut
+ * keeps its frame geometry. */
+static void draw_cut(const EnhView *v, int id)
+{
+    ObjCut *c = &cuts[id];
+    c->drawn = true;
+    EnhObjGeo g = c->fixed ? c->geo : enh_obj_geo(v, c->kind, c->seg, c->sprite);
+    if (!g.ok) return;
+    const EnhObjGeo *f = &c->geo;
+    double s = f->z / g.z;
+    double xa = g.a + g.b * ((c->x0 - f->a) / f->b), xb = g.a + g.b * ((c->x0 + c->img.w - f->a) / f->b);
+    double ya = g.yg + (c->y0 - f->yg) * s, yb = g.yg + (c->y0 + c->img.h - f->yg) * s;
+    enh_draw_image(&c->img, xa, ya, xb, yb);
+    if (enh_cut_log_n < ENH_OBJ_IDS) enh_cut_log[enh_cut_log_n++] = id;
+}
+
+void enh_cuts_at(const EnhView *v, int pass, int lo, int hi, bool opp)
+{
+    for (int id = 1; id < ENH_OBJ_IDS; id++) {
+        const ObjCut *c = &cuts[id];
+        if (!c->used || c->drawn || (c->kind == ENH_CUT_OPP) != opp || cut_pass(c) != pass) continue;
+        if (c->seg >= lo && c->seg <= hi) draw_cut(v, id);
     }
-    for (int i = 0; i < n; i++) {
-        const ObjCut *c = &cuts[order[i]];
-        const EnhObjGeo *f = &c->geo, *g = &now[order[i]];
-        double s = f->z / g->z;
-        double xa = g->a + g->b * ((c->x0 - f->a) / f->b), xb = g->a + g->b * ((c->x0 + c->img.w - f->a) / f->b);
-        double ya = g->yg + (c->y0 - f->yg) * s, yb = g->yg + (c->y0 + c->img.h - f->yg) * s;
-        enh_draw_image(&c->img, xa, ya, xb, yb);
-    }
+}
+
+/* One picture of view v: the front pass draws the road and the cuts at their rows (enh_road2.c). */
+static void draw_view(const EnhView *v)
+{
+    enh_cuts_begin();
+    enh_draw_road(v);
 }
 
 void enh_draw_fg(bool fg)
 {
-    if (active) ega_set_layer(fg ? EGA_LAYER_FG : EGA_LAYER_BG);
+    if (!active) return;
+    base_layer = fg ? EGA_LAYER_FG : EGA_LAYER_BG;
+    ega_set_layer(base_layer);
 }
 
 static void compare_frame(void);
@@ -373,8 +426,7 @@ static void compare_frame(void)
     EnhOptions keep = enh_opt;
     enh_opt.res_scale = enh_opt.aa = 1;
     enh_buf_setup();
-    enh_draw_road(&v);
-    draw_objects(&v);
+    draw_view(&v);
     static u8 orig[200 * 320], enh[200 * 320], cov[200 * 320], cov_edge[200 * 320];
     const u8 *fgm = ega_fg(), *tag = ega_obj();
     int mirror_cov = 0;
@@ -438,8 +490,7 @@ bool enh_compose(u32 *xrgb, const u32 rgb[16])
     EnhView v;
     if (!enh_view_at(SDL_GetTicksNS(), &v)) return false;
     enh_cur_rgb = rgb;
-    enh_draw_road(&v);
-    draw_objects(&v);
+    draw_view(&v);
     int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());
     enh_resolve(xrgb, rgb, 16, shown_start, y_end);
     enh_compare_shown();

@@ -127,6 +127,174 @@ static void sr2_enh_fg_clears_tags(void)
     ega_set_layer(EGA_LAYER_OFF);
 }
 
+/* Write mode 0 into all planes through the bit mask: the pixels of byte o in `mask` take colour 15. */
+static void wr_pixels(u16 o, u8 mask)
+{
+    vga_out(0x3C4, 2); vga_out(0x3C5, 0x0F);
+    vga_out(0x3CE, 8); vga_out(0x3CF, mask);
+    (void)vga_rd(o);                                /* the latches keep the other pixels */
+    vga_wr(o, 0xFF);
+}
+
+/* Pixels x..x+n-1 of row y on the page at `page` take colour 15 (written in whatever layer is current). */
+static void wr_span(u16 page, int x, int y, int n)
+{
+    for (int i = x; i < x + n; i++) wr_pixels((u16)(page + y * EGA_BYTES_PER_LINE + (i >> 3)), (u8)(0x80 >> (i & 7)));
+}
+
+static u8 tag_at(u16 page, int x, int y) { return ega_obj()[(u32)(u16)(page + y * EGA_BYTES_PER_LINE + (x >> 3)) * 8 + (x & 7)]; }
+static bool fg_at(u16 page, int x, int y) { return ega_fg()[(u16)(page + y * EGA_BYTES_PER_LINE + (x >> 3))] >> (7 - (x & 7)) & 1; }
+
+/* A rectangle kept the game's (ega_mark_fg_rect) is foreground and none of its pixels is an object's any more. */
+static void sr2_enh_mark_fg_clears_tags(void)
+{
+    enh_init(true, 1, 1, 100, true);
+    ega_init();
+    vga_mode_0d();
+    ega_clear_obj(0, 0x2000);
+    ega_clear_fg(0, 0x2000);
+    ega_set_obj(3);
+    ega_set_layer(EGA_LAYER_OBJ);
+    wr_span(0, 100, 50, 40);
+    ega_set_layer(EGA_LAYER_OFF);
+    ega_mark_fg_rect(0, 105, 50, 112, 50);
+    int bad = 0;
+    for (int x = 100; x < 140; x++) {
+        bool in = x >= 105 && x <= 112;
+        if (in ? !(fg_at(0, x, 50) && tag_at(0, x, 50) == 0) : !(tag_at(0, x, 50) == 3 && !fg_at(0, x, 50))) bad++;
+    }
+    CHECK(bad == 0);
+}
+
+typedef struct { s16 mode, seg, sub, opp_seg, opp_sprite, opp_d, shown, back, heading; u8 racing; u16 fallen; } Keep;
+static Keep keep_ds(void)
+{
+    return (Keep){ DSS(DS_road_mode), DSS(DS_seg), DSS(DS_substep), DSS(DS_opp_seg), DSS(DS_opp_sprite),
+                   DSS(DS_opp_last_d), DSS(DS_shown_page), DSS(DS_back_page), DSS(DS_heading), DSB(DS_racing),
+                   DSW(DS_fallen) };
+}
+static void restore_ds(const Keep *k)
+{
+    DSS(DS_road_mode) = k->mode; DSS(DS_seg) = k->seg; DSS(DS_substep) = k->sub; DSS(DS_opp_seg) = k->opp_seg;
+    DSS(DS_opp_sprite) = k->opp_sprite; DSS(DS_opp_last_d) = k->opp_d; DSS(DS_shown_page) = k->shown;
+    DSS(DS_back_page) = k->back; DSS(DS_heading) = k->heading; DSB(DS_racing) = k->racing; DSW(DS_fallen) = k->fallen;
+}
+
+/* A street drag at segment 100, its frames drawn into page 2 (plane offset 4000h) and shown from page 0. */
+static void race_setup(void)
+{
+    enh_init(true, 1, 1, 100, true);
+    ega_init();
+    vga_mode_0d();
+    DSS(DS_road_mode) = 1;
+    DSB(DS_racing) = 1;
+    DSS(DS_seg) = 100;
+    DSS(DS_substep) = 0;
+    DSS(DS_heading) = 0;
+    DSS(DS_shown_page) = 0;
+    DSS(DS_back_page) = 2;
+    DSW(DS_fallen) = 0;
+    enh_race_begin();
+}
+
+/* enh_draw_objects(0) returns to the layer the objects were drawn in: the foreground after enh_draw_fg(true)
+ * (the mirror, when it stays the game's), the background after enh_draw_begin. */
+static void sr2_enh_base_layer(void)
+{
+    Keep k = keep_ds();
+    race_setup();
+    enh_draw_fg(true);
+    enh_draw_objects(4);
+    enh_draw_objects(0);
+    wr_span(0x4000, 60, 40, 1);
+    CHECK(fg_at(0x4000, 60, 40));
+    enh_draw_begin();
+    ega_mark_fg_rect(0x4000, 60, 40, 60, 40);
+    enh_draw_objects(4);
+    enh_draw_objects(0);
+    wr_pixels((u16)(0x4000 + 40 * EGA_BYTES_PER_LINE + (60 >> 3)), 0x80 >> (60 & 7));
+    CHECK(!fg_at(0x4000, 60, 40));
+    enh_race_end();
+    restore_ds(&k);
+}
+
+/* Which object pixels a frame's capture keeps: the front view's outside the mirror (its body and mount), the
+ * mirror's inside its glass; the opponent by the picture it was drawn with (9 and up: the mirror's). */
+static void sr2_enh_capture_regions(void)
+{
+    CHECK(!enh_in_mirror_rect(0xEF, 0x14));
+    CHECK(enh_in_mirror_rect(0xF0, 0x14));
+    CHECK(enh_in_mirror_rect(0x13F, 0x2C));
+    CHECK(!enh_in_mirror_rect(0xF0, 0x2D));
+    CHECK(!enh_in_mirror_rect(0xF0, 0x13));
+    CHECK(enh_in_mirror_rect(0x110, 0x12));
+    CHECK(!enh_in_mirror_rect(0x120, 0x12));
+    CHECK(!enh_in_glass(0xF1, 0x16));
+    CHECK(enh_in_glass(0xF2, 0x16));
+    CHECK(enh_in_glass(0x13D, 0x2A));
+    CHECK(!enh_in_glass(0x13E, 0x2A));
+    CHECK(!enh_in_glass(0xF2, 0x2B));
+    CHECK(!enh_tag_kept(3, 0, 0x100, 0x20));
+    CHECK(enh_tag_kept(3, 0, 0x100, 0x30));
+    CHECK(enh_tag_kept(ENH_OBJ_OPP, 10, 0x100, 0x20));
+    CHECK(!enh_tag_kept(ENH_OBJ_OPP, 10, 0x80, 0x40));
+    CHECK(!enh_tag_kept(ENH_OBJ_OPP, 5, 0x100, 0x20));
+    CHECK(!enh_tag_kept(ENH_OBJ_MIR(2), 0, 0xF1, 0x20));
+}
+
+/* One frame of the street drag with three objects tagged in the shown page: row 3, row 5 and the opponent (its
+ * segment 105, row 5's), composed. */
+static void cut_order_frame(void)
+{
+    static const u32 rgb[16];
+    race_setup();
+    DSS(DS_opp_seg) = 105;
+    DSS(DS_opp_sprite) = 5;
+    DSS(DS_opp_last_d) = 320;
+    ega_clear_obj(0, 0x2000);
+    ega_set_layer(EGA_LAYER_OBJ);
+    ega_set_obj(3); wr_span(0, 100, 70, 4);
+    ega_set_obj(5); wr_span(0, 120, 60, 4);
+    ega_set_obj(ENH_OBJ_OPP); wr_span(0, 140, 60, 4);
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_frame_built();
+    enh_frame_presented();
+    CHECK(enh_compose(small, rgb));
+}
+
+/* The cuts are drawn at their own row, far to near, the opponent after its row's objects (road_draw_front). */
+static void sr2_enh_cut_order(void)
+{
+    Keep k = keep_ds();
+    cut_order_frame();
+    printf("  log n %d: %d %d %d\n", enh_cut_log_n, enh_cut_log[0], enh_cut_log[1], enh_cut_log[2]);
+    CHECK(enh_cut_log_n == 3 && enh_cut_log[0] == 5 && enh_cut_log[1] == ENH_OBJ_OPP && enh_cut_log[2] == 3);
+    enh_race_end();
+    restore_ds(&k);
+}
+
+/* A new race carries nothing of the last one: no cuts, the base layer the background. */
+static void sr2_enh_race_begin_resets(void)
+{
+    static const u32 rgb[16];
+    Keep k = keep_ds();
+    cut_order_frame();
+    enh_draw_fg(true);                              /* the last race left its layer at the foreground */
+    enh_race_begin();
+    enh_draw_objects(0);
+    ega_mark_fg_rect(0x4000, 60, 40, 60, 40);
+    wr_pixels((u16)(0x4000 + 40 * EGA_BYTES_PER_LINE + (60 >> 3)), 0x80 >> (60 & 7));
+    CHECK(!fg_at(0x4000, 60, 40));
+    ega_clear_obj(0, 0x2000);                       /* the next frame draws no objects */
+    ega_set_layer(EGA_LAYER_OFF);
+    enh_frame_built();
+    enh_frame_presented();
+    CHECK(enh_compose(small, rgb));
+    CHECK(enh_cut_log_n == 0);
+    enh_race_end();
+    restore_ds(&k);
+}
+
 static EnhView view_at(double pos)
 {
     EnhView v;
@@ -143,7 +311,7 @@ static EnhView view_at(double pos)
 static void sr2_enh_obj_geo_continuous(void)
 {
     EnhView a = view_at(65.99), b = view_at(66.01);
-    EnhObjGeo ga = enh_obj_geo(&a, 75, -1), gb = enh_obj_geo(&b, 75, -1);
+    EnhObjGeo ga = enh_obj_geo(&a, ENH_CUT_ROW, 75, 0), gb = enh_obj_geo(&b, ENH_CUT_ROW, 75, 0);
     printf("  z %.3f -> %.3f\n", ga.z, gb.z);
     CHECK(ga.ok && gb.ok);
     CHECK(SDL_fabs(ga.z - gb.z) < 0.5);
@@ -156,16 +324,16 @@ static void sr2_enh_opp_depth(void)
     EnhView v = view_at(100.0);
     v.opp_pos = 100.0 - 40.0 / 64;                 /* d = -40: just behind */
     v.opp_d = -40;
-    EnhObjGeo g = enh_obj_geo(&v, -1, 2);
+    EnhObjGeo g = enh_obj_geo(&v, ENH_CUT_OPP, 100, 2);
     printf("  rear, d -40: ok %d z %.2f\n", g.ok, g.z);
     CHECK(g.ok && SDL_fabs(g.z - 7.0) < 1e-6);
     v.opp_pos = 100.0 + 8.0 / 64;                  /* d = 8, the side view */
     v.opp_d = 8;
-    g = enh_obj_geo(&v, -1, 0);
+    g = enh_obj_geo(&v, ENH_CUT_OPP, 100, 0);
     CHECK(g.ok && SDL_fabs(g.z - 21.0) < 1e-6);
     v.opp_pos = 103.0;                             /* d = 192, ahead */
     v.opp_d = 192;
-    g = enh_obj_geo(&v, -1, 5);
+    g = enh_obj_geo(&v, ENH_CUT_OPP, 103, 5);
     CHECK(g.ok && SDL_fabs(g.z - 28.0) < 1e-6);
 }
 
@@ -230,13 +398,13 @@ static void sr2_enh_obj_geo_exact_slope(void)
     v.mode = 1;
     v.exact = true;
     v.hoff = 0;
-    EnhObjGeo g = enh_obj_geo(&v, 105, 0);
+    EnhObjGeo g = enh_obj_geo(&v, ENH_CUT_ROW, 105, 0);
     double want = road_proj_y(37, 2000, (s16)(200 - 210)) + 0.5;     /* 37 = 8 * 5 + 4 - 7 */
     printf("  exact yg %.2f, the game's %.2f\n", g.yg, want);
     CHECK(g.ok && g.yg == want);
     EnhView a = view_at(100.99), b = view_at(101.01);
     a.mode = b.mode = 1;
-    EnhObjGeo ga = enh_obj_geo(&a, 105, 0), gb = enh_obj_geo(&b, 105, 0);
+    EnhObjGeo ga = enh_obj_geo(&a, ENH_CUT_ROW, 105, 0), gb = enh_obj_geo(&b, ENH_CUT_ROW, 105, 0);
     printf("  smooth yg %.3f -> %.3f\n", ga.yg, gb.yg);
     CHECK(ga.ok && gb.ok && SDL_fabs(ga.yg - gb.yg) < 0.5);
     for (int i = 90; i <= 120; i++) TRKW(TRK_HGT, i) = keep[i - 90];
@@ -253,19 +421,19 @@ static void sr2_enh_opp_drawn_d(void)
     v.opp_seg = 104;
     v.opp_sx = 160;
     v.opp_d = 300;
-    EnhObjGeo g = enh_obj_geo(&v, -1, 5);
+    EnhObjGeo g = enh_obj_geo(&v, ENH_CUT_OPP, 104, 5);
     CHECK(g.ok && g.z == 41);
     v.opp_d = -20;
-    g = enh_obj_geo(&v, -1, 2);
+    g = enh_obj_geo(&v, ENH_CUT_OPP, 104, 2);
     CHECK(g.ok && g.z == 6);
     v.opp_d = -40;
-    g = enh_obj_geo(&v, -1, 2);
+    g = enh_obj_geo(&v, ENH_CUT_OPP, 104, 2);
     CHECK(g.ok && g.z == 7);
     EnhView a = view_at(100.0), b = view_at(100.125);
     a.mode = b.mode = 1;
     a.opp_d = 300;
     b.opp_d = 292;                                  /* the car 1/8 segment on */
-    EnhObjGeo ga = enh_obj_geo(&a, -1, 5), gb = enh_obj_geo(&b, -1, 5);
+    EnhObjGeo ga = enh_obj_geo(&a, ENH_CUT_OPP, 105, 5), gb = enh_obj_geo(&b, ENH_CUT_OPP, 105, 5);
     printf("  smooth z %.2f, %.2f\n", ga.z, gb.z);
     CHECK(ga.ok && gb.ok && ga.z == 41.5 && gb.z == 40.5);
 }
@@ -392,6 +560,11 @@ int main(int argc, char **argv)
     RUN(sr2_enh_options);
     RUN(sr2_enh_object_tags);
     RUN(sr2_enh_fg_clears_tags);
+    RUN(sr2_enh_mark_fg_clears_tags);
+    RUN(sr2_enh_base_layer);
+    RUN(sr2_enh_capture_regions);
+    RUN(sr2_enh_cut_order);
+    RUN(sr2_enh_race_begin_resets);
     RUN(sr2_enh_obj_geo_continuous);
     RUN(sr2_enh_opp_depth);
     RUN(sr2_enh_series_snap);

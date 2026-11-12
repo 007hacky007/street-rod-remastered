@@ -5,6 +5,7 @@
 #include "types.h"
 
 #include "enh_draw.h"
+#include "enhanced.h"
 
 /* A smoothly interpolated series of samples: [0] = the newest, [1] and [2] the ones before. One channel per
  * quantity of a game frame; part C fills the roll and the Aqueduct's channels (0 until then). */
@@ -67,12 +68,26 @@ bool enh_view_newest(EnhView *v);
 
 /* enh_road2.c: modes 0 (town) and 1 (street drag). */
 void enh_draw_road(const EnhView *v);
+/* The captured objects (enhanced.c). A cut is one id's pixels of the frame shown; its kind says how it is placed,
+ * its segment (absolute) where in the band loop it is drawn. */
+enum { ENH_CUT_ROW, ENH_CUT_OPP, ENH_CUT_MIR, ENH_CUT_STARTER };
+enum { ENH_PASS_FRONT, ENH_PASS_MIRROR };
 /* Where an object stands in a view: its depth, the screen row of the road under it, and the screen x of world x
- * X as a + b X. seg >= 0: an object on the road at that (absolute) segment, at its row's depth; seg < 0: the
- * opponent, at the depth opponent_draw gives its picture `sprite` from v->opp_d (|d / 8| + 4, 16 more for the
- * side view 0, 8 more for the rear view 2 close behind), x relative to its lane. */
+ * X as a + b X. ENH_CUT_ROW: an object on the road at the (absolute) segment seg, at its row's depth;
+ * ENH_CUT_OPP: the opponent, at the depth opponent_draw gives its picture `sprite` from v->opp_d (|d / 8| + 4,
+ * 16 more for the side view 0, 8 more for the rear view 2 close behind), x relative to its lane (seg unused, the
+ * view's opp_seg is the game's). */
 typedef struct { double z, yg, a, b; bool ok; } EnhObjGeo;
-EnhObjGeo enh_obj_geo(const EnhView *v, int seg, int sprite);
+EnhObjGeo enh_obj_geo(const EnhView *v, int kind, int seg, int sprite);   /* MIR and STARTER: ok = false until the mirror is drawn */
+bool enh_in_mirror_rect(int x, int y);        /* the body F0h..13Fh x 14h..2Ch, or the mount 110h..11Fh x 12h..13h */
+bool enh_in_glass(int x, int y);              /* F2h..13Dh x 16h..2Ah */
+bool enh_tag_kept(int id, int opp_sprite, int x, int y);   /* the capture's region rule */
+/* A picture starts: no cut drawn yet. */
+void enh_cuts_begin(void);
+/* Draws every cut not yet drawn in this picture whose pass is `pass` and whose segment is in lo..hi: the
+ * opponent when `opp`, the others otherwise. The opponent's pass is the mirror's for pictures 9 and up. */
+void enh_cuts_at(const EnhView *v, int pass, int lo, int hi, bool opp);
+extern int enh_cut_log[ENH_OBJ_IDS], enh_cut_log_n;   /* ids in the order the last picture drew them (tests) */
 
 /* The road colours of the compare tool's edges. */
 extern const u8 enh_road_colours[2];

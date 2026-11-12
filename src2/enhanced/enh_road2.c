@@ -2,8 +2,8 @@
  * Street Rod 2's projection): the original's 15 rows evaluated in floating point at the smooth position, the
  * bands between them drawn as the original draws them (straight edges from row to row), the sky and the
  * horizon scrolled continuously. At a game frame's own position the result is the original's geometry. Road modes 0 (the
- * town) and 1 (the street drag); the objects, the opponent and the mirror are the game's own until they are
- * drawn here too.
+ * town) and 1 (the street drag); the objects and the opponent the game drew are drawn again in the band loop at
+ * their own segment (enh_cuts_at); the mirror is the game's own until it is drawn here too.
  *
  * Projection (road_proj_x / road_proj_y, src2/game/race_road.c), a point at world x X, height Y, on the road
  * at continuous segment position s, seen from position pos:
@@ -15,6 +15,7 @@
 #include "enhanced/enh_internal.h"
 #include "enhanced/enhanced.h"
 
+#include <limits.h>
 #include <math.h>
 
 #include "game/race_int.h"
@@ -313,18 +314,31 @@ void enh_draw_road(const EnhView *v)
     double dash = dash_half();
     Row rows[FAR_ROWS + 1];
     for (int k = 0; k <= FAR_ROWS; k++) rows[k] = row_k(&c, k);
-    for (int k = FAR_ROWS; k >= 1; k--) draw_band(&c, &rows[k - 1], &rows[k], v->town, dash);   /* far to near */
+    /* far to near, each segment's cuts after its band and the opponent after its row's objects (road_draw_front);
+     * cuts beyond the far row first, those at or behind the near row last */
+    int base = c.base;
+    enh_cuts_at(v, ENH_PASS_FRONT, base + FAR_ROWS + 1, INT_MAX, false);
+    enh_cuts_at(v, ENH_PASS_FRONT, base + FAR_ROWS + 1, INT_MAX, true);
+    for (int k = FAR_ROWS; k >= 1; k--) {
+        draw_band(&c, &rows[k - 1], &rows[k], v->town, dash);
+        enh_cuts_at(v, ENH_PASS_FRONT, base + k, base + k, false);
+        enh_cuts_at(v, ENH_PASS_FRONT, base + k, base + k, true);
+    }
+    enh_cuts_at(v, ENH_PASS_FRONT, INT_MIN, base, false);
+    enh_cuts_at(v, ENH_PASS_FRONT, INT_MIN, base, true);
 }
 
 /* ---------------------------------------------------------------- objects */
 
-EnhObjGeo enh_obj_geo(const EnhView *v, int seg, int sprite)
+EnhObjGeo enh_obj_geo(const EnhView *v, int kind, int seg, int sprite)
 {
     EnhObjGeo g = { 0, 0, 0, 0, false };
+    if (kind != ENH_CUT_ROW && kind != ENH_CUT_OPP) return g;   /* the mirror's cuts: not placed until the mirror is drawn */
+    bool opp = kind == ENH_CUT_OPP;
     Cam c;
     cam_of(v, &c);
     Row r;
-    if (seg < 0) {                                          /* the opponent (opponent_draw), at the d it was drawn at */
+    if (opp) {                                              /* the opponent (opponent_draw), at the d it was drawn at */
         double z = c.exact ? cdiv16((s16)v->opp_d, 8) : v->opp_d / 8.0;
         if (sprite == 0) z += 16;
         if (z < -2 && sprite == 2) z += 8;
@@ -350,7 +364,7 @@ EnhObjGeo enh_obj_geo(const EnhView *v, int seg, int sprite)
     g.z = r.z;
     g.yg = py(&c, &r, Y_ROAD);
     g.b = 4.0 / r.z;
-    if (seg < 0) {
+    if (opp) {
         g.a = c.exact ? v->opp_sx : px(&c, &r, v->opp_lat);   /* x relative to the opponent's lane */
         if (sprite > 3 && sprite < 9) {                     /* rear views: not above the road row they stand on */
             int row = ((int)r.z + 1) >> 3;

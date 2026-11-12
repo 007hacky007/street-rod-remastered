@@ -124,6 +124,15 @@ void ega_clear_fg(u16 offset, u16 n)
 {
     for (u16 i = 0; i < n; i++) fg[(u16)(offset + i)] = 0;
 }
+void ega_mark_fg_rect(u16 page, int x0, int y0, int x1, int y1)
+{
+    for (int y = y0; y <= y1; y++)
+        for (int x = x0; x <= x1; x++) {
+            u16 o = (u16)(page + y * EGA_BYTES_PER_LINE + (x >> 3));
+            fg[o] |= (u8)(0x80 >> (x & 7));
+            obj[(u32)o * 8 + (x & 7)] = 0;
+        }
+}
 const u8 *ega_written(void) { return written; }
 void ega_clear_written(u16 offset, u16 n)
 {

@@ -40,9 +40,15 @@ void enh_phys_step(void);
 void enh_draw_begin(void);
 void enh_draw_fg(bool fg);
 /* road_draw_front: what the engine draws next is an object of row `id` (1..14), or the opponent
- * (ENH_OBJ_OPP); 0 = back to the background. The enhanced view draws those pixels again at the smooth position
- * of their row (or of the opponent). */
-#define ENH_OBJ_OPP 15
+ * (ENH_OBJ_OPP); 0 = back to the base layer (the background after enh_draw_begin, the foreground after
+ * enh_draw_fg(true)). The enhanced view draws those pixels again at the smooth position of their row (or of the
+ * opponent). One id table for the front view, the mirror and the Aqueduct: */
+#define ENH_OBJ_OPP      15          /* the opponent, or the police in its slot */
+#define ENH_OBJ_MIR(r)   (15 + (r))  /* mirror rows 1..7: 16..22 */
+#define ENH_OBJ_STARTER  23          /* the starter figure in the mirror (its y pinned, starter_draw_mirror) */
+#define ENH_OBJ_STARS    24          /* part C: the Aqueduct's stars */
+#define ENH_OBJ_CLOUDS   25          /* part C: its clouds */
+#define ENH_OBJ_IDS      26
 void enh_draw_objects(int id);
 /* road_frame: the rectangle x0..x1, y0..y1 (inclusive) of the back page stays the original's picture. */
 void enh_mark_fg(int x0, int y0, int x1, int y1);

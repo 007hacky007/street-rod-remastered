@@ -55,5 +55,8 @@ const u8 *ega_obj(void);
 void ega_clear_obj(u16 offset, u16 n);
 const u8 *ega_fg(void);
 void ega_clear_fg(u16 offset, u16 n);
+/* ENH: the rectangle x0..x1, y0..y1 (inclusive) of the page at plane offset `page` stays the game's picture:
+ * its pixels are foreground and no object's any more. */
+void ega_mark_fg_rect(u16 page, int x0, int y0, int x1, int y1);
 u16  ega_start(void);                        /* current CRTC start address */
 int  ega_line_compare(void);                 /* current first row from offset 0 (200 = off) */
