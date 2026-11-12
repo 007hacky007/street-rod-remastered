@@ -1,4 +1,23 @@
 {
+ "001b8006e8e92e11bc61d5865df419f5337623db": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1023
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
  "007e822a024862bcb72a1401a5cf8c99f7de752a": {
   "group": "car",
   "batch": 2,
@@ -131,11 +150,15 @@
    ],
    "datadisk": [
     1261
+   ],
+   "sr2": [
+    2049
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 264,
   "h": 43,
@@ -179,6 +202,25 @@
   "h": 22,
   "masked": 1
  },
+ "020f29792f8a5ab3b14b9fbaec9e97eb4e661bcc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2039
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 22,
+  "masked": 1
+ },
  "0212f7fd1e41711003881a7cea41de36c162e729": {
   "group": "car",
   "batch": 2,
@@ -196,6 +238,25 @@
   ],
   "w": 24,
   "h": 17,
+  "masked": 1
+ },
+ "02baac8b9ff556785d6d1f15e9a09801e7486aee": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1161
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
   "masked": 1
  },
  "03319b5265a3d2aca8a1204da73d26b814c88881": {
@@ -221,6 +282,44 @@
   "h": 88,
   "masked": 1
  },
+ "03b9bb1171ea2d6f05e09b0e85f32556f06cbd82": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2048
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 29,
+  "masked": 1
+ },
+ "0417e21d69e0a80da32cfe4637b753483d676aaf": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2076
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 184,
+  "h": 30,
+  "masked": 1
+ },
  "044fc6400469b69defa4ef89fc7b209b15be974c": {
   "group": "garage",
   "batch": 2,
@@ -234,16 +333,58 @@
    ],
    "datadisk": [
     1223
+   ],
+   "sr2": [
+    1148
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 40,
   "h": 22,
   "masked": 1,
   "pal_like": 1076
+ },
+ "051ba6dfb40ea710e07aad98846ad742aadc1f06": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1162
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "061455f3ca57477fbbb27003fd3e8e40b79f00f3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1176
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
  },
  "063e22f390c536d64f266f04df7a2d8dddf181fc": {
   "group": "ui",
@@ -291,6 +432,25 @@
   "h": 12,
   "masked": 1
  },
+ "069b70c75843d45cec65cae128b78050bfb60d97": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1027
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 14,
+  "masked": 1
+ },
  "06ccf90eef7e9a7b15d7bfddafb5c56eed1a88cb": {
   "group": "car",
   "batch": 2,
@@ -308,6 +468,44 @@
   ],
   "w": 192,
   "h": 67,
+  "masked": 1
+ },
+ "07663ff07b81c8dbd63d4d90e787160f82f3f6c7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2045
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 46,
+  "masked": 1
+ },
+ "078189ebc1204e9b335bc93b3695b34dcd849996": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2014
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 104,
+  "h": 83,
   "masked": 1
  },
  "0788dfe2a9f1466a18ee0d0a5d9cdb6c40813dfd": {
@@ -554,6 +752,44 @@
   "h": 10,
   "masked": 1
  },
+ "0bab2cb372220ce37c3c7096d6d3ace33ef2f6f4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 48,
+  "masked": 1
+ },
+ "0bb058629fdf887f3aa16cefb7b8b79372813e9f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1128
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 56,
+  "masked": 1
+ },
  "0bb68f6f22de056ae0a7bbe896addcc0056bb13d": {
   "group": "car",
   "batch": 2,
@@ -571,6 +807,25 @@
   ],
   "w": 256,
   "h": 54,
+  "masked": 1
+ },
+ "0bccc360ec9c244fa6c802fda8f94bf1638a25e6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1099
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 11,
   "masked": 1
  },
  "0c3d8b72b0c8b55a976462ecdefba8b6d91e55c2": {
@@ -611,6 +866,44 @@
   "h": 11,
   "masked": 1
  },
+ "0c7a50a4b57ad78ebc82c026e7661f2ee79e5f07": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1203
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 72,
+  "h": 17,
+  "masked": 0
+ },
+ "0cd69fe38ecb4af1d6d7ea353837fb74724cda5b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1196
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 120,
+  "h": 56,
+  "masked": 1
+ },
  "0d39d76a136bcea91c7813433e4f38419bb1f796": {
   "group": "race",
   "batch": 3,
@@ -634,6 +927,25 @@
   "h": 24,
   "masked": 1
  },
+ "0deabee1df24945a355763bfed84cd77a4dbe68e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1037
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 11,
+  "masked": 1
+ },
  "0ebfcb69b7fdd004fc73f8d7f5257c5c34fac67d": {
   "group": "race",
   "batch": 3,
@@ -655,6 +967,25 @@
   ],
   "w": 112,
   "h": 64,
+  "masked": 1
+ },
+ "0f4f2f84d3f110b884a87925610bd93a195f8a10": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1172
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 17,
   "masked": 1
  },
  "0fbe837446d1478985757f7b0dc81dd05f852404": {
@@ -718,6 +1049,25 @@
   "h": 20,
   "masked": 1
  },
+ "1085c847b4c06956c982fe7ff1420af1a6c0472e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2065
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 29,
+  "masked": 1
+ },
  "11fb5534e457f771aa3db9d60e5aec24856f8454": {
   "group": "sprite",
   "batch": 4,
@@ -736,6 +1086,44 @@
   "w": 256,
   "h": 97,
   "masked": 0
+ },
+ "125c854449c128902a4f43470e385d61be6b46be": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1002
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 288,
+  "h": 150,
+  "masked": 0
+ },
+ "128341daaff16026ba8b34f75c5114b2ecff536e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1102
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 248,
+  "h": 56,
+  "masked": 1
  },
  "128ee94b57781e478e14e441e9c2ad529fd47e6b": {
   "group": "ui",
@@ -779,6 +1167,25 @@
   "h": 52,
   "masked": 1
  },
+ "12d0b676353b8eb934d2320b6afef90367b9f46d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1098
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 10,
+  "masked": 1
+ },
  "130421ccb530255d2d8fa15d146e362a2f4c2c47": {
   "group": "car",
   "batch": 2,
@@ -796,6 +1203,25 @@
   ],
   "w": 24,
   "h": 14,
+  "masked": 1
+ },
+ "13302f62916c9d7a376427be10da3214d2049c2e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2081
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 8,
+  "h": 5,
   "masked": 1
  },
  "1349c7e723ed8f55c0f1de92e14c4914ff75659b": {
@@ -838,6 +1264,25 @@
   ],
   "w": 24,
   "h": 18,
+  "masked": 1
+ },
+ "13532fe74b084b2933f5097b900f58a7a072e68d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1096
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 13,
   "masked": 1
  },
  "1374137a59172960100e54d8b16e3db4743e6dbc": {
@@ -885,6 +1330,44 @@
   "w": 304,
   "h": 157,
   "masked": 0
+ },
+ "13bfd4385795aa15b26be60d2e2d5528506bb6d8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2019
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 90,
+  "masked": 0
+ },
+ "142dcf84de0551572ff266451bb602de19d957ae": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1032
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 10,
+  "masked": 1
  },
  "14ffe4949f1af4374fde0f5210381e5f1abe7665": {
   "group": "car",
@@ -943,6 +1426,25 @@
   "h": 14,
   "masked": 1
  },
+ "1561d1f29427a34c230acf7284c2de0a43ba7090": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1030
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
+ },
  "1566f195b1e8ff612bd049af5619be84af5de9e6": {
   "group": "race",
   "batch": 3,
@@ -966,6 +1468,25 @@
   "h": 48,
   "masked": 1
  },
+ "157a289d312d8d60df98cf3aec4ca201952cd66d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1206
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 11,
+  "masked": 0
+ },
  "163bebfd0ca194c5c509eae8fe511841a250afca": {
   "group": "car",
   "batch": 2,
@@ -983,6 +1504,25 @@
   ],
   "w": 32,
   "h": 16,
+  "masked": 1
+ },
+ "169891e03016bcf14ff9b35df293bd9b3476d349": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2080
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 8,
+  "h": 11,
   "masked": 1
  },
  "17817ae2e5a86f9352d81b4ea8e318412313d112": {
@@ -1046,6 +1586,25 @@
   "h": 18,
   "masked": 1
  },
+ "1809b7f3cd0c60ffa23d3055c79fb53a09cbfd26": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2041
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 88,
+  "h": 45,
+  "masked": 1
+ },
  "180ba63d1ff5422ae909df537c21506bc00f3e3e": {
   "group": "car",
   "batch": 2,
@@ -1065,6 +1624,25 @@
   "h": 14,
   "masked": 1
  },
+ "18371c606a986ec144e3d8ae7faa38085cf6bbd1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1039
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 248,
+  "h": 58,
+  "masked": 1
+ },
  "18bf1244beb71db26df125754146c09275464e3e": {
   "group": "car",
   "batch": 2,
@@ -1082,6 +1660,25 @@
   ],
   "w": 24,
   "h": 15,
+  "masked": 1
+ },
+ "193fdcebae86e38285d94c4a4439ce4444a2e47f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1074
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 23,
   "masked": 1
  },
  "19403c7ae00ec5320f619ad8090b7808e700e2f6": {
@@ -1120,11 +1717,15 @@
    ],
    "datadisk": [
     1231
+   ],
+   "sr2": [
+    2030
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 24,
   "h": 19,
@@ -1166,14 +1767,37 @@
    ],
    "datadisk": [
     1102
+   ],
+   "sr2": [
+    1080
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 128,
   "h": 81,
+  "masked": 1
+ },
+ "1a4bf1764fca2f1a1285f49b06360f430eba912e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1108
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 248,
+  "h": 56,
   "masked": 1
  },
  "1a5e48ddf330c6d732953b5b0c65a70289bc55f4": {
@@ -1189,11 +1813,15 @@
    ],
    "datadisk": [
     1072
+   ],
+   "sr2": [
+    1057
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 152,
   "h": 37,
@@ -1220,6 +1848,63 @@
   ],
   "w": 40,
   "h": 28,
+  "masked": 1
+ },
+ "1ae2e681d31130e8d8094dee9fdd352ffb55c3c7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1076
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 33,
+  "masked": 0
+ },
+ "1b42b1812989c2088a656ba0480f0fcbfb17b4b5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1191
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 1
+ },
+ "1c5014e42a76cfab4986227a145283db10a5f56e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1075
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 21,
   "masked": 1
  },
  "1c8f8991b4ddce977d3b4e20947e1bd8375a60cf": {
@@ -1371,6 +2056,63 @@
   "h": 22,
   "masked": 1
  },
+ "1f3e22341bb922f12b7cb3628b4e9a84e40b594f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1065
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 88,
+  "h": 30,
+  "masked": 1
+ },
+ "1f45a68ac38f95c1d6e8e1ad0d2c98e270d40e15": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1197
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 112,
+  "h": 50,
+  "masked": 1
+ },
+ "1f532df9642a7688249d4b6f32b5bd3de09c0099": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1126
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 11,
+  "masked": 1
+ },
  "1f5814c9afdc109c78f9afccf312c341b26b2890": {
   "group": "car",
   "batch": 2,
@@ -1390,6 +2132,44 @@
   "h": 23,
   "masked": 1
  },
+ "2005f9d59da270ffa4a91a7f76bbef0f999f5766": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2077
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 184,
+  "h": 30,
+  "masked": 1
+ },
+ "2094b23b0c5cfdfc6688bbf052d49b595d7f90ef": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1052
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
+  "masked": 1
+ },
  "20b979b79bc1d619cfd5a1bacb38472d92618473": {
   "group": "car",
   "batch": 2,
@@ -1407,6 +2187,139 @@
   ],
   "w": 112,
   "h": 16,
+  "masked": 1
+ },
+ "21138f7947f2317ccf46b51c7e8c6d307025fda0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1135
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 12,
+  "masked": 1
+ },
+ "2225651a671061dd3bf2453cd34515e3cf647680": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1173
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "2299656c4f64f7bdb23eb597651f4b90018a3ede": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1021
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 23,
+  "masked": 1
+ },
+ "22cc8f961883061099a7f2ba97b4e9cbc8486bef": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2036
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 55,
+  "masked": 1
+ },
+ "22e40c2566597134f557d84a1abe699e9b9f4765": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2058
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 8,
+  "h": 5,
+  "masked": 1
+ },
+ "23479d1eed677657ac989ea1a4ef798032fe86ab": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1132
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 104,
+  "h": 14,
+  "masked": 1
+ },
+ "2360ca14f3ac9874f8cc28860c17785b0b5fcb42": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1157
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 104,
+  "h": 12,
   "masked": 1
  },
  "237afab6d3a72107a396f6b600d23bee8724e287": {
@@ -1431,6 +2344,25 @@
   "w": 112,
   "h": 15,
   "masked": 1
+ },
+ "23bbd078f77cbe0f9d7c68b0dd5a4db62626e1db": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    4
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 200,
+  "masked": 0
  },
  "23cfa9dd0c6855e9cfc32c8d7410647735501ef5": {
   "group": "race",
@@ -1540,6 +2472,25 @@
   "h": 54,
   "masked": 0
  },
+ "2541dc0aa688976eb8c41f8af54064fa0da9de24": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1094
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 232,
+  "h": 59,
+  "masked": 1
+ },
  "265973daf5f8c0dede5af7020c5e83fd1e9e557f": {
   "group": "car",
   "batch": 2,
@@ -1557,6 +2508,25 @@
   ],
   "w": 256,
   "h": 60,
+  "masked": 1
+ },
+ "266ac4734c1430098315da6e9d52f570b4ed3d41": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1047
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 13,
   "masked": 1
  },
  "2736eda7239b285eb659ce07e77a0b1957732df1": {
@@ -1581,6 +2551,25 @@
   "w": 320,
   "h": 190,
   "masked": 0
+ },
+ "2757e66e5526669120c47eaac554f9f055082d7e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1024
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 104,
+  "h": 16,
+  "masked": 1
  },
  "285ba91be70ad30ecadf026e9ffbaf0dde9d9e89": {
   "group": "car",
@@ -1639,6 +2628,82 @@
   "h": 19,
   "masked": 1
  },
+ "2a4ba8d3ff8d57563a2aa85ddf60d9632002d3e2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1014
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
+  "masked": 1
+ },
+ "2ab66e273232f38ef591f3464668bc54be4f7018": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2072
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 184,
+  "h": 30,
+  "masked": 1
+ },
+ "2b040baf2bdbd03ecc68caf3380ff82d5b8cc916": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1090
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 240,
+  "h": 55,
+  "masked": 1
+ },
+ "2ccbb31bb83674d4f506d0a79bd9082dae763893": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2008
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 18,
+  "masked": 1
+ },
  "2d2069cf63557bb7b934585eceac2693b45c54b7": {
   "group": "car",
   "batch": 2,
@@ -1657,6 +2722,44 @@
   "w": 24,
   "h": 16,
   "masked": 1
+ },
+ "2dc3d526c023ac28df87473285f6d126792d6260": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1092
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 1
+ },
+ "2dc8b9923963b74148e5f7df59fbee2b20cb306e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1146
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 168,
+  "h": 150,
+  "masked": 0
  },
  "2e0c7fc6e54829b23a03173662ee3b18eecebe23": {
   "group": "ui",
@@ -1704,6 +2807,25 @@
   "h": 94,
   "masked": 0
  },
+ "2fc5b7ed8739e96381649fb7175dbcccc3b4b490": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1007
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 136,
+  "masked": 0
+ },
  "30258d3e8615515f6177c468fec713cf73d5e6e5": {
   "group": "race",
   "batch": 2,
@@ -1717,11 +2839,15 @@
    ],
    "datadisk": [
     1005
+   ],
+   "sr2": [
+    2002
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 320,
   "h": 52,
@@ -1744,6 +2870,44 @@
   ],
   "w": 256,
   "h": 53,
+  "masked": 1
+ },
+ "31c3cd4d9ec6ab354a7743283aff245d33968ce3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1054
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 200,
+  "h": 189,
+  "masked": 0
+ },
+ "32ae27407d4180dfd14b4c1e840712f5fa02e6b1": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2064
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 108,
   "masked": 1
  },
  "3343a3f8cf8405887b7974acb2ee759db12f7c27": {
@@ -1868,6 +3032,63 @@
   "h": 18,
   "masked": 1
  },
+ "3588091012479264f042b6fef670b08023786683": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1012
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 0
+ },
+ "358c46aa47ccd94a54ba62e3a65a557c31ddf9e2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1100
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 88,
+  "h": 14,
+  "masked": 1
+ },
+ "359266c12610d5cf3112e7cdc6c8e0e1a0e8b4c5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2022
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 8,
+  "h": 17,
+  "masked": 1
+ },
  "362192d4571a2694b7d7f448114737425e92719e": {
   "group": "car",
   "batch": 2,
@@ -1906,6 +3127,25 @@
   "h": 97,
   "masked": 0
  },
+ "367805f8306809e94ac80dcced1a8a7d3481d7ac": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1202
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 0
+ },
  "3689b90384e83640837c841e70fb319787fa44c4": {
   "group": "car",
   "batch": 2,
@@ -1942,6 +3182,25 @@
   ],
   "w": 32,
   "h": 14,
+  "masked": 1
+ },
+ "379d09ff53705bb5e3504b0385a2cadc1b4a6dd7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1045
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 248,
+  "h": 56,
   "masked": 1
  },
  "38d4f1638b66372e8009c3d71da640d6c2cf04a6": {
@@ -2024,6 +3283,25 @@
   "h": 67,
   "masked": 1
  },
+ "3bb71c2b4ff4fd9df03217bf49f952aa99b09bfd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1200
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 0
+ },
  "3c9859f6158278f1eaf498a962e602c77ce818e9": {
   "group": "ui",
   "batch": 1,
@@ -2037,15 +3315,95 @@
    ],
    "datadisk": [
     1017
+   ],
+   "sr2": [
+    1003
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 168,
   "h": 18,
   "masked": 0
+ },
+ "3d17adffa76720bed22b81f540bd8d5f560c1dc0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1036
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 14,
+  "masked": 1
+ },
+ "3d1e042919273805b0175783fb1c44248d3f052d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1035
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 12,
+  "masked": 1
+ },
+ "3d2cbeddd986a865950493fc416fdcaf0774f1dd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1133
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 14,
+  "masked": 1
+ },
+ "3d4b2cc83e536d6589e6c74fc0f83214fadec12b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1143
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 56,
+  "masked": 1
  },
  "3da1556884fb34f7ce10608c181d9f7f730222fd": {
   "group": "race",
@@ -2089,6 +3447,25 @@
   "h": 62,
   "masked": 1
  },
+ "3e21a9b6842871cbf6dfe9c7bc84e3f642c664c9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1201
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 0
+ },
  "3e5acd69022877906f12b3583863828ba3cc776f": {
   "group": "car",
   "batch": 2,
@@ -2121,16 +3498,39 @@
    ],
    "datadisk": [
     1100
+   ],
+   "sr2": [
+    1078
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 112,
   "h": 86,
   "masked": 1,
   "pal_like": 1099
+ },
+ "3ec20df41e723d5c6cad8512fc8cb835bbd94677": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1082
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 112,
+  "h": 35,
+  "masked": 1
  },
  "3ed921b26b5825ed2f73b6b83a4d4e9a7ace6043": {
   "group": "car",
@@ -2151,6 +3551,63 @@
   "h": 18,
   "masked": 1
  },
+ "3eeb9fc6f24fa492931126360ad0cb06faafa83c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1088
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 88,
+  "h": 10,
+  "masked": 1
+ },
+ "3fdbb75d8d345d1866090be0f5aeab178a744680": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1086
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
+  "masked": 1
+ },
+ "403746419403a5e9d0c723ee7dc3e6c2715bc4d8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1107
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 12,
+  "masked": 1
+ },
  "40fb691a6dc48b56a4139716f2bd7ff4232ee1ae": {
   "group": "car",
   "batch": 2,
@@ -2169,6 +3626,25 @@
   "w": 256,
   "h": 61,
   "masked": 1
+ },
+ "410266d4fb62f8d2b5b18a7dd9f07a26d2f29eb9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2013
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 18,
+  "masked": 0
  },
  "414c0695471b6be8ed1f09e1b7d77b75dab3b48a": {
   "group": "car",
@@ -2250,6 +3726,44 @@
   "h": 20,
   "masked": 1
  },
+ "42f835d75deb2931c407e1242316b712c56264d5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1069
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 30,
+  "masked": 1
+ },
+ "431bbf24bc089aba91ae3b34c6a4970926acc12d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1208
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 112,
+  "h": 67,
+  "masked": 1
+ },
  "4353aeeaa0372db37c2f0c3f108e2db1fd4cd461": {
   "group": "car",
   "batch": 2,
@@ -2267,6 +3781,63 @@
   ],
   "w": 32,
   "h": 17,
+  "masked": 1
+ },
+ "43d491cef445462ec99146851b82578a1193c308": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1184
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 13,
+  "masked": 1
+ },
+ "43f28e538ff47737036ce61c10762cf72ce036ff": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2075
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 184,
+  "h": 30,
+  "masked": 1
+ },
+ "44bd76de9e7895b36d3f8ea91d6280cf901c3b21": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1198
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 56,
+  "h": 11,
   "masked": 1
  },
  "450d3b0dc2d70e6c58bd7ddf26d9c839526acd61": {
@@ -2287,6 +3858,25 @@
   "w": 144,
   "h": 20,
   "masked": 1
+ },
+ "4571d6bba00562ab4dafdfc3773c4da85f5373d4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2059
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 25,
+  "masked": 0
  },
  "4577fe4a74ddb0c5529706c2f4c88cc5a57ac8bc": {
   "group": "car",
@@ -2311,6 +3901,25 @@
   "h": 28,
   "masked": 1
  },
+ "45d50d047deeae7a6010d488387be9cfc84c3ca1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2042
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 120,
+  "h": 46,
+  "masked": 1
+ },
  "46c924dc26c645d2c06ccddd5d94850c5e5f866c": {
   "group": "race",
   "batch": 2,
@@ -2324,11 +3933,15 @@
    ],
    "datadisk": [
     1230
+   ],
+   "sr2": [
+    2029
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 24,
   "h": 19,
@@ -2348,11 +3961,15 @@
    ],
    "datadisk": [
     5
+   ],
+   "sr2": [
+    1209
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 320,
   "h": 200,
@@ -2376,6 +3993,26 @@
   "w": 56,
   "h": 22,
   "masked": 1
+ },
+ "475a3269c01c64906284b29b2a18b020c2f733c6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1207,
+    2038
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 264,
+  "h": 50,
+  "masked": 0
  },
  "47ceed5703afec32b978e9b16c15bd102073a41c": {
   "group": "screen",
@@ -2423,6 +4060,25 @@
   "h": 19,
   "masked": 1
  },
+ "4869d688b4824082c5de89ef8d42d91269cb76f0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1147
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 72,
+  "h": 189,
+  "masked": 1
+ },
  "488a284015694de689492ba9719f32a29f75b98d": {
   "group": "car",
   "batch": 2,
@@ -2442,6 +4098,25 @@
   "h": 15,
   "masked": 1
  },
+ "48e5ba805e938bc5e20e231e3387819d979e5b19": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2035
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 120,
+  "h": 52,
+  "masked": 1
+ },
  "490df0a3db9f5c3bf8cd153225b3b382a6c39bd6": {
   "group": "ui",
   "batch": 1,
@@ -2455,11 +4130,15 @@
    ],
    "datadisk": [
     1220
+   ],
+   "sr2": [
+    1145
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 24,
   "h": 9,
@@ -2505,6 +4184,25 @@
   ],
   "w": 80,
   "h": 76,
+  "masked": 1
+ },
+ "4a42314aa8aeb2a0727093119654d50f1212212c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1033
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 55,
   "masked": 1
  },
  "4a537bc5493009d3a906acc850c814c59a25bf6f": {
@@ -2572,6 +4270,25 @@
   "h": 14,
   "masked": 1
  },
+ "4b78df4f3b0d3a6949d751dbd05a8b1ffcecffd6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1017
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
+  "masked": 1
+ },
  "4b8c01e26ebd8ed46e2fe900c9478ca9ee65b1fe": {
   "group": "car",
   "batch": 2,
@@ -2589,6 +4306,63 @@
   ],
   "w": 256,
   "h": 56,
+  "masked": 1
+ },
+ "4c6fdfff63330e5256293697338c13140ac33f8f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1062
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 152,
+  "h": 112,
+  "masked": 1
+ },
+ "4d3a59d169b4e3c1bb43f53c3965d04df5b3e6c5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1137
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 12,
+  "masked": 1
+ },
+ "4d432b7b55dcbe437a8136f086e35b66b7a0349a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1022
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 23,
   "masked": 1
  },
  "4d69ec017d16bf4d63c7f61774b4008b95ce43cb": {
@@ -2614,6 +4388,63 @@
   "h": 17,
   "masked": 1
  },
+ "4dd41af00c566e7f4c383b9e085a22f1b776e09a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2069
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 176,
+  "h": 87,
+  "masked": 1
+ },
+ "4dd63e9ddb16e3b277c355244d6b85e70c364bfb": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2062
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 7,
+  "masked": 1
+ },
+ "4eb5a478ca08540acfd205029e5e479479336af4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1174
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
  "4f3e361f02174ed27121a68210c082246eeb9791": {
   "group": "car",
   "batch": 2,
@@ -2631,6 +4462,25 @@
   ],
   "w": 240,
   "h": 67,
+  "masked": 1
+ },
+ "4f565d9d1522ed54b018a8cfff912777ad082ec1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1186
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 12,
   "masked": 1
  },
  "4f58cebdaa222d53e1c477534504a264f378a8d5": {
@@ -2656,6 +4506,25 @@
   "h": 18,
   "masked": 1
  },
+ "4f7d01e1622d23b0fc06d8dd298b61fc0ccdda57": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1044
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 9,
+  "masked": 1
+ },
  "50790e9962f32f1fc28de062b4e08416181530c6": {
   "group": "car",
   "batch": 2,
@@ -2673,6 +4542,101 @@
   ],
   "w": 24,
   "h": 12,
+  "masked": 1
+ },
+ "5087191ac3e8d0dbd5a84e3fb784c4334543a8e4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1159
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 14,
+  "masked": 1
+ },
+ "50b68587cfa609a0c4a5ac277e01fe0f08998cfa": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2079
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 8,
+  "h": 17,
+  "masked": 1
+ },
+ "50d50c824251ed977fa49cbcd8651beac73d9807": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1101
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 240,
+  "h": 50,
+  "masked": 1
+ },
+ "513cbe6a22f5ebe5100e8e617243bc71a582c369": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2020
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 10,
+  "masked": 1
+ },
+ "514d5946354d38ae6d56d84fd61a74bb70dfb82b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1053
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
   "masked": 1
  },
  "51d030f99df82ef68efb968d766830e8fb0d013c": {
@@ -2698,6 +4662,44 @@
   "h": 150,
   "masked": 0
  },
+ "521c58a338ef5a23c1906efed69d830c5b7ed7b9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2001
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 120,
+  "h": 46,
+  "masked": 1
+ },
+ "52442193c0c53e681c3de5cdad0994d70846f2e0": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1083
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 304,
+  "h": 157,
+  "masked": 0
+ },
  "5311693fa31a41c27adcbae46a8f3d9cb3fd246f": {
   "group": "garage",
   "batch": 2,
@@ -2720,6 +4722,25 @@
   "w": 8,
   "h": 11,
   "masked": 1
+ },
+ "536b380bb6a9f289ff169b1ff419c2df5e73a59d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1150
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 144,
+  "h": 20,
+  "masked": 0
  },
  "538e3914de3a9b73a3544a9c21f06278819395d1": {
   "group": "race",
@@ -2847,6 +4868,25 @@
   "h": 24,
   "masked": 1
  },
+ "56760b53e10d3697ad71779ad4b35d4c9fe6c7ed": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2040
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 112,
+  "h": 45,
+  "masked": 1
+ },
  "56a18c0b7b35251ebe177c301875e99257d58c26": {
   "group": "car",
   "batch": 2,
@@ -2908,6 +4948,25 @@
   "h": 11,
   "masked": 1
  },
+ "575331a0f6f1ea9dcfe4fd4d193e5597413ba677": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1115
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 14,
+  "masked": 1
+ },
  "57b737c53c28c5c9c99718a4ff5f94a9d1c0e751": {
   "group": "screen",
   "batch": 1,
@@ -2921,11 +4980,15 @@
    ],
    "datadisk": [
     1015
+   ],
+   "sr2": [
+    1001
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 312,
   "h": 185,
@@ -3034,6 +5097,44 @@
   "h": 16,
   "masked": 1
  },
+ "5ae0997a367c5a7807a01c1efcc2a1791bf66da5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1187
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 1
+ },
+ "5b4aa35d5d121f08db952978743bd37afbb9ff8c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1046
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 51,
+  "masked": 1
+ },
  "5b6a628dbe322857058882950d301d234a1f819f": {
   "group": "car",
   "batch": 2,
@@ -3085,11 +5186,15 @@
    ],
    "datadisk": [
     1008
+   ],
+   "sr2": [
+    2004
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 184,
   "h": 4,
@@ -3131,6 +5236,25 @@
   ],
   "w": 128,
   "h": 18,
+  "masked": 1
+ },
+ "5ec6b2b869f66a14bfc27a10a4031ef980735869": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1118
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 14,
   "masked": 1
  },
  "5eed1171e33f5850db272d8eacbb187a94f617eb": {
@@ -3175,6 +5299,25 @@
   "h": 68,
   "masked": 1
  },
+ "619251f8cdee7eaa6f5b7e9fd7d926c290143398": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1125
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 9,
+  "masked": 1
+ },
  "619d4ad1ad379fabbedf63b8feff115ea6602e9c": {
   "group": "garage",
   "batch": 2,
@@ -3198,6 +5341,25 @@
   "h": 56,
   "masked": 1
  },
+ "621119aad9dfac591a9db2d8ea98b3e724f9529e": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2056
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 118,
+  "masked": 0
+ },
  "6265fe423c7c258a9e89cb5958dc19f48b8511e1": {
   "group": "race",
   "batch": 2,
@@ -3211,11 +5373,15 @@
    ],
    "datadisk": [
     1243
+   ],
+   "sr2": [
+    2063
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 80,
   "h": 11,
@@ -3240,6 +5406,63 @@
   "h": 25,
   "masked": 1
  },
+ "6388389bae8aa15fa841d5d064aedbf959ffa3fb": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1112
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 52,
+  "masked": 2
+ },
+ "63beca457dd8275c0c19a295854b79b59ef6cd84": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1016
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
+  "masked": 1
+ },
+ "63c8a71eaf1555b0933bb9be59e80b593349a044": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1009
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 0
+ },
  "63e3b12bb91c9650b6d113d99d48153c36c7a159": {
   "group": "garage",
   "batch": 2,
@@ -3263,6 +5486,25 @@
   "h": 15,
   "masked": 1,
   "pal_like": 1080
+ },
+ "6449df6b27ddc2cb94c433b0a938f30282ab6920": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2024
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 184,
+  "h": 30,
+  "masked": 0
  },
  "647213bf3bf86a44428dbb9eaed5277ff26738b4": {
   "group": "car",
@@ -3363,6 +5605,25 @@
   "h": 63,
   "masked": 1
  },
+ "668c4832d26c904c60763cec4242eeba6a240833": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2060
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 44,
+  "masked": 0
+ },
  "6739eb58f033ecc73b6c35a83e1b00e105302b01": {
   "group": "car",
   "batch": 2,
@@ -3428,6 +5689,44 @@
   "h": 51,
   "masked": 1
  },
+ "6945d80c1373ba669fe0bea1bdb42a1ca2cfacca": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1063
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 176,
+  "h": 123,
+  "masked": 1
+ },
+ "69ea4fe457b78442db8fc3b7f85d732dab3de4d0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1160
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 12,
+  "masked": 1
+ },
  "6a670c202446626bed4f8003e270a243d39c5878": {
   "group": "car",
   "batch": 2,
@@ -3460,15 +5759,38 @@
    ],
    "datadisk": [
     1228
+   ],
+   "sr2": [
+    2027
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 48,
   "h": 43,
   "masked": 0
+ },
+ "6aaebc32a259e94b49d9202f87deeb7ccc139b08": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1070
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 37,
+  "masked": 1
  },
  "6ae519067909e19e645c3627c0774046331ddc2a": {
   "group": "car",
@@ -3588,6 +5910,25 @@
   "h": 16,
   "masked": 1
  },
+ "6d503afe76d3b7590743b360e145b0549e710875": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1185
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 53,
+  "masked": 1
+ },
  "6d98eb256352e64efff4823be4ac5b12b6baa1a6": {
   "group": "race",
   "batch": 3,
@@ -3606,6 +5947,101 @@
   "w": 88,
   "h": 64,
   "masked": 1
+ },
+ "6dab14e8db831e997e93d7eddf6875a9821ac15e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1051
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
+  "masked": 1
+ },
+ "6de265d3becf40abe8b02f04c94f843e10a9ed38": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2011
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 90,
+  "masked": 0
+ },
+ "6f454c8adfa02343e6a9e2d5c52dabf9e01839e8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1041
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 15,
+  "masked": 1
+ },
+ "6fb89ca24cab157e8e2d7a8eaf5510f0b75eec58": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2074
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 184,
+  "h": 30,
+  "masked": 1
+ },
+ "6fc364a5579c23b29855ecd3a92ef664ee3e2c7a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2034
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 264,
+  "h": 43,
+  "masked": 0
  },
  "70a35df055026c4a749f10f89577fcb5677859a4": {
   "group": "car",
@@ -3700,14 +6136,94 @@
    ],
    "datadisk": [
     1137
+   ],
+   "sr2": [
+    1110
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 24,
   "h": 12,
+  "masked": 1
+ },
+ "72e17a16885687ed0d039f39645e53606ce85631": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1055
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 200,
+  "h": 175,
+  "masked": 0
+ },
+ "72eb104a4af7fa46973478db17c1e8c17dab9661": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1040
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 248,
+  "h": 54,
+  "masked": 1
+ },
+ "738640b3614011c740c58d86f2bd7724eae895d4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2082
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 104,
+  "h": 82,
+  "masked": 1
+ },
+ "73a3d52988ffa9463a04d32bfad674d0ea6e46d6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1050
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
   "masked": 1
  },
  "73d5e6151dc49a57b6274288443035b5c8022eb3": {
@@ -3729,6 +6245,25 @@
   "h": 59,
   "masked": 1
  },
+ "74c38a1b9fe0005b6ed2437fd9832a24348e61bb": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1091
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 11,
+  "masked": 1
+ },
  "7642dcfa4b6533e18936b57c1cab90ca403cdc10": {
   "group": "car",
   "batch": 2,
@@ -3746,6 +6281,25 @@
   ],
   "w": 32,
   "h": 13,
+  "masked": 1
+ },
+ "769214dcfe68911a2da89cb1cc3f8bb425a6b685": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2071
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 144,
+  "h": 82,
   "masked": 1
  },
  "76b9deae45566c4922006174d45081fea9630c45": {
@@ -3786,6 +6340,25 @@
   "h": 67,
   "masked": 1
  },
+ "76ec6a90f2d9b8178a933752d88296591f7c6f2b": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 200,
+  "masked": 0
+ },
  "779dc4a67c62b2b79ac9717aceee581f27d2ff79": {
   "group": "garage",
   "batch": 2,
@@ -3822,11 +6395,15 @@
    ],
    "datadisk": [
     1255
+   ],
+   "sr2": [
+    1153
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 64,
   "h": 149,
@@ -3846,15 +6423,57 @@
    ],
    "datadisk": [
     1027
+   ],
+   "sr2": [
+    1013
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 128,
   "h": 190,
   "masked": 0
+ },
+ "79dcdcf5918022bb8a090b7ecc1e29d366846397": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1000
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 72,
+  "h": 58,
+  "masked": 1
+ },
+ "79e6be5264db487b1dc82030e1a52f614d6f3e65": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2068
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 144,
+  "h": 82,
+  "masked": 1
  },
  "79f563d0ffd14e43a34a292ce9f4c733975a1009": {
   "group": "car",
@@ -3873,6 +6492,25 @@
   ],
   "w": 112,
   "h": 17,
+  "masked": 1
+ },
+ "7aa6a776d86b452cb01f2cedeca716a651d8c760": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1180
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
   "masked": 1
  },
  "7b1d3463758fdc3de4ae289117a696ed9595ffd6": {
@@ -3898,6 +6536,25 @@
   "h": 16,
   "masked": 1
  },
+ "7b5d7bb2b7d841d2bebc044e1042d499077f16d1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1149
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 43,
+  "masked": 1
+ },
  "7bae6b912bc81c8ea88bd7a52f1c919da4116728": {
   "group": "car",
   "batch": 2,
@@ -3915,6 +6572,25 @@
   ],
   "w": 272,
   "h": 55,
+  "masked": 1
+ },
+ "7bdaced850189eccd0600700900035f3d44812c3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1029
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 88,
+  "h": 12,
   "masked": 1
  },
  "7c6d1b5dbdcfbe51fcc59afd19cf25b99ff1febd": {
@@ -4045,11 +6721,15 @@
    ],
    "datadisk": [
     1009
+   ],
+   "sr2": [
+    2005
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 80,
   "h": 27,
@@ -4072,6 +6752,25 @@
   ],
   "w": 32,
   "h": 15,
+  "masked": 1
+ },
+ "7f3379be861a92f5749c29629d95073db77b8b9b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1188
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 23,
   "masked": 1
  },
  "7f5ddca24e0e123f0ceade957f62ae18d6b8734a": {
@@ -4148,11 +6847,15 @@
    ],
    "datadisk": [
     1138
+   ],
+   "sr2": [
+    1111
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 8,
   "h": 7,
@@ -4194,11 +6897,15 @@
    ],
    "datadisk": [
     1236
+   ],
+   "sr2": [
+    2032
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 264,
   "h": 43,
@@ -4220,6 +6927,25 @@
    "main"
   ],
   "w": 24,
+  "h": 14,
+  "masked": 1
+ },
+ "8235da8b52664222fc75b38c9e47ade749f1e4f2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1119
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
   "h": 14,
   "masked": 1
  },
@@ -4292,6 +7018,25 @@
   "h": 18,
   "masked": 1
  },
+ "82f70da48734e60bf50de8e5728d1973bf2eed0b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1166
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
  "84f49f6604005b501ba66768902ccee5aeb64178": {
   "group": "garage",
   "batch": 2,
@@ -4335,6 +7080,25 @@
   "h": 12,
   "masked": 1
  },
+ "8514540653a0cd3b91e2d481f47390f14c54b77f": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1195
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 151,
+  "masked": 1
+ },
  "8586d96448487cf5d73dcb328cfe6e47ab25329a": {
   "group": "screen",
   "batch": 1,
@@ -4357,6 +7121,25 @@
   "w": 144,
   "h": 64,
   "masked": 0
+ },
+ "85e194df5eef0af9ae2a18e3cb66c851210215d7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1175
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
  },
  "85e7b5e900dc58e93efcb293ad09343727bcbf3f": {
   "group": "car",
@@ -4440,6 +7223,25 @@
   ],
   "w": 256,
   "h": 56,
+  "masked": 1
+ },
+ "8810f1ff9b2a6acf189a2b3e2e3ce48e42701bb6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1181
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 296,
+  "h": 173,
   "masked": 1
  },
  "8873cee435967d68bc60d9915fcab2a03ee56096": {
@@ -4539,11 +7341,15 @@
    ],
    "datadisk": [
     1019
+   ],
+   "sr2": [
+    1005
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 56,
   "h": 39,
@@ -4629,6 +7435,25 @@
   "h": 23,
   "masked": 1
  },
+ "8c7af862e878465340339dc9f1df0d87aec6a57e": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1167
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 1
+ },
  "8c9c64b5bb0bebebd78f679bef773c6e7546fd80": {
   "group": "car",
   "batch": 2,
@@ -4646,6 +7471,25 @@
   ],
   "w": 24,
   "h": 15,
+  "masked": 1
+ },
+ "8d5de89eb4bac34f9eaf818c086d35671913ebca": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1164
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
   "masked": 1
  },
  "8e097f5fb1d3ed585d6c44773270116020b8d3c0": {
@@ -4680,11 +7524,15 @@
    ],
    "datadisk": [
     1110
+   ],
+   "sr2": [
+    2009
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 136,
   "h": 141,
@@ -4703,15 +7551,38 @@
    ],
    "datadisk": [
     1184
+   ],
+   "sr2": [
+    1141
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 24,
   "h": 11,
   "masked": 1
+ },
+ "8fd5a8f936c1534dcc53d9c885a770ee288f6147": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1211
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 200,
+  "masked": 0
  },
  "8fec6259f22b7b3b71666b3f267f67d0dee35209": {
   "group": "race",
@@ -4753,6 +7624,158 @@
   ],
   "w": 104,
   "h": 15,
+  "masked": 1
+ },
+ "8ff7543422e0fad399fe2aaa46373e8a1e048e9b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1031
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 11,
+  "masked": 1
+ },
+ "909ad2e76308ef657a9e069905aa098b02bd003b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2023
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 184,
+  "h": 30,
+  "masked": 0
+ },
+ "90b9ed8d87dae4b615a29d17206bb6cf7148a45d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1034
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 240,
+  "h": 57,
+  "masked": 1
+ },
+ "90c690e3549019fca0d7c8a3fc680a8b6e8cca96": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1131
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 10,
+  "masked": 1
+ },
+ "90f043e15229f14ffcbd1a56f3dd4ce80ba7b346": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1190
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 1
+ },
+ "90f0d213cdf534e8055320c2d104b3e2056a6207": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1192
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 1
+ },
+ "912207d8761fabb7342da17b7a4c4291dc545f82": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1210
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 112,
+  "h": 52,
+  "masked": 1
+ },
+ "91d433a76194fe938ef921ab8f660a46d56b278d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1170
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
   "masked": 1
  },
  "9267a60f4a867aa252dfe69c8d9d99f2cff01f3f": {
@@ -4806,14 +7829,56 @@
    ],
    "datadisk": [
     1264
+   ],
+   "sr2": [
+    2052
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 32,
   "h": 80,
+  "masked": 1
+ },
+ "94531dead4f9bf3246506052bee37e905b980333": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1127
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 88,
+  "h": 11,
+  "masked": 1
+ },
+ "94732b0607c904692cd4239316a9734c4a1664f1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1019
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
   "masked": 1
  },
  "94aab2711b187f0d10777fd629b8baf56e92df3c": {
@@ -4852,11 +7917,15 @@
    ],
    "datadisk": [
     1185
+   ],
+   "sr2": [
+    1142
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 24,
   "h": 10,
@@ -4881,6 +7950,25 @@
   "h": 16,
   "masked": 1
  },
+ "964302df781aefe1bc03ea6145aa8494ca80feb9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2016
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 120,
+  "h": 46,
+  "masked": 1
+ },
  "968652c00c87f0e5bfa46bc7c3702cc1d3a39ffc": {
   "group": "race",
   "batch": 3,
@@ -4894,11 +7982,15 @@
    ],
    "datadisk": [
     1266
+   ],
+   "sr2": [
+    2054
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 32,
   "h": 32,
@@ -4917,11 +8009,15 @@
    ],
    "datadisk": [
     1267
+   ],
+   "sr2": [
+    2055
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 320,
   "h": 37,
@@ -4984,6 +8080,121 @@
   "h": 19,
   "masked": 1
  },
+ "98a159f8c9512a0d0ba59dc55ac31e96390a3e5c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1205
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 11,
+  "masked": 0
+ },
+ "9937350bfa2ad06fa8148e2fba44955e8f7ed821": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1048
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 16,
+  "masked": 1
+ },
+ "9962795b361ef6c224264993503f85b085c97b32": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2006
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 46,
+  "masked": 1
+ },
+ "99840942d18644abf8f83b9bbe8b4e96a86388ac": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1189
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 1
+ },
+ "99f084451f34ab8410c4c1634fadec23d24aa8e1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1010,
+    1011
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 0
+ },
+ "9a2c5463dff825005f9b9dbd79ea70a9f2e7d7a7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1020
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 23,
+  "masked": 1
+ },
  "9a57f622ccdd6f8f78ab30d7c61a3ec6d32d61d1": {
   "group": "car",
   "batch": 2,
@@ -5003,6 +8214,25 @@
   "h": 12,
   "masked": 1
  },
+ "9a6bcdee849255d866cf56cc2fb6fd0a1f1c7f9d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1163
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 17,
+  "masked": 1
+ },
  "9ac1470bf02a10a880243a03720250285096e5d8": {
   "group": "ui",
   "batch": 1,
@@ -5016,15 +8246,95 @@
    ],
    "datadisk": [
     1020
+   ],
+   "sr2": [
+    1006
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 56,
   "h": 39,
   "masked": 0
+ },
+ "9c20c91a5bdf46d1e25479d8871bcdcf75ae70a8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1204
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 72,
+  "h": 17,
+  "masked": 0
+ },
+ "9cb18be26733820951524a6ae9da3101f40008b6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1183
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 14,
+  "masked": 1
+ },
+ "9cdaf269ecea9b12616ca747b3f0b63a7b4edd35": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1071
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 43,
+  "masked": 1
+ },
+ "9cf18ede0f9805da20a572cd4692970ed19701bf": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1087
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
+  "masked": 1
  },
  "9d1a381e7312f81b5da0886f1973cc99d203f2b9": {
   "group": "car",
@@ -5087,6 +8397,25 @@
   "h": 19,
   "masked": 1
  },
+ "9e7e624c3bffd6a174a9107bcccb4a671df059d5": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1168
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
  "9e8c2dc16ec83a86792c2d0e65adcf0d7dfe8bb4": {
   "group": "car",
   "batch": 2,
@@ -5104,6 +8433,25 @@
   ],
   "w": 104,
   "h": 24,
+  "masked": 1
+ },
+ "9ef9dfb9a9f4e774c96d8e05b5c8769139f283fd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1156
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 15,
   "masked": 1
  },
  "9f2b10961d178525dc0998af3f82a7c02382f350": {
@@ -5165,6 +8513,44 @@
   ],
   "w": 24,
   "h": 19,
+  "masked": 1
+ },
+ "a0edd74f680bc27ab2cdfc9e64a77b4cc456b8b8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    3
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 97,
+  "masked": 0
+ },
+ "a0fabcb3e35a70e39af09f289a07fbde0d27b236": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1028
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 14,
   "masked": 1
  },
  "a1dbf3075a5f1d0c4fb35ae2040cc7603814878e": {
@@ -5275,6 +8661,63 @@
   "masked": 1,
   "pal_like": 1085
  },
+ "a442749f12f0f776eb8f8539fac84927341fe668": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1194
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 1
+ },
+ "a4fb67c68afb0bc6b13a4e68ec785da0e397b1d2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2025
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 33,
+  "masked": 0
+ },
+ "a50b9988350490d01f2d177d679a1d6431005038": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1179
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
  "a542d9f33e4cdb495aa0548cdcc296bdaa1d7380": {
   "group": "race",
   "batch": 3,
@@ -5298,6 +8741,25 @@
   "h": 59,
   "masked": 1
  },
+ "a54865fada8b9fa9ac5e6c3f1a957323aceddd54": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1129
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 264,
+  "h": 55,
+  "masked": 1
+ },
  "a56dd2c1835ec36639c7825e5de8091c4fa276fe": {
   "group": "car",
   "batch": 2,
@@ -5315,6 +8777,25 @@
   ],
   "w": 104,
   "h": 20,
+  "masked": 1
+ },
+ "a581295fc5ce0ccad21a3d564489ca0783b2622c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1085
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
   "masked": 1
  },
  "a5908edbfde0bd8171bd261b3b8ca82550c1e523": {
@@ -5349,11 +8830,15 @@
    ],
    "datadisk": [
     1256
+   ],
+   "sr2": [
+    1154
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 320,
   "h": 41,
@@ -5415,11 +8900,15 @@
    ],
    "datadisk": [
     1006
+   ],
+   "sr2": [
+    2003
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 88,
   "h": 82,
@@ -5484,6 +8973,63 @@
   ],
   "w": 112,
   "h": 23,
+  "masked": 1
+ },
+ "a76c89ca8909da2ce9b46180144dc81e1a6c8cc8": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1182
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 17,
+  "masked": 1
+ },
+ "aa11e3dd760ff7c628462817110fba711f7e394d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1109
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 13,
+  "masked": 1
+ },
+ "aa230ee16c28ce5b8ed34d39280201d8001916ad": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1025
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 61,
   "masked": 1
  },
  "aa99f2667f6aa6a477773e8695ad51e38f281bc6": {
@@ -5551,6 +9097,82 @@
   "h": 23,
   "masked": 1
  },
+ "acb18e6f96fe56b97a691f40806b75e9e48adf78": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2078
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 21,
+  "masked": 1
+ },
+ "acbf6d5d637fea87e4996790378697d6906f4bc1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1008
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 0
+ },
+ "ad42fdfdaeba859bdae00d6e5a397c1c8797dfb1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1015
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
+  "masked": 1
+ },
+ "ae195b10eac185f6d24bb2d846796756110443fd": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2007
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 18,
+  "masked": 1
+ },
  "ae2c99858dc521e5d66b4a9622767c05a56b827f": {
   "group": "ui",
   "batch": 1,
@@ -5564,11 +9186,15 @@
    ],
    "datadisk": [
     1074
+   ],
+   "sr2": [
+    1059
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 232,
   "h": 46,
@@ -5591,6 +9217,25 @@
   ],
   "w": 24,
   "h": 17,
+  "masked": 1
+ },
+ "ae499963ccea637dd0f7695b95d0f2c2fcd16697": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1178
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 19,
   "masked": 1
  },
  "af2373188d0257b15f631ae216153f02382e404d": {
@@ -5653,6 +9298,25 @@
   "w": 320,
   "h": 54,
   "masked": 0
+ },
+ "b16c9d5299b97ab7c3e67e00f4f10663e661f7a9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1097
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 12,
+  "masked": 1
  },
  "b1c2825cd212a15989e80cd5a700a4e60197429e": {
   "group": "car",
@@ -5807,6 +9471,44 @@
   "h": 19,
   "masked": 1
  },
+ "b5bd9aa28c4d9033cbe8ee7d246b46b749e4a62b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1144
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 168,
+  "h": 150,
+  "masked": 0
+ },
+ "b5d6c528739f9a99bdae2253ff210e0e7ef3dc99": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1073
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 190,
+  "masked": 0
+ },
  "b5fd9feb55546d7e2543e4a7f29ff902fd13181b": {
   "group": "car",
   "batch": 2,
@@ -5916,6 +9618,25 @@
   "h": 14,
   "masked": 1
  },
+ "b76654eff5f4870036738ea46ec51b2d09a66ee3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1193
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 31,
+  "masked": 1
+ },
  "b8181a0b72ca0d9dce14d5d04213ace2819bc3e6": {
   "group": "car",
   "batch": 2,
@@ -5956,6 +9677,25 @@
   ],
   "w": 24,
   "h": 54,
+  "masked": 1
+ },
+ "b865d61c04ce468ca1ecf736f13d0f90916feea3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2018
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 18,
   "masked": 1
  },
  "b9a1735973f4ab3d2637636e0d932b8238b81860": {
@@ -6162,11 +9902,15 @@
    ],
    "datadisk": [
     1258
+   ],
+   "sr2": [
+    2047
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 264,
   "h": 43,
@@ -6194,6 +9938,44 @@
   ],
   "w": 104,
   "h": 64,
+  "masked": 1
+ },
+ "bcf650c3ccf8a4f7ab0c2d254e9211499c000d61": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2037
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 80,
+  "h": 20,
+  "masked": 0
+ },
+ "bcfd70de43ce01670c2d225f342b5404107f50e2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1026
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 55,
   "masked": 1
  },
  "bda76942d3459f9c92d4a41c7e2065e17b102db9": {
@@ -6242,6 +10024,25 @@
   "h": 55,
   "masked": 1
  },
+ "be5b9275f6f13a6f333777a9f8f1157e9002084f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1106
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 15,
+  "masked": 1
+ },
  "befad056bcfb7063f78c760343d825929e91fd4c": {
   "group": "car",
   "batch": 2,
@@ -6284,6 +10085,44 @@
   "h": 150,
   "masked": 0
  },
+ "c02aa4c1ffbc98c31e1f200a08fefa1d2a6a10fc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1171
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 19,
+  "masked": 1
+ },
+ "c041b7e40ed9db850b86f0c071fb36df69fcb026": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1116
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 88,
+  "h": 15,
+  "masked": 1
+ },
  "c04e3a144665fee08260c6f6e7c0e561bbb93745": {
   "group": "car",
   "batch": 2,
@@ -6316,14 +10155,37 @@
    ],
    "datadisk": [
     1182
+   ],
+   "sr2": [
+    1139
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 24,
   "h": 11,
+  "masked": 1
+ },
+ "c11b24b47b979e281575fe6aa0bf063f6a5c1224": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1042
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 10,
   "masked": 1
  },
  "c145810a1b060dac275135c7e5e3b374b178e27c": {
@@ -6364,6 +10226,25 @@
   "h": 16,
   "masked": 1
  },
+ "c2f82b6192ce764e348778cd743389ebc6df6796": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1081
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 80,
+  "h": 6,
+  "masked": 1
+ },
  "c303a8ff61fcc2b6e9474dde2b356cf0509eb716": {
   "group": "garage",
   "batch": 2,
@@ -6387,6 +10268,25 @@
   "h": 175,
   "masked": 0
  },
+ "c36ba20edb3a5b031dcb0cf90d7062ba815a3be3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2073
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 184,
+  "h": 30,
+  "masked": 1
+ },
  "c39dd1dc74255b8e358cd75c936cde34718713cc": {
   "group": "car",
   "batch": 2,
@@ -6404,6 +10304,44 @@
   ],
   "w": 264,
   "h": 61,
+  "masked": 1
+ },
+ "c3ecbe997385fddd66093e669515113694917430": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1136
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 54,
+  "masked": 1
+ },
+ "c3ee210dfb2797839e2c7379abdc5d1f14b0d6c2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1130
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 14,
   "masked": 1
  },
  "c467d27d1150e0aa063c27c7d6c17bbae1d8cf97": {
@@ -6490,6 +10428,25 @@
   "h": 22,
   "masked": 1
  },
+ "c6a503e03dcd603309bdf1d13e30dcb6b6520d3a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1117
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 54,
+  "masked": 1
+ },
  "c6ab4a9824737cf0e330ef0fa98548df9d653023": {
   "group": "ui",
   "batch": 1,
@@ -6511,6 +10468,63 @@
   ],
   "w": 24,
   "h": 18,
+  "masked": 1
+ },
+ "c6cb6ca067cbb87fe961c80feeefba41674b5ebe": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1103
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 16,
+  "masked": 1
+ },
+ "c6eaebfaaa71e511a8a28c790f324737570f09c6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1114
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 52,
+  "masked": 1
+ },
+ "c701bab9ac55a0f8e98ab3ed0816e39841444fe7": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1105
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 104,
+  "h": 13,
   "masked": 1
  },
  "c7095bbf4cd23419f0ac14c44f75e1b543184852": {
@@ -6555,6 +10569,25 @@
   "h": 12,
   "masked": 1
  },
+ "c78c7cadae2170863b8ea1766ef50805d9919ba3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1043
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 13,
+  "masked": 1
+ },
  "c7a2eb433cb10b702704e312ef087296bf4b05fd": {
   "group": "car",
   "batch": 2,
@@ -6597,6 +10630,44 @@
   "h": 100,
   "masked": 1
  },
+ "c9a6119309e3efb2f4f59c869e75f14a8a252b49": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2066
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 48,
+  "h": 21,
+  "masked": 0
+ },
+ "c9b44d2d4812b0b00441bf37988e4f5633c7e2d1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1038
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 15,
+  "masked": 1
+ },
  "c9cd2644a2e9daabc740e4e0150e845fb51e3ec1": {
   "group": "car",
   "batch": 2,
@@ -6607,10 +10678,14 @@
   "ids": {
    "main": [
     1183
+   ],
+   "sr2": [
+    1140
    ]
   },
   "games": [
-   "main"
+   "main",
+   "sr2"
   ],
   "w": 24,
   "h": 10,
@@ -6639,6 +10714,25 @@
   "h": 18,
   "masked": 1
  },
+ "caed78dbaf35a634662615b5bdc085a0022e4cec": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2061
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 7,
+  "masked": 1
+ },
  "cb563f83ef23f6ef1f254b7efda143e379c73b7d": {
   "group": "sprite",
   "batch": 4,
@@ -6661,6 +10755,25 @@
   "w": 256,
   "h": 41,
   "masked": 2
+ },
+ "cbbda42139d984defa1798249143f551a7a287a9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2044
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 40,
+  "h": 18,
+  "masked": 1
  },
  "cc91b80a1c08a537dce8d261731dd7a6854492c9": {
   "group": "car",
@@ -6724,6 +10837,25 @@
   "h": 63,
   "masked": 1
  },
+ "ce964c0f846fee9327ac450cbeb41836b8ba824d": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1124
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 112,
+  "h": 15,
+  "masked": 1
+ },
  "cf4ef0e355be0f62a68969ac50571deef6c4c9c3": {
   "group": "car",
   "batch": 2,
@@ -6756,11 +10888,15 @@
    ],
    "datadisk": [
     1181
+   ],
+   "sr2": [
+    1138
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 152,
   "h": 6,
@@ -6831,6 +10967,44 @@
   "h": 49,
   "masked": 1
  },
+ "d12196672b66c52695be35eb21a1b06429aff90c": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2015
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 104,
+  "h": 86,
+  "masked": 1
+ },
+ "d1917fc4502bc9e9a5cacb72ccf4bc39365e65d6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1084
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 26,
+  "masked": 1
+ },
  "d1cc092dd1b98e29668e83ac644fbfae212e6244": {
   "group": "screen",
   "batch": 1,
@@ -6853,6 +11027,25 @@
   "w": 320,
   "h": 174,
   "masked": 0
+ },
+ "d1e5e0ccbddb83c4c39865b524443c4ed8635763": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1120
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 10,
+  "masked": 1
  },
  "d301fbad67fe99904a3c37e893e7d2c560a65442": {
   "group": "race",
@@ -6877,6 +11070,25 @@
   "h": 25,
   "masked": 1,
   "pal_like": 1224
+ },
+ "d347b4073d437de8a6c74ae4124de7f73f633cf0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1158
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 19,
+  "masked": 1
  },
  "d34c933107f315f23f79c03a6355f9e2779616ca": {
   "group": "race",
@@ -6937,11 +11149,15 @@
    ],
    "datadisk": [
     1257
+   ],
+   "sr2": [
+    1155
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 16,
   "h": 149,
@@ -6990,6 +11206,82 @@
   "h": 10,
   "masked": 1
  },
+ "d4b21a134ff7ba6dc84b8dccdd6a521523712adf": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1064
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 88,
+  "h": 30,
+  "masked": 1
+ },
+ "d689c034f494672576b3aaec7383eb54b1ed533f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1169
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
+  "masked": 1
+ },
+ "d69bd5e3e6248404fd75d1063074158324d8bee4": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1134
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 14,
+  "masked": 1
+ },
+ "d6dfafdf567391e53b465ad9ba831be683400939": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1123
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 11,
+  "masked": 1
+ },
  "d7d2bf994cc5a9092c05b46628971e5db9951f6f": {
   "group": "sprite",
   "batch": 4,
@@ -7003,11 +11295,15 @@
    ],
    "datadisk": [
     1262
+   ],
+   "sr2": [
+    2050
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 264,
   "h": 43,
@@ -7089,6 +11385,44 @@
   "h": 12,
   "masked": 1
  },
+ "d917e900baa14e3dc4d0d28e712a654d1d832b4b": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2012
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 90,
+  "masked": 0
+ },
+ "d986aa749467697e3e5f61070bd946a1c787cc56": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1056
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 152,
+  "h": 123,
+  "masked": 0
+ },
  "d996387b82684e3b98ecb996b3b2b67474440adb": {
   "group": "car",
   "batch": 2,
@@ -7159,16 +11493,39 @@
    ],
    "datadisk": [
     1101
+   ],
+   "sr2": [
+    1079
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 112,
   "h": 86,
   "masked": 1,
   "pal_like": 1099
+ },
+ "db6410724e835e1486b384ac072175d8cf2bc2c3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2000
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 21,
+  "masked": 1
  },
  "dc21dd701da185c2c191a1029a44f8f225068771": {
   "group": "car",
@@ -7208,6 +11565,25 @@
   "h": 59,
   "masked": 1
  },
+ "dcf62e3fd1777911a75801ad09889732628d1cbc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1093
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 88,
+  "h": 12,
+  "masked": 1
+ },
  "dd69cc95ba1446b9f24a838ab36f6f96d37cabaf": {
   "group": "race",
   "batch": 3,
@@ -7221,14 +11597,56 @@
    ],
    "datadisk": [
     1265
+   ],
+   "sr2": [
+    2053
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 40,
   "h": 23,
+  "masked": 1
+ },
+ "dd92e8f6e54d779d9ab6cc7166e524cc82fe4e04": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1072
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 190,
+  "masked": 0
+ },
+ "ddd5714a7735ffa777d565adba1f1d4a91a98b81": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1113
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 192,
+  "h": 104,
   "masked": 1
  },
  "de2c3b1b353bc28a9389d10b2cf6fca6367e90d3": {
@@ -7347,11 +11765,15 @@
    ],
    "datadisk": [
     1099
+   ],
+   "sr2": [
+    1077
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 136,
   "h": 83,
@@ -7379,6 +11801,25 @@
   "w": 152,
   "h": 51,
   "masked": 1
+ },
+ "e23db9b5a11626933851e99e9adf4b9235595cba": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2067
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 48,
+  "h": 82,
+  "masked": 0
  },
  "e25979fb8a2073fee8ca5ae00202bc6be58a4891": {
   "group": "screen",
@@ -7468,6 +11909,44 @@
   "h": 18,
   "masked": 1
  },
+ "e319e3dfcb3b9d075f000f283a9c4a14e2a675d2": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2010
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 104,
+  "h": 82,
+  "masked": 1
+ },
+ "e3667c3fdd32426ee5fe52758246f9f1ddf2fef9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1066
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 112,
+  "h": 34,
+  "masked": 1
+ },
  "e390e05db4313d31c24c6d876afd3fb0897e6c22": {
   "group": "car",
   "batch": 2,
@@ -7487,6 +11966,63 @@
   "h": 17,
   "masked": 1
  },
+ "e397e6b23391cc86fe6c37c387607698288df0ce": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1068
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 112,
+  "h": 34,
+  "masked": 1
+ },
+ "e414f25f63adc336b08ad4e5a3b4d902590726ef": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1095
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 248,
+  "h": 55,
+  "masked": 1
+ },
+ "e41848515d953629cc574e0c06c4a0a325315de1": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1060
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 64,
+  "h": 45,
+  "masked": 0
+ },
  "e48a7fa1a781a6254ecbad252d0d366a39af65ad": {
   "group": "race",
   "batch": 2,
@@ -7500,11 +12036,15 @@
    ],
    "datadisk": [
     1263
+   ],
+   "sr2": [
+    2051
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 88,
   "h": 75,
@@ -7581,11 +12121,15 @@
    ],
    "datadisk": [
     1018
+   ],
+   "sr2": [
+    1004
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 56,
   "h": 39,
@@ -7653,6 +12197,25 @@
   "h": 19,
   "masked": 1
  },
+ "ea9cc678250af6ae3156caba3e5b76251f751843": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1067
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 112,
+  "h": 33,
+  "masked": 1
+ },
  "eae0dc09d15cb25a8ac8e30e4700cf6e8cfa5798": {
   "group": "car",
   "batch": 2,
@@ -7704,11 +12267,15 @@
    ],
    "datadisk": [
     1232
+   ],
+   "sr2": [
+    2031
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 24,
   "h": 8,
@@ -7727,11 +12294,15 @@
    ],
    "datadisk": [
     1229
+   ],
+   "sr2": [
+    2028
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 48,
   "h": 43,
@@ -7826,14 +12397,56 @@
    ],
    "datadisk": [
     1237
+   ],
+   "sr2": [
+    2033
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 264,
   "h": 43,
+  "masked": 0
+ },
+ "ecfad6fef480f58a76a411b6a5a148aab52475a0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2057
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 8,
+  "h": 11,
+  "masked": 1
+ },
+ "ee76fa98473fc77dd9d79f27d663414be5364be4": {
+  "group": "screen",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1018
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 320,
+  "h": 190,
   "masked": 0
  },
  "efc0a2434053ce5291b03e2657487e6ce192913d": {
@@ -7877,6 +12490,25 @@
   ],
   "w": 32,
   "h": 12,
+  "masked": 1
+ },
+ "f04c8b6c4f813c07ef93eebc40da8c4811c8bf50": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1152
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
   "masked": 1
  },
  "f13308f77a9e38e444b99d69719659f00508e71d": {
@@ -7935,6 +12567,44 @@
   "w": 32,
   "h": 19,
   "masked": 1
+ },
+ "f1df80b35813be6712ed9655c59f92f842798b98": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2046
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 120,
+  "h": 46,
+  "masked": 1
+ },
+ "f1ff217c5ce8e7c1592b428fcf710976320d7ca6": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2021
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 184,
+  "h": 30,
+  "masked": 0
  },
  "f241382aceaa6b1d2448868928d6204d4dc4bf2b": {
   "group": "ui",
@@ -8010,11 +12680,15 @@
    ],
    "datadisk": [
     1073
+   ],
+   "sr2": [
+    1058
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 232,
   "h": 37,
@@ -8077,6 +12751,25 @@
   "h": 17,
   "masked": 1
  },
+ "f460407780e76803acdf2aa5fd4b52d3921ce652": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1121
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 248,
+  "h": 56,
+  "masked": 1
+ },
  "f4ecc61fa2b135742f1a2356be2515d4db2f160f": {
   "group": "ui",
   "batch": 1,
@@ -8100,6 +12793,25 @@
   "h": 18,
   "masked": 1
  },
+ "f4fbab66d674e48945f9b5d054e71af781d3e990": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1061
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 136,
+  "h": 109,
+  "masked": 1
+ },
  "f576dfb187b2eb5938b658fd18ab6172522c74ef": {
   "group": "car",
   "batch": 2,
@@ -8119,6 +12831,25 @@
   "h": 17,
   "masked": 1
  },
+ "f60c7a98cfa8e439b15289f46eed81565e78fb45": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2070
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 48,
+  "h": 82,
+  "masked": 0
+ },
  "f61705c63d0f76732fedb8fb328105f3da78be3c": {
   "group": "car",
   "batch": 2,
@@ -8136,6 +12867,25 @@
   ],
   "w": 240,
   "h": 65,
+  "masked": 1
+ },
+ "f6eff7b1c9685785887b22cdf94fe5ea0f67810a": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1165
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
   "masked": 1
  },
  "f6f3342baf95ef335a85c5901ecee079299df3a1": {
@@ -8223,6 +12973,44 @@
   "h": 24,
   "masked": 1
  },
+ "f9e4cd5a9f10921f7c5bb4bfc63ec967749d5205": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1199
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 272,
+  "h": 140,
+  "masked": 0
+ },
+ "fa029949d500703e4658e01adb3865278392931f": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2017
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 45,
+  "masked": 1
+ },
  "fa3a1cd9c33a87cad9641bfa858b4b02033dd832": {
   "group": "ui",
   "batch": 1,
@@ -8244,6 +13032,25 @@
   ],
   "w": 24,
   "h": 16,
+  "masked": 1
+ },
+ "fa7969525714a32a6676d00d259c518235e769ba": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1089
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 256,
+  "h": 54,
   "masked": 1
  },
  "faab2c3eebc69ea333a58dda871dca68e36d96ba": {
@@ -8305,11 +13112,15 @@
    ],
    "datadisk": [
     1227
+   ],
+   "sr2": [
+    2026
    ]
   },
   "games": [
    "main",
-   "datadisk"
+   "datadisk",
+   "sr2"
   ],
   "w": 48,
   "h": 43,
@@ -8333,6 +13144,25 @@
   ],
   "w": 24,
   "h": 12,
+  "masked": 1
+ },
+ "fd1257aa5eec6bc5e59fe813501f360a03fc44d3": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1177
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 18,
   "masked": 1
  },
  "fe37ace475686184df94230017fb4973a3e41849": {
@@ -8396,6 +13226,25 @@
   "h": 4,
   "masked": 1
  },
+ "feaee162ddc4fd612f8be2b7ade601f87ac746b9": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1104
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 13,
+  "masked": 1
+ },
  "fecf49cdbf1739cfe7974e0c24b6edf2f6856467": {
   "group": "car",
   "batch": 2,
@@ -8415,6 +13264,25 @@
   "h": 11,
   "masked": 1
  },
+ "ff272a86a24ca54a6a3a0bd8e3c653dd91cb5bfc": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1122
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 24,
+  "h": 15,
+  "masked": 1
+ },
  "ff2a525a173207b9588a0fc2a2bcaf5a4088f43f": {
   "group": "car",
   "batch": 2,
@@ -8432,6 +13300,63 @@
   ],
   "w": 56,
   "h": 18,
+  "masked": 1
+ },
+ "ff69d4902e427d3346807a10b0db3846d47025e0": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    2043
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 96,
+  "h": 46,
+  "masked": 1
+ },
+ "ffa694340963410f47ece616ee75e64b095cc232": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1049
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 16,
+  "h": 16,
+  "masked": 1
+ },
+ "ffd5a8a3fb8072fc2ac5c3f3a8a609b38df2bf32": {
+  "group": "sprite",
+  "batch": null,
+  "desc": "",
+  "keep": "",
+  "sheet": null,
+  "status": "new",
+  "ids": {
+   "sr2": [
+    1151
+   ]
+  },
+  "games": [
+   "sr2"
+  ],
+  "w": 32,
+  "h": 4,
   "masked": 1
  }
 }

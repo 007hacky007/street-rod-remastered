@@ -19,4 +19,5 @@ with it (the road from its own race data) stays in `src/enhanced` and `src2/enha
 sampling (`rm_pack.c`) and the palette-relative colour (`rm_color.c`). Like `enhanced/` it is built into each
 game's core, because it includes that game's `mem.h`, `platform/vga.h`, `platform/ega.h` and
 `remaster/rm_dump.h` (for `rm_sha1_hex`). Each game's picture dump (`rm_dump.c`) stays in its own
-`remaster/` folder.
+`remaster/` folder, and so does Street Rod 2's `rm_lib.c`, which keys a picture before the game unpacks it
+over its own packed bytes.

@@ -7,8 +7,9 @@ a small band, and the option to show every picture redrawn at four times the res
 
 The sequel, *Street Rod 2: The Next Generation* (1991), comes with it: choose it under **Game** in the launcher.
 It has the same window, full screen and volume comforts, its music played by the same small band, and the
-smooth high-resolution road in town and in street drags; the remastered pictures, and the smooth road of its
-other race kinds, are still to come for it.
+smooth high-resolution road in town and in street drags. Of the remastered pictures it shows those it shares
+with Street Rod 1; its other pictures stay the original until they are redrawn, and the smooth road of its
+other race kinds is still to come.
 
 The games themselves are free from their copyright owner and are not included here: the Mac app downloads them
 for you, and on Windows you unzip them into a folder (see below).
@@ -106,6 +107,10 @@ launcher offers to download them; **Download Pictures...** next to **Art** does 
 out, the launcher offers the update. Once they are there, **Art** is Remastered; **Art: Original** brings back
 the game's own pictures. They are kept in the launcher's settings folder (`%APPDATA%\Street Rod Enhanced\Remaster`
 on Windows). How the pictures were made: [REMASTER.md](REMASTER.md).
+
+Street Rod 2 uses the same download and its own **Art** choice. The pictures it shares with Street Rod 1
+(gearboxes, the shifter and the dashboard pieces, billboards, the speeding ticket, the high score wall and a few
+others) are shown remastered; the rest of its pictures stay the original until they are redrawn.
 
 ## Screenshots
 
@@ -209,8 +214,8 @@ files come from the official `sr2pc.zip` (streetrodonline.com); unpack them into
 ./build/streetrod2-enhanced --game-dir Game2 v adlib
 ```
 
-It takes `--game-dir`, `--scale`, `--fullscreen`, `--check`, `--music-volume`, `--sfx-volume` and
-`--music original|remastered` as above (the band plays its AdLib songs, or with `speaker` its PC speaker tune),
+It takes `--game-dir`, `--scale`, `--fullscreen`, `--check`, `--music-volume`, `--sfx-volume`,
+`--remaster-dir` and `--music original|remastered` as above (the band plays its AdLib songs, or with `speaker` its PC speaker tune),
 and the original's switches: `v` (VGA) and `adlib` or `speaker` skip its start-up menus, `demo` plays by
 itself, `nomouse`. See [ENGINE2.md](ENGINE2.md).
 
@@ -221,7 +226,7 @@ itself, `nomouse`. See [ENGINE2.md](ENGINE2.md).
 * `common/`: the host both games run on (window, sound, input, files); `third_party/nuked-opl3/`: the AdLib
   chip of Street Rod 2.
 * `src/enhanced/`: the enhanced road view ([ENHANCED.md](ENHANCED.md)).
-* `common/remaster/`, `src/remaster/`, `tools/remaster/`: the remastered pictures and the tools that build the art pack
+* `common/remaster/`, `src/remaster/`, `src2/remaster/`, `tools/remaster/`: the remastered pictures and the tools that build the art pack
   ([REMASTER.md](REMASTER.md)).
 * `launcher/`: the launcher ([launcher/README.md](launcher/README.md)).
 * `tools/macos/`, `tools/windows/`: packaging.

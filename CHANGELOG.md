@@ -15,6 +15,10 @@
 - Street Rod 2's enhanced race view, first part: the town drives and the street drags at high resolution, with
   smooth motion and anti-aliasing (`--classic`, `--res-scale`, `--aa`, `--motion-delay`, `--town`, as Street
   Rod 1). The other race kinds and the mirror are the original picture for now.
+- Remastered pictures for Street Rod 2 (`--remaster-dir`, the launcher's **Art**, with its own choice for each
+  game): the same art pack, in the classic picture and in the enhanced race view. Of its 297 pictures, 48 are
+  Street Rod 1's own and 40 of those already show remastered; the other 249 stay the original until they are
+  redrawn.
 - The host is shared by both games (`common/`); Street Rod 1's compiled game code is unchanged.
 
 ## 0.4.2
