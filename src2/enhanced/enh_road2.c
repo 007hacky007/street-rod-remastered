@@ -2,8 +2,9 @@
  * Street Rod 2's projection): the original's 15 rows evaluated in floating point at the smooth position, the
  * bands between them drawn as the original draws them (straight edges from row to row), the sky and the
  * horizon scrolled continuously. At a game frame's own position the result is the original's geometry. Road modes 0 (the
- * town) and 1 (the street drag); the objects and the opponent the game drew are drawn again in the band loop at
- * their own segment (enh_cuts_at); the mirror is drawn after it (enh_mirror2.c).
+ * town), 1 (the street drag), 2 and 4 (the Grudge drag strip: its own flags, flat, the wide dash at the start and
+ * the barrier walls); the objects and the opponent the game drew are drawn again in the band loop at their own
+ * segment (enh_cuts_at); the mirror is drawn after it (enh_mirror2.c).
  *
  * Projection (road_proj_x / road_proj_y, src2/game/race_road.c), a point at world x X, height Y, on the road
  * at continuous segment position s, seen from position pos:
@@ -17,6 +18,7 @@
 #include "enhanced/enh_geo2.h"
 
 #include <limits.h>
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
 
@@ -26,6 +28,20 @@
 
 const u8 enh_road_colours[2] = { COL_ROAD, COL_FINISH };
 double enh_ground_y;           /* the first row below the horizon strip (the compare tool starts there) */
+
+u16 enh_track(int mode, u16 arr, int i)                     /* road_set_seg_ptrs */
+{
+    if (!(mode & 6)) return TRKW(arr, segc(i));
+    if (arr == TRK_C) return TRKW(TRK_C2, i);
+    if (arr == TRK_L) return TRKW(TRK_L2, i);
+    if (arr == TRK_R) return TRKW(TRK_R2, i);
+    return TRKW(arr, i + 0xC0);
+}
+
+int enh_wall_colour(int phase, int n, int row, int seg)    /* road_draw_barrier_walls */
+{
+    return abs(n - row - seg + phase) % 10 < 5 ? 0x0B : 4;
+}
 
 /* road_project_front's row k: depth 4 for row 0, 12 - q for row 1 and 8 more for each row after, row 14 at a
  * fixed 116; dx and dy from the row's own segment. */
@@ -159,7 +175,7 @@ static void draw_sky(const Cam *c, bool town, double hy, double ground)
         enh_ground_y = 0x3F;
         return;
     }
-    double heading = (s16)trk(TRK_YAW, c->base) + c->hv, sky, strip;
+    double heading = (s16)trk(c, TRK_YAW, c->base) + c->hv, sky, strip;
     if (c->exact) {
         s16 h = enh_s16_of(c->heading);
         sky = enh_sky_shift(h, 1);
@@ -180,68 +196,18 @@ static void draw_sky(const Cam *c, bool town, double hy, double ground)
 
 /* ---------------------------------------------------------------- road */
 
-/* clip_polygon (race_gfx.c) on the view's clip (clip_set_view: x 0..13Fh, y 12h..65h): one Sutherland-Hodgman stage
- * per side, the new vertices by the game's integer line_y_at_x / line_x_at_y from the previous vertex. */
-static int clip_stage_i(const int *in, int n, int *out, int edge, int e)
-{
-    int cnt = 0;
-    for (int i = 0, pi = n - 1; i < n && cnt < 30; pi = i++) {
-        const int *P = in + 2 * pi, *C = in + 2 * i;
-        int k = edge < 2 ? 0 : 1;
-        bool pin = (edge & 1) ? P[k] <= e : P[k] >= e, cin = (edge & 1) ? C[k] <= e : C[k] >= e;
-        if (!pin && !cin) continue;
-        if (!pin || !cin) {
-            if (edge < 2) { out[2 * cnt] = e; out[2 * cnt + 1] = line_y_at_x((s16)P[0], (s16)P[1], (s16)C[0], (s16)C[1], (s16)e); }
-            else { out[2 * cnt + 1] = e; out[2 * cnt] = line_x_at_y((s16)P[0], (s16)P[1], (s16)C[0], (s16)C[1], (s16)e); }
-            cnt++;
-            if (!cin) continue;
-        }
-        out[2 * cnt] = C[0];
-        out[2 * cnt + 1] = C[1];
-        cnt++;
-    }
-    return cnt;
-}
-
-static int clip_poly_i(const int *in, int n, int *out, int x0, int y0, int x1, int y1)
-{
-    int a[64], b[64], c[64];
-    int na = clip_stage_i(in, n, a, 0, x0);
-    int nb = clip_stage_i(a, na, b, 1, x1);
-    int nc = clip_stage_i(b, nb, c, 2, y0);
-    return clip_stage_i(c, nc, out, 3, y1);
-}
-
-/* poly_fill with its edge pixels, at integer vertices: each pixel row y is filled from the leftmost to the rightmost
- * point of the polygon within y - 0.5 .. y + 0.5, the last pixel included. */
-static void fill_poly_incl_i(const int *p, int n, u8 col)
-{
-    if (n < 1) return;
-    int ymin = p[1], ymax = p[1];
-    for (int i = 1; i < n; i++) { ymin = SDL_min(ymin, p[2 * i + 1]); ymax = SDL_max(ymax, p[2 * i + 1]); }
-    for (int y = ymin; y <= ymax; y++) {
-        double lo = SDL_max(y - 0.5, (double)ymin), hi = SDL_min(y + 0.5, (double)ymax), xl = 1e9, xr = -1e9;
-        for (int i = 0, j = n - 1; i < n; j = i++) {
-            double x0 = p[2 * j], y0 = p[2 * j + 1], x1 = p[2 * i], y1 = p[2 * i + 1];
-            double a = SDL_max(lo, SDL_min(y0, y1)), b = SDL_min(hi, SDL_max(y0, y1));
-            if (a > b) continue;
-            double xa = y0 == y1 ? x0 : x0 + (a - y0) * (x1 - x0) / (y1 - y0);
-            double xb = y0 == y1 ? x1 : x0 + (b - y0) * (x1 - x0) / (y1 - y0);
-            xl = SDL_min(xl, SDL_min(xa, xb));
-            xr = SDL_max(xr, SDL_max(xa, xb));
-        }
-        if (xl <= xr) enh_fill_rect(xl, y, xr + 1.0, y + 1.0, col);
-    }
-}
-
 void enh_town_face_clip(int side, int xn, int xf, int yn, int yf, int ytf, int ytn, u8 col, int x0, int y0, int x1, int y1)
 {
     /* quad_fill's points in town_walls_front's (and town_walls_mirror's) order: left from the near row, right
      * from the far one */
     int pts[8] = { xn, yn, xf, yf, xf, ytf, xn, ytn };
     if (side) { int r[8] = { xf, yf, xn, yn, xn, ytn, xf, ytf }; memcpy(pts, r, sizeof pts); }
-    int out[64], n = clip_poly_i(pts, 4, out, x0, y0, x1, y1);
-    fill_poly_incl_i(out, n, col);
+    s16 in[8], out[128];
+    double ox[64], oy[64];
+    for (int i = 0; i < 8; i++) in[i] = (s16)pts[i];
+    int n = enh_clip_poly_i(in, 4, out, x0, x1, y0, y1);
+    for (int i = 0; i < n; i++) { ox[i] = out[2 * i]; oy[i] = out[2 * i + 1] + ROW_TOP; }
+    enh_fill_poly_incl(ox, oy, n, col);
 }
 
 void enh_town_face_exact(int side, int xn, int xf, int yn, int yf, int ytf, int ytn, u8 col)
@@ -257,11 +223,11 @@ static void town_extras(const Cam *c, const Row *near_, const Row *far_)
 {
     const Row rm = *near_, rn = *far_;
     int n = rn.n;
-    u16 C = trk(TRK_C, n), Cm = trk(TRK_C, n - 1);
+    u16 C = trk(c, TRK_C, n), Cm = trk(c, TRK_C, n - 1);
     if (C & 4) return;
     double ym = py(c, &rm, Y_ROAD), yem = py(c, &rm, Y_EYE);
     for (int side = 0; side < 2; side++) {
-        u16 F = trk(side ? TRK_R : TRK_L, n), Fm = trk(side ? TRK_R : TRK_L, n - 1);
+        u16 F = trk(c, side ? TRK_R : TRK_L, n), Fm = trk(c, side ? TRK_R : TRK_L, n - 1);
         double xm = px(c, &rm, x_out(c, &rm, side)), xn = px(c, &rn, x_out(c, &rn, side));
         if (Cm & 4) {                                       /* the side street beyond the corner */
             if (!side) {
@@ -282,7 +248,7 @@ static void town_extras(const Cam *c, const Row *near_, const Row *far_)
 
 /* The centre dash between the near row (a) and the far row (b), x from a0 to a1 and b0 to b1: drawn on the lines
  * where the road's left edge (xla to xlb) is left of 13Fh (road_draw_band_front). */
-static void dash_quad(double a0, double a1, double ya, double b0, double b1, double yb, double xla, double xlb)
+static void dash_quad(double a0, double a1, double ya, double b0, double b1, double yb, double xla, double xlb, u8 col)
 {
     bool ina = xla < 0x13F, inb = xlb < 0x13F;
     if (!ina && !inb) return;
@@ -291,7 +257,7 @@ static void dash_quad(double a0, double a1, double ya, double b0, double b1, dou
         double ym = ya + (yb - ya) * t, m0 = a0 + (b0 - a0) * t, m1 = a1 + (b1 - a1) * t;
         if (ina) { b0 = m0; b1 = m1; yb = ym; } else { a0 = m0; a1 = m1; ya = ym; }
     }
-    quad(a0, a1, ya, b0, b1, yb, COL_KERB);
+    quad(a0, a1, ya, b0, b1, yb, col);
 }
 
 /* the band between row ra (near) and rb (far), with the far row's flags: road_draw_band_front, and in town
@@ -301,15 +267,15 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
     const Row ra = *pa, rb = *pb;
     double ya = py(c, &ra, Y_ROAD), yb = py(c, &rb, Y_ROAD);
     int n = rb.n;
-    u16 C = trk(TRK_C, n), L = trk(TRK_L, n), R = trk(TRK_R, n);
+    u16 C = trk(c, TRK_C, n), L = trk(c, TRK_L, n), R = trk(c, TRK_R, n);
     bool cross = C & 1;
     /* A crossing's band leaves the ground as it is (the town's road colour, a race's grass); a plain band paints
      * grass across the row after the walls (road_draw_band_front), then the road. */
     if (cross && yb < ya) enh_fill_rows(yb, ya, town ? COL_ROAD : COL_GRASS);
 
     double la, ra_, lb, rb_;
-    edges(trk(TRK_C, ra.n), &la, &ra_);
-    edges(trk(TRK_C, rb.n), &lb, &rb_);
+    edges(trk(c, TRK_C, ra.n), &la, &ra_);
+    edges(trk(c, TRK_C, rb.n), &lb, &rb_);
     double xla = px(c, &ra, la), xra = px(c, &ra, ra_), xlb = px(c, &rb, lb), xrb = px(c, &rb, rb_);
     if (town) town_extras(c, &ra, &rb);
     if (town && !(C & 4)) {    /* drawn even when the band itself has no rows (the far end of the street) */                                 /* façades and upper storeys (town_walls_front) */
@@ -356,10 +322,28 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
             quad(xra, xora, ya, xrb, xorb, yb, COL_KERB);
     }
     if (C & 8) {                    /* centre dash: x from mid - (w >> 1) to mid - (w >> 1) + w, mid = (xl + xr) >> 1 */
+        u8 col = COL_KERB;
+        if (on_strip(c) && n < c->start_seg + 5) { dash *= 8; col = COL_START; }   /* the start box: 8 wide */
         double h = c->exact ? floor(dash / 2) : dash / 2;
         double ca = (xla + xra) / 2, cb = (xlb + xrb) / 2;
         if (c->exact) { ca = floor(ca); cb = floor(cb); }
-        dash_quad(ca - h, ca - h + dash + 1, ya, cb - h, cb - h + dash + 1, yb, xla, xlb);
+        dash_quad(ca - h, ca - h + dash + 1, ya, cb - h, cb - h + dash + 1, yb, xla, xlb, col);
+    }
+}
+
+/* road_draw_barrier_walls on the strip, beside the band of row p (far) and row q (near): on each side, right then
+ * left, the quad from the kerb's height down to the road at the road's edge, (X_p, YK_p), (X_p, Y_p), (X_q, Y_q),
+ * (X_q, YK_q); clip_set_view's clip in exact mode. */
+static void barrier_walls(const Cam *c, const Row *q, const Row *p, u8 col)
+{
+    double lp, rp, lq, rq;
+    edges(trk(c, TRK_C, p->n), &lp, &rp);
+    edges(trk(c, TRK_C, q->n), &lq, &rq);
+    for (int side = 1; side >= 0; side--) {
+        double xp = px(c, p, side ? rp : lp), xq = px(c, q, side ? rq : lq);
+        double x[4] = { xp, xp, xq, xq };
+        double y[4] = { py(c, p, Y_KERB), py(c, p, Y_ROAD), py(c, q, Y_ROAD), py(c, q, Y_KERB) };
+        poly_incl(c, x, y, 4, col, 0, 0x13F, ENH_VIEW_Y0, 0x65);
     }
 }
 
@@ -371,7 +355,7 @@ void enh_rows_exact_front(const EnhView *v, EnhRowTab *t)
     for (int k = 0; k <= FAR_ROWS; k++) {
         Row r = row_k(&c, k);
         double xl, xr;
-        edges(trk(TRK_C, r.n), &xl, &xr);
+        edges(trk(&c, TRK_C, r.n), &xl, &xr);
         t->xl[k] = (s16)px_i(&c, &r, xl);
         t->xr[k] = (s16)px_i(&c, &r, xr);
         t->xol[k] = (s16)px_i(&c, &r, x_out(&c, &r, 0));
@@ -379,8 +363,8 @@ void enh_rows_exact_front(const EnhView *v, EnhRowTab *t)
         t->y[k] = (s16)py_i(&c, &r, Y_ROAD);
         t->ye[k] = (s16)py_i(&c, &r, Y_EYE);
         t->yk[k] = (s16)py_i(&c, &r, Y_KERB);
-        t->ybl[k] = (s16)py_i(&c, &r, sub16(Y_ROAD, (s16)trk(TRK_BL, r.n)));
-        t->ybr[k] = (s16)py_i(&c, &r, sub16(Y_ROAD, (s16)trk(TRK_BR, r.n)));
+        t->ybl[k] = (s16)py_i(&c, &r, sub16(Y_ROAD, (s16)trk(&c, TRK_BL, r.n)));
+        t->ybr[k] = (s16)py_i(&c, &r, sub16(Y_ROAD, (s16)trk(&c, TRK_BR, r.n)));
     }
 }
 
@@ -400,8 +384,8 @@ void enh_draw_road(const EnhView *v)
     int top = v->town ? FAR_ROWS : enh_top_band_row(ys, hy + 8, &ground);
     draw_sky(&c, v->town, hy, ground);
     double q = 8.0 * (c.pos - c.base);
-    /* far to near, each segment's cuts after its band and the opponent after its row's objects (road_draw_front);
-     * cuts beyond the far row first, those at or behind the near row last */
+    /* far to near, each segment's cuts after its band and the opponent after its row's objects, then the strip's walls
+     * (road_draw_front); cuts beyond the far row first, those at or behind the near row last */
     int base = c.base;
     enh_cuts_at(v, ENH_PASS_FRONT, base + FAR_ROWS + 1, INT_MAX, false);
     enh_cuts_at(v, ENH_PASS_FRONT, base + FAR_ROWS + 1, INT_MAX, true);
@@ -409,6 +393,8 @@ void enh_draw_road(const EnhView *v)
         if (k <= top) draw_band(&c, &rows[k - 1], &rows[k], v->town, enh_dash_width(k, q, c.exact));
         enh_cuts_at(v, ENH_PASS_FRONT, base + k, base + k, false);
         enh_cuts_at(v, ENH_PASS_FRONT, base + k, base + k, true);
+        if (on_strip(&c))          /* whatever top_band_row */
+            barrier_walls(&c, &rows[k - 1], &rows[k], (u8)enh_wall_colour(c.start_seg, FAR_ROWS, k, base));
     }
     enh_cuts_at(v, ENH_PASS_FRONT, INT_MIN, base, false);
     enh_cuts_at(v, ENH_PASS_FRONT, INT_MIN, base, true);

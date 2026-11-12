@@ -7,6 +7,7 @@
  *     sx = 118h - (cam_x - (X + z dx / 4)) / z          (quarter scale, no flip)
  *     sy = dy + (Y - cam_y) / z + 24h                   (no bounce)
  *     a band's flags one segment off (base - r - 1), the banks read forward (base + k), YK written twice per row
+ *     (the strip's barrier walls take their tops from it), the strip's walls coloured by the front's phase
  * The cuts of the mirror (its rows' objects, the starter, the opponent behind) are drawn in the band loop at their
  * own segment, far to near. */
 #include "enhanced/enh_geo2.h"
@@ -83,7 +84,7 @@ void enh_rows_exact_mirror(const EnhView *v, EnhRowTab *t)
     for (int k = 0; k <= MIR_ROWS; k++) {
         Row r = mrow(&c, k);
         double xl, xr;
-        edges(trk(TRK_C, r.n), &xl, &xr);
+        edges(trk(&c, TRK_C, r.n), &xl, &xr);
         t->xl[k] = (s16)mpx_i(&c, &r, xl);
         t->xr[k] = (s16)mpx_i(&c, &r, xr);
         t->y[k] = (s16)mpy_i(&c, &r, Y_ROAD);
@@ -93,8 +94,8 @@ void enh_rows_exact_mirror(const EnhView *v, EnhRowTab *t)
         t->xol[k] = (s16)mpx_i(&c, &r, mx_out(&c, 0));
         t->xor_[k] = (s16)mpx_i(&c, &r, mx_out(&c, 1));
         t->ye[k] = (s16)mpy_i(&c, &r, Y_EYE);
-        t->ybl[k] = (s16)mpy_i(&c, &r, sub16(Y_ROAD, (s16)trk(TRK_BL, c.base + k)));   /* forward (sic) */
-        t->ybr[k] = (s16)mpy_i(&c, &r, sub16(Y_ROAD, (s16)trk(TRK_BR, c.base + k)));
+        t->ybl[k] = (s16)mpy_i(&c, &r, sub16(Y_ROAD, (s16)trk(&c, TRK_BL, c.base + k)));   /* forward (sic) */
+        t->ybr[k] = (s16)mpy_i(&c, &r, sub16(Y_ROAD, (s16)trk(&c, TRK_BR, c.base + k)));
     }
 }
 
@@ -152,12 +153,12 @@ EnhObjGeo enh_obj_geo_mirror(const EnhView *v, int kind, int seg, int sprite)
  * segment has none. near: row r - 1, far: row r, fs: the band's flag segment. */
 static void town_walls(const Cam *c, const Row *near_, const Row *far_, int fs)
 {
-    u16 C = trk(TRK_C, fs), Cn = trk(TRK_C, fs + 1);
+    u16 C = trk(c, TRK_C, fs), Cn = trk(c, TRK_C, fs + 1);
     if (!(C & 1) || (C & 4)) return;
     const Row ra = *near_, rb = *far_;
     double ya = mpy(c, &ra, Y_ROAD), yb = mpy(c, &rb, Y_ROAD), yea = mpy(c, &ra, Y_EYE), yeb = mpy(c, &rb, Y_EYE);
     for (int side = 0; side < 2; side++) {
-        u16 F = trk(side ? TRK_R : TRK_L, fs), Fn = trk(side ? TRK_R : TRK_L, fs + 1);
+        u16 F = trk(c, side ? TRK_R : TRK_L, fs), Fn = trk(c, side ? TRK_R : TRK_L, fs + 1);
         double xa = mpx(c, &ra, mx_out(c, side)), xb = mpx(c, &rb, mx_out(c, side));
         u8 col = (F & 0x10) ? COL_WALL_A : COL_WALL_B;
         if (c->exact) {                                     /* the game's integer quad_fill */
@@ -203,10 +204,10 @@ static void band(const Cam *c, const Row *near_, const Row *far_, int r, int fs)
     const Row ra = *near_, rb = *far_;
     double ya = mpy(c, &ra, Y_ROAD), yb = mpy(c, &rb, Y_ROAD);
     if (yb >= ya) return;                                   /* no rows, or back-facing */
-    u16 C = trk(TRK_C, fs), L = trk(TRK_L, fs), R = trk(TRK_R, fs);
+    u16 C = trk(c, TRK_C, fs), L = trk(c, TRK_L, fs), R = trk(c, TRK_R, fs);
     double la, ra_, lb, rb_;
-    edges(trk(TRK_C, ra.n), &la, &ra_);
-    edges(trk(TRK_C, rb.n), &lb, &rb_);
+    edges(trk(c, TRK_C, ra.n), &la, &ra_);
+    edges(trk(c, TRK_C, rb.n), &lb, &rb_);
     double xla = mpx(c, &ra, la), xra = mpx(c, &ra, ra_), xlb = mpx(c, &rb, lb), xrb = mpx(c, &rb, rb_);
     /* The game's spans include both ends (x1..x2), and a later span covers the one before. */
     if (!(C & 1)) {
@@ -233,10 +234,30 @@ static void band(const Cam *c, const Row *near_, const Row *far_, int r, int fs)
     }
     if (C & 8) {                    /* x from mid - (w >> 1) to mid - (w >> 1) + w, mid = (xl + xr) >> 1 */
         double w = DSS((u16)(DS_dash_width + 2 * (13 + r)));
+        u8 col = COL_KERB;
+        if (on_strip(c) && fs + 1 < c->start_seg + 5) { w *= 4; col = COL_START; }   /* the start box: 4 wide */
         double h = c->exact ? floor(w / 2) : w / 2;
         double ca = (xla + xra) / 2, cb = (xlb + xrb) / 2;
         if (c->exact) { ca = floor(ca); cb = floor(cb); }
-        quad(ca - h, ca - h + w + 1, ya, cb - h, cb - h + w + 1, yb, COL_KERB);
+        quad(ca - h, ca - h + w + 1, ya, cb - h, cb - h + w + 1, yb, col);
+    }
+}
+
+/* road_draw_barrier_walls in the mirror, beside the band of row r (far) and r - 1 (near), as the front's walls but
+ * with the mirror's YK quirk: the tops YK[r] and YK[r - 1] hold rows ceil(r / 2) and ceil((r - 1) / 2), so the walls
+ * stand too tall; clip_set_mirror's clip (F0h..13Fh x 16h..2Ah) in exact mode, the glass's under it. */
+static void barrier_walls(const Cam *c, const Row *rows, int r, u8 col)
+{
+    const Row *p = &rows[r], *q = &rows[r - 1];
+    double lp, rp, lq, rq;
+    edges(trk(c, TRK_C, p->n), &lp, &rp);
+    edges(trk(c, TRK_C, q->n), &lq, &rq);
+    double ykp = mpy(c, &rows[(r + 1) / 2], Y_KERB), ykq = mpy(c, &rows[r / 2], Y_KERB);
+    for (int side = 1; side >= 0; side--) {
+        double xp = mpx(c, p, side ? rp : lp), xq = mpx(c, q, side ? rq : lq);
+        double x[4] = { xp, xp, xq, xq };
+        double y[4] = { ykp, mpy(c, p, Y_ROAD), mpy(c, q, Y_ROAD), ykq };
+        poly_incl(c, x, y, 4, col, 0xF0, 0x13F, MIR_Y0, MIR_Y1 - 1);
     }
 }
 
@@ -266,6 +287,8 @@ void enh_draw_mirror(const EnhView *v)
         band(&c, &rows[r - 1], &rows[r], r, fs);
         enh_cuts_at(v, ENH_PASS_MIRROR, n, n, false);
         enh_cuts_at(v, ENH_PASS_MIRROR, n, n, true);
+        if (on_strip(&c))          /* the phase of the front's walls, not the shown segment's (sic) */
+            barrier_walls(&c, rows, r, (u8)enh_wall_colour(c.start_seg, MIR_ROWS, r, base));
     }
     enh_cuts_at(v, ENH_PASS_MIRROR, base, INT_MAX, false);
     enh_cuts_at(v, ENH_PASS_MIRROR, base, INT_MAX, true);

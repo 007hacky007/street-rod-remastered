@@ -77,8 +77,8 @@ check drag 1 20 enh
 check drag 0 0 enh
 check grudge 0 20 enh        # the location-4 routes, there and back
 after grudge 0 4 20
-none grudge 2
-none grudge 4
+check grudge 2 20 enh
+check grudge 4 20 enh
 check mulholland 0 0 enh
 none mulholland 16
 none aqueduct 8

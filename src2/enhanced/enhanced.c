@@ -122,8 +122,8 @@ void enh_init(bool enabled, int res_scale, int aa, int motion_delay, bool town)
 bool enh_enabled(void) { return enh_opt.enabled; }
 int  enh_res_scale(void) { return enh_opt.res_scale; }
 
-/* The road modes drawn enhanced so far: the town (0) and the street drag (1). */
-static bool mode_enhanced(s16 mode) { return mode == 0 || mode == 1; }
+/* The road modes drawn enhanced so far: the town (0), the street drag (1) and the Grudge drag strip (2, 4). */
+static bool mode_enhanced(s16 mode) { return mode == 0 || mode == 1 || mode == 2 || mode == 4; }
 
 void enh_race_begin(void)
 {

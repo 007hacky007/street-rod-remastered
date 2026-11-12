@@ -1,10 +1,11 @@
 #pragma once
 /* Street Rod 2's road geometry shared by the enhanced front view (enh_road2.c) and the mirror (enh_mirror2.c): the
- * camera of a view, its rows, the track tables, the front projection (exact and smooth) and the faces drawn as the
- * game's quad_fill draws them. */
+ * camera of a view, its rows, the track tables (the drag strip's through enh_track), the front projection (exact and
+ * smooth) and the faces drawn as the game's quad_fill draws them. */
 #include <math.h>
 
 #include "enhanced/enh_internal.h"
+#include "enhanced/enh_poly2.h"
 #include "game/race_int.h"
 #include "mem.h"
 
@@ -17,6 +18,7 @@
 #define COL_WALL_A   2
 #define COL_WALL_B   3
 #define COL_STOREY   4
+#define COL_START    2         /* the strip's wide dash by the start */
 #define Y_ROAD       2000
 #define Y_EYE        0x76C
 #define Y_KERB       0x79E
@@ -28,14 +30,20 @@ typedef struct {
     double cam_y, bounce;
     double heading;            /* the view's DS_heading, unwrapped */
     int mode, w;               /* DS_road_mode; the outer edges' w (road_project_front): 200 in Mulholland, else 400 */
+    int start_seg;             /* DS_start_seg: the strip's wide dash and its walls' phase */
     bool exact;                /* the game's integer arithmetic (the compare tool, at a game frame's own position) */
 } Cam;
 
 static inline int segc(int i) { return i < 0 ? 0 : i > SEG_LAST ? SEG_LAST : i; }
-static inline u16 trk(u16 arr, int i) { return TRKW(arr, segc(i)); }
+static inline bool on_strip(const Cam *c) { return (c->mode & 6) != 0; }   /* the Grudge drag strip (modes 2, 4) */
+static inline u16 trk(const Cam *c, u16 arr, int i) { return enh_track(c->mode, arr, i); }
 
-static inline double yaw_rel(const Cam *c, int i) { return (s16)(trk(TRK_YAW, i) - trk(TRK_YAW, c->base)); }
-static inline double hgt_rel(const Cam *c, int i) { return (s16)(trk(TRK_HGT, i) - trk(TRK_HGT, c->base)); }
+static inline double yaw_rel(const Cam *c, int i) { return (s16)(trk(c, TRK_YAW, i) - trk(c, TRK_YAW, c->base)); }
+/* the strip is drawn flat (road_project_front: dy = 0), whatever its heights */
+static inline double hgt_rel(const Cam *c, int i)
+{
+    return on_strip(c) ? 0 : (s16)(trk(c, TRK_HGT, i) - trk(c, TRK_HGT, c->base));
+}
 
 static inline double interp(const Cam *c, double s, double (*f)(const Cam *, int))
 {
@@ -100,16 +108,31 @@ static inline void quad(double xa0, double xa1, double ya, double xb0, double xb
  * smooth. dx = heading - YAW(s), the heading unwrapped. */
 static inline void cam_of(const EnhView *v, Cam *c)
 {
+    c->mode = v->mode;
     c->base = segc((int)floor(v->pos));
     c->pos = v->pos;
     c->lat = v->lat;
-    c->hpos = v->exact ? v->hoff : interp(c, v->pos, hgt_rel) + v->hoff;
+    c->hpos = on_strip(c) ? 0 : v->exact ? v->hoff : interp(c, v->pos, hgt_rel) + v->hoff;
     double hf = floor(v->heading);
-    c->hv = (s16)(u16)(enh_s16_of(hf) - (s16)trk(TRK_YAW, c->base)) + (v->heading - hf);
+    c->hv = (s16)(u16)(enh_s16_of(hf) - (s16)trk(c, TRK_YAW, c->base)) + (v->heading - hf);
     c->cam_y = v->cam_y;
     c->bounce = v->bounce;
     c->heading = v->heading;
-    c->mode = v->mode;
     c->w = v->mode == 0x10 ? 200 : 400;
+    c->start_seg = v->start_seg;
     c->exact = v->exact;
+}
+
+/* A polygon as road_poly_fill draws it (the strip's barrier walls): in exact mode its integer vertices clipped by
+ * clip_polygon on x0..x1, y0..y1 (the game's clip, inclusive), then filled with the edge pixels; in a smooth view
+ * the vertices filled so under the current clip. x, y as px and py give them (y the line y + ROW_TOP). */
+static inline void poly_incl(const Cam *c, const double *x, const double *y, int n, u8 col, int x0, int x1, int y0, int y1)
+{
+    if (!c->exact) { enh_fill_poly_incl(x, y, n, col); return; }
+    s16 in[16], out[128];
+    double ox[64], oy[64];
+    for (int i = 0; i < n && i < 8; i++) { in[2 * i] = (s16)(int)x[i]; in[2 * i + 1] = (s16)(int)floor(y[i]); }
+    int m = enh_clip_poly_i(in, n < 8 ? n : 8, out, x0, x1, y0, y1);
+    for (int i = 0; i < m; i++) { ox[i] = out[2 * i]; oy[i] = out[2 * i + 1] + ROW_TOP; }
+    enh_fill_poly_incl(ox, oy, m, col);
 }

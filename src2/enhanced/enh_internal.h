@@ -72,8 +72,15 @@ bool enh_view_at(Uint64 now_ns, EnhView *v);
 /* The newest frame's view, not interpolated (the compare tool). */
 bool enh_view_newest(EnhView *v);
 
-/* enh_road2.c: modes 0 (town) and 1 (street drag). */
+/* enh_road2.c: modes 0 (town), 1 (street drag), 2 and 4 (the Grudge drag strip). */
 void enh_draw_road(const EnhView *v);
+/* The word of track array arr the game reads for index i in road mode `mode` (road_set_seg_ptrs): on the drag
+ * strip (modes 2, 4) TRK_C, TRK_L and TRK_R come from TRK_C2, TRK_L2 and TRK_R2 at i (not clamped) and the other
+ * arrays from i + C0h; in the other modes array arr at i, clamped to the track. */
+u16 enh_track(int mode, u16 arr, int i);
+/* road_draw_barrier_walls' colour: abs(n - row - seg + phase) % 10 below 5 pink (0Bh), else white (4); n 14 in the
+ * front view, 7 in the mirror, seg the car's segment. */
+int enh_wall_colour(int phase, int n, int row, int seg);
 /* The game's integer projections: road_proj_x with DS_cam_x = cx (modes other than 8: no clamp), road_proj_y
  * with DS_cam_y = cam_y and DS_view_bounce_y = bounce. */
 int enh_proj_x_i(int z, int X, int dx, int cx);

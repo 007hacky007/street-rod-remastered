@@ -11,6 +11,7 @@
 #include "enhanced/enhanced.h"
 #include "enhanced/enh_compare.h"
 #include "enhanced/enh_internal.h"
+#include "enhanced/enh_poly2.h"
 #include "game/race_int.h"
 #include "host.h"
 #include "mem.h"
@@ -626,6 +627,113 @@ static void sr2_enh_sky_shift(void)
     CHECK(enh_sky_shift(-200, 2) == 160);
 }
 
+/* The drag strip (modes 2 and 4) reads the strip's own flags at the strip index and the rest at index + C0h, as
+ * road_set_seg_ptrs points them; the other modes read the race road's arrays. */
+static void sr2_enh_strip_tracks(void)
+{
+    CHECK(enh_track(2, TRK_C, 5) == TRKW(TRK_C2, 5));
+    CHECK(enh_track(4, TRK_L, 5) == TRKW(TRK_L2, 5));
+    CHECK(enh_track(4, TRK_R, 5) == TRKW(TRK_R2, 5));
+    CHECK(enh_track(4, TRK_HGT, 5) == TRKW(TRK_HGT, 5 + 0xC0));
+    CHECK(enh_track(1, TRK_C, 5) == TRKW(TRK_C, 5));
+}
+
+/* road_draw_barrier_walls: abs(n - row - seg + phase) % 10 below 5 is pink (0Bh), else white (4). */
+static void sr2_enh_wall_colour(void)
+{
+    static const int sum[] = { 18, 17, 22, 27, 32 }, want[] = { 0x0B, 4, 0x0B, 4, 0x0B };
+    for (int i = 0; i < 5; i++) {
+        CHECK(enh_wall_colour(8, 14, 3, sum[i] - 3) == want[i]);
+        CHECK(enh_wall_colour(8, 14, 9, sum[i] - 9) == want[i]);
+    }
+    CHECK(enh_wall_colour(8, 7, 3, 20) == 4);
+}
+
+/* enh_clip_poly_i is clip_polygon point for point, on the view's clip and on the mirror's. */
+static void sr2_enh_clip_poly_i(void)
+{
+    s16 keep[4] = { DSS(DS_clip_xmin), DSS(DS_clip_xmax), DSS(DS_clip_ymin), DSS(DS_clip_ymax) };
+    static const s16 clips[2][4] = { { 0, 0x13F, 0x12, 0x65 }, { 0xF0, 0x13F, 0x16, 0x2A } };
+    static const s16 polys[2][4][8] = {
+        { { 10, 30, 10, 40, 50, 45, 50, 30 },               /* inside */
+          { 300, 40, 300, 60, 343, 70, 341, 29 },           /* crossing the right edge */
+          { -23, 90, -20, 121, 31, 110, 30, 80 },           /* crossing the bottom and the left */
+          { 400, 10, 420, 10, 420, 0, 400, 0 } },           /* wholly outside */
+        { { 0x100, 0x18, 0x100, 0x20, 0x110, 0x22, 0x110, 0x18 },
+          { 0x130, 0x18, 0x130, 0x28, 0x153, 0x29, 0x151, 0x17 },
+          { 0xE3, 0x20, 0xE1, 0x41, 0x105, 0x30, 0x100, 0x1A },
+          { 10, 10, 30, 10, 30, 0, 10, 0 } } };
+    int bad = 0;
+    for (int c = 0; c < 2; c++) {
+        DSS(DS_clip_xmin) = clips[c][0]; DSS(DS_clip_xmax) = clips[c][1];
+        DSS(DS_clip_ymin) = clips[c][2]; DSS(DS_clip_ymax) = clips[c][3];
+        for (int p = 0; p < 4; p++) {
+            s16 want[128], got[128], nw = 0;
+            clip_polygon(polys[c][p], 4, want, &nw);
+            int ng = enh_clip_poly_i(polys[c][p], 4, got, clips[c][0], clips[c][1], clips[c][2], clips[c][3]);
+            bool same = ng == nw && memcmp(want, got, sizeof(s16) * 2 * (size_t)(nw > 0 ? nw : 0)) == 0;
+            if (!same) { printf("  clip %d poly %d: %d points, the game's %d\n", c, p, ng, nw); bad++; }
+            if (p == 0 && ng != 4) bad++;
+            if ((p == 1 || p == 2) && (ng < 4 || memcmp(want, polys[c][p], sizeof(s16) * 8) == 0)) bad++;
+            if (p == 3 && ng != 0) bad++;
+        }
+    }
+    CHECK(bad == 0);
+    DSS(DS_clip_xmin) = keep[0]; DSS(DS_clip_xmax) = keep[1]; DSS(DS_clip_ymin) = keep[2]; DSS(DS_clip_ymax) = keep[3];
+}
+
+/* the samples of colour col in the view (res 1, aa 1), and whether each one lies in the rectangles given */
+static int count_col(u8 col, const int (*in)[4], int nin, int *outside)
+{
+    int n = 0;
+    *outside = 0;
+    for (int y = ENH_VIEW_Y0; y < ENH_VIEW_Y1; y++)
+        for (int x = 0; x < 320; x++) {
+            if (enh_buf.px[(size_t)(y - ENH_VIEW_Y0) * enh_buf.w + x] != col) continue;
+            n++;
+            bool ok = false;
+            for (int i = 0; i < nin; i++) ok |= x >= in[i][0] && x <= in[i][1] && y >= in[i][2] && y <= in[i][3];
+            if (!ok) (*outside)++;
+        }
+    return n;
+}
+
+/* poly_fill's edge pixels included: each row from the polygon's leftmost to its rightmost point within the row,
+ * plus a pixel; a concave (y-monotone) polygon as poly_fill fills it, not its convex hull. */
+static void sr2_enh_poly_incl(void)
+{
+    EnhOptions keep = enh_opt;
+    enh_opt.res_scale = enh_opt.aa = 1;
+    enh_buf_setup();
+    enh_clip_view();
+    int out = 0;
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+    double ax[4] = { 10, 10, 11, 11 }, ay[4] = { 20.5, 30.5, 30.5, 20.5 };
+    enh_fill_poly_incl(ax, ay, 4, 7);
+    static const int ra[1][4] = { { 10, 11, 20, 30 } };
+    int n = count_col(7, ra, 1, &out);
+    printf("  quad %d samples (%d outside)\n", n, out);
+    CHECK(n == 22 && out == 0);
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+    double bx[4] = { 40, 60, 60, 40 }, by[4] = { 50.5, 50.5, 50.5, 50.5 };
+    enh_fill_poly_incl(bx, by, 4, 7);
+    static const int rb[1][4] = { { 40, 60, 50, 50 } };
+    n = count_col(7, rb, 1, &out);
+    printf("  line %d samples (%d outside)\n", n, out);
+    CHECK(n == 21 && out == 0);
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+    /* the L-shaped hexagon (10,10),(20,10),(20,15),(15,15),(15,20),(10,20), 30 rows lower (the view starts at
+     * row 12h) */
+    double cx[6] = { 10, 20, 20, 15, 15, 10 }, cy[6] = { 40.5, 40.5, 45.5, 45.5, 50.5, 50.5 };
+    enh_fill_poly_incl(cx, cy, 6, 7);
+    static const int rc[2][4] = { { 10, 20, 40, 45 }, { 10, 15, 46, 50 } };
+    n = count_col(7, rc, 2, &out);
+    printf("  hexagon %d samples (%d outside)\n", n, out);
+    CHECK(n == 96 && out == 0);                             /* its convex hull would fill more */
+    enh_opt = keep;
+    enh_buf_setup();
+}
+
 /* After the cliff fall the game draws no front view: the enhanced view is not composed over the stale page. */
 static void sr2_enh_fallen_not_composed(void)
 {
@@ -964,6 +1072,10 @@ int main(int argc, char **argv)
     RUN(sr2_enh_top_band_row);
     RUN(sr2_enh_dash_width);
     RUN(sr2_enh_sky_shift);
+    RUN(sr2_enh_strip_tracks);
+    RUN(sr2_enh_wall_colour);
+    RUN(sr2_enh_clip_poly_i);
+    RUN(sr2_enh_poly_incl);
     RUN(sr2_enh_mirror_depths);
     RUN(sr2_enh_proj_mirror_exact);
     RUN(sr2_enh_mirror_yk);
