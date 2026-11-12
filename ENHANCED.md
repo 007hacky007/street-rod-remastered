@@ -327,8 +327,8 @@ shapes.
   is the pixel's (as `attach_art`). The sky and horizon sheets (`enh_sheets_read` / `enh_sheet_row`, also
   Mulholland's backdrop) and the cut objects drawn at their picture's own size (location signs, billboards, the
   start props, the nearest opponent and police views; `capture_objects` keeps their tags in `EnhImage.rm`, taken
-  anew at each capture) show the art. Pixels from shrunk bitmaps carry no tags and stay the original's, and so do
-  the Aqueduct's turned cuts (`enh_draw_image_xf`) and everything drawn as geometry. The check draws palette
+  anew at each capture) show the art. The Aqueduct's turned cuts (`enh_draw_image_xf`) take the art the same way.
+  Pixels from shrunk bitmaps carry no tags and stay the original's, and so does everything drawn as geometry. The check draws palette
   indices only (`enh_cur_rgb` off while it draws).
 * **Check** (`enh_compare.c`): `SR_ENH_COMPARE=<file>` draws every enhanced frame again at scale 1, aa 1, from that
   frame's state without interpolation and with the game's integer rounding (the sky scrolled as `sky_scroll`

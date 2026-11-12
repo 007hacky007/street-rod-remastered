@@ -471,6 +471,45 @@ static void remove_pack(const char *dir)
     SDL_RemovePath(dir);
 }
 
+/* The Aqueduct's cuts turn with the view (enh_draw_image_xf): their verified tags are drawn from the art as the
+ * unturned cuts' are. An 8 x 1 row of picture 1 turned by 90 degrees about (12.25, 70.5) stands as a column. Needs
+ * picture 1 registered (sr2_decode_hash_in_place). */
+static void sr2_enh_xf_draws_art(void)
+{
+    if (!rm_pic(1)) { CHECK(rm_pic(1) != NULL); return; }
+    enh_init(true, 1, 1, 100, true);
+    enh_buf_setup();
+    enh_clip_view();                                     /* the last test may have left a clip */
+    CHECK(enh_buf.rgb != NULL);
+    if (!enh_buf.rgb) return;
+    memset(enh_buf.px, 0, (size_t)enh_buf.w * enh_buf.h);
+    u8 px[8];
+    RmTag tags[8];
+    for (int i = 0; i < 8; i++) { px[i] = decode_row[i]; tags[i] = rm_tag(1, i, 0); }
+    EnhImage img = { 0 };
+    img.w = 8; img.h = 1; img.px = px; img.rm = tags;
+    const double cx = 12.25, cy = 70.5;                   /* x' = cx - (y - cy), y' = cy + (x - cx) */
+    const double m[6] = { 0, -1, cx + cy, 1, 0, cy - cx };
+    const u32 *keep = enh_cur_rgb;
+    enh_cur_rgb = ega_palette;
+    enh_draw_image_xf(&img, 8, 70, m);
+    enh_cur_rgb = keep;
+    int art = 0, idx = 0;
+    for (int j = 0; j < enh_buf.h; j++)
+        for (int i = 0; i < enh_buf.w; i++) {
+            u8 c = enh_buf.px[(size_t)j * enh_buf.w + i];
+            if (c == ENH_RGB) {
+                art++;
+                u32 col = enh_buf.rgb[(size_t)j * enh_buf.w + i];
+                int k = 0;
+                while (k < 8 && col != ega_palette[decode_row[k]]) k++;
+                CHECK(k < 8);
+            } else if (c) idx++;
+        }
+    printf("  turned: %d art samples, %d index samples\n", art, idx);
+    CHECK(art == 8 && idx == 0);
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -499,6 +538,7 @@ int main(int argc, char **argv)
     RUN(sr2_hash_parked_keeps_latches);
     RUN(sr2_decode_hash_in_place);
     RUN(sr2_enh_cut_keeps_verified_tags);
+    RUN(sr2_enh_xf_draws_art);
     remove_pack(dir);
     return failures != 0;
 }
