@@ -1338,7 +1338,7 @@
   "group": "race",
   "batch": 7,
   "desc": "the dashboard of a late-1950s car seen from the driver's seat: a grey padded top with ribs, a teal painted panel holding three round gauges with white numbers (a fuel gauge with tick marks and a row of red lights at the left, the speedometer with 'MPH' and a small odometer strip in the middle, a rev gauge with a red zone at the right), a dark speaker grille at the right, round chrome knobs on a chequered strip below, the big chrome steering wheel rim arching over the gauges and its teal hub at the bottom middle, the door with its window frame, armrest and handle at the left, and the edge of the teal hood at the top",
-  "keep": "the teal of the hood and the dash panel is the car's paint (the game repaints it): keep it teal; the gauges have no needles (the game draws them); the speedometer numbers 10 20 30 40 50 60 70 80 90 100 110 120 130 with 'MPH' and the rev gauge numbers 0 10 20 30 40 50 60 with its red zone from 50 to 60 exactly; the steering wheel rim, hub and spokes stay exactly in place (separate steering wheel pictures are drawn over its lower part, and a clock picture over the rev gauge); the black areas stay plain black",
+  "keep": "the teal of the hood and the dash panel is the car's paint (the game repaints it): keep it teal; the gauges have no needles (the game draws them); the speedometer numbers 10 20 30 40 50 60 70 80 90 100 110 120 130 with 'MPH' and the rev gauge numbers 0 10 20 30 40 50 60 with its red zone from 50 to 60 exactly; the steering wheel rim, hub and spokes stay exactly in place (separate steering wheel pictures are drawn over its lower part, and a clock picture over the rev gauge); the black areas stay plain black; the small white dot at the centre of the rev gauge and of the speedometer (the needles' pivot) stays",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -2255,7 +2255,7 @@
   "group": "race",
   "batch": 7,
   "desc": "a white 1960s police car seen straight from behind: a red, grey and red light bar on the roof, see-through rear window with the driver's head, red tail lights, a small emblem on the boot lid, chrome bumper, a black licence plate with yellow letters, both rear tyres",
-  "keep": "white body, red lights, the plate lettering as it is; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "keep": "white body, red lights, the plate lettering as it is; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head; each rear light is three separate segments side by side, as in the original (like the same car seen from behind and a little from its right side)",
   "sheet": "sr2-7-cars-2",
   "status": "new",
   "ids": {
@@ -4111,7 +4111,7 @@
   "group": "race",
   "batch": 7,
   "desc": "a white 1960s police car seen from behind and a little from its right side: a red, grey and red light bar on the roof, see-through rear window with the driver's head, red tail lights, a small emblem on the boot lid, chrome bumper, a black licence plate with yellow letters, the right rear wheel",
-  "keep": "white body, red lights, the plate lettering as it is; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head",
+  "keep": "white body, red lights, the plate lettering as it is; the windows are see-through: inside their frames they stay flat hot pink like the background, around the driver's head; the tail lights are made of straight vertical lines, as in the original, not rounded or slanted",
   "sheet": "sr2-7-cars-2",
   "status": "new",
   "ids": {
@@ -5981,7 +5981,7 @@
   "group": "race",
   "batch": 7,
   "desc": "the dashboard of a 1950s car seen from the driver's seat: a big chrome steering wheel whose rim arches over the instruments, with its hub and two spokes at the bottom middle; inside the rim a long horizontal speedometer strip with green numbers, a small oval rev gauge at the left with green numbers and a red zone, a slot with a dotted indicator in the middle, an oval gauge at the right with a green and a red mark, a grey chequered panel with round chrome knobs; a chrome radio at the right, the door with its window frame, armrest and handle at the left, and the edge of the teal hood at the top",
-  "keep": "the teal at the top is the car's paint (the game repaints it): keep it teal; the gauges have no needles (the game draws them); the speedometer numbers 0 10 20 30 40 50 60 70 80 90 100 110 120 and the rev gauge numbers 0 10 20 30 40 50 60 with its red zone from 50 to 60 exactly; the steering wheel rim, hub and spokes stay exactly in place (separate steering wheel pictures are drawn over its lower part); the black areas stay plain black",
+  "keep": "the teal at the top is the car's paint (the game repaints it): keep it teal; the gauges have no needles (the game draws them); the speedometer numbers 0 10 20 30 40 50 60 70 80 90 100 110 120 and the rev gauge numbers 0 10 20 30 40 50 60 with its red zone from 50 to 60 exactly; the steering wheel rim, hub and spokes stay exactly in place (separate steering wheel pictures are drawn over its lower part); the black areas stay plain black; the small white dot at the centre of the rev gauge (the needle's pivot) stays",
   "sheet": null,
   "status": "new",
   "ids": {
@@ -11404,7 +11404,7 @@
   "group": "race",
   "batch": 7,
   "desc": "the dashboard of a 1970s car seen from the driver's seat: a big chrome steering wheel rim in front of a black instrument cluster with a rectangular speedometer with green numbers and tick marks, a square rev gauge with green numbers at its right, small square gauges at the left, a small gauge with a red zone, a red and a green warning light and slider switches at the right, a round knob and a ring below them, a radio with buttons and a dial at the far right, the door with its window frame, armrest and handle at the left, and the edge of the purple hood at the top",
-  "keep": "the purple at the top is the car's paint (the game repaints it): keep it purple; the gauges have no needles (the game draws them); the speedometer numbers 0 10 20 30 40 50 60 70 80 90 100 110 120 and the rev gauge numbers 0 10 20 30 40 50 60 exactly; the steering wheel stays exactly in place (separate steering wheel pictures are drawn over its lower part); the black areas stay plain black",
+  "keep": "the purple at the top is the car's paint (the game repaints it): keep it purple; the gauges have no needles (the game draws them); the speedometer numbers 0 10 20 30 40 50 60 70 80 90 100 110 120 and the rev gauge numbers 0 10 20 30 40 50 60 exactly; the steering wheel stays exactly in place (separate steering wheel pictures are drawn over its lower part); the black areas stay plain black; the whole steering wheel rim and the top of the dashboard stay in the picture; the speedometer reads exactly 30 40 50 60 70 80 90 along its top, 20 and 100, 10 and 110, 0 and 120 down its sides, and the right gauge 20 30 40 along its top, 10 and 50, 0 and 60",
   "sheet": null,
   "status": "new",
   "ids": {
