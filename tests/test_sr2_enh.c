@@ -2667,6 +2667,49 @@ static void sr2_enh_bands_bodies(void)
     enh_buf_setup();
 }
 
+/* enh_sheets_read rewrites the sky sheet table the recorded enh_sheet_row commands read: it runs them first, so a
+ * frame drawn in bands shows the sheets they were recorded with. */
+static void sheets_pattern(u32 seed)
+{
+    for (int k = 0; k < 4; k++)
+        for (int o = 0x2000 + 0x66 * EGA_BYTES_PER_LINE; o < 0x2000 + 0xC8 * EGA_BYTES_PER_LINE; o++) {
+            seed = seed * 1664525u + 1013904223u;
+            ega_plane(k)[o] = (u8)(seed >> 13);
+        }
+}
+
+static void sheets_read_frame(int bands, u8 *out, size_t *n)
+{
+    enh_bands_config(bands, 0, 0, -1);
+    enh_buf_setup();
+    *n = (size_t)enh_buf.w * enh_buf.h;
+    if (*n > 640 * 400) return;                                   /* checked by the caller */
+    memset(enh_buf.px, 0xFD, *n);
+    sheets_pattern(11);
+    enh_sheets_read();
+    for (int j = 0; j < enh_buf.h; j++) enh_sheet_row(j, 0x66 + j / 2.0, 0);
+    sheets_pattern(23);                                           /* the next frame's sheets */
+    enh_sheets_read();
+    enh_flush();
+    memcpy(out, enh_buf.px, *n);
+}
+
+static void sr2_enh_sheets_read_flushes(void)
+{
+    enh_init(true, 1, 2, 100, true);
+    ega_init();
+    static u8 banded[640 * 400], direct[640 * 400];
+    size_t n, n1;
+    sheets_read_frame(4, banded, &n);
+    sheets_read_frame(1, direct, &n1);
+    CHECK(n == n1 && n <= sizeof banded);
+    long d = 0;
+    for (size_t i = 0; i < n; i++) d += banded[i] != direct[i];
+    if (d) printf("  %ld samples differ\n", d);
+    CHECK(memcmp(banded, direct, n) == 0);
+    enh_bands_config(1, 0, 0, -1);                                /* the suite draws directly */
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -2752,6 +2795,7 @@ int main(int argc, char **argv)
     RUN(sr2_enh_aq_starter);
     RUN(sr2_enh_aq_mirror_geo);
     RUN(sr2_enh_bands_bodies);
+    RUN(sr2_enh_sheets_read_flushes);
     host_shutdown();
     return failures ? 1 : 0;
 }

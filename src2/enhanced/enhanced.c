@@ -351,6 +351,7 @@ static bool fg_below(const ObjCut *c)
 /* Cuts each id's pixels (where enh_tag_kept keeps them) out of the page just shown. */
 static void capture_objects(void)
 {
+    enh_flush();                   /* recorded commands may draw the cuts reallocated and rewritten here */
     const u8 *tag = ega_obj();
     int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());
     int x0[ENH_OBJ_IDS], y0[ENH_OBJ_IDS], x1[ENH_OBJ_IDS], y1[ENH_OBJ_IDS];

@@ -93,6 +93,7 @@ static RmTag src_tags[0xC8][320];  /* ENH: their remaster tags (verified), 0 = o
 
 void enh_sheets_read(void)
 {
+    enh_flush();                   /* recorded sheet rows read the tables rewritten here */
     bool rm = rm_pack_active();
     for (int y = 0x66; y < 0xC8; y++) {
         u16 o = (u16)(0x2000 + y * EGA_BYTES_PER_LINE);
@@ -126,22 +127,24 @@ static void sheet_row_run(const EnhCtx *k, const void *arg)
     u8 *out = b->px + (size_t)j * b->w;
     u32 *orgb = b->rgb && cur_rgb ? b->rgb + (size_t)j * b->w : NULL;   /* ENH: remastered art */
     int st_mode = orgb ? rm_selftest() : 0;
+    unsigned long st_n = 0, st_bad = 0;            /* the self-test's counts, added once */
     for (int i = 0; i < b->w; i++) {
         double x = (i + 0.5) / b->sa - shift;
         int col = (int)floor(x) % 320;
         if (col < 0) col += 320;
         out[i] = src_rows[sy][col];
         RmTag t = orgb ? src_tags[sy][col] : 0;
-        if (!t) continue;
+        RmPic *p = t ? rm_pic_ready(rm_tag_slot(t)) : NULL;
+        if (!p) continue;
         int a, fu = (int)((x - floor(x)) * RM_ART_SCALE);
-        u32 c = rm_texel(rm_pic(rm_tag_slot(t)), rm_tag_u(t) * RM_ART_SCALE + fu, rm_tag_v(t) * RM_ART_SCALE + fv,
-                         cur_rgb, &a);
-        if (st_mode) rm_selftest_race(a < 128 || c != cur_rgb[src_rows[sy][col]]);
+        u32 c = rm_texel(p, rm_tag_u(t) * RM_ART_SCALE + fu, rm_tag_v(t) * RM_ART_SCALE + fv, cur_rgb, &a);
+        if (st_mode) { st_n++; st_bad += a < 128 || c != cur_rgb[src_rows[sy][col]]; }
         if (a < 128) continue;
         if (st_mode == 2) c = (c >> 1 & 0x7F7F7F) + 0x400060;
         out[i] = ENH_RGB;
         orgb[i] = c;
     }
+    if (st_mode) rm_selftest_race_n(st_n, st_bad);
 }
 
 void enh_sheet_row(int j, double syf, double shift)

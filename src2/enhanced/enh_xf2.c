@@ -32,6 +32,7 @@ static void draw_xf_run(const EnhCtx *ctx, const void *arg)
     double ia = m[4] / det, ib = -m[1] / det, ic = -m[3] / det, id = m[0] / det;
     bool art = img->rm && b->rgb && cur_rgb;     /* ENH: remastered art, 4x the texels (as enh_draw_image) */
     int st_mode = art ? rm_selftest() : 0;
+    unsigned long st_n = 0, st_bad = 0;            /* the self-test's counts, added once */
     for (int j = j0; j < j1; j++) {
         double Y = ENH_VIEW_Y0 + (j + 0.5) / sa - m[5];
         u8 *out = b->px + (size_t)j * b->w;
@@ -43,20 +44,21 @@ static void draw_xf_run(const EnhCtx *ctx, const void *arg)
             size_t k = (size_t)v * img->w + (size_t)u;
             u8 c = img->px[k];
             RmTag t = art ? img->rm[k] : 0;
-            RmPic *pic = t ? rm_pic(rm_tag_slot(t)) : NULL;
+            RmPic *pic = t ? rm_pic_ready(rm_tag_slot(t)) : NULL;
             if (!pic) {
                 if (c != ENH_CLEAR) out[i] = c;
                 continue;
             }
             int a, fu = (int)((uf - u) * RM_ART_SCALE), fv = (int)((vf - v) * RM_ART_SCALE);
             u32 col = rm_texel(pic, rm_tag_u(t) * RM_ART_SCALE + fu, rm_tag_v(t) * RM_ART_SCALE + fv, cur_rgb, &a);
-            if (st_mode) rm_selftest_race(a < 128 || col != cur_rgb[c]);
+            if (st_mode) { st_n++; st_bad += a < 128 || col != cur_rgb[c]; }
             if (a < 128) continue;
             if (st_mode == 2) col = (col >> 1 & 0x7F7F7F) + 0x400060;
             out[i] = ENH_RGB;
             orgb[i] = col;
         }
     }
+    if (st_mode) rm_selftest_race_n(st_n, st_bad);
 }
 
 void enh_draw_image_xf(const EnhImage *img, double x0, double y0, const double m[6])

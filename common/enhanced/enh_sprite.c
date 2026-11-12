@@ -143,6 +143,7 @@ static void draw_image_run(const EnhCtx *k, const void *arg)
     double du = img->w / (sr - sl), dv = img->h / (sb - st);
     if (img->rm && b->rgb && cur_rgb) {             /* ENH: remastered art, 4x the texels */
         int st_mode = rm_selftest();
+        unsigned long st_n = 0, st_bad = 0;         /* the self-test's counts, added once */
         for (int j = j0; j < j1; j++) {
             double vf = (j + 0.5 - st) * dv;
             int v = (int)vf;
@@ -158,20 +159,21 @@ static void draw_image_run(const EnhCtx *k, const void *arg)
                 if (flip) fu = RM_ART_SCALE - 1 - fu;
                 u8 c = img->px[(size_t)v * img->w + su];
                 RmTag t = img->rm[(size_t)v * img->w + su];
-                RmPic *art = t ? rm_pic(rm_tag_slot(t)) : NULL;
+                RmPic *art = t ? rm_pic_ready(rm_tag_slot(t)) : NULL;
                 if (!art) {
                     if (c != ENH_CLEAR) out[i] = c;
                     continue;
                 }
                 int al;
                 u32 col = rm_texel(art, rm_tag_u(t) * RM_ART_SCALE + fu, rm_tag_v(t) * RM_ART_SCALE + fv, cur_rgb, &al);
-                if (st_mode) rm_selftest_race(al < 128 || col != cur_rgb[c]);
+                if (st_mode) { st_n++; st_bad += al < 128 || col != cur_rgb[c]; }
                 if (al < 128) continue;
                 if (st_mode == 2) col = (col >> 1 & 0x7F7F7F) + 0x400060;
                 out[i] = ENH_RGB;
                 orgb[i] = col;
             }
         }
+        if (st_mode) rm_selftest_race_n(st_n, st_bad);
         return;
     }
     for (int j = j0; j < j1; j++) {

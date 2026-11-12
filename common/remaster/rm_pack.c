@@ -2,6 +2,7 @@
 #include "remaster/rm_pack.h"
 
 #include <SDL3/SDL.h>
+#include <stdatomic.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +24,10 @@ static int nentries;
 static RmPic pics[RM_MAX_SLOTS];
 static int selftest;
 static FILE *palette_log;
-static unsigned long long st_frames, st_replaced, st_mismatched, st_race;
+/* the self-test counts: the race view's command bodies add to them from any thread */
+static _Atomic unsigned long long st_frames, st_replaced, st_mismatched, st_race;
+static atomic_long unready;
+static void st_add(_Atomic unsigned long long *c, unsigned long long n) { atomic_fetch_add_explicit(c, n, memory_order_relaxed); }
 
 /* ------------------------------------------------------------------ pack.json */
 
@@ -180,6 +184,17 @@ RmPic *rm_pic(int slot)
     p->art = 1;
     return p;
 }
+
+RmPic *rm_pic_ready(int slot)
+{
+    if (!active || slot <= 0 || slot >= RM_MAX_SLOTS) return NULL;
+    RmPic *p = &pics[slot];
+    if (p->art == 1) return p;
+    if (p->orig && p->art == 0) atomic_fetch_add_explicit(&unready, 1, memory_order_relaxed);   /* never tried */
+    return NULL;
+}
+
+long rm_unready(void) { return atomic_load_explicit(&unready, memory_order_relaxed); }
 
 /* ------------------------------------------------------------------ compose */
 
@@ -353,28 +368,28 @@ void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_com
                 }
             }
             if (selftest) {
-                st_replaced++;
-                if (differs) st_mismatched++;
+                st_add(&st_replaced, 1);
+                if (differs) st_add(&st_mismatched, 1);
             }
         }
     }
     if (tagmap_dir && st_probe++ % (SDL_getenv("SR_REMASTER_TAGMAP_N") ? SDL_atoi(SDL_getenv("SR_REMASTER_TAGMAP_N")) : 25) == 0) tagmap_write(xrgb, scale, start, line_compare, planes);
-    if (selftest && ++st_frames % 200 == 0) rm_pack_report();
+    if (selftest && (atomic_fetch_add_explicit(&st_frames, 1, memory_order_relaxed) + 1) % 200 == 0) rm_pack_report();
 }
 
 void rm_pack_report(void)
 {
     if (selftest)
-        fprintf(stderr, "remaster selftest: frames %llu replaced %llu mismatched %llu race %llu\n", st_frames,
-                st_replaced, st_mismatched, st_race);
+        fprintf(stderr, "remaster selftest: frames %llu replaced %llu mismatched %llu race %llu\n",
+                atomic_load(&st_frames), atomic_load(&st_replaced), atomic_load(&st_mismatched), atomic_load(&st_race));
 }
 
 int rm_selftest(void) { return selftest; }
 
-void rm_selftest_race(bool differs)
+void rm_selftest_race_n(unsigned long samples, unsigned long differing)
 {
-    st_race++;
-    if (differs) st_mismatched++;
+    if (samples) st_add(&st_race, samples);
+    if (differing) st_add(&st_mismatched, differing);
 }
 
 u32 rm_texel(const RmPic *p, int tu, int tv, const u32 rgb[16], int *alpha)

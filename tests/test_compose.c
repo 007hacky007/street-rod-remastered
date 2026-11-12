@@ -118,5 +118,15 @@ int main(void)
     int a;
     CHECK(rm_texel(rm_pic(6), 4, 0, dark, &a) == 0);
     printf("%s black_palette_shows_black\n", failures != before ? "FAIL" : "ok  ");
+
+    /* the enhanced view's command bodies (any thread): a picture never looked up is not loaded, only counted */
+    before = failures;
+    rm_slot_register_raw(7, WHEEL, white, 4, 1);
+    CHECK(rm_pic_ready(7) == NULL);
+    CHECK(rm_unready() == 1);
+    CHECK(rm_pic(7) && rm_pic(7)->art == 1);    /* still untried: rm_pic loads it now */
+    CHECK(rm_pic_ready(7) == rm_pic(7));
+    CHECK(rm_unready() == 1);
+    printf("%s pic_ready_never_loads\n", failures != before ? "FAIL" : "ok  ");
     return failures != 0;
 }

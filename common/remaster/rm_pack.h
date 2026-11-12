@@ -44,14 +44,20 @@ void rm_slot_register(int slot, FarPtr packed, u16 psize, FarPtr planes, int w, 
  * race-view shapes), or one of Street Rod 2's library pictures, whose packed bytes are gone after its in-place
  * unpack (src2/remaster/rm_lib.c). */
 void rm_slot_register_raw(int slot, const char sha1[41], const u8 *orig, int w, int h);
-/* The registered picture of `slot` with its art loaded, or NULL. */
+/* The registered picture of `slot` with its art loaded, or NULL. Loads lazily on a slot's first call: main thread. */
 RmPic *rm_pic(int slot);
+/* The registered picture of `slot` if its art is already loaded, else NULL. Never loads and writes nothing but
+ * the counter below: callable from any thread (the enhanced view's command bodies). */
+RmPic *rm_pic_ready(int slot);
+long  rm_unready(void);          /* calls of rm_pic_ready on a slot never looked up with rm_pic */
 /* compose (ega.c): replaces verified tagged pixels of the S x S output frame. */
 void rm_compose(u32 *xrgb, int scale, const u32 rgb[16], u16 start, int line_compare, u8 *const planes[4]);
 void rm_pack_report(void);       /* the self-test line (at exit) */
 int  rm_selftest(void);          /* SR_REMASTER_SELFTEST */
-void rm_selftest_race(bool differs);   /* a race-view sample drawn from the art */
-/* Art texel (tu, tv) (4x coordinates) through the palette-relative colour; *alpha its alpha. */
+/* Race-view samples drawn from the art, `differing` of them not the original colour (any thread). */
+void rm_selftest_race_n(unsigned long samples, unsigned long differing);
+/* Art texel (tu, tv) (4x coordinates) through the palette-relative colour; *alpha its alpha. Any thread unless
+ * SR_REMASTER_PALETTE_LOG is on (its log is written in drawing order). */
 u32  rm_texel(const RmPic *p, int tu, int tv, const u32 rgb[16], int *alpha);
 
 #endif

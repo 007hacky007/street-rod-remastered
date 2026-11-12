@@ -23,7 +23,7 @@ static u8 *arena;
 static size_t used, arena_size;
 
 static int nbands;                 /* 0: not started yet */
-static bool direct;                /* this frame draws directly (one band, a serial dev aid, the check's first pass) */
+static bool direct;                /* this frame draws directly (one band, the palette log, the check's direct pass) */
 static SDL_Thread *threads[MAX_BANDS];
 static SDL_Semaphore *sem_go[MAX_BANDS], *sem_done[MAX_BANDS];
 static int nworkers;
@@ -202,12 +202,12 @@ static void freeze(int nb)
     memset(&cur, 0, sizeof cur);
 }
 
-/* the remaster's self-test counts and palette log keep their order on one thread */
+/* the remaster's palette log keeps its drawing order on one thread (the self-test's counts are atomic) */
 static bool serial(void)
 {
     static int log = -1;
     if (log < 0) { const char *p = SDL_getenv("SR_REMASTER_PALETTE_LOG"); log = p && *p; }
-    return rm_selftest() || log;
+    return log;
 }
 
 void enh_submit(EnhCmdFn fn, const void *arg, size_t size)
@@ -264,8 +264,8 @@ static long frames, bad_frames, art_frames, cmp_frames;
 static int check_bands;            /* the fewest bands a banded pass ran in (0: none yet) */
 static void check_report(void)
 {
-    fprintf(stderr, "enh threads check: frames %ld bands %d differing %ld art %ld cmp %ld (at exit)\n", frames,
-            check_bands, bad_frames, art_frames, cmp_frames);
+    fprintf(stderr, "enh threads check: frames %ld bands %d differing %ld art %ld cmp %ld unloaded %ld (at exit)\n",
+            frames, check_bands, bad_frames, art_frames, cmp_frames, rm_unready());
 }
 
 /* one pass of the check over n samples, reset first (px and rgb, so a write missing in one pass differs): draw(v)
@@ -332,6 +332,7 @@ void enh_bands_check(void (*draw)(const void *v), const void *v, u32 *xrgb, cons
     bool bad = dpx || drgb || dout;
     if (bad) bad_frames++;
     if (bad || frames % 100 == 1)
-        fprintf(stderr, "enh threads check: frames %ld bands %d differing %ld art %ld cmp %ld (this frame: samples %ld "
-                "rgb %ld output %ld)\n", frames, check_bands, bad_frames, art_frames, cmp_frames, dpx, drgb, dout);
+        fprintf(stderr, "enh threads check: frames %ld bands %d differing %ld art %ld cmp %ld unloaded %ld (this frame: "
+                "samples %ld rgb %ld output %ld)\n", frames, check_bands, bad_frames, art_frames, cmp_frames,
+                rm_unready(), dpx, drgb, dout);
 }

@@ -50,11 +50,13 @@ void enh_fill_rect(double x0, double y0, double x1, double y1, u8 c);
  * a command list for the frame instead of writing the sample buffer; enh_resolve runs it in horizontal bands, one
  * per logical core (worker threads, the calling thread takes the first band), each band its commands clipped to its
  * rows in the order recorded and then its rows resolved. Bands never share a row, so the frame is the one a single
- * thread draws. One band (SR_ENH_THREADS=1, no worker, the remaster's self-test or palette log on) draws directly.
+ * thread draws. One band (SR_ENH_THREADS=1, no worker, the remaster's palette log on) draws directly.
  * A drawing call packs its arguments and hands them with its body to enh_submit; the body draws under k's clip
  * (the clip at the call, within the band's rows; by0..by1 the band's sample rows for a body that ignores the clip)
  * and k->rgb in place of enh_cur_rgb. Arguments are copied; pointers in them (image pixels and tags) must stay valid
- * until the commands ran: enh_flush first before freeing or changing what a recorded command may read. */
+ * until the commands ran: enh_flush first before freeing or changing what a recorded command may read. Bodies run
+ * on any thread: a tag reaching a command body must have been looked up with rm_pic on the main thread (it loads
+ * lazily); bodies use rm_pic_ready, which never loads. */
 typedef struct { int cx0, cy0, cx1, cy1, by0, by1; const u32 *rgb; } EnhCtx;
 typedef void (*EnhCmdFn)(const EnhCtx *k, const void *arg);
 void enh_submit(EnhCmdFn fn, const void *arg, size_t size);
@@ -77,7 +79,8 @@ void enh_bands_config(int bands, int cmd_max, size_t arena, int fail_after);
  * xrgb's picture and over samples reset first (px and rgb), and the sample buffers and resolved frames compared byte
  * for byte; xrgb ends as the banded frame. xrgb NULL with y_end <= ENH_VIEW_Y0: the samples only, no resolve. The
  * line on stderr: frames compared, the fewest bands a banded pass ran in, frames differing, frames whose banded pass
- * drew art (ENH_RGB), frames compared without xrgb (SR2's compare tool). */
+ * drew art (ENH_RGB), frames compared without xrgb (SR2's compare tool), and rm_unready (bodies that met a picture
+ * never looked up with rm_pic: must stay 0). */
 void enh_bands_check(void (*draw)(const void *v), const void *v, u32 *xrgb, const u32 *pal, int npal, u16 page,
                      int y_end);
 bool enh_bands_check_on(void);

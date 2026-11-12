@@ -9,7 +9,9 @@
 # (his rotated sprites) and Mulholland (SR_SEED 4: the bridges, the mirror passes); with art only: drag_b3 (3 bands,
 # res scale 3, aa 3), aqueduct_b7 (7 bands, res scale 1, aa 1), mulholland_cmds (a 50-command list),
 # mulholland_cmp and aqking_cmp (SR_ENH_COMPARE); Street Rod 1's demo race (SR_SEED 3), with art also demo_b3 and
-# demo_cmds. 21 runs, at most 6 games at once.
+# demo_cmds; with the remaster's self-test on (it draws in bands too), SR2 drag_selftest and SR1 demo_selftest,
+# whose self-test line must show no mismatched sample and race samples counted. Every run must show unloaded 0 (no
+# command body met a picture whose art was never looked up). 23 runs, at most 6 games at once.
 #   test_enh_threads.sh <streetrod-enhanced|-> <SR1 game dir|-> <streetrod2-enhanced|-> <SR2 game dir|-> <repo>
 set -u
 exe1=$1 dir1=$2 exe2=$3 dir2=$4 repo=$5
@@ -24,7 +26,7 @@ check() {   # check NAME ART BANDS: frames compared, none differing, in BANDS ba
     name=$1 art=$2 want=$3
     line=$(grep -a 'enh threads check:' "$tmp/$name.err" | tail -1)
     frames=$(field "$line" frames) bad=$(field "$line" differing) bands=$(field "$line" bands)
-    a=$(field "$line" art) cmp=$(field "$line" cmp)
+    a=$(field "$line" art) cmp=$(field "$line" cmp) unl=$(field "$line" unloaded)
     why=
     [ -n "$line" ] || why="no check line"
     [ -z "$why" ] && [ "${frames:-0}" -le 20 ] && why="too few frames"
@@ -33,8 +35,15 @@ check() {   # check NAME ART BANDS: frames compared, none differing, in BANDS ba
     [ -z "$why" ] && [ -z "$a" ] && why="no art field"
     [ -z "$why" ] && [ "$art" = 1 ] && [ "$a" -eq 0 ] && why="no art drawn"
     [ -z "$why" ] && [ "$art" = 0 ] && [ "$a" -ne 0 ] && why="art drawn without a pack"
+    [ -z "$why" ] && [ "$unl" != 0 ] && why="unloaded ${unl:-missing}, want 0"
     case $name in *_cmds)
         [ -z "$why" ] && ! grep -aq 'command list is full' "$tmp/$name.err" && why="the command list was never full" ;;
+    esac
+    case $name in *_selftest)
+        st=$(grep -a 'remaster selftest:' "$tmp/$name.err" | tail -1)
+        [ -z "$why" ] && [ -z "$st" ] && why="no self-test line"
+        [ -z "$why" ] && [ "$(field "$st" mismatched)" != 0 ] && why="self-test: $st"
+        [ -z "$why" ] && [ "$(field "$st" race)" -eq 0 ] && why="self-test counted no race sample: $st" ;;
     esac
     case $name in *_cmp)
         [ -z "$why" ] && [ "${cmp:-0}" -eq 0 ] && why="no compare-tool frame checked" ;;
@@ -95,6 +104,7 @@ if [ "$exe2" != - ]; then
         SR_ENH_COMPARE="$tmp/mulholland.cmp" -- $S4 --run-ms 40000
     game sr2_aqking_cmp 1 8 "$exe2" "$dir2" $R SR_DEBUG_RACE=aqueduct SR_DEBUG_OPP=21 \
         SR_ENH_COMPARE="$tmp/aqking.cmp" -- $S4 --run-ms 40000
+    game sr2_drag_selftest 1 8 "$exe2" "$dir2" $R SR_DEBUG_RACE=drag SR_REMASTER_SELFTEST=1 -- $S4 --run-ms 40000
 fi
 if [ "$exe1" != - ]; then
     pack "$exe1" "$dir1" "$tmp/pack_1" || { echo "FAIL SR1 identity pack"; exit 1; }
@@ -103,6 +113,7 @@ if [ "$exe1" != - ]; then
     game sr1_demo_1 1 8 "$exe1" "$dir1" SR_SEED=3 -- $S4
     game sr1_demo_b3 1 3 "$exe1" "$dir1" SR_SEED=3 SR_ENH_THREADS=3 -- --res-scale 3 --aa 3
     game sr1_demo_cmds 1 8 "$exe1" "$dir1" SR_SEED=3 SR_ENH_CMDS=50 -- $S4
+    game sr1_demo_selftest 1 8 "$exe1" "$dir1" SR_SEED=3 SR_REMASTER_SELFTEST=1 -- $S4
 fi
 wait
 for n in $names; do
