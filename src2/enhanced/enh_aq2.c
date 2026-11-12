@@ -113,6 +113,10 @@ void enh_aq_cam(const EnhView *v, bool mirror, AqCam *c)
     c->roll = v->roll;
     c->roll_raw = v->roll_raw;
     c->roll0 = v->roll_raw == 0;
+    c->x0 = mirror ? 0xF0 : 0;                      /* clip_set_mirror, clip_set_view */
+    c->y0 = mirror ? 0x16 : 0x12;
+    c->x1 = 0x13F;
+    c->y1 = mirror ? 0x2A : 0x65;
     if (v->exact) {
         c->cs = v->rot_cos;
         c->sn = v->rot_sin;
@@ -356,11 +360,6 @@ int enh_aqtab_err(const EnhAqTab *a, const EnhAqTab *b, int n)
 
 /* ---------------------------------------------------------------- the front view (aq_draw_sky, aq_draw_scene) */
 
-/* clip_set_view: the game's clip, inclusive */
-#define CLIP_X0 0
-#define CLIP_X1 0x13F
-#define CLIP_Y0 0x12
-#define CLIP_Y1 0x65
 #define COL_SKY      1
 #define COL_CONCRETE 5
 #define COL_TROUGH   2
@@ -376,13 +375,13 @@ static void aq_poly(const AqCam *c, const P2 *p, int n, u8 fill, u8 edge)
     if (c->exact) {
         s16 in[16], out[128];
         for (int i = 0; i < n; i++) { in[2 * i] = (s16)i16(p[i].x); in[2 * i + 1] = (s16)i16(p[i].y); }
-        int m = enh_clip_poly_i(in, n, out, CLIP_X0, CLIP_X1, CLIP_Y0, CLIP_Y1);
+        int m = enh_clip_poly_i(in, n, out, c->x0, c->x1, c->y0, c->y1);
         if (m >= 1) enh_poly_fill_i(out, m, fill, edge);
         return;
     }
     double x[8], y[8], ox[64], oy[64];
     for (int i = 0; i < n; i++) { x[i] = p[i].x; y[i] = p[i].y; }
-    int m = enh_clip_poly_f(x, y, n, ox, oy, CLIP_X0, CLIP_X1, CLIP_Y0, CLIP_Y1);
+    int m = enh_clip_poly_f(x, y, n, ox, oy, c->x0, c->x1, c->y0, c->y1);
     if (m >= 1) enh_fill_poly_edge(ox, oy, m, fill, edge);
 }
 
@@ -397,7 +396,7 @@ static void aq_line(const AqCam *c, P2 a, P2 b, u8 col)
 {
     if (c->exact) {
         s16 in[4] = { (s16)i16(a.x), (s16)i16(a.y), (s16)i16(b.x), (s16)i16(b.y) }, out[4];
-        if (enh_clip_line_i(in, out, CLIP_X0, CLIP_X1, CLIP_Y0, CLIP_Y1)) enh_line1(out[0], out[1], out[2], out[3], col);
+        if (enh_clip_line_i(in, out, c->x0, c->x1, c->y0, c->y1)) enh_line1(out[0], out[1], out[2], out[3], col);
         return;
     }
     enh_line1(a.x, a.y, b.x, b.y, col);
@@ -447,6 +446,134 @@ static void aq_box(const AqCam *c, const P2 *raw, bool solid)
 #undef THIN
 }
 
+/* aq_draw_scene of one pass (c->n rows: 14 the front, 7 the mirror) and its cuts: the front's row i at segment base
+ * + i (far rows at larger segments), the mirror's at base - i (far rows at smaller ones); the mirror's starter at the
+ * row i whose raw row N - i is enh_aq_starter_k. */
+static void aq_scene(const EnhView *v, const AqCam *c, const AqRows *rr)
+{
+    const AqRow *R = rr->r;
+    const int N = c->n, base = c->base, sg = c->mirror ? -1 : 1, pass = c->mirror ? ENH_PASS_MIRROR : ENH_PASS_FRONT;
+    P2 L[15], Rr[15], TL[15], TR[15];   /* rotated, k = 0 the farthest */
+    for (int i = 0; i <= N; i++) {
+        int k = N - i;
+        L[k] = aq_rot(c, R[i].xl, R[i].y);
+        Rr[k] = aq_rot(c, R[i].xr, R[i].y);
+        TL[k] = aq_rot(c, R[i].xtl, R[i].yt);
+        TR[k] = aq_rot(c, R[i].xtr, R[i].yt);
+    }
+
+    /* 1. the walls and the floor */
+    P2 Lf = L[0], Rf = Rr[0], TLf = TL[0], TRf = TR[0], Ln = L[N], Rn = Rr[N], TLn = TL[N], TRn = TR[N];
+    if (!c->roll0) {
+        Ln = extend(c, Ln, Lf);
+        Rn = extend(c, Rn, Rf);
+        TLn = extend(c, TLn, TLf);
+        TRn = extend(c, TRn, TRf);
+        aq_quad(c, TLn, TLf, Lf, Ln, COL_CONCRETE, COL_CONCRETE);
+        aq_quad(c, TRn, TRf, Rf, Rn, COL_CONCRETE, COL_CONCRETE);
+        aq_quad(c, Lf, Rf, Rn, Ln, COL_CONCRETE, COL_CONCRETE);
+    } else {
+        /* the front: drv_fill_rows (rows y..YMAX - 1); the mirror: drv_hspan over XMIN..XMAX, rows y..YMAX */
+        enh_fill_rows(R[N].y, c->mirror ? c->y1 + 1 : c->y1, COL_CONCRETE);
+        P2 l0 = { 0, Lf.y }, r0 = { 0x13F, Rf.y };
+        aq_quad(c, TLn, TLf, Lf, l0, COL_CONCRETE, COL_CONCRETE);
+        aq_quad(c, TRn, TRf, Rf, r0, COL_CONCRETE, COL_CONCRETE);
+    }
+    aq_line(c, Lf, Ln, COL_LINE);
+    aq_line(c, Rf, Rn, COL_LINE);
+    aq_line(c, TLf, TLn, COL_TOP);
+    aq_line(c, TRf, TRn, COL_TOP);
+    P2 tfl = aq_rot(c, rr->tfl, rr->tfy), tfr = aq_rot(c, rr->tfr, rr->tfy);
+    P2 tnl = aq_rot(c, rr->tnl, rr->tny), tnr = aq_rot(c, rr->tnr, rr->tny);
+    int far_lo = c->mirror ? INT_MIN : base + N + 1, far_hi = c->mirror ? base - N - 1 : INT_MAX;
+    enh_cuts_at(v, pass, far_lo, far_hi, false);
+    enh_cuts_at(v, pass, far_lo, far_hi, true);
+
+    /* 2. per band, far to near: the white band, the joints, the wall openings, the rows' shapes */
+    for (int k = 0; k < N; k++) {
+        int i = N - k;
+        u16 w = enh_aq_flag(c, i);
+        if (w & 0x400) aq_quad(c, L[k], Rr[k], Rr[k + 1], L[k + 1], COL_TOP, COL_TOP);
+        if ((w & 1) && R[i].y > R[N].y) {
+            aq_line(c, L[k], Rr[k], COL_LINE);
+            aq_line(c, L[k], TL[k], COL_LINE);
+            aq_line(c, Rr[k], TR[k], COL_LINE);
+        }
+        if (k > 1 && (w & 0x30C)) {                 /* aq_wall_opening_quad */
+            const P2 *b = (w & 0x208) ? Rr : L, *t = (w & 0x208) ? TR : TL;
+            double d0 = qs(c, S(c, b[k].x - t[k].x), 2), d1 = qs(c, S(c, b[k + 1].x - t[k + 1].x), 2);
+            P2 q[4];
+            if (w & 0x0C) {
+                q[0].x = S(c, b[k].x - d0);
+                q[3].x = S(c, b[k + 1].x - d1);
+                q[0].y = ly_at_x(c, b[k].x, b[k].y, t[k].x, t[k].y, q[0].x);
+                q[3].y = ly_at_x(c, b[k + 1].x, b[k + 1].y, t[k + 1].x, t[k + 1].y, q[3].x);
+            } else {
+                q[0] = b[k];
+                q[3] = b[k + 1];
+            }
+            q[1].x = S(c, t[k].x + d0);
+            q[1].y = ly_at_x(c, b[k].x, b[k].y, t[k].x, t[k].y, q[1].x);
+            q[2].x = S(c, t[k + 1].x + d1);
+            q[2].y = ly_at_x(c, b[k + 1].x, b[k + 1].y, t[k + 1].x, t[k + 1].y, q[2].x);
+            aq_poly(c, q, 4, COL_TROUGH, COL_LINE);
+        }
+        enh_cuts_at(v, pass, base + sg * i, base + sg * i, false);
+    }
+
+    /* 3. the centre trough, interrupted where the flags have bit 2 */
+    int a = -1, b;
+    for (int k = 0; k < N; k++) if (enh_aq_flag(c, N - k) & 2) { a = k; break; }
+    for (b = a + 1; b < N && (enh_aq_flag(c, N - b) & 2); b++) {}
+    if (b < 2) aq_quad(c, tfl, tnl, tnr, tfr, COL_TROUGH, COL_LINE);
+    else {
+        if (a > 0) {
+            double y = R[N - a].y;
+            P2 pl = aq_rot(c, lx_at_y(c, rr->tfl, rr->tfy, rr->tnl, rr->tny, y), y);
+            P2 pr = aq_rot(c, lx_at_y(c, rr->tfr, rr->tfy, rr->tnr, rr->tny, y), y);
+            aq_quad(c, tfl, pl, pr, tfr, COL_TROUGH, COL_LINE);
+        }
+        if (b < N - 1) {
+            double y = R[N - b].y;
+            P2 pl = aq_rot(c, lx_at_y(c, rr->tfl, rr->tfy, rr->tnl, rr->tny, y), y);
+            P2 pr = aq_rot(c, lx_at_y(c, rr->tfr, rr->tfy, rr->tnr, rr->tny, y), y);
+            aq_quad(c, pl, tnl, tnr, pr, COL_TROUGH, COL_LINE);
+        }
+    }
+
+    /* 4. the boxes and pillars, far to near on the raw rows, each row's starter (the mirror) and opponent after them */
+    int starter_k = c->mirror ? enh_aq_starter_k(base, v->starter_seg) : -1;
+    for (int i = N; i > 0; i--) {
+        u16 w = enh_aq_flag(c, i);
+        const AqRow *f = &R[i], *n = &R[i - 1];
+        if (w & 0x10) {                             /* a low box over the middle third */
+            double x0 = S(c, f->xl + dv(c, S(c, f->xc - f->xl), 3)), x1 = S(c, f->xr + dv(c, S(c, f->xc - f->xr), 3));
+            double y0 = f->y, yt = S(c, y0 + dv(c, S(c, f->yt - y0), 7));
+            double n0 = S(c, n->xl + dv(c, S(c, n->xc - n->xl), 3)), n1 = S(c, n->xr + dv(c, S(c, n->xc - n->xr), 3));
+            double ny = n->y, nt = S(c, ny - dv(c, S(c, ny - n->yt), 7));
+            P2 p[8] = { { x0, y0 }, { x1, y0 }, { x0, yt }, { x1, yt }, { n0, ny }, { n1, ny }, { n0, nt }, { n1, nt } };
+            aq_box(c, p, false);
+        }
+        if (w & 0x80) {                             /* two thin full-height pillars */
+            double d = dv(c, S(c, f->xr - f->xl), 7), e = dv(c, S(c, n->xr - n->xl), 7);
+            double y0 = f->y, yt = f->yt, ny = n->y, nt = n->yt;
+            double l0 = S(c, f->xl + d), l1 = S(c, l0 + sr(c, d, 3));
+            double m0 = S(c, n->xl + e), m1 = S(c, m0 + sr(c, e, 3));
+            P2 p[8] = { { l0, y0 }, { l1, y0 }, { l0, yt }, { l1, yt }, { m0, ny }, { m1, ny }, { m0, nt }, { m1, nt } };
+            aq_box(c, p, true);
+            double r0 = S(c, f->xr - sr(c, d, 3) - d), r1 = S(c, r0 + sr(c, d, 3));
+            double s0 = S(c, n->xr - sr(c, e, 3) - e), s1 = S(c, s0 + sr(c, e, 3));
+            P2 p2[8] = { { r0, y0 }, { r1, y0 }, { r0, yt }, { r1, yt }, { s0, ny }, { s1, ny }, { s0, nt }, { s1, nt } };
+            aq_box(c, p2, true);
+        }
+        if (N - i == starter_k) enh_cut_id(v, ENH_OBJ_STARTER);
+        enh_cuts_at(v, pass, base + sg * i, base + sg * i, true);
+    }
+    int near_lo = c->mirror ? base : INT_MIN, near_hi = c->mirror ? INT_MAX : base;
+    enh_cuts_at(v, pass, near_lo, near_hi, false);
+    enh_cuts_at(v, pass, near_lo, near_hi, true);
+}
+
 void enh_draw_aq(const EnhView *v)
 {
     enh_buf_setup();
@@ -455,172 +582,92 @@ void enh_draw_aq(const EnhView *v)
     enh_aq_cam(v, false, &c);
     AqRows rr;
     enh_aq_rows(&c, &rr);
-    const AqRow *R = rr.r;
-    enum { N = 14 };
-    P2 L[15], Rr[15], TL[15], TR[15];   /* rotated, k = 0 the farthest */
-    for (int i = 0; i <= N; i++) {
-        int k = N - i;
-        L[k] = aq_rot(&c, R[i].xl, R[i].y);
-        Rr[k] = aq_rot(&c, R[i].xr, R[i].y);
-        TL[k] = aq_rot(&c, R[i].xtl, R[i].yt);
-        TR[k] = aq_rot(&c, R[i].xtr, R[i].yt);
-    }
-    int base = c.base;
-
     /* aq_draw_sky: without roll only down to the pivot's y (the far floor) */
-    enh_fill_rows(CLIP_Y0, c.roll0 ? (c.exact ? c.pcy : R[N].y) : CLIP_Y1, COL_SKY);
+    enh_fill_rows(c.y0, c.roll0 ? (c.exact ? c.pcy : rr.r[c.n].y) : c.y1, COL_SKY);
     enh_cut_id(v, ENH_OBJ_STARS);
     enh_cut_id(v, ENH_OBJ_CLOUDS);
+    aq_scene(v, &c, &rr);
+}
 
-    /* 1. the walls and the floor */
-    P2 Lf = L[0], Rf = Rr[0], TLf = TL[0], TRf = TR[0], Ln = L[N], Rn = Rr[N], TLn = TL[N], TRn = TR[N];
-    if (!c.roll0) {
-        Ln = extend(&c, Ln, Lf);
-        Rn = extend(&c, Rn, Rf);
-        TLn = extend(&c, TLn, TLf);
-        TRn = extend(&c, TRn, TRf);
-        aq_quad(&c, TLn, TLf, Lf, Ln, COL_CONCRETE, COL_CONCRETE);
-        aq_quad(&c, TRn, TRf, Rf, Rn, COL_CONCRETE, COL_CONCRETE);
-        aq_quad(&c, Lf, Rf, Rn, Ln, COL_CONCRETE, COL_CONCRETE);
-    } else {
-        enh_fill_rows(R[N].y, CLIP_Y1, COL_CONCRETE);
-        P2 l0 = { 0, Lf.y }, r0 = { 0x13F, Rf.y };
-        aq_quad(&c, TLn, TLf, Lf, l0, COL_CONCRETE, COL_CONCRETE);
-        aq_quad(&c, TRn, TRf, Rf, r0, COL_CONCRETE, COL_CONCRETE);
-    }
-    aq_line(&c, Lf, Ln, COL_LINE);
-    aq_line(&c, Rf, Rn, COL_LINE);
-    aq_line(&c, TLf, TLn, COL_TOP);
-    aq_line(&c, TRf, TRn, COL_TOP);
-    P2 tfl = aq_rot(&c, rr.tfl, rr.tfy), tfr = aq_rot(&c, rr.tfr, rr.tfy);
-    P2 tnl = aq_rot(&c, rr.tnl, rr.tny), tnr = aq_rot(&c, rr.tnr, rr.tny);
-    enh_cuts_at(v, ENH_PASS_FRONT, base + N + 1, INT_MAX, false);
-    enh_cuts_at(v, ENH_PASS_FRONT, base + N + 1, INT_MAX, true);
-
-    /* 2. per band, far to near: the white band, the joints, the wall openings, the rows' shapes */
-    for (int k = 0; k < N; k++) {
-        int i = N - k;
-        u16 w = enh_aq_flag(&c, i);
-        if (w & 0x400) aq_quad(&c, L[k], Rr[k], Rr[k + 1], L[k + 1], COL_TOP, COL_TOP);
-        if ((w & 1) && R[i].y > R[N].y) {
-            aq_line(&c, L[k], Rr[k], COL_LINE);
-            aq_line(&c, L[k], TL[k], COL_LINE);
-            aq_line(&c, Rr[k], TR[k], COL_LINE);
-        }
-        if (k > 1 && (w & 0x30C)) {                 /* aq_wall_opening_quad */
-            const P2 *b = (w & 0x208) ? Rr : L, *t = (w & 0x208) ? TR : TL;
-            double d0 = qs(&c, S(&c, b[k].x - t[k].x), 2), d1 = qs(&c, S(&c, b[k + 1].x - t[k + 1].x), 2);
-            P2 q[4];
-            if (w & 0x0C) {
-                q[0].x = S(&c, b[k].x - d0);
-                q[3].x = S(&c, b[k + 1].x - d1);
-                q[0].y = ly_at_x(&c, b[k].x, b[k].y, t[k].x, t[k].y, q[0].x);
-                q[3].y = ly_at_x(&c, b[k + 1].x, b[k + 1].y, t[k + 1].x, t[k + 1].y, q[3].x);
-            } else {
-                q[0] = b[k];
-                q[3] = b[k + 1];
-            }
-            q[1].x = S(&c, t[k].x + d0);
-            q[1].y = ly_at_x(&c, b[k].x, b[k].y, t[k].x, t[k].y, q[1].x);
-            q[2].x = S(&c, t[k + 1].x + d1);
-            q[2].y = ly_at_x(&c, b[k + 1].x, b[k + 1].y, t[k + 1].x, t[k + 1].y, q[2].x);
-            aq_poly(&c, q, 4, COL_TROUGH, COL_LINE);
-        }
-        enh_cuts_at(v, ENH_PASS_FRONT, base + i, base + i, false);
-    }
-
-    /* 3. the centre trough, interrupted where the flags have bit 2 */
-    int a = -1, b;
-    for (int k = 0; k < N; k++) if (enh_aq_flag(&c, N - k) & 2) { a = k; break; }
-    for (b = a + 1; b < N && (enh_aq_flag(&c, N - b) & 2); b++) {}
-    if (b < 2) aq_quad(&c, tfl, tnl, tnr, tfr, COL_TROUGH, COL_LINE);
-    else {
-        if (a > 0) {
-            double y = R[N - a].y;
-            P2 pl = aq_rot(&c, lx_at_y(&c, rr.tfl, rr.tfy, rr.tnl, rr.tny, y), y);
-            P2 pr = aq_rot(&c, lx_at_y(&c, rr.tfr, rr.tfy, rr.tnr, rr.tny, y), y);
-            aq_quad(&c, tfl, pl, pr, tfr, COL_TROUGH, COL_LINE);
-        }
-        if (b < N - 1) {
-            double y = R[N - b].y;
-            P2 pl = aq_rot(&c, lx_at_y(&c, rr.tfl, rr.tfy, rr.tnl, rr.tny, y), y);
-            P2 pr = aq_rot(&c, lx_at_y(&c, rr.tfr, rr.tfy, rr.tnr, rr.tny, y), y);
-            aq_quad(&c, pl, tnl, tnr, pr, COL_TROUGH, COL_LINE);
-        }
-    }
-
-    /* 4. the boxes and pillars, far to near on the raw rows, each row's opponent after them */
-    for (int i = N; i > 0; i--) {
-        u16 w = enh_aq_flag(&c, i);
-        const AqRow *f = &R[i], *n = &R[i - 1];
-        if (w & 0x10) {                             /* a low box over the middle third */
-            double x0 = S(&c, f->xl + dv(&c, S(&c, f->xc - f->xl), 3)), x1 = S(&c, f->xr + dv(&c, S(&c, f->xc - f->xr), 3));
-            double y0 = f->y, yt = S(&c, y0 + dv(&c, S(&c, f->yt - y0), 7));
-            double n0 = S(&c, n->xl + dv(&c, S(&c, n->xc - n->xl), 3)), n1 = S(&c, n->xr + dv(&c, S(&c, n->xc - n->xr), 3));
-            double ny = n->y, nt = S(&c, ny - dv(&c, S(&c, ny - n->yt), 7));
-            P2 p[8] = { { x0, y0 }, { x1, y0 }, { x0, yt }, { x1, yt }, { n0, ny }, { n1, ny }, { n0, nt }, { n1, nt } };
-            aq_box(&c, p, false);
-        }
-        if (w & 0x80) {                             /* two thin full-height pillars */
-            double d = dv(&c, S(&c, f->xr - f->xl), 7), e = dv(&c, S(&c, n->xr - n->xl), 7);
-            double y0 = f->y, yt = f->yt, ny = n->y, nt = n->yt;
-            double l0 = S(&c, f->xl + d), l1 = S(&c, l0 + sr(&c, d, 3));
-            double m0 = S(&c, n->xl + e), m1 = S(&c, m0 + sr(&c, e, 3));
-            P2 p[8] = { { l0, y0 }, { l1, y0 }, { l0, yt }, { l1, yt }, { m0, ny }, { m1, ny }, { m0, nt }, { m1, nt } };
-            aq_box(&c, p, true);
-            double r0 = S(&c, f->xr - sr(&c, d, 3) - d), r1 = S(&c, r0 + sr(&c, d, 3));
-            double s0 = S(&c, n->xr - sr(&c, e, 3) - e), s1 = S(&c, s0 + sr(&c, e, 3));
-            P2 p2[8] = { { r0, y0 }, { r1, y0 }, { r0, yt }, { r1, yt }, { s0, ny }, { s1, ny }, { s0, nt }, { s1, nt } };
-            aq_box(&c, p2, true);
-        }
-        enh_cuts_at(v, ENH_PASS_FRONT, base + i, base + i, true);
-    }
-    enh_cuts_at(v, ENH_PASS_FRONT, INT_MIN, base, false);
-    enh_cuts_at(v, ENH_PASS_FRONT, INT_MIN, base, true);
+void enh_draw_aq_mirror(const EnhView *v)
+{
+    AqCam c;
+    enh_aq_cam(v, true, &c);
+    AqRows rr;
+    enh_aq_rows(&c, &rr);
+    enh_clip(0xF2, 0x16, 0x13E, 0x2B);
+    /* mirror_draw_backdrop: the glass of the mirror's picture (page 2 at EAh,6Ah; mode 8 has no sky strip), its stars */
+    enh_draw_image(enh_image_vram(0x4000, 0xEA, 0x6A, 0x13E - 0xF2, 0x2B - 0x16), 0xF2, 0x16, 0x13E, 0x2B);
+    enh_cut_id(v, ENH_OBJ_MIR_STARS);
+    aq_scene(v, &c, &rr);
 }
 
 /* ---------------------------------------------------------------- the cuts' places */
 
+int enh_aq_starter_k(int base, int starter_seg) { return base - starter_seg - 1; }
+
+/* aq_draw_row_shape's anchor of a row at depth z with flags fl (20h: a quarter in from the floor's left edge; 40h: an
+ * eighth in from the right; world x 0 without either), its y the floor's, rotated as shp_b_draw rotates it */
+static void row_anchor(const AqCam *c, double z, u16 fl, double *ax, double *ay)
+{
+    double x = proj_x(c, z, 0, c->heading);
+    double xl = proj_x(c, z, S(c, c->def[1] + 0x5C8), c->heading), xr = proj_x(c, z, S(c, c->def[2] + 0xCF8), c->heading);
+    if (fl & 0x20) x = S(c, xl + sr(c, S(c, xr - xl), 2));
+    else if (fl & 0x40) x = S(c, xr - sr(c, S(c, xr - xl), 3));
+    enh_aq_rot(c, x, proj_y(c, z, S(c, c->def[0] + 2000), c->aq_dy), ax, ay);
+}
+
 EnhObjGeo enh_obj_geo_aq(const EnhView *v, int kind, int seg, int sprite)
 {
     EnhObjGeo g = { 0, 0, 0, 0, false, true, 0 };
-    AqCam c;
+    AqCam c, m;
     enh_aq_cam(v, false, &c);
+    enh_aq_cam(v, true, &m);
     double ax, ay;
     if (kind == ENH_CUT_ROW) {
         int k = seg - c.base;
         double z = k >= 0 && k <= 14 ? enh_aq_z(k, c.q) : 8.0 * (seg - v->pos) + 4.0;
         if (z < 1.0) return g;
-        /* aq_draw_row_shape's anchor (20h: a quarter in from the floor's left edge; 40h: an eighth in from the right),
-         * rotated as shp_b_draw rotates it; world x 0 for a row without a shape */
-        u16 fl = TRKW(TRK_AQ, seg);
-        double x = prx(&c, z, 0, c.heading);
-        double xl = prx(&c, z, S(&c, c.def[1] + 0x5C8), c.heading), xr = prx(&c, z, S(&c, c.def[2] + 0xCF8), c.heading);
-        if (fl & 0x20) x = S(&c, xl + sr(&c, S(&c, xr - xl), 2));
-        else if (fl & 0x40) x = S(&c, xr - sr(&c, S(&c, xr - xl), 3));
-        enh_aq_rot(&c, x, pry(&c, z, S(&c, c.def[0] + 2000), c.aq_dy), &ax, &ay);
+        row_anchor(&c, z, TRKW(TRK_AQ, seg), &ax, &ay);
         g.z = z;
         g.b = 4.0 / z;
         g.rot = c.roll;
+    } else if (kind == ENH_CUT_MIR) {
+        int k = m.base - seg;
+        if (k < 0) return g;
+        double z = enh_aq_mz(k, m.q);
+        row_anchor(&m, z, enh_aq_flag(&m, k), &ax, &ay);
+        g.z = z;
+        g.b = 1.0 / z;
+        g.rot = m.roll;
+    } else if (kind == ENH_CUT_STARTER) {
+        int k = enh_aq_starter_k(m.base, seg);
+        if (k < 0 || k > 5) return g;               /* starter_draw_mirror_aq returns on row 6 */
+        AqRows r;
+        enh_aq_rows(&m, &r);
+        double y = r.r[k].y, x = S(&m, lx_at_y(&m, r.tfl, r.tfy, r.tnl, r.tny, y) + 1);
+        if (m.roll0) { ax = x; ay = y; }
+        else enh_aq_rot(&m, x, y, &ax, &ay);
+        g.z = enh_aq_mz(k, m.q);
+        g.b = 1.0 / g.z;
+        g.rot = fabs(m.roll_raw) > 5 ? m.roll : 0;  /* drv_rotate turns the picture only beyond 5 degrees */
     } else if (kind == ENH_CUT_OPP) {
-        if (sprite >= 9) return g;                  /* the mirror's pictures */
-        AqCam m;
-        enh_aq_cam(v, true, &m);
         double z;
         if (!enh_aq_opp_anchor(&c, &m, v->opp_d, sprite, v->opp_lat, v->opp_sx_prev, v->opp_mpass, &ax, &ay, &z))
             return g;
-        if (c.exact) ax += ((v->opp_sx + DSS(DS_g_px_shift)) & ~7) - v->opp_sx;   /* drv_blit_masked: whole bytes */
+        if (sprite < 9 && c.exact) ax += ((v->opp_sx + DSS(DS_g_px_shift)) & ~7) - v->opp_sx;   /* drv_blit_masked: whole bytes */
         g.z = z;
-        g.b = 4.0 / z;
+        g.b = (sprite < 9 ? 4.0 : 1.0) / z;
         g.rot = enh_aq_opp_bank(&c, v->opp_lat);
-    } else if (kind == ENH_CUT_STARS || kind == ENH_CUT_CLOUDS) {
-        bool stars = kind == ENH_CUT_STARS;
-        double x = enh_aq_sky_x(v->heading, stars ? ENH_AQ_STARS : ENH_AQ_CLOUDS, c.exact);
-        if (stars && c.roll0) { ax = x; ay = 0; }   /* the stars are rotated only with a roll */
-        else enh_aq_rot(&c, x, 0, &ax, &ay);
+    } else if (kind == ENH_CUT_STARS || kind == ENH_CUT_CLOUDS || kind == ENH_CUT_MIR_STARS) {
+        const AqCam *p = kind == ENH_CUT_MIR_STARS ? &m : &c;
+        int which = kind == ENH_CUT_STARS ? ENH_AQ_STARS : kind == ENH_CUT_CLOUDS ? ENH_AQ_CLOUDS : ENH_AQ_MIR_STARS;
+        double x = enh_aq_sky_x(v->heading, which, c.exact);
+        if (kind != ENH_CUT_CLOUDS && p->roll0) { ax = x; ay = 0; }   /* plot_points rotates only with a roll */
+        else enh_aq_rot(p, x, 0, &ax, &ay);
         g.z = 1;
         g.b = 1;
-        g.rot = c.roll;
+        g.rot = p->roll;
     } else
         return g;
     g.a = ax;

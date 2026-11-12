@@ -125,8 +125,8 @@ void enh_init(bool enabled, int res_scale, int aa, int motion_delay, bool town)
 bool enh_enabled(void) { return enh_opt.enabled; }
 int  enh_res_scale(void) { return enh_opt.res_scale; }
 
-/* The road modes drawn enhanced: the town (0), the street drag (1), the Grudge drag strip (2, 4), the Aqueduct (8;
- * its mirror stays the game's so far), Mulholland (10h). */
+/* The road modes drawn enhanced: the town (0), the street drag (1), the Grudge drag strip (2, 4), the Aqueduct (8),
+ * Mulholland (10h), each with its mirror. */
 static bool mode_enhanced(s16 mode)
 {
     return mode == 0 || mode == 1 || mode == 2 || mode == 4 || mode == 8 || mode == 0x10;
@@ -270,11 +270,12 @@ bool enh_in_mirror_rect(int x, int y)
 bool enh_in_glass(int x, int y) { return x >= 0xF2 && x <= 0x13D && y >= 0x16 && y <= 0x2A; }
 
 /* Front ids (the rows', the Aqueduct's stars and clouds) and the opponent's front pictures are kept outside the
- * mirror (its backdrop covers what the front drew there), the mirror's ids and the opponent's pictures 9 and up
- * (drawn with the mirror's clip) inside its glass. */
+ * mirror (its backdrop covers what the front drew there), the mirror's ids (the Aqueduct's mirror stars too) and the
+ * opponent's pictures 9 and up (drawn with the mirror's clip) inside its glass. */
 bool enh_tag_kept(int id, int opp_sprite, int x, int y)
 {
-    bool mirror = (id >= ENH_OBJ_MIR(1) && id <= ENH_OBJ_STARTER) || (id == ENH_OBJ_OPP && opp_sprite >= 9);
+    bool mirror = (id >= ENH_OBJ_MIR(1) && id <= ENH_OBJ_STARTER) || id == ENH_OBJ_MIR_STARS
+                  || (id == ENH_OBJ_OPP && opp_sprite >= 9);
     bool front = (id >= 1 && id <= 14) || id == ENH_OBJ_STARS || id == ENH_OBJ_CLOUDS
                  || (id == ENH_OBJ_OPP && opp_sprite < 9);
     return mirror ? enh_in_glass(x, y) : front && !enh_in_mirror_rect(x, y);
@@ -284,15 +285,17 @@ static int cut_kind(int id)
 {
     if (id == ENH_OBJ_STARS) return ENH_CUT_STARS;
     if (id == ENH_OBJ_CLOUDS) return ENH_CUT_CLOUDS;
+    if (id == ENH_OBJ_MIR_STARS) return ENH_CUT_MIR_STARS;
     return id == ENH_OBJ_OPP ? ENH_CUT_OPP : id == ENH_OBJ_STARTER ? ENH_CUT_STARTER : id > ENH_OBJ_OPP ? ENH_CUT_MIR : ENH_CUT_ROW;
 }
 
-static bool sky_kind(int kind) { return kind == ENH_CUT_STARS || kind == ENH_CUT_CLOUDS; }
+static bool sky_kind(int kind) { return kind == ENH_CUT_STARS || kind == ENH_CUT_CLOUDS || kind == ENH_CUT_MIR_STARS; }
 
 static int cut_pass(const ObjCut *c)
 {
     if (c->kind == ENH_CUT_OPP) return c->sprite >= 9 ? ENH_PASS_MIRROR : ENH_PASS_FRONT;
-    return c->kind == ENH_CUT_ROW || sky_kind(c->kind) ? ENH_PASS_FRONT : ENH_PASS_MIRROR;
+    return c->kind == ENH_CUT_ROW || c->kind == ENH_CUT_STARS || c->kind == ENH_CUT_CLOUDS ? ENH_PASS_FRONT
+                                                                                          : ENH_PASS_MIRROR;
 }
 
 /* b is drawn after a in its pass's band loop: far to near (the front's far rows at larger segments, the mirror's
@@ -362,8 +365,8 @@ static void capture_objects(void)
         if (x1[id] < 0) continue;
         ObjCut *c = &cuts[id];
         c->kind = cut_kind(id);
-        /* the sky's: the first thing of the front pass (drawn right after the sky's fill) */
-        c->seg = sky_kind(c->kind) ? INT_MAX
+        /* the sky's: the first thing of its pass (drawn right after the sky's fill, or the mirror's backdrop) */
+        c->seg = c->kind == ENH_CUT_MIR_STARS ? INT_MIN : sky_kind(c->kind) ? INT_MAX
                : c->kind == ENH_CUT_ROW ? base + id
                : c->kind == ENH_CUT_OPP ? snap.opp_seg
                : c->kind == ENH_CUT_MIR ? base - (id - ENH_OBJ_OPP)
@@ -440,6 +443,7 @@ void enh_cuts_at(const EnhView *v, int pass, int lo, int hi, bool opp)
     for (int id = 1; id < ENH_OBJ_IDS; id++) {
         const ObjCut *c = &cuts[id];
         if (!c->used || c->drawn || sky_kind(c->kind) || (c->kind == ENH_CUT_OPP) != opp || cut_pass(c) != pass) continue;
+        if (v->mode == 8 && c->kind == ENH_CUT_STARTER) continue;   /* the Aqueduct's: at its raw row (enh_cut_id) */
         if (c->seg >= lo && c->seg <= hi) draw_cut(v, id);
     }
 }
@@ -450,11 +454,11 @@ void enh_cut_id(const EnhView *v, int id)
 }
 
 /* One picture of view v: the front pass draws the road and the cuts at their rows (enh_road2.c), then the mirror
- * pass its glass (enh_mirror2.c); the Aqueduct its channel (enh_aq2.c), its mirror stays the game's. */
+ * pass its glass (enh_mirror2.c); the Aqueduct its channel and its mirror (enh_aq2.c). */
 static void draw_view(const EnhView *v)
 {
     enh_cuts_begin();
-    if (v->mode == 8) { enh_draw_aq(v); return; }
+    if (v->mode == 8) { enh_draw_aq(v); enh_draw_aq_mirror(v); return; }
     enh_draw_road(v);
     enh_draw_mirror(v);
 }
@@ -469,7 +473,7 @@ void enh_draw_fg(bool fg)
 void enh_mirror_begin(void)
 {
     if (!active) return;
-    base_layer = DSS(DS_road_mode) == 8 ? EGA_LAYER_FG : EGA_LAYER_BG;   /* the Aqueduct's mirror stays the game's */
+    base_layer = EGA_LAYER_BG;
     ega_set_layer(base_layer);
 }
 
@@ -482,7 +486,6 @@ void enh_mirror_end(void)
     ega_mark_fg_rect(page, 0xF0, 0x2B, 0x13F, 0x2C);
     ega_mark_fg_rect(page, 0xF0, 0x16, 0xF1, 0x2A);
     ega_mark_fg_rect(page, 0x13E, 0x16, 0x13F, 0x2A);
-    if (DSS(DS_road_mode) == 8) ega_mark_fg_rect(page, 0xF2, 0x16, 0x13D, 0x2A);   /* the Aqueduct's glass: the game's */
     base_layer = EGA_LAYER_FG;                          /* the hood and the cockpit stay the game's */
     ega_set_layer(base_layer);
 }
@@ -521,6 +524,7 @@ static void snap_fill(void)
     snap.police = DSS(DS_police_state);
     snap.opp_variant = DSS(DS_opp_variant);
     snap.opp_mpass = DSS(DS_opp_seg) < DSS(DS_seg);
+    snap.starter_seg = DSS(DS_starter_seg);
     enh_rowtab_read(&snap.game_mirror);
     if (snap.mode == 8) enh_aqtab_read(&snap.aq_mirror);
 }
@@ -576,6 +580,7 @@ static void view_of(const double *f, const double *p, EnhView *v)
     v->opp_sx = snap.opp_sx;
     v->opp_fixed = snap.opp_fixed;
     v->opp_mpass = snap.opp_mpass;
+    v->starter_seg = snap.starter_seg;
     v->fall_dir = snap.fall_dir;
     v->start_seg = snap.start_seg;
     v->rail_phase = snap.rail_phase;
@@ -635,6 +640,15 @@ static bool cut_judged(const ObjCut *c, int y_end)
 
 static int compare_y_end(void) { return SDL_min(ENH_VIEW_Y1, ega_line_compare()); }
 
+/* The Aqueduct's row cuts (front and mirror): aq_draw_row_shape's picture of the row's shape group, at row index
+ * seg - base in front (group (seg - base) >> 1), base - seg in the mirror (group (base - seg - 1) >> 1). */
+static bool aq_row_kind(const ObjCut *c) { return c->geo.xf && (c->kind == ENH_CUT_ROW || c->kind == ENH_CUT_MIR); }
+static int shape_group(const ObjCut *c, double pos)
+{
+    int base = (int)floor(pos);
+    return c->kind == ENH_CUT_ROW ? (c->seg - base) >> 1 : (base - c->seg - 1) >> 1;
+}
+
 static void predict_cuts(void)
 {
     EnhView v;
@@ -648,9 +662,9 @@ static void predict_cuts(void)
         const EnhObjGeo *f = &c->geo;
         if (!g.ok || g.rot != f->rot) continue;     /* the Aqueduct: turned between the frames */
         /* a rotated row's box: its bottom is the turned picture's lowest corner, and the picture is the row's shape
-         * group (aq_draw_row_shape: row >> 1), another one once the row index crossed a pair */
-        if (c->kind == ENH_CUT_ROW && rotated(c)
-            && (c->seg - (int)floor(cut_view.pos)) >> 1 != (c->seg - (int)floor(v.pos)) >> 1) continue;
+         * group (aq_draw_row_shape: (row + 1) >> 1 in front, (row >> 1) + 6 in the mirror), another one once the row
+         * index crossed a pair */
+        if (aq_row_kind(c) && rotated(c) && shape_group(c, cut_view.pos) != shape_group(c, v.pos)) continue;
         p->ok = true;
         p->kind = c->kind;
         p->seg = c->seg;
@@ -662,7 +676,7 @@ static void predict_cuts(void)
             EnhObjGeo gs = g;
             /* a rotated row's picture is its shape group's (aq_draw_row_shape), the same while the group is: it moves
              * with its anchor, it does not scale */
-            if (c->kind == ENH_CUT_ROW && rotated(c)) gs.z = f->z;
+            if (aq_row_kind(c) && rotated(c)) gs.z = f->z;
             cut_xf(f, &gs, m);
             p->bottom = m[3] * bx + m[4] * by + m[5];
             p->cx = m[0] * bx + m[1] * by + m[2];
@@ -780,6 +794,11 @@ static void compare_frame(void)
         EnhAqTab at;
         enh_aqtab_exact(&v, false, &at);
         c.geo_err = SDL_max(c.geo_err, enh_aqtab_err(&at, &snap.aq_front, 14));
+        mrows = snap.game_mirror;                   /* the mirror's rows 0..7, its rotated rows and trough */
+        enh_rows_exact_aq(&v, true, &mrows);
+        c.geo_err = SDL_max(c.geo_err, rows_err(&mrows, &snap.game_mirror, 8));
+        enh_aqtab_exact(&v, true, &at);
+        c.geo_err = SDL_max(c.geo_err, enh_aqtab_err(&at, &snap.aq_mirror, 7));
         c.roll = snap.aq_front.roll;
     } else {
         enh_rows_exact_front(&v, &rows);

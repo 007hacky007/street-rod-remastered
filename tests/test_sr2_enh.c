@@ -266,6 +266,9 @@ static void sr2_enh_capture_regions(void)
     CHECK(!enh_tag_kept(ENH_OBJ_STARS, 0, 0x100, 0x20));
     CHECK(enh_tag_kept(ENH_OBJ_CLOUDS, 0, 0x80, 0x20));
     CHECK(!enh_tag_kept(ENH_OBJ_CLOUDS, 0, 0x100, 0x20));
+    CHECK(enh_tag_kept(ENH_OBJ_MIR_STARS, 0, 0x100, 0x20));  /* the Aqueduct's mirror stars: only in the glass */
+    CHECK(!enh_tag_kept(ENH_OBJ_MIR_STARS, 0, 0xF1, 0x20));
+    CHECK(!enh_tag_kept(ENH_OBJ_MIR_STARS, 0, 0x80, 0x40));
 }
 
 /* One frame of the street drag with three objects tagged in the shown page: row 3, row 5 and the opponent (its
@@ -1987,8 +1990,12 @@ static void sr2_enh_aq_frame_state(void)
     bool snapped = true;
     for (int i = 0; i < 4; i++) snapped = snapped && enh_view_at(t + (Uint64)i * 60000000ull, &v) && v.roll == 408;
     CHECK(snapped);
-    enh_mirror_begin();                             /* the mirror stays the game's */
+    enh_mirror_begin();                             /* the mirror's glass is drawn enhanced */
     wr_span(0x4000, 0x100, 0x20, 1);
+    CHECK(!fg_at(0x4000, 0x100, 0x20));
+    enh_mirror_end();                               /* the glass stays the enhanced view's, the hood after it the game's */
+    CHECK(!fg_at(0x4000, 0x100, 0x20));
+    wr_span_col(0x4000, 0x100, 0x20, 1, 3);
     CHECK(fg_at(0x4000, 0x100, 0x20));
     ega_set_layer(EGA_LAYER_OFF);
     enh_race_end();
@@ -2161,6 +2168,108 @@ static void sr2_enh_aq_cut_hood(void)
         enh_race_end();
     }
     restore_ds(&k);
+    aq_restore();
+}
+
+/* The mirror's starter (starter_draw_mirror_aq) is drawn at row i of the loop with the raw row N - i = base - starter_seg
+ * - 1: its y that row's, its x on the mirror's trough's left line at that y, plus 1; row 6 returns (not drawn). */
+static void sr2_enh_aq_starter(void)
+{
+    aq_save();
+    const AqCase *ac = &aq_cases[1];
+    aq_set(ac);
+    aq_project_front();
+    DSS(DS_aq_saved_floor_h) = ac->def[0];
+    DSS(DS_aq_saved_xl) = ac->def[1];
+    DSS(DS_aq_saved_xr) = ac->def[2];
+    DSS(DS_aq_saved_top_h) = ac->def[3];
+    DSS(DS_aq_wall_l_shift) = DSS(DS_aq_wall_r_shift) = 0;
+    aq_project_mirror();
+    CHECK(enh_aq_starter_k(100, 95) == 4);
+    CHECK(enh_aq_starter_k(100, 93) == 6);
+    EnhView v = aq_view(ac);
+    s16 y = DSS(DS_row_y + 8);
+    s16 x = (s16)(line_x_at_y(DSS(AQ_TROUGH_FAR_XL), DSS(AQ_TROUGH_FAR_Y), DSS(AQ_TROUGH_NEAR_XL), DSS(AQ_TROUGH_NEAR_Y), y) + 1);
+    EnhObjGeo g = enh_obj_geo(&v, ENH_CUT_STARTER, 95, 0);
+    printf("  k 4: ok %d z %.1f a %.1f (%d) yg %.1f (%d) rot %.1f\n", g.ok, g.z, g.a, x, g.yg, y, g.rot);
+    CHECK(g.ok && g.xf && g.a == x && g.yg == y + ROW_TOP && g.z == enh_aq_mz(4, 5) && g.rot == 0 && g.b == 1.0 / g.z);
+    CHECK(!enh_obj_geo(&v, ENH_CUT_STARTER, 93, 0).ok);
+    CHECK(!enh_obj_geo(&v, ENH_CUT_STARTER, 100, 0).ok);
+    /* rolled: the anchor rotated about the mirror's pivot, the picture turned only beyond 5 degrees */
+    for (int pass = 0; pass < 2; pass++) {
+        s16 roll = pass ? 30 : 4;
+        aq_roll(&v, roll, 0x7A, 0x3F);
+        DSS(DS_rot_cx) = (s16)((s16)(DSS(DS_row_xl + 14) + DSS(DS_row_xr + 14)) >> 1);
+        DSS(DS_rot_cy) = DSS(DS_row_y + 14);
+        s16 rx, ry;
+        rotate_about_centre(x, y, &rx, &ry);
+        g = enh_obj_geo(&v, ENH_CUT_STARTER, 95, 0);
+        printf("  roll %d: a %.1f (%d) yg %.1f (%d) rot %.1f\n", roll, g.a, rx, g.yg, ry, g.rot);
+        CHECK(g.ok && g.a == rx && g.yg == ry + ROW_TOP && g.rot == (pass ? 30 : 0));
+    }
+    aq_restore();
+}
+
+/* The mirror's row cuts at their rotated anchor (aq_draw_row_shape's, the mirror's flag; world x 0 on the floor without
+ * one) about the mirror's pivot ((XL7 + XR7) >> 1, Y7), at the mirror's depth; its opponent behind (pictures 9 and up)
+ * at the mirror's projection, turned by its bank; its stars at the mirror's sky x. */
+static void sr2_enh_aq_mirror_geo(void)
+{
+    aq_save();
+    const AqCase *ac = &aq_cases[3];
+    aq_set(ac);
+    aq_project_front();
+    DSS(DS_aq_saved_floor_h) = ac->def[0];
+    DSS(DS_aq_saved_xl) = ac->def[1];
+    DSS(DS_aq_saved_xr) = ac->def[2];
+    DSS(DS_aq_saved_top_h) = ac->def[3];
+    DSS(DS_aq_wall_l_shift) = DSS(DS_aq_wall_r_shift) = 0;
+    aq_project_mirror();
+    EnhView v = aq_view(ac);
+    aq_roll(&v, 48, 0x7A, 0x3F);
+    DSS(DS_rot_cx) = (s16)((s16)(DSS(DS_row_xl + 14) + DSS(DS_row_xr + 14)) >> 1);
+    DSS(DS_rot_cy) = DSS(DS_row_y + 14);
+    /* the mirror's flags (aq_build's reversed copy): row 3's shape a quarter in from the left, row 5's an eighth in
+     * from the right */
+    TRKW(TRK_AQM, 0x179 - 100 - 4) = (u16)((TRKW(TRK_AQM, 0x179 - 100 - 4) & ~0x40) | 0x20);
+    TRKW(TRK_AQM, 0x179 - 100 - 2) = (u16)((TRKW(TRK_AQM, 0x179 - 100 - 2) & ~0x20) | 0x40);
+    AqCam f, m;
+    enh_aq_cam(&v, false, &f);
+    enh_aq_cam(&v, true, &m);
+    CHECK(m.pcx == DSS(DS_rot_cx) && m.pcy == DSS(DS_rot_cy));
+    int bad = 0, shaped = 0;
+    for (int i = 1; i <= 7; i++) {
+        u16 w = enh_aq_flag(&m, i);
+        s16 xl = DSS((u16)(DS_row_xl + 2 * i)), xr = DSS((u16)(DS_row_xr + 2 * i)), y = DSS((u16)(DS_row_y + 2 * i));
+        s16 x = w & 0x20 ? (s16)(xl + ((s16)(xr - xl) >> 2)) : w & 0x40 ? (s16)(xr - ((s16)(xr - xl) >> 3))
+                : (s16)road_proj_x_mirror((s16)enh_aq_mz(i, m.q), 0, (s16)-ac->heading);
+        shaped += (w & 0x60) != 0;
+        s16 rx, ry;
+        rotate_about_centre(x, y, &rx, &ry);
+        EnhObjGeo g = enh_obj_geo(&v, ENH_CUT_MIR, 100 - i, 0);
+        if (i == 3) printf("  row 3: z %.1f a %.1f (%d) yg %.1f (%d) rot %.1f\n", g.z, g.a, rx, g.yg, ry, g.rot);
+        bad += !(g.ok && g.xf && g.z == enh_aq_mz(i, m.q) && g.b == 1.0 / g.z && g.a == rx && g.yg == ry + ROW_TOP
+                 && g.rot == 48);
+    }
+    printf("  rows: %d differ, %d with a shape\n", bad, shaped);
+    CHECK(bad == 0);
+    CHECK(shaped >= 2);
+    CHECK(!enh_obj_geo(&v, ENH_CUT_MIR, 101, 0).ok);
+    /* the opponent behind, picture 10, drawn by the mirror's pass */
+    v.opp_seg = 98;
+    v.opp_d = -100;
+    v.opp_lat = 0x900;
+    v.opp_mpass = true;
+    double ax, ay, z;
+    CHECK(enh_aq_opp_anchor(&f, &m, -100, 10, 0x900, 0, true, &ax, &ay, &z));
+    EnhObjGeo g = enh_obj_geo(&v, ENH_CUT_OPP, 98, 10);
+    printf("  opp: ok %d z %.1f a %.1f (%.1f) yg %.1f (%.1f) rot %.1f\n", g.ok, g.z, g.a, ax, g.yg, ay + ROW_TOP, g.rot);
+    CHECK(g.ok && g.xf && g.z == 12 && g.b == 1.0 / 12 && g.a == ax && g.yg == ay + ROW_TOP
+          && g.rot == enh_aq_opp_bank(&f, 0x900));
+    /* the mirror's stars: rotated about the mirror's pivot */
+    enh_aq_rot(&m, enh_aq_sky_x(v.heading, ENH_AQ_MIR_STARS, true), 0, &ax, &ay);
+    g = enh_obj_geo(&v, ENH_CUT_MIR_STARS, INT_MIN, 0);
+    CHECK(g.ok && g.xf && g.z == 1 && g.a == ax && g.yg == ay + ROW_TOP && g.rot == 48);
     aq_restore();
 }
 
@@ -2465,6 +2574,8 @@ int main(int argc, char **argv)
     RUN(sr2_enh_aq_cut_turns);
     RUN(sr2_enh_aq_sky_cuts);
     RUN(sr2_enh_aq_bounce_persists);
+    RUN(sr2_enh_aq_starter);
+    RUN(sr2_enh_aq_mirror_geo);
     host_shutdown();
     return failures ? 1 : 0;
 }

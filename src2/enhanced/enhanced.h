@@ -54,7 +54,8 @@ void enh_draw_sky(bool on);
 #define ENH_OBJ_STARTER  23          /* the starter figure in the mirror (its y pinned, starter_draw_mirror) */
 #define ENH_OBJ_STARS    24          /* the Aqueduct's stars */
 #define ENH_OBJ_CLOUDS   25          /* the Aqueduct's clouds */
-#define ENH_OBJ_IDS      26
+#define ENH_OBJ_MIR_STARS 26         /* the Aqueduct's mirror stars */
+#define ENH_OBJ_IDS      27
 void enh_draw_objects(int id);
 /* road_frame, around road_project_mirror and road_draw_mirror: the mirror is drawn into the background (begin);
  * end: its frame and mount stay the game's (the mount 110h..11Fh x 12h..13h, the body's rows 14h..15h and

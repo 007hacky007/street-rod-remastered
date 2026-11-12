@@ -38,6 +38,7 @@ typedef struct {
     s16 wall_l, wall_r;             /* DS_aq_wall_l_shift, DS_aq_wall_r_shift, read at run time */
     double cs, sn, pcx, pcy;        /* the rotation (x256) and its pivot */
     double roll, roll_raw;          /* EnhView.roll (unwrapped), EnhView.roll_raw */
+    int x0, y0, x1, y1;             /* the game's clip, inclusive: clip_set_view (front), clip_set_mirror (mirror) */
 } AqCam;
 
 typedef struct { double y, xl, xr, xc, yt, xtl, xtr; } AqRow;
@@ -71,9 +72,19 @@ void enh_rows_exact_aq(const EnhView *v, bool mirror, EnhRowTab *t);
  * trough, boxes and pillars, the captured cuts at their place (the stars and clouds after the sky's fill, the rows'
  * shapes in the band loop, the opponent with the boxes); exact mode with the game's integer clip and lines. */
 void enh_draw_aq(const EnhView *v);
+/* aq_draw_mirror (race_aq.c) of the view in its glass F2h..13Dh x 16h..2Ah: the backdrop, the mirror's stars, then
+ * aq_draw_scene(7) with the mirror's rows, pivot and clip (F0h..13Fh x 16h..2Ah), its rows' shapes, the starter and the
+ * opponent behind at their place. */
+void enh_draw_aq_mirror(const EnhView *v);
 /* enh_obj_geo in mode 8 (xf): ENH_CUT_ROW at segment seg (row k = seg - base at enh_aq_z, beyond the rows 8 (seg -
  * pos) + 4) anchored where aq_draw_row_shape anchors its shape (flag 20h, else 40h; world x 0 on the floor without
- * either), rot the roll; ENH_CUT_OPP (pictures below 9) at enh_aq_opp_anchor, rot its bank, in exact mode moved by
- * the byte its picture was blitted at; ENH_CUT_STARS and ENH_CUT_CLOUDS at (enh_aq_sky_x, 0), the stars rotated only
- * off roll 0. The mirror's kinds and pictures are not placed. */
+ * either), rot the roll; ENH_CUT_OPP at enh_aq_opp_anchor, rot its bank (pictures below 9 b 4 / z, in exact mode moved
+ * by the byte their picture was blitted at; 9 and up the mirror's, b 1 / z); ENH_CUT_STARS and ENH_CUT_CLOUDS at
+ * (enh_aq_sky_x, 0), the stars rotated only off roll 0. The mirror's (b 1 / z, about the mirror's pivot):
+ * ENH_CUT_MIR at segment seg (row k = base - seg at enh_aq_mz, not for k < 0) anchored as the front's rows with the
+ * mirror's flag; ENH_CUT_STARTER (seg the starter's) on the raw row k = enh_aq_starter_k for k 0..5, at x on the
+ * mirror's trough's left line plus 1, rotated off roll 0, turned only beyond 5 degrees (drv_rotate); ENH_CUT_MIR_STARS
+ * at (the mirror's sky x, 0), rotated off roll 0. */
 EnhObjGeo enh_obj_geo_aq(const EnhView *v, int kind, int seg, int sprite);
+/* starter_draw_mirror_aq's raw row: base - starter_seg - 1 (row N - i of the row i it is drawn at) */
+int enh_aq_starter_k(int base, int starter_seg);

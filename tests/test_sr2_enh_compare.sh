@@ -147,10 +147,10 @@ check mulholland 16 20 enh
 check bridge 16 20 enh
 check police 16 20 enh
 police_in_mirror police
-check aqueduct 8 20 orig lines
+check aqueduct 8 20 enh lines
 rolled aqueduct 8 20
-check aqking 8 20 orig lines
-check aqwall 8 20 orig lines
+check aqking 8 20 enh lines
+check aqwall 8 20 enh lines
 bounced aqwall 8 8
 steep aqwall 8 1
 kept aqwall 8

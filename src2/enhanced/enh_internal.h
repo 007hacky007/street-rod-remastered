@@ -60,6 +60,7 @@ typedef struct {
     s16 opp_sx_prev;           /* DS_opp_last_sx at enh_frame_built, before opponent_draw writes it */
     s16 opp_variant;           /* DS_opp_variant */
     bool opp_mpass;            /* DS_opp_seg < DS_seg: the mirror's pass drew the opponent (the Aqueduct) */
+    s16 starter_seg;           /* DS_starter_seg at presentation */
 } EnhSnap;
 
 /* opponent_draw's front pictures 2..8 are blitted at whole bytes (clip_rect: x >> 3): the screen x their anchor
@@ -83,6 +84,7 @@ typedef struct {
     s16 before[5];             /* EnhSnap.before */
     bool opp_fixed;
     bool opp_mpass;            /* EnhSnap.opp_mpass */
+    s16 starter_seg;           /* EnhSnap.starter_seg (the Aqueduct's mirror starter) */
     bool town;
     bool exact;                /* the newest frame itself (the compare tool): the game's integer projection */
 } EnhView;
@@ -150,7 +152,7 @@ void enh_hill_consts(int row, s16 *w0, s16 *h0, s16 *w1, s16 *h1, s16 *e);
 bool enh_rail_post(int phase, int row, int seg, int n);
 /* The captured objects (enhanced.c). A cut is one id's pixels of the frame shown; its kind says how it is placed,
  * its segment (absolute) where in the band loop it is drawn. */
-enum { ENH_CUT_ROW, ENH_CUT_OPP, ENH_CUT_MIR, ENH_CUT_STARTER, ENH_CUT_STARS, ENH_CUT_CLOUDS };
+enum { ENH_CUT_ROW, ENH_CUT_OPP, ENH_CUT_MIR, ENH_CUT_STARTER, ENH_CUT_STARS, ENH_CUT_CLOUDS, ENH_CUT_MIR_STARS };
 enum { ENH_PASS_FRONT, ENH_PASS_MIRROR };
 /* Where an object stands in a view: its depth, the screen row of the road under it, and the screen x of world x
  * X as a + b X. ENH_CUT_ROW: an object on the road at the (absolute) segment seg, at its row's depth;
