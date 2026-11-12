@@ -1,11 +1,12 @@
 /* Street Rod 2's road view drawn again from the segment table (Street Rod 1's src/enhanced/enh_road.c, with
  * Street Rod 2's projection): the original's 15 rows evaluated in floating point at the smooth position, the
  * bands between them drawn as the original draws them (straight edges from row to row), the sky and the
- * horizon scrolled continuously. At a game frame's own position the result is the original's geometry. Road modes 0 (the
- * town), 1 (the street drag), 2 and 4 (the Grudge drag strip: its own flags, flat, the wide dash at the start and
- * the barrier walls) and 10h (Mulholland: its backdrop and hillsides from enh_hills2.c, the shoulders beside the
- * banks, the grass on the flat sides, the row-0 dx clamp); the objects and the opponent the game drew are drawn
- * again in the band loop at their own segment (enh_cuts_at); the mirror is drawn after it (enh_mirror2.c).
+ * horizon scrolled as sky_scroll does in exact mode, continuously in a smooth view. At a game frame's own
+ * position the result is the original's geometry. Road modes 0 (the town), 1 (the street drag), 2 and 4 (the
+ * Grudge drag strip: its own flags, flat, the wide dash at the start and the barrier walls) and 10h (Mulholland:
+ * its backdrop and hillsides from enh_hills2.c, the shoulders beside the banks, the grass on the flat sides, the
+ * row-0 dx clamp); the objects and the opponent the game drew are drawn again in the band loop at their own
+ * segment (enh_cuts_at); the mirror is drawn after it (enh_mirror2.c).
  *
  * Projection (road_proj_x / road_proj_y, src2/game/race_road.c), a point at world x X, height Y, on the road
  * at continuous segment position s, seen from position pos:

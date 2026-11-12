@@ -31,14 +31,19 @@ What differs from upstream:
   the chip's music voices and the speaker's music silent; the effects sound as before. The songs are read from
   the game files at run time; nothing derived from them is stored.
 * The enhanced race view (`src2/enhanced`, ENHANCED.md section 9): hooks in `race_drive.c` (begin, end),
-  `race_road.c` (`road_frame`: the frame's state after `road_project_front`, the layers around the sky, the rows'
-  objects and the opponent, the foreground from the mirror on; `road_page_flip`: presented) and `race_phys.c`
-  (the physics step); the written / foreground / object layers in `platform/ega.c` and `vga.c`; the options in
-  `main.c`. `src2/remaster/` holds stand-ins until Street Rod 2 has remastered pictures.
+  `race_road.c` (`road_frame`: the frame's state after the projections; the sky's blits and Mulholland's
+  backdrop in the SKY layer; the rows' objects, the opponent, the mirror's rows and its starter figure tagged by
+  their id; Mulholland's guard rails and bridges (`mulholland_extras_front`, `_mirror`) drawn as background; the
+  mirror's glass into the background, its frame and mount and the hood and cockpit after it the foreground;
+  `road_page_flip`: presented) and `race_phys.c` (the physics step); the written / foreground / object / SKY
+  layers in `platform/ega.c` and `vga.c`; the options in `main.c`. `src2/remaster/` holds stand-ins until
+  Street Rod 2 has remastered pictures.
 * Deliberate changes are marked `ENH:`, port fixes `PORT:` (as upstream marks its own).
 
 Developer aids kept from upstream: `SR_TRACE`, `SR_KEYS`, `SR_DEBUG_RACE`, `SR_DEBUG_END`, `SR_DEBUG_OPP`,
-`SR_SEED`, `SR_SNAPSHOT_DIR`/`SR_SNAPSHOT_MS`, `SR_AUDIO_DUMP`/`SR_AUDIO_WAV`, `--run-ms N`. The smoke paths
+`SR_SEED`, `SR_SNAPSHOT_DIR`/`SR_SNAPSHOT_MS`, `SR_AUDIO_DUMP`/`SR_AUDIO_WAV`, `--run-ms N`. The port adds
+`SR_DEBUG_POLICE=<seg>` (`race_phys.c`): the police come out at that segment, from 8 segments behind, in every
+Mulholland race not against the King, for the enhanced view's check; unset, it changes nothing. The smoke paths
 run as the test `sr2_smoke` (`tests/sr2_smoke.py`).
 
 The rules as written for the faithful port (`sr2port/PORTING.md` at `9a3d488`); its Layout section describes

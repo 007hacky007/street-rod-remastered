@@ -41,9 +41,9 @@ like the Street Rod and Test Drive III launchers it is modelled on.
   smooth, high-resolution road view, the default) or original (`--classic`); **Resolution** of the picture, 640 × 400 to 2560 × 1600 (`--res-scale`, default 1280 × 800);
   **Anti-aliasing** off, 2 × 2 (default), 3 × 3 or 4 × 4 (`--aa`); **Drives through town enhanced too**
   (`--town`). The last three are greyed out with the original graphics.
-* Street Rod 2 doesn't have the remastered art yet, and its enhanced race view covers the town and the street
-  drags so far (the Grudge drag strip, Mulholland and the Aqueduct are shown as the original): Art is greyed
-  for it and a note says so.
+* Street Rod 2 doesn't have the remastered art yet, and its enhanced race view covers the town, the street
+  drags, the Grudge drag strip, Mulholland and the rear-view mirror so far (the Aqueduct is shown as the
+  original): Art is greyed for it and a note says so (`GameTraits::pictureNote`).
 * **Play** starts the game; the launcher stays open.
 
 ## On a Mac

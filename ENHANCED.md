@@ -256,27 +256,56 @@ The road ahead exists in the table, so the geometry comes almost for free. The w
 
 `src2/enhanced/` gives Street Rod 2 the same stage 1: the same options (`--classic`, `--res-scale`, `--aa`,
 `--motion-delay`, `--town`), the same layers, and the drawing core shared with Street Rod 1 (`common/enhanced`:
-`enh_raster.c`, `enh_sprite.c`). Done: the town drive (road mode 0) and the street drag (mode 1). The Grudge drag
-strip (modes 2 and 4), Mulholland (10h), the Aqueduct (8) and the mirror are still the original picture, scaled.
+`enh_raster.c`, `enh_sprite.c`). Done: the town drive (road mode 0), the street drag (1), the Grudge drag strip
+(2 and 4), Mulholland (10h) and the rear-view mirror in each of them. The Aqueduct (8), its front view and its
+mirror, is still the original picture, scaled.
 
 * **Road** (`enh_road2.c`): Street Rod 2's own 15 rows, row 0 at depth 4, row k at 8k + 4 - q, row 14 fixed at
   116, with its projection (half Street Rod 1's height term, the moving eye `DS_cam_y`, `DS_view_bounce_y`), its
   edges (the zero-width quirk of `edges_of`) and its bands drawn as the original draws them: straight from row
   to row, walls and storeys filled inclusive of their last row, grass across a plain band after the walls, the
-  town walls' storey ends and side streets. Between frames the position within a segment moves smoothly; the
+  town walls' storey ends and side streets, the centre dash as wide as the game's per-band table, the road beyond
+  a crest hidden as the original hides it. Between frames the position within a segment moves smoothly; the
   snapshot's position is quantised as the projection sees it (`substep >> 3`, 1/8 segment) and the heading kept
-  absolute, so at a game frame's own position the result is the original's geometry.
+  absolute, so at a game frame's own position the result is the original's geometry. Polygons (walls, hillsides,
+  rails, posts) are filled as `poly_fill` fills them, edge pixels included (`enh_poly2.c`); in exact mode their
+  integer vertices are first clipped by a port of `clip_polygon`. Screen-space constants (hillside peaks, post
+  widths, truss thickness) step at the row index in both modes, as the original's do.
+* **The Grudge drag strip** (modes 2 and 4): its own flags, flat (no height anywhere in the view), the wide dash
+  at the start, and the barrier walls in their 5-segment pink and white blocks.
+* **Mulholland** (10h, `enh_hills2.c`): the backdrop (`road_draw_sky_mulholland`: the valley at road level, its
+  dy from the climb 4 segments back; below it colour 0Eh), the hillsides as the game's polygons vertex for vertex,
+  the shoulders beside the banks, the grass on the flat sides, the row-0 dx clamp. The guard rails, their posts
+  and the bridges' trusses are drawn as geometry too: the game's polygons and 1-px lines, the posts' parity from
+  the rail phase. A cliff fall (`DS_fallen`) shows the original's picture.
+* **Mirror** (`enh_mirror2.c`): a second pass of the same renderer with the mirror's projection, in its glass
+  F2h..13Dh x 16h..2Ah; its frame and mount stay the game's pixels. The original's quirks are kept in the exact
+  and the smooth view alike, so that its picture stays the original's: rows 5..7 frozen at depth 40, 48, 56
+  within a segment (the k == 5 depth freeze), a band's flags one segment off, the banks read forward and YK
+  written twice per row, the strip's walls coloured by the front's phase, Mulholland's shoulders not stepped over
+  a band, the finish band white only from segment 169h (3ADh in Mulholland). The dashboard's side mirror (the
+  page-0 copy of `mirror_finish`) stays the original's picture, as in Street Rod 1.
 * **Objects**: not drawn again from the flags. A third display layer (`EGA_LAYER_OBJ`) tags every pixel the game
-  draws for a row's objects with the row (and the opponent's with `ENH_OBJ_OPP`); nearer road drawn later clears
-  the tags. When the frame is shown, each row's pixels are cut out of the page and drawn again, moved and scaled
-  from the row's place in the frame to its smooth place (the opponent from its own position and lane). All of
-  Street Rod 2's object logic (shapes and their sizes, signs, billboards, banners, the start tree, the police)
-  stays the game's own.
+  draws for an object with its id, one table for the front view, the mirror and the Aqueduct: 1..14 the front
+  rows, 15 the opponent (or the police in its slot), 16..22 the mirror's rows 1..7, 23 the mirror's starter
+  figure (24 and 25 are kept for the Aqueduct's stars and clouds). Nearer road drawn later clears the tags. When
+  the frame is shown, each id's pixels are cut out of the page and drawn again in the band loop at their own
+  segment, moved and scaled from their place in the frame to their smooth place (the opponent from its own
+  position and lane, by the place it was drawn at): band, row objects, rails, opponent, walls, in the original's
+  order, so nearer bands, walls and hillsides cover farther cuts. All of Street Rod 2's object logic (shapes and
+  their sizes, signs, billboards, banners, the start tree, the police) stays the game's own, and every drawing
+  routine of the game still runs: the enhanced view only captures.
 * **Check** (`enh_compare.c`): `SR_ENH_COMPARE=<file>` draws every enhanced frame again at scale 1, aa 1, from that
-  frame's state without interpolation and with the game's integer rounding, and compares it with the page shown:
-  the road's edges per row (from the ground down to the split; an edge under the original's foreground is not
-  measured) and the mismatched pixels (from 12h in town, from the horizon in a race, whose sky turns slower than
-  the original's as in Street Rod 1). `SR_ENH_COMPARE_ROWS=1` logs the rows that differ,
-  `SR_ENH_COMPARE_DUMP=<dir>` writes the original and the enhanced view side by side. The test
-  `sr2_enh_compare` (label `slow`) runs a drag and a town drive: road edges within 1 px in at least 95 % of the
-  frames, the median frame within 10 per mille of mismatched pixels.
+  frame's state without interpolation and with the game's integer rounding (the sky scrolled as `sky_scroll`
+  does), and compares it with the page shown, for the front view and for the mirror's glass apart. It measures
+  the road's edges per row (from the ground down to the split, in the mirror from its far row; runs of road
+  colour shorter than 3 px are not an edge; pixels under the original's foreground and object pixels are not
+  measured, and the sky's (the SKY layer, `EGA_TAG_SKY`) are never taken for the road), the mismatched pixels
+  (from 12h in every mode), the enhanced exact rows against the game's row tables (front and mirror), and each
+  cut's re-projection: the old cut placed in the new frame by the drawing's own mapping against the new cut's
+  bottom (the opponent's centre too), for cuts not cut off or partly hidden. The log has a line per frame and a
+  summary per road mode. `SR_ENH_COMPARE_ROWS=1` logs the rows that differ, `SR_ENH_COMPARE_DUMP=<dir>` writes the
+  original and the enhanced view side by side. The test `sr2_enh_compare` (label `slow`) drives each race kind,
+  the town and the police (`SR_DEBUG_POLICE`), and judges each enhanced mode: road edges within 1 px in every
+  frame, front and mirror, the median frame within 10 per mille of mismatched pixels, the row tables exactly,
+  the objects within 1 px, the mirror's glass drawn; the Aqueduct's mode 8 must log no frames.

@@ -377,8 +377,7 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     pictureBox->Add(pgrid, 0, wxLEFT | wxRIGHT | wxTOP, gap);
     town_ = new wxCheckBox(pb, wxID_ANY, "Drives through &town enhanced too");
     pictureBox->Add(town_, 0, wxALL, gap);
-    pictureNote_ = GreyText(pb, "Street Rod 2: the art, and the race view of the Grudge drag strip, Mulholland\n"
-                                "and the Aqueduct are original for now.");
+    pictureNote_ = GreyText(pb, wxString::FromUTF8(Traits(Game::SR2).pictureNote));
     pictureBox->Add(pictureNote_, 0, wxLEFT | wxRIGHT | wxBOTTOM, gap);
     graphics_->Bind(wxEVT_CHOICE, [this](wxCommandEvent&) { UpdateState(); });
 
@@ -626,7 +625,8 @@ void LauncherFrame::UpdateState() {
     resolution_->Enable(enhanced);
     aa_->Enable(enhanced);
     town_->Enable(enhanced);
-    pictureNote_->Show(current_ == Game::SR2);
+    pictureNote_->SetLabel(wxString::FromUTF8(t.pictureNote));
+    pictureNote_->Show(t.pictureNote[0] != '\0');
     book_->GetPage(PAGE_MAIN)->Layout();
     if (book_->GetSelection() == PAGE_MAIN) FitPage();  // the notes change the page's size
 }

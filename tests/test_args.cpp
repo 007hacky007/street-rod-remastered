@@ -76,12 +76,14 @@ static void traits_table() {
     CHECK(wxString(a.folder) == "Game");
     CHECK(wxString(a.section) == "Game");
     CHECK(a.cars && a.autoDrive && a.enhanced && a.art && a.remasteredMusic && a.gearKeys && !a.soundDevice);
+    CHECK(wxString(a.pictureNote).empty());
     const GameTraits& b = Traits(Game::SR2);
     CHECK(wxString(b.name) == "Street Rod 2");
     CHECK(wxString(b.program) == "streetrod2-enhanced");
     CHECK(wxString(b.folder) == "Game2");
     CHECK(wxString(b.section) == "Game2");
     CHECK(b.soundDevice && b.remasteredMusic && b.enhanced && !b.cars && !b.autoDrive && !b.art && !b.gearKeys);
+    CHECK(wxString(b.pictureNote) == "Street Rod 2: the art, and the race view of the Aqueduct are original for now.");
 }
 
 static void game_from_setting() {

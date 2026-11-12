@@ -1,6 +1,6 @@
 #pragma once
 /* The enhanced view's polygons as Street Rod 2's road_poly_fill draws them (clip_polygon, then poly_fill with its
- * edge pixels): the barrier walls, the town's faces, and later the hillsides and the rails. */
+ * edge pixels): the barrier walls, the town's faces, Mulholland's hillsides, rails and posts; and its 1-px lines. */
 #include "types.h"
 
 /* clip_polygon's Sutherland-Hodgman (race_gfx.c) on the clip xmin..xmax, ymin..ymax (inclusive), in the order xmin,

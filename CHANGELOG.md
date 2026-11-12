@@ -12,9 +12,11 @@
 - Remastered music for Street Rod 2 (`--music remastered`, the launcher's default): the same small band plays
   its AdLib songs note for note as the game's own sequencer plays them, or with the PC speaker its speaker
   tune through Street Rod 1's arrangement. The sound effects stay AdLib or PC speaker.
-- Street Rod 2's enhanced race view, first part: the town drives and the street drags at high resolution, with
-  smooth motion and anti-aliasing (`--classic`, `--res-scale`, `--aa`, `--motion-delay`, `--town`, as Street
-  Rod 1). The other race kinds and the mirror are the original picture for now.
+- Street Rod 2's enhanced race view: the town drives, the street drags, the Grudge drag strip and Mulholland
+  (its hills, guard rails, bridges and the police) at high resolution, with smooth motion and anti-aliasing
+  (`--classic`, `--res-scale`, `--aa`, `--motion-delay`, `--town`, as Street Rod 1), and the rear-view mirror
+  in each of them, its quirks kept. The dashboard's side mirror stays the original's. The Aqueduct is the
+  original picture for now.
 - The host is shared by both games (`common/`); Street Rod 1's compiled game code is unchanged.
 
 ## 0.4.2

@@ -24,6 +24,7 @@ struct GameTraits {
     bool art;               // the remastered pictures (--remaster-dir)
     bool remasteredMusic;   // the band (--music remastered)
     bool gearKeys;          // the port's A / Z gear keys
+    const char* pictureNote;  // the Picture box's note on what is still original, "" for none
 };
 
 const GameTraits& Traits(Game game);
