@@ -44,6 +44,8 @@ void enh_draw_fg(bool fg);
  * of their row (or of the opponent). */
 #define ENH_OBJ_OPP 15
 void enh_draw_objects(int id);
+/* road_frame: the rectangle x0..x1, y0..y1 (inclusive) of the back page stays the original's picture. */
+void enh_mark_fg(int x0, int y0, int x1, int y1);
 
 /* road_page_flip (race_road.c): the frame just drawn is now the shown page. */
 void enh_frame_presented(void);

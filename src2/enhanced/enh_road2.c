@@ -312,7 +312,7 @@ void enh_draw_road(const EnhView *v)
 
 /* ---------------------------------------------------------------- objects */
 
-EnhObjGeo enh_obj_geo(const EnhView *v, int id)
+EnhObjGeo enh_obj_geo(const EnhView *v, int seg, int sprite)
 {
     EnhObjGeo g = { 0, 0, 0, 0, false };
     Cam c;
@@ -326,15 +326,19 @@ EnhObjGeo enh_obj_geo(const EnhView *v, int id)
     c.exact = false;
     Row r;
     double lat_shift = 0;
-    if (id == ENH_OBJ_OPP) {                                /* the opponent: at its own position on the road */
-        r.z = 8.0 * (v->opp_pos - v->pos) + 4.0;
+    if (seg < 0) {                                          /* the opponent (opponent_draw) */
+        double d = 64.0 * (v->opp_pos - v->pos), z = d / 8.0;
+        if (sprite == 0) z += 16;
+        if (z < -2 && sprite == 2) z += 8;
+        r.z = fabs(z) + 4.0;
         r.dx = c.hv - interp(&c, v->opp_pos, yaw_rel);
         r.dy = c.hpos - interp(&c, v->opp_pos, hgt_rel);
         lat_shift = v->opp_lat;                             /* x relative to the opponent's lane */
-    } else if (id >= 1 && id <= FAR_ROWS) {
-        r = row_k(&c, id);
-    } else
-        return g;
+    } else {                                                /* on the road at segment seg */
+        r.z = 8.0 * (seg - v->pos) + 4.0;
+        r.dx = c.hv - yaw_rel(&c, seg);
+        r.dy = c.hpos - hgt_rel(&c, seg);
+    }
     if (r.z < 1.0) return g;
     g.z = r.z;
     g.yg = py(&c, &r, Y_ROAD);

@@ -1,8 +1,8 @@
 #!/bin/sh
 # Street Rod 2's enhanced race view against the original frame (SR_ENH_COMPARE, src2/enhanced/enh_compare.h):
 # headless drives of each kind with the demo autopilot; the enhanced kinds must match (road edges within
-# 1 px in at least 95 % of the frames, the median frame within 10 permille of mismatched pixels), the others
-# must not be drawn enhanced.
+# 1 px in every frame, the median frame within 10 permille of mismatched pixels), be on the screen (composed at
+# least once per game frame) and leave the mirror the game's; the others must not be drawn enhanced.
 #   test_sr2_enh_compare.sh <streetrod2-enhanced> <SR2 game dir>
 set -u
 exe=$1 dir=$2
@@ -27,11 +27,11 @@ wait
 
 for k in drag cruise; do
     s=$(summary $k)
-    n=$(field "$s" frames) m=$(field "$s" mismatch_p50)
-    good=$(awk '/^frame / && $10 <= 1 { g++ } END { print g + 0 }' "$tmp/$k.cmp" 2>/dev/null)
-    if [ -n "$n" ] && [ "$n" -ge 20 ] && [ $((good * 100)) -ge $((n * 95)) ] && [ "$m" -le 10 ]; then
-        echo "ok   $k ($good of $n frames within 1 px; $s)"
-    else echo "FAIL $k (${good:-0} of ${n:-0} frames within 1 px; ${s:-no log})"; fail=1; fi
+    n=$(field "$s" frames) e=$(field "$s" worst_edge) m=$(field "$s" mismatch_p50)
+    mc=$(field "$s" mirror_cov_max) sh=$(field "$s" shown)
+    if [ -n "$n" ] && [ "$n" -ge 20 ] && [ "$e" -le 1 ] && [ "$m" -le 10 ] && [ "$mc" = 0 ] && [ "$sh" -ge "$n" ]; then
+        echo "ok   $k ($s)"
+    else echo "FAIL $k (${s:-no log})"; fail=1; fi
 done
 # Grudge (modes 2, 4) and Mulholland (10h = 16) are not enhanced yet; their runs also drive through town (mode 0).
 for k in grudge:2:4 mulholland:16:16; do

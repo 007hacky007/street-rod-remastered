@@ -100,6 +100,70 @@ static void sr2_enh_object_tags(void)
     ega_set_layer(EGA_LAYER_OFF);
 }
 
+/* A foreground write over an object clears its tags: the A-pillar or the hood over an object stays the
+ * foreground's, not part of the object's cut. */
+static void sr2_enh_fg_clears_tags(void)
+{
+    enh_init(true, 1, 2, 100, true);
+    ega_init();
+    vga_mode_0d();
+    vga_out(0x3C4, 2); vga_out(0x3C5, 0x0F);
+    vga_out(0x3CE, 8); vga_out(0x3CF, 0xFF);
+    ega_clear_obj(0, 0x2000);
+    ega_set_layer(EGA_LAYER_BG);
+    vga_wr(30, 0x00);
+    ega_set_obj(5);
+    ega_set_layer(EGA_LAYER_OBJ);
+    vga_wr(30, 0xFF);
+    ega_set_layer(EGA_LAYER_FG);
+    vga_out(0x3CE, 8); vga_out(0x3CF, 0x0F);
+    (void)vga_rd(30);                               /* the latches keep the masked pixels */
+    vga_wr(30, 0x00);                               /* the foreground over the right four */
+    const u8 *t = ega_obj();
+    CHECK(t[30 * 8 + 0] == 5 && t[30 * 8 + 3] == 5);
+    CHECK(t[30 * 8 + 4] == 0 && t[30 * 8 + 7] == 0);
+    ega_set_layer(EGA_LAYER_OFF);
+}
+
+static EnhView view_at(double pos)
+{
+    EnhView v;
+    memset(&v, 0, sizeof v);
+    v.pos = pos;
+    v.lat = 0xA00;
+    v.cam_y = 0x76C;
+    v.opp_pos = pos + 5;
+    v.opp_lat = 0x900;
+    return v;
+}
+
+/* An object stays at its own segment when the view crosses into the next: its depth moves on smoothly. */
+static void sr2_enh_obj_geo_continuous(void)
+{
+    EnhView a = view_at(65.99), b = view_at(66.01);
+    EnhObjGeo ga = enh_obj_geo(&a, 75, -1), gb = enh_obj_geo(&b, 75, -1);
+    printf("  z %.3f -> %.3f\n", ga.z, gb.z);
+    CHECK(ga.ok && gb.ok);
+    CHECK(SDL_fabs(ga.z - gb.z) < 0.5);
+}
+
+/* The opponent at the original's depth (opponent_draw): |d / 8| + 4, with 16 more for the side view (picture
+ * 0) and 8 more for the rear view close behind (picture 2, d / 8 < -2). */
+static void sr2_enh_opp_depth(void)
+{
+    EnhView v = view_at(100.0);
+    v.opp_pos = 100.0 - 40.0 / 64;                 /* d = -40: just behind */
+    EnhObjGeo g = enh_obj_geo(&v, -1, 2);
+    printf("  rear, d -40: ok %d z %.2f\n", g.ok, g.z);
+    CHECK(g.ok && SDL_fabs(g.z - 7.0) < 1e-6);
+    v.opp_pos = 100.0 + 8.0 / 64;                  /* d = 8, the side view */
+    g = enh_obj_geo(&v, -1, 0);
+    CHECK(g.ok && SDL_fabs(g.z - 21.0) < 1e-6);
+    v.opp_pos = 103.0;                             /* d = 192, ahead */
+    g = enh_obj_geo(&v, -1, 5);
+    CHECK(g.ok && SDL_fabs(g.z - 28.0) < 1e-6);
+}
+
 /* As Street Rod 1: out-of-range values are clamped; res scale x aa stays within 16 samples. */
 static void sr2_enh_options(void)
 {
@@ -164,7 +228,7 @@ static void sr2_enh_compare_log(void)
     SDL_snprintf(path, sizeof path, "%stest_sr2_enh_compare.log", SDL_GetBasePath());
     SDL_setenv_unsafe("SR_ENH_COMPARE", path, 1);
     CHECK(enh_compare_open());
-    EnhCompare a = { 84, 80, 1, 26880, 27 }, b = { 84, 82, 0, 26880, 54 };
+    EnhCompare a = { 84, 80, 1, 26880, 27, 0 }, b = { 84, 82, 0, 26880, 54, 0 };
     enh_compare_frame(1, &a);
     enh_compare_frame(1, &b);
     enh_compare_close();
@@ -174,9 +238,9 @@ static void sr2_enh_compare_log(void)
     CHECK(text != NULL);
     if (!text) return;
     printf("%s", text);
-    CHECK(strstr(text, "frame 1 mode 1 rows 84 edge_rows 80 edge_err_max 1 mismatch 1\n") != NULL);
-    CHECK(strstr(text, "frame 2 mode 1 rows 84 edge_rows 82 edge_err_max 0 mismatch 2\n") != NULL);
-    CHECK(strstr(text, "frames 2 worst_edge 1 mismatch_p50 1 mismatch_max 2\n") != NULL);
+    CHECK(strstr(text, "frame 1 mode 1 rows 84 edge_rows 80 edge_err_max 1 mismatch 1 mirror_cov 0\n") != NULL);
+    CHECK(strstr(text, "frame 2 mode 1 rows 84 edge_rows 82 edge_err_max 0 mismatch 2 mirror_cov 0\n") != NULL);
+    CHECK(strstr(text, "frames 2 worst_edge 1 mismatch_p50 1 mismatch_max 2 mirror_cov_max 0 shown 0\n") != NULL);
     SDL_free(text);
     SDL_RemovePath(path);
 }
@@ -195,6 +259,9 @@ int main(int argc, char **argv)
     RUN(sr2_enh_layers);
     RUN(sr2_enh_options);
     RUN(sr2_enh_object_tags);
+    RUN(sr2_enh_fg_clears_tags);
+    RUN(sr2_enh_obj_geo_continuous);
+    RUN(sr2_enh_opp_depth);
     RUN(sr2_enh_compare_rows);
     RUN(sr2_enh_compare_log);
     host_shutdown();

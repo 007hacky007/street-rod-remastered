@@ -38,7 +38,16 @@ static int compared;           /* frames the compare tool has logged */
 /* The objects of the frame shown: per id (row 1..14, the opponent), the pixels the game drew in the object
  * layer, cut out of the page, and where that row stood in the frame's view. */
 #define OBJ_IDS (ENH_OBJ_OPP + 1)
-typedef struct { EnhImage img; int x0, y0; EnhObjGeo geo; bool used; } ObjCut;
+typedef struct {
+    EnhImage img;
+    int x0, y0;
+    int seg;                   /* the row's absolute segment, -1 for the opponent */
+    int sprite;                /* the opponent's picture (DS_opp_sprite) */
+    bool fixed;                /* drawn where the frame had it: the opponent's side views (opponent_draw places them
+                                  at fixed screen spots) */
+    EnhObjGeo geo;
+    bool used;
+} ObjCut;
 static ObjCut cuts[OBJ_IDS];
 static EnhView cut_view;
 
@@ -151,6 +160,15 @@ void enh_draw_begin(void)
     ega_set_layer(EGA_LAYER_BG);
 }
 
+void enh_mark_fg(int x0, int y0, int x1, int y1)
+{
+    if (!active) return;
+    u16 page = DSS(DS_back_page) == 1 ? 0x2000 : 0x4000;
+    u8 *fgm = (u8 *)ega_fg();
+    for (int y = y0; y <= y1; y++)
+        for (int x = x0; x <= x1; x++) fgm[(u16)(page + y * EGA_BYTES_PER_LINE + (x >> 3))] |= (u8)(0x80 >> (x & 7));
+}
+
 void enh_draw_objects(int id)
 {
     if (!active) return;
@@ -179,7 +197,11 @@ static void capture_objects(void)
     for (int id = 1; id < OBJ_IDS; id++) {
         if (x1[id] < 0) continue;
         ObjCut *c = &cuts[id];
-        c->geo = enh_obj_geo(&cut_view, id);
+        bool opp = id == ENH_OBJ_OPP;
+        c->seg = opp ? -1 : (int)floor(cut_view.pos) + id;
+        c->sprite = opp ? DSS(DS_opp_sprite) : 0;
+        c->fixed = opp && (c->sprite == 0 || c->sprite == 1);
+        c->geo = enh_obj_geo(&cut_view, c->seg, c->sprite);
         if (!c->geo.ok) continue;
         int w = x1[id] - x0[id] + 1, h = y1[id] - y0[id] + 1;
         c->img.px = SDL_realloc(c->img.px, (size_t)w * h);
@@ -208,7 +230,7 @@ static void draw_objects(const EnhView *v)
     EnhObjGeo now[OBJ_IDS];
     for (int id = 1; id < OBJ_IDS; id++) {
         if (!cuts[id].used) continue;
-        now[id] = enh_obj_geo(v, id);
+        now[id] = cuts[id].fixed ? cuts[id].geo : enh_obj_geo(v, cuts[id].seg, cuts[id].sprite);
         if (!now[id].ok) continue;
         int k = n++;
         while (k > 0 && now[order[k - 1]].z < now[id].z) { order[k] = order[k - 1]; k--; }
@@ -291,8 +313,9 @@ static void compare_frame(void)
     enh_buf_setup();
     enh_draw_road(&v);
     draw_objects(&v);
-    static u8 orig[200 * 320], enh[200 * 320], cov[200 * 320];
-    const u8 *fgm = ega_fg();
+    static u8 orig[200 * 320], enh[200 * 320], cov[200 * 320], cov_edge[200 * 320];
+    const u8 *fgm = ega_fg(), *tag = ega_obj();
+    int mirror_cov = 0;
     for (int y = ENH_VIEW_Y0; y < ENH_VIEW_Y1; y++) {
         u16 row = (u16)(shown_start + y * EGA_BYTES_PER_LINE);
         for (int x = 0; x < 320; x++) {
@@ -302,6 +325,9 @@ static void compare_frame(void)
             orig[y * 320 + x] = (u8)c;
             enh[y * 320 + x] = enh_buf.px[(y - ENH_VIEW_Y0) * enh_buf.w + x];
             cov[y * 320 + x] = !(fgm[b] >> bit & 1);
+            /* the road's edges are measured on the road itself: an object next to the edge is not the edge */
+            cov_edge[y * 320 + x] = cov[y * 320 + x] && !tag[(u32)b * 8 + (x & 7)];
+            if (cov[y * 320 + x] && x >= 0xF0 && y <= 0x2C) mirror_cov++;
         }
     }
     enh_opt = keep;
@@ -314,9 +340,10 @@ static void compare_frame(void)
     int ground = SDL_clamp((int)ceil(enh_ground_y), ENH_VIEW_Y0, y_end);
     EnhCompare edges;
     enh_compare_rows(orig, enh, cov, v.town ? ENH_VIEW_Y0 : ground, y_end, enh_road_colours, 2, &c);
-    enh_compare_rows(orig, enh, cov, ground, y_end, enh_road_colours, 2, &edges);
+    enh_compare_rows(orig, enh, cov_edge, ground, y_end, enh_road_colours, 2, &edges);
     c.edge_rows = edges.edge_rows;
     c.edge_err_max = edges.edge_err_max;
+    c.mirror_cov = mirror_cov;
     enh_compare_frame(v.mode, &c);
     compared++;
     /* SR_ENH_COMPARE_DUMP=<dir>: every 40th frame, the original (left) and the enhanced view (right) */
@@ -353,5 +380,6 @@ bool enh_compose(u32 *xrgb, const u32 rgb[16])
     draw_objects(&v);
     int y_end = SDL_min(ENH_VIEW_Y1, ega_line_compare());
     enh_resolve(xrgb, rgb, 16, shown_start, y_end);
+    enh_compare_shown();
     return true;
 }

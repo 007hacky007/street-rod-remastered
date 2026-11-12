@@ -256,8 +256,8 @@ void road_page_flip(void)
         DSS(DS_back_page) = DSS(DS_shown_page);
         DSS(DS_shown_page) = t;
         DSW(DS_draw_seg) = DSS(DS_back_page) == 1 ? 0xA200 : 0xA400;
+        enh_frame_presented();                              /* ENH: before the page is shown (ega_show_page composes) */
         ega_show_page(DSS(DS_shown_page));
-        enh_frame_presented();                              /* ENH */
     } else {                                                /* other drivers (parked) */
         Rect r;
         r.w = DSS(DS_view_copy_rect + 0);  r.h = DSS(DS_view_copy_rect + 2);
@@ -1457,6 +1457,7 @@ void road_frame(void)
         ds_far_wr(DS_aq_flags_ptr, far_make(SEG(TRK_SEG), (u16)(0x6570 - 2 * DSS(DS_seg))));
         aq_draw_mirror();
     } else { road_set_seg_ptrs(DSS(DS_seg)); road_draw_mirror(); }
+    enh_mark_fg(0xF0, 0x12, 0x13F, 0x2C);                   /* ENH: the whole mirror stays the game's (its backdrop is opaque) */
     road_fillmode_end();
     road_draw_hood_overlay();
     if (DSB(DS_racing) && !(MODE & 6)) road_draw_starter_slide();

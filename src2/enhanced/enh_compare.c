@@ -27,7 +27,7 @@ static bool edges(const u8 *row, const u8 *cov, const u8 *road, int n, int *l, i
 void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, int y1, const u8 *road_colours,
                       int n_road, EnhCompare *out)
 {
-    EnhCompare c = { 0, 0, 0, 0, 0 };
+    EnhCompare c = { 0, 0, 0, 0, 0, 0 };
     for (int y = y0; y < y1; y++) {
         const u8 *o = orig + (size_t)y * 320, *e = enh + (size_t)y * 320, *k = covered + (size_t)y * 320;
         c.rows++;
@@ -61,7 +61,7 @@ void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, 
     *out = c;
 }
 
-static int frames, worst_edge;
+static int frames, worst_edge, mirror_cov_max, shown;
 static int *permille;              /* every frame's mismatch, for the median */
 static int permille_cap;
 
@@ -71,7 +71,7 @@ bool enh_compare_open(void)
     if (!p || !*p) return false;
     log_file = fopen(p, "w");
     log_rows = SDL_getenv("SR_ENH_COMPARE_ROWS") != NULL;
-    frames = worst_edge = 0;
+    frames = worst_edge = mirror_cov_max = shown = 0;
     return log_file != NULL;
 }
 
@@ -87,10 +87,13 @@ void enh_compare_frame(int mode, const EnhCompare *c)
     }
     permille[frames++] = pm;
     if (c->edge_err_max > worst_edge) worst_edge = c->edge_err_max;
-    fprintf(log_file, "frame %d mode %d rows %d edge_rows %d edge_err_max %d mismatch %d\n", frames, mode, c->rows,
-            c->edge_rows, c->edge_err_max, pm);
+    if (c->mirror_cov > mirror_cov_max) mirror_cov_max = c->mirror_cov;
+    fprintf(log_file, "frame %d mode %d rows %d edge_rows %d edge_err_max %d mismatch %d mirror_cov %d\n", frames,
+            mode, c->rows, c->edge_rows, c->edge_err_max, pm, c->mirror_cov);
     fflush(log_file);
 }
+
+void enh_compare_shown(void) { if (log_file) shown++; }
 
 static int cmp_int(const void *a, const void *b) { return *(const int *)a - *(const int *)b; }
 
@@ -103,7 +106,8 @@ void enh_compare_close(void)
         p50 = permille[(frames - 1) / 2];
         max = permille[frames - 1];
     }
-    fprintf(log_file, "frames %d worst_edge %d mismatch_p50 %d mismatch_max %d\n", frames, worst_edge, p50, max);
+    fprintf(log_file, "frames %d worst_edge %d mismatch_p50 %d mismatch_max %d mirror_cov_max %d shown %d\n", frames,
+            worst_edge, p50, max, mirror_cov_max, shown);
     fclose(log_file);
     log_file = NULL;
 }

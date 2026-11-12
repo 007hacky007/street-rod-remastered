@@ -31,10 +31,12 @@ bool enh_view_newest(EnhView *v);
 
 /* enh_road2.c: modes 0 (town) and 1 (street drag). */
 void enh_draw_road(const EnhView *v);
-/* Where an object of row id (1..14) or the opponent (ENH_OBJ_OPP) stands in a view: its depth, the screen row
- * of the road under it, and the screen x of world x X as a + b X. */
+/* Where an object stands in a view: its depth, the screen row of the road under it, and the screen x of world x
+ * X as a + b X. seg >= 0: an object on the road at that (absolute) segment; seg < 0: the opponent, at the depth
+ * opponent_draw gives its picture `sprite` (|d / 8| + 4, 16 more for the side view 0, 8 more for the rear view
+ * 2 close behind), x relative to its lane. */
 typedef struct { double z, yg, a, b; bool ok; } EnhObjGeo;
-EnhObjGeo enh_obj_geo(const EnhView *v, int id);
+EnhObjGeo enh_obj_geo(const EnhView *v, int seg, int sprite);
 
 /* The road colours of the compare tool's edges. */
 extern const u8 enh_road_colours[2];

@@ -11,6 +11,7 @@ typedef struct {
     int edge_err_max;   /* the largest difference of the road's left or right edge, px */
     int pixels;         /* covered pixels */
     int mismatched;     /* covered pixels whose colour differs */
+    int mirror_cov;     /* covered pixels in the mirror's rectangle (must be none: the mirror stays the game's) */
 } EnhCompare;
 
 /* orig, enh: 320-wide rows of palette indices, rows y0..y1; covered: nonzero where the enhanced view replaces
@@ -23,4 +24,5 @@ void enh_compare_rows(const u8 *orig, const u8 *enh, const u8 *covered, int y0, 
 bool enh_compare_open(void);
 bool enh_compare_on(void);
 void enh_compare_frame(int mode, const EnhCompare *c);
+void enh_compare_shown(void);  /* a composed picture showed the enhanced view (the summary's "shown") */
 void enh_compare_close(void);

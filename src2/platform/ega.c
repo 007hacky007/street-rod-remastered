@@ -111,6 +111,8 @@ void ega_mark_written(u16 offset, u8 pixels, u8 changed)
         for (int b = 0; b < 8; b++) if (changed >> (7 - b) & 1) obj[(u32)offset * 8 + b] = obj_id;
     } else if (layer == EGA_LAYER_BG) {
         for (int b = 0; b < 8; b++) if (pixels >> (7 - b) & 1) obj[(u32)offset * 8 + b] = 0;
+    } else if (layer == EGA_LAYER_FG) {              /* the foreground over an object: no longer the object's */
+        for (int b = 0; b < 8; b++) if (changed >> (7 - b) & 1) obj[(u32)offset * 8 + b] = 0;
     }
 }
 void ega_set_obj(u8 id) { obj_id = id; }
