@@ -40,7 +40,7 @@
 
 ## Review Focus
 
-1. A frame where the game draws no new front view must show the original picture, never a stale enhanced view. Two cases: after a Mulholland cliff fall (`DS_fallen`: `road_draw_front` returns before `enh_draw_begin`), and when a message box is drawn over the shown page. (Task 1 `sr2_enh_fallen_not_composed`; Task 4: the compare counts such frames as `skipped`.)
+1. A frame where the game draws no new front view must show the original picture, never a stale enhanced view. Two cases: after a Mulholland cliff fall (`DS_fallen`: `road_draw_front` returns before `enh_draw_begin`), and when a message box is drawn over the shown page. (Task 1 `sr2_enh_fallen_not_composed`; Task 4: the compare counts fallen frames as `skipped`. Message boxes stay part A's written mask, unchanged.)
 2. The opponent or the police crossing between the front view and the mirror must show in one of them only, and leave no stray pixels in the front view. This covers `opp_seg == seg`, the 2 <-> 9 sprite hysteresis and Mulholland's sticky `d`. (Task 2 `sr2_enh_capture_regions`; Task 5 `sr2_enh_mirror_opp_geo`; Task 8: the `police` run's `obj_max <= 1`.)
 3. The road beyond a crest must stay hidden as the original hides it (`top_band_row`), in every race mode. Between frames, objects on a slope must stay on the road. (Task 3 `sr2_enh_top_band_row`; Task 1 `sr2_enh_obj_geo_exact_slope`; Task 4's geometry check `geo_max 0`.)
 4. A long race must not stutter when the heading's unwrapped value leaves the s16 range. (Task 1 `sr2_enh_heading_wrap`.)
@@ -63,16 +63,17 @@
   - the sky tag `EGA_TAG_SKY` = F0h.
 - **Opponent geometry from what was drawn (critic D3).** The cut's frame geometry uses `DS_opp_last_d` and `DS_opp_last_sx` after the frame. The smooth view moves `d` on by the cars' motion since then. Contact and result-3 placements are fixed, like the side views 0 and 1.
 - **Cut order:** cuts are drawn in the band loop at their own segment, so nearer bands, walls and hillsides cover farther cuts. This replaces part A's depth sort and fixes the deferred minor 1.
-- **The mirror's frame and mount stay foreground** (the game's pixels). Only the glass F2h..13Dh x 16h..2Ah is enhanced.
+- **The mirror's frame and mount stay foreground** (the game's pixels). Only the glass F2h..13Dh x 16h..2Ah is enhanced. "The mirror rectangle" below means the mirror's own pixels: its body F0h..13Fh x 14h..2Ch and its mount 110h..11Fh x 12h..13h (`mirror_draw_backdrop`). Rows 12h..13h beside the mount are the front view's sky and belong to the front pass, its cuts and its statistics.
 - **Dash:** the original's per-band table width in every mode. Exact mode uses `DS_dash_width[k]`. Smooth mode interpolates `lerp(t[k], t[k-1], q/8)`. Part A's mean world width (`dash_half`) goes.
-- **Exact sky:** in exact mode the race sky and horizon scroll as `sky_scroll` does. The compare then counts mismatches from 12h in every mode. The smooth town/drag sky keeps `SKY_SCROLL` 1/8. The smooth Mulholland backdrop scrolls at the original's 2 px per heading unit, not quantised, because the backdrop holds the valley at road level.
+- **Exact sky:** in exact mode the race sky and horizon scroll as `sky_scroll` does, and the horizon row is the game's integer `road_proj_y(F0h, 2000, dy)` with `road_draw_sky`'s clamp (part A's float horizon is 2/3 px off and puts a whole sky row on the wrong side). The compare then counts mismatches from 12h in every mode. The smooth town/drag sky keeps `SKY_SCROLL` 1/8. The smooth Mulholland backdrop scrolls at the original's 2 px per heading unit, not quantised, because the backdrop holds the valley at road level.
 - **Screen-space constants step at the row index** in both modes, as the original does: hillside peaks, post widths, truss thickness.
 - **Polygons** (barrier walls, hillsides, rails, posts):
-  - one rasteriser, the inclusive hull (`enh_fill_poly_incl`, poly_fill's edge pixels included);
+  - one rasteriser, inclusive of poly_fill's edge pixels (`enh_fill_poly_incl`): each pixel row is filled from the leftmost to the rightmost point of the polygon within that row's band (y - 0.5 .. y + 0.5 around the original's line y), plus one pixel. For a convex polygon this is the inclusive hull; for the y-monotone but concave hillside poly6 it follows the polygon as poly_fill's two vertex chains do, where a convex hull would overfill;
   - in exact mode the integer vertices are first clipped by a port of `clip_polygon`.
-- **Lines** (truss, rail edges): 1-px lines through pixel centres with inclusive ends, drawn n times with the original's offsets.
+- **Lines** (truss, rail edges): lines one original pixel thick (`res_scale` output pixels; a parallelogram along the minor axis) through pixel centres with inclusive ends, drawn n times with the original's offsets.
 - **Below Mulholland's backdrop** (fewer than 53h rows): colour 0Eh. The original shows the stale page there, at most row 63h, under the hood.
-- **Edges in the compare:** runs of road colour shorter than 3 px are ignored. This fixes the location-4 return failure. Its cause, in the frame-148 dump: the original leaves a 2-px gap of town ground (colour 1) at row 4Ah, between the crossing's kerb (stepped by `slope16`) and the facade (Bresenham), and the metric read that gap as the road.
+- **Edges in the compare:** runs of covered road-colour pixels shorter than 3 px are ignored. This fixes the metric's half of the location-4 return failure. Its cause, in the frame-148 dump: the original leaves a 2-px gap of town ground (colour 1) at row 4Ah, between the crossing's kerb (stepped by `slope16`) and the facade (Bresenham), and the metric read that gap as the road. The other half is geometry: in that dump the enhanced facade starts at x 308 and the original's at 311 (the mapping report). Task 4 checks it and fixes it if it is more than 1 px; the owner ruled the failure fixed, not hidden.
+- **The SKY tag in the edge pass:** pixels the game drew in the SKY layer count as covered but never as road (both images' colours are replaced by a non-road value there for the edge pass). So the backdrop beside a road (Mulholland's bridges, the town mirror's unfilled road) does not hide the edge from the visibility test, and the backdrop's own colour-1 pixels are never taken for the road. Object-tagged pixels stay uncovered for the edges, as in part A.
 
 ## File map
 
@@ -139,11 +140,12 @@ Line numbers below are those of HEAD 50331e9.
   - `enh_obj_geo(v, seg, sprite)` keeps its signature in this task. Task 2 changes it.
 
 - [ ] **Step 1: Write the failing tests** in `tests/test_sr2_enh.c`. `view_at` fills the new fields: `cam_y` 0x76C, the rest 0.
-  - `sr2_enh_series_snap`: push three samples 10 ms apart, channel 0 = 0, 10, 20 and channel 1 = 0, 0, 100, then `enh_ser_snap(&s, 1)`. With `motion_delay` 100, `enh_ser_at` halfway after the newest gives channel 0 strictly between 10 and 20, and `out[1] == 100` exactly.
+  - `sr2_enh_series_snap`: push three samples 10 ms apart (nominal period 10 ms), channel 0 = 0, 10, 20 and channel 1 = 0, 0, 100, then `enh_ser_snap(&s, 1)`. With `motion_delay` 100, `enh_ser_at` halfway after the newest gives channel 0 strictly between 10 and 20, and `out[1] == 100` exactly.
   - `sr2_enh_heading_wrap`:
     - `enh_unwrap(32760.0, 32760, (s16)0x8002) == 32770.0`;
     - `enh_s16_of(32770.0) == (s16)0x8002`;
-    - `enh_s16_of(-40000.5) == (s16)(s32)floor(-40000.5)`.
+    - `enh_s16_of(-40000.5) == (s16)(s32)floor(-40000.5)`;
+    - the real path: inside an active mode-1 race at a fixed `DS_seg`, `enh_frame_built` with `DS_heading` 7FF0h, 7FF8h, (s16)8000h, (s16)8008h in turn leaves `enh_view_newest`'s heading at 32776.0 (unwrapped, no reset). Part A's check compares the raw s16 with the unwrapped value, resets, and gives -32760.
   - `sr2_enh_obj_geo_exact_slope`:
     - Setup:
       - `TRKW(TRK_HGT, i) = 2 * i` for i 90..120 (restore after);
@@ -156,7 +158,7 @@ Line numbers below are those of HEAD 50331e9.
     - `opp_d` 300 gives `z == 41`;
     - sprite 2 with `opp_d` -20 gives `z == 6`;
     - sprite 2 with `opp_d` -40 gives `z == 7`;
-    - a smooth view whose `opp_d` is 8 smaller (the car 1/8 segment on) gives `z` 1 smaller for sprite 5.
+    - two smooth views, `opp_d` 300 and 292 (the car 1/8 segment on), give `z` 41.5 and 40.5 for sprite 5 (smooth mode divides, exact mode truncates).
   - `sr2_enh_fallen_not_composed`:
     - Setup: `enh_init(true, 1, 1, 100, true)`, `DSS(DS_road_mode) = 1`, `DSB(DS_racing) = 1`, `DSS(DS_shown_page) = 0`, `enh_race_begin()`, `enh_frame_built()`.
     - With `DSW(DS_fallen) = 0`: `enh_frame_presented()`, then `CHECK(enh_compose(small, rgb))`.
@@ -188,7 +190,7 @@ Line numbers below are those of HEAD 50331e9.
     - otherwise fill the snapshot, `enh_rowtab_read(&snap.game_mirror)`, `enh_sheets_read()`, then capture and compare as now.
 - [ ] **Step 3: Run** the Step 1 command. Expected: every `sr2_enh_*` line `ok`. Then:
   - `ctest --test-dir build-mac -LE slow`. Expected: `100% tests passed`.
-  - `ctest --test-dir build-mac -R sr2_enh_compare --output-on-failure`. Expected: `ok   drag`, `ok   cruise`, `ok   grudge not enhanced`, `ok   mulholland not enhanced`.
+  - At the task's end the slow tests: `ctest --test-dir build-mac -L slow --output-on-failure` (`sr2_enh_compare` and `sr2_smoke`). Expected: `ok   drag`, `ok   cruise`, `ok   grudge not enhanced`, `ok   mulholland not enhanced`, and `100% tests passed`. Every later task ends its Step 3 with this command too (its own expected compare lines).
 - [ ] **Step 4: Commit** `git commit -m "Keep more of Street Rod 2's race frame state"`, then run `tools/sr1-codecheck.sh 50331e9 HEAD --allow host.c.o`. Expected: `0 differ`.
 
 ### Task 2: One object table, cuts drawn at their row
@@ -222,7 +224,7 @@ Line numbers below are those of HEAD 50331e9.
   ```c
   enum { ENH_CUT_ROW, ENH_CUT_OPP, ENH_CUT_MIR, ENH_CUT_STARTER };
   enum { ENH_PASS_FRONT, ENH_PASS_MIRROR };
-  bool enh_in_mirror_rect(int x, int y);        /* F0h..13Fh x 12h..2Ch */
+  bool enh_in_mirror_rect(int x, int y);        /* the body F0h..13Fh x 14h..2Ch, or the mount 110h..11Fh x 12h..13h */
   bool enh_in_glass(int x, int y);              /* F2h..13Dh x 16h..2Ah */
   bool enh_tag_kept(int id, int opp_sprite, int x, int y);   /* the capture's region rule */
   EnhObjGeo enh_obj_geo(const EnhView *v, int kind, int seg, int sprite);   /* MIR and STARTER: ok = false until Task 5 */
@@ -252,7 +254,7 @@ Line numbers below are those of HEAD 50331e9.
     - after `enh_draw_begin()`, `enh_draw_objects(4)`, `enh_draw_objects(0)`, a write clears fg.
     - Both run inside a race with `active` (mode 1).
   - `sr2_enh_capture_regions`:
-    - `enh_in_mirror_rect`: (EFh,12h) false, (F0h,12h) true, (13Fh,2Ch) true, (F0h,2Dh) false;
+    - `enh_in_mirror_rect`: (EFh,14h) false, (F0h,14h) true, (13Fh,2Ch) true, (F0h,2Dh) false, (F0h,13h) false, (110h,12h) true, (120h,12h) false;
     - `enh_in_glass`: (F1h,16h) false, (F2h,16h) true, (13Dh,2Ah) true, (13Eh,2Ah) false, (F2h,2Bh) false;
     - `enh_tag_kept(3, 0, 0x100, 0x20)` false and `(3, 0, 0x100, 0x30)` true;
     - `enh_tag_kept(ENH_OBJ_OPP, 10, 0x100, 0x20)` true and `(ENH_OBJ_OPP, 10, 0x80, 0x40)` false;
@@ -275,7 +277,7 @@ Line numbers below are those of HEAD 50331e9.
     - its `fixed` comes from `snap.opp_fixed`.
   - Fixed cuts keep their frame geometry and are still drawn at their segment.
   - `draw_view(v)` = `enh_draw_road(v)`. Task 5 adds the mirror.
-- [ ] **Step 3: Run** the Step 1 command, then `-LE slow`, then `-R sr2_enh_compare`. Expected as in Task 1. Look at two snapshots 150 ms apart of a drag (`SR_SNAPSHOT_DIR` in the scratchpad, `--res-scale 4`): the opponent is drawn over its row's objects, and nearer road covers farther objects.
+- [ ] **Step 3: Run** the Step 1 command, then `-LE slow`, then `-L slow`. Expected as in Task 1. Look at two snapshots 150 ms apart of a drag (`SR_SNAPSHOT_DIR` in the scratchpad, `--res-scale 4`): the opponent is drawn over its row's objects, and nearer road covers farther objects.
 - [ ] **Step 4: Commit** `git commit -m "Draw Street Rod 2's captured objects at their row"`. Run `tools/sr1-codecheck.sh 50331e9 HEAD --allow host.c.o`. Expected: `0 differ`.
 
 ### Task 3: Road fixes every race kind shares
@@ -307,19 +309,19 @@ Line numbers below are those of HEAD 50331e9.
 
 - [ ] **Step 1: Write the failing tests:**
   - `sr2_enh_proj_exact`: compare `enh_proj_x_i` with `road_proj_x` after `DSS(DS_cam_x) = cx`, `DSS(DS_road_mode) = 1`, over:
-    - z 4..116;
+    - z 4..116, and 240 (F0h, the horizon);
     - X in {-2000, 0, 0x5DC, 0xCE4, 0x19C8 + 400 - 0xA00};
     - dx from -0x60 to 0x60 step 0x18;
     - cx in {0x500, 0xA00, 0xCE1}.
-    - `enh_proj_y_i` is compared with `road_proj_y` likewise (Y in {2000, 0x76C, 0x79E, 2000 - 4000}, dy -40..40 step 10, bounce 0 and 10). No difference anywhere.
-  - `sr2_enh_rows_front_row0`: flat zero track, mode 0, an exact view at pos 50.0, lat 0xCE1, heading 0. `enh_rows_exact_front` gives:
+    - `enh_proj_y_i` is compared with `road_proj_y` likewise (Y in {2000, 0x76C, 0x79E, 2000 - 4000}, dy -40..40 step 10, cam_y 0x76C and 0x74A, bounce 0 and 10, set in `DS_cam_y` / `DS_view_bounce_y` for the game's call). No difference anywhere.
+  - `sr2_enh_rows_front_row0`: flat zero track, mode 0, `DSS(DS_cam_x) = 0xCE1` for the game's calls, an exact view at pos 50.0, lat 0xCE1, heading 0. `enh_rows_exact_front` gives:
     - `xor_[0] == road_proj_x(4, (s16)((400 - 0xCE1) + 0x19C8), 0)`;
     - `xol[0] == road_proj_x(4, (s16)-(400 - 0xCE1), 0)`;
     - `xor_[1] == road_proj_x(12, 400 + 0xCE4, 0)`;
     - `y[14] == road_proj_y(116, 2000, 0)`.
   - `sr2_enh_top_band_row`:
     - y = {160, 100, 80, 70, 65, 62, 61, 60.5, 60.4, 60.3, 60.2, 60.1, 60, 59, 58} with ground0 69: returns 14, ground 58;
-    - y[7..14] all 63 and y[6] 61: returns 6, ground 61 (a crest);
+    - y[7..14] all 63, y[6] 61, rows 0..5 as in the first case, ground0 69: returns 6, ground 61 (a crest);
     - y[13] = y[14] = 50: returns 14 (strict <, scanning from 14).
   - `sr2_enh_dash_width`:
     - exact: `enh_dash_width(k, 3, true) == DSS(DS_dash_width + 2k)` for k 1..14;
@@ -330,9 +332,9 @@ Line numbers below are those of HEAD 50331e9.
 - [ ] **Step 2: Implement.**
   - **Crests:** in race modes the bands of rows above `top_band_row` are not drawn. Exact mode compares the integer row y; smooth mode compares `py - ROW_TOP`. The grass, in modes other than 10h, starts at `max(ground, 0x12)`, and `enh_ground_y = ground`. Town keeps the fixed 3Fh ground and no cull.
   - **Dash:** drawn per band as a quad from `mid - (w >> 1)` to `mid - (w >> 1) + w + 1` at both rows, only when `xl < 0x13F`. Modes 2/4 widen it in Task 6.
-  - **Exact sky:** the sky's shift is `enh_sky_shift(enh_s16_of(heading), 1)` and the horizon strip's is `enh_sky_shift(.., 2)`. Smooth mode is unchanged.
+  - **Exact sky:** the sky's shift is `enh_sky_shift(enh_s16_of(heading), 1)` and the horizon strip's is `enh_sky_shift(.., 2)`. The horizon `hy` is `enh_proj_y_i(0xF0, 2000, dy, cam_y, bounce)` with `dy` the integer `cur_height - HGT[seg - 1]` (0 in modes 2/4), then the clamp; the sky rows end at `hy - 12` and the strip at `hy + 8`, both integers. Smooth mode is unchanged.
   - `enh_rows_exact_front` uses the same Cam as the drawing.
-- [ ] **Step 3: Run** the Step 1 command, `-LE slow` and `-R sr2_enh_compare`. Expected as in Task 1.
+- [ ] **Step 3: Run** the Step 1 command, `-LE slow` and `-L slow`. Expected as in Task 1.
 - [ ] **Step 4: Commit** `git commit -m "Fix Street Rod 2's near road edges, crests and sky"`. Codecheck: `0 differ`.
 
 ### Task 4: The compare tool for every race kind and the mirror
@@ -383,15 +385,20 @@ Line numbers below are those of HEAD 50331e9.
     - `mirror_cov_min` is 0 for a mode with no frames.
     - `shown` counts compositions under the last presented frame's mode.
   - `compare_frame`'s regions:
-    - Front: `cov && !enh_in_mirror_rect`. Mismatch over rows 12h..y_end. Edges from `snap.ground_top_y` (the game's own, 3Fh in town) to y_end, over `cov && tag == 0`.
-    - Mirror: `cov && enh_in_glass`. Mismatch over 16h..2Ah. Edges from `ceil(snap.game_mirror.y[7])` to 2Ah.
+    - Front: `cov && !enh_in_mirror_rect`. Mismatch over rows 12h..y_end. Edges from the ground to y_end, over `cov` minus object-tagged pixels, with the SKY rule of the Decisions. The ground is `snap.ground_top_y` in a race, and 3Fh in town: `road_draw_sky` returns before it writes `DS_ground_top_y` in town, so the DS word is stale there.
+    - Mirror: `cov && enh_in_glass`. Mismatch over 16h..2Ah. Edges from `snap.game_mirror.y[7]` to 2Ah (rows 2Bh exclusive), with the same object and SKY rules. The mirror's road colours are {1, 15} in a race. In town they are {4}, the kerbs: the town mirror leaves its road unfilled (`road_draw_band_mirror`'s C & 1 rows), so the glass's colour 0 shows there and colour 1 never does.
     - `mirror_cov` counts covered glass pixels.
   - `geo_err`: the largest difference, over all nine tables of rows 0..14, between `enh_rows_exact_front(newest)` and `snap.game_front`. Task 5 adds the mirror's.
   - `obj_err`:
     - Before the new capture, each old cut is mapped to the new exact view with the drawing's own mapping (`enh_obj_geo` of its kind and segment).
-    - It is matched with the new cut of the same id and segment; the opponent also needs the same sprite.
+    - It is matched with the new cut of the same kind and absolute segment; the opponent also needs the same sprite. (Not the same id: a row cut's id is its segment minus the car's, so it changes whenever the car crosses a segment between the two frames.)
     - The error is `|predicted bottom - actual bottom|`, and for the opponent also `|predicted centre x - actual centre x|`.
-    - Skipped: fixed cuts, and cuts whose rectangle touches the border of their pass (front: x 0 or 13Fh, y 12h or >= 64h; mirror: the glass edges).
+    - Skipped:
+      - fixed cuts;
+      - cuts whose rectangle touches the border of their pass (front: x 0 or 13Fh, top row 12h, or bottom row >= y_end - 1, i.e. 63h, the last row the capture scans above the split; mirror: the glass edges);
+      - cuts partly hidden in either frame: the bottom more than 1 px above their own geometry's `yg` (nearer road, a wall, a hillside, a nearer row's objects, the hood or the A-pillar over them);
+      - every old cut after a series reset or a new race (a jump: the segments need not be the same road).
+    - If `obj_max` fails, look at the offending cut in the dump first: a hidden cut the rules above miss is a rule to add; anything else is a geometry bug.
 
 - [ ] **Step 1: Write the failing tests:**
   - `sr2_enh_compare_rows` gains two cases:
@@ -417,22 +424,24 @@ Line numbers below are those of HEAD 50331e9.
     - in `EGA_LAYER_SKY` with `ega_set_obj` irrelevant, a `vga_wr` that leaves the colour unchanged still tags all 8 pixels `EGA_TAG_SKY` and clears fg;
     - a later BG write clears the tags.
   - Rewrite `tests/test_sr2_enh_compare.sh`:
-    - Runs, in parallel, with `SR_SEED` 2: `cruise 90`, `drag 90`, `grudge 170`, `mulholland 110`, `aqueduct 80`.
-    - `check <kind> <mode> <min frames> <orig|enh>` reads that kind's `mode <m>` line.
+    - Runs, in parallel, with `SR_SEED` 2: `cruise 90`, `drag 90`, `grudge 200`, `mulholland 110`, `aqueduct 80`. The grudge run is done at about 167 s (the tests report); 200 leaves room for five parallel runs, so the return drive is always in the log.
+    - `check <kind> <mode> <min frames> <orig|enh> [noobj]` reads that kind's `mode <m>` line.
     - It passes when:
       - `frames >= min`;
       - `worst_edge <= 1`, `mismatch_p50 <= 10`;
-      - `geo_max = 0`, `obj_max <= 1`;
+      - `geo_max = 0`, `obj_max <= 1` (not checked with `noobj`);
       - `shown >= frames`;
       - with `orig`: `mirror_cov_min = 0`;
-      - with `enh`: `mirror_cov_min = 1596`, `mirror_worst_edge <= 1`, `mirror_mismatch_p50 <= 10`.
+      - with `enh`: `mirror_cov_min = 1596`, `mirror_worst_edge <= 1`, `mirror_mismatch_p50 <= 10`;
+      - with min > 0, the numbers measured something: some `frame` line of that mode has `edge_rows > 0`, with `enh` also one with `mirror_edge_rows > 0`, and without `noobj` one with `obj_err >= 0`. (A run whose cuts never match, or whose rows never hold a road, would otherwise pass on zeros.)
     - With min 0, a missing line passes; a present one must pass.
+    - `after <kind> <mode> <last mode> <min>` passes when at least min `frame` lines of `<mode>` follow the last `frame` line of `<last mode>`: `after grudge 0 4 20` proves the return town route (location 4, frame ~148 of seed 2) was compared, not only the drive there.
     - `none <kind> <mode>` passes when there is no `mode <m>` line.
     - Output: `ok   <kind> mode <m>`, `ok   <kind> mode <m> not enhanced`, or `FAIL <kind> mode <m> (<line or no frames>)`.
     - This task's checks:
       - `check cruise 0 20 orig`;
       - `check drag 1 20 orig`, `check drag 0 0 orig`;
-      - `check grudge 0 20 orig` (the location-4 routes, there and back);
+      - `check grudge 0 20 orig` (the location-4 routes, there and back), `after grudge 0 4 20`;
       - `none grudge 2`, `none grudge 4`;
       - `check mulholland 0 0 orig`, `none mulholland 16`;
       - `none aqueduct 8`, `check aqueduct 0 0 orig`.
@@ -443,7 +452,9 @@ Line numbers below are those of HEAD 50331e9.
   - A fallen frame (Task 1) calls `enh_compare_skipped`.
 - [ ] **Step 3: Run** the Step 1 command. Expected: all `ok`, and `ok   grudge mode 0` with `worst_edge 1` or 0.
   - Check frame 148 of the grudge run's return drive with `SR_ENH_COMPARE_ROWS=1`: row 4Ah no longer differs by more than 1.
-  - If any frame still shows an edge over 1, use superpowers:systematic-debugging on its dump (`SR_ENH_COMPARE_DUMP`) before going on. The thresholds are not loosened without an owner ruling.
+  - In that frame's dump (`SR_ENH_COMPARE_DUMP`) read row 4Ah's right facade in both images (palette indices, as the mapping run's `idx.py` printed them). If the enhanced facade starts more than 1 px from the original's (the report saw 308 against 311), find out why with superpowers:systematic-debugging (`face()` against `quad_fill`'s `poly_fill_pts` on a near crossing band) and fix it in `enh_road2.c`, with a unit test of that band's facade against the game's own row values. Edges and mismatch must not get worse in `cruise`.
+  - If any frame still shows an edge over 1, use superpowers:systematic-debugging on its dump before going on. The thresholds are not loosened without an owner ruling.
+  - Then `-L slow`. Expected: `100% tests passed`.
 - [ ] **Step 4: Commit** `git commit -m "Check every Street Rod 2 race kind per mode"`. Codecheck: `0 differ`.
 
 ### Task 5: The rear-view mirror
@@ -466,7 +477,7 @@ Line numbers below are those of HEAD 50331e9.
   - `road_draw_mirror` :1418: `enh_draw_sky(true)` / `enh_draw_sky(false)` around `mirror_draw_backdrop()`;
   - after `road_draw_row_mirror()` (:1423): `enh_draw_objects(ENH_OBJ_MIR(row))`;
   - `enh_draw_objects(ENH_OBJ_OPP)` before the opponent test (:1431) and `enh_draw_objects(0)` after it;
-  - `mirror_objects` :1397: `enh_draw_objects(ENH_OBJ_STARTER)` before `starter_draw_mirror` and `enh_draw_objects(ENH_OBJ_MIR(row))` after it.
+  - `mirror_objects` :1397: `enh_draw_objects(ENH_OBJ_STARTER)` before `starter_draw_mirror` and `enh_draw_objects(ENH_OBJ_MIR(row))` after it, both inside the `if` (the call becomes a braced block).
 - Test: `tests/test_sr2_enh.c`, `tests/test_sr2_enh_compare.sh`
 
 **Interfaces:**
@@ -502,12 +513,13 @@ Line numbers below are those of HEAD 50331e9.
       - grass from F0h and to 13Fh;
       - no road fill on C & 1 rows, kerbs only;
       - the finish is white only when DS_seg >= 169h;
-      - the dash `DS_dash_width[13 + r]`, stepped per row in both modes (the mirror's rows 5..7 are frozen anyway);
+      - the dash `DS_dash_width[13 + r]`, stepped per row in both modes (the mirror's rows 5..7 are frozen anyway), with no `xl < 13Fh` test (the front has one, the mirror not);
     - cuts `(n, n, false)`, which covers the banner, the row objects and the starter;
     - rails: Task 8;
     - cuts `(n, n, true)`;
     - barrier walls: Task 6.
   - Cuts after the loop: `(base, INT_MAX)`.
+  - Not reproduced: `opponent_draw`'s clip-not-restored return (race_opp.c:273). When the opponent's front picture (sprite < 9, cross-over (b)) is drawn from the mirror loop with its rectangle off the view, the rest of the mirror is drawn under the view clip and the original's mirror spans can spill left of F0h. That is a rare frame of mismatched sky pixels at rows 16h..2Ah, above every edge row; the enhanced mirror stays inside the glass. If a compare frame fails on it, show its dump to the owner; the threshold stays.
 - `enh_obj_geo` for the mirror kinds:
   - **MIR, at seg s:** k = base - s, z = `enh_mirror_z(k, q)`, ok for k >= 0 (beyond row 7, z = 8k continues the frozen rows). a = mirror px of X 0, b = 1/z, yg = mirror py of 2000 + ROW_TOP.
   - **OPP with sprite >= 9:**
@@ -529,7 +541,7 @@ Line numbers below are those of HEAD 50331e9.
 
   Run: `cmake --build build-mac && ctest --test-dir build-mac -R 'sr2_enh' --output-on-failure`. Expected: build FAIL.
 - [ ] **Step 2: Implement.** `geo_err` also covers `enh_rows_exact_mirror(newest)` against `snap.game_mirror`: rows 0..7, and `yk` 0..14.
-- [ ] **Step 3: Run** the Step 1 command. Expected: all `ok`, with `mirror_cov_min 1596` in each checked mode. Then look at snapshots at `--res-scale 4` of a drag and a town drive (`SR_SNAPSHOT_DIR` in the scratchpad):
+- [ ] **Step 3: Run** the Step 1 command, then `-L slow`. Expected: all `ok`, with `mirror_cov_min 1596` in each checked mode and `100% tests passed`. Then look at snapshots at `--res-scale 4` of a drag and a town drive (`SR_SNAPSHOT_DIR` in the scratchpad):
   - the mirror is sharp and its road moves smoothly, with rows 5..7 stepping per segment as the original's;
   - the opponent shows in it behind;
   - the dashboard's side mirror still shows the original's pixels.
@@ -548,10 +560,11 @@ Line numbers below are those of HEAD 50331e9.
   ```c
   int enh_clip_poly_i(const s16 *in, int n, s16 *out, int xmin, int xmax, int ymin, int ymax);  /* clip_polygon's
           Sutherland-Hodgman (race_gfx.c:362-402), line_*_at_* truncating, 64-point buffers; returns the count */
-  void enh_fill_poly_incl(const double *x, const double *y, int n, u8 col);   /* the convex hull of each vertex's
-          pixel square (x .. x+1, y - 0.5 .. y + 0.5): poly_fill's edge pixels included */
-  void enh_line1(double x0, double y0, double x1, double y1, u8 col);         /* 1 px through pixel centres,
-          both ends included (Task 8 uses it) */
+  void enh_fill_poly_incl(const double *x, const double *y, int n, u8 col);   /* each pixel row from the polygon's
+          leftmost to its rightmost point within the row's band, plus 1 px: poly_fill's edge pixels included (the
+          hull of the vertices' pixel squares when convex; y-monotone concave polygons as poly_fill fills them) */
+  void enh_line1(double x0, double y0, double x1, double y1, u8 col);         /* one original px thick through pixel
+          centres, both ends included (Task 8 uses it) */
   u16 enh_track(int mode, u16 arr, int i);   /* the word the game reads: modes 2/4 take TRK_C/L/R from TRK_C2/L2/R2
           at i (no clamp) and the other arrays at i + C0h; other modes as trk() (clamped) */
   int enh_wall_colour(int phase, int n, int row, int seg);   /* abs(n - row - seg + phase) % 10 < 5 ? 0x0B : 4 */
@@ -565,7 +578,7 @@ Line numbers below are those of HEAD 50331e9.
   - the right side is the quad (XR_p, YK_p), (XR_p, Y_p), (XR_q, Y_q), (XR_q, YK_q); the left side the same with XL;
   - the colour is `enh_wall_colour(start_seg, 14, row, base)`.
 - **Mirror walls:** n = 7, the mirror's YK quirk tops, and `enh_wall_colour(start_seg, 7, r, base)` (the original's phase, not the shown segment).
-- **Walls, exact mode:** integer vertices, `enh_clip_poly_i` to the view (0, 13Fh, 12h, 65h) or the glass (F0h, 13Fh, 16h, 2Ah), then `enh_fill_poly_incl` (y + ROW_TOP). Smooth mode: `enh_fill_poly_incl` of the float vertices under the current clip.
+- **Walls, exact mode:** integer vertices, `enh_clip_poly_i` to the view (0, 13Fh, 12h, 65h) or to the mirror's clip (`clip_set_mirror`: F0h, 13Fh, 16h, 2Ah; wider than the glass, whose clip still applies to the fill), then `enh_fill_poly_incl` (y + ROW_TOP). Smooth mode: `enh_fill_poly_incl` of the float vertices under the current clip.
 
 - [ ] **Step 1: Write the failing tests:**
   - `sr2_enh_strip_tracks`:
@@ -584,14 +597,15 @@ Line numbers below are those of HEAD 50331e9.
     the result equals `clip_polygon`'s point for point (the last one has no points).
   - `sr2_enh_poly_incl`: at res 1, aa 1, after `enh_buf_setup()` and `enh_clip_view()`:
     - the quad (10,20),(10,30),(11,30),(11,20), with y + 0.5, fills exactly the 22 samples of columns 10..11, rows 20..30;
-    - the degenerate quad (40,50),(60,50),(60,50),(40,50) fills the 21 samples of row 50, x 40..60.
+    - the degenerate quad (40,50),(60,50),(60,50),(40,50) fills the 21 samples of row 50, x 40..60;
+    - the concave (y-monotone) L-shaped hexagon (10,10),(20,10),(20,15),(15,15),(15,20),(10,20) fills exactly 96 samples: rows 10..15 over x 10..20 and rows 16..20 over x 10..15 (its convex hull would fill more).
   - Compare script:
     - `check grudge 2 20 enh` and `check grudge 4 20 enh` replace the two `none`;
     - `check grudge 0 20 enh` stays.
 
   Run: `cmake --build build-mac && ctest --test-dir build-mac -R 'sr2_enh' --output-on-failure`. Expected: build FAIL, then the compare FAIL with `grudge mode 2` not enhanced.
 - [ ] **Step 2: Implement.**
-- [ ] **Step 3: Run** the Step 1 command. Expected: all `ok`.
+- [ ] **Step 3: Run** the Step 1 command, then `-L slow`. Expected: all `ok`, `100% tests passed`.
   - A few rounds' first frames may show a 2-px edge at row 61h, by the hood (seen in a prototype). Mode 4's "Drivers stage" box comes after presentation (race_drive.c:364-372). If any frame still shows such an edge, debug it with its dump (superpowers:systematic-debugging). The threshold stays.
   - Look at snapshots of a qualifier and a round at `--res-scale 4`: walls in 5-segment pink and white blocks, the grey start box, the tree, and the opponent beside you and in the mirror.
 - [ ] **Step 4: Commit** `git commit -m "Draw the Grudge drag strip enhanced"`. Codecheck: `0 differ`.
@@ -616,8 +630,8 @@ Line numbers below are those of HEAD 50331e9.
   ```
 - **Backdrop** (`road_draw_sky_mulholland` :490-515):
   - dy = `enh_mulholland_sky_dy(hpos - hgt_rel(base - 4), fall_dir)`;
-  - screen rows 12h..12h + h show sheet row y + 5Ch - dy, with h = min(53h, 199 - (6Eh - dy));
-  - exact: shift `enh_sky_shift(h, 1)`; smooth: 2 * heading;
+  - screen rows y = 12h .. 12h + h - 1 show sheet row y + 5Ch - dy, with h = min(53h, 199 - (6Eh - dy));
+  - exact: shift `enh_sky_shift(enh_s16_of(heading), 1)`; smooth: 2 * heading;
   - colour 0Eh below the picture;
   - no grass fill;
   - the horizon is hy = proj_y(F0h, 2000, dy), with no clamp. `top_band_row` follows from hy + 8.
@@ -650,13 +664,13 @@ Line numbers below are those of HEAD 50331e9.
   - `sr2_enh_hill_consts`: `enh_hill_consts(14, ..)` gives w0 = `DSS(0x7E22)`, h0 = `DSS(0x7E24)`, w1 = `DSS(0x7E26)`, h1 = `DSS(0x7E28)`, e = `DSS(0x7E3E)`. Row 1 gives w0 = `DSS(0x7E1E + 56)`.
   - `sr2_enh_mulholland_sky_dy`: (12,0) gives 8; (-12,0) gives -8; (-12,1) gives -12; (3,0) gives 3.
   - Compare script:
-    - `check mulholland 16 20 enh` replaces `none mulholland 16`;
+    - `check mulholland 16 20 enh noobj` replaces `none mulholland 16`. The guard rails and trusses are still row cuts in this task; they span two rows, so their re-projection is off by design (the mapping report: about 20 % at the car) and `obj_max` would fail. Task 8 drops `noobj`;
     - `check mulholland 0 0 enh` stays;
     - `none aqueduct 8` stays.
 
   Run: `cmake --build build-mac && ctest --test-dir build-mac -R 'sr2_enh' --output-on-failure`. Expected: build FAIL.
 - [ ] **Step 2: Implement.**
-- [ ] **Step 3: Run** the Step 1 command. Expected: all `ok`, `geo_max 0` for mode 16. Look at snapshots at `--res-scale 4` of the hills, a crest, the bridge (its ravine shows the backdrop) and a cliff fall if the run has one (otherwise steer one with `SR_KEYS`).
+- [ ] **Step 3: Run** the Step 1 command, then `-L slow`. Expected: all `ok`, `geo_max 0` for mode 16, `100% tests passed`. Look at snapshots at `--res-scale 4` of the hills, a crest, the bridge (its ravine shows the backdrop) and a cliff fall if the run has one (otherwise steer one with `SR_KEYS`).
 - [ ] **Step 4: Commit** `git commit -m "Draw Mulholland's road and hills enhanced"`. Codecheck: `0 differ`.
 
 ### Task 8: Mulholland's guard rails and bridges, and the police
@@ -665,9 +679,9 @@ Line numbers below are those of HEAD 50331e9.
 - Modify: `src2/game/race_road.c`. Each hook is `ENH:` and moves the game's drawing to the background:
   - `road_draw_front` :1289: `enh_draw_objects(0)` before `mulholland_extras_front(row)`;
   - `road_draw_mirror` :1429: `enh_draw_objects(0)` before `mulholland_extras_mirror(row)`.
-- Modify: `src2/enhanced/enh_hills2.c` (rails, posts, truss, truss end), `enh_road2.c`, `enh_mirror2.c` (call them in the row loop between the row cuts and the opponent cut)
+- Modify: `src2/enhanced/enh_hills2.c` (rails, posts, truss, truss end), `enh_road2.c`, `enh_mirror2.c` (call them in the row loop between the row cuts and the opponent cut, for every row 14..1 or 7..1 whether its band was culled by `top_band_row` or not, as `mulholland_extras_front` / `_mirror` run)
 - Modify: `src2/game/race_phys.c`, the developer aid `SR_DEBUG_POLICE=<seg>`, marked `PORT: developer aid`:
-  - `race_start` :280-284: in mode 10h, not vs the King, `police_state` 1 and `police_seg` = the value;
+  - `race_start` :280-284: in mode 10h, not vs the King, after the original's two `rnd` draws (so the random sequence stays the same), `police_state` 1 and `police_seg` = the value;
   - `race_step` case 1 :845-849: when the aid is set and `seg < opp_seg + 7`, set `DS_opp_seg = seg - 8` first, so the police comes from behind as in a real spawn.
 - Test: `tests/test_sr2_enh.c`, `tests/test_sr2_enh_compare.sh`
 
@@ -702,12 +716,12 @@ Line numbers below are those of HEAD 50331e9.
   - `sr2_enh_line1`: at res 1, aa 1, the line (10,20)-(20,25) colours (10,20) and (20,25) and exactly one sample in each column 10..20. The line (30,40)-(30,40) colours one sample.
   - Compare script:
     - `run police 110` with `SR_DEBUG_RACE=mulholland SR_DEBUG_POLICE=480`;
-    - `check police 16 20 enh`;
+    - `check mulholland 16 20 enh` (the `noobj` of Task 7 goes) and `check police 16 20 enh`;
     - at least one `frame` line with `police` >= 2 and `opp_sprite` >= 9, printed as `ok   police in the mirror`.
 
   Run: `cmake --build build-mac && ctest --test-dir build-mac -R 'sr2_enh' --output-on-failure`. Expected: build FAIL, then `FAIL police` (the aid missing).
 - [ ] **Step 2: Implement.**
-- [ ] **Step 3: Run** the Step 1 command, then the smoke paths `ctest --test-dir build-mac -R sr2_smoke --output-on-failure` (slow). Expected: all `ok`, `100% tests passed`. Look at snapshots of the rails near the car moving smoothly (no 20 % jump at the near end) and of the bridge's truss.
+- [ ] **Step 3: Run** the Step 1 command, then `-L slow` (`sr2_enh_compare` and `sr2_smoke`). Expected: all `ok`, `100% tests passed`. Look at snapshots of the rails near the car moving smoothly (no 20 % jump at the near end) and of the bridge's truss.
 - [ ] **Step 4: Commit** `git commit -m "Draw Mulholland's rails and bridges, check the police"`. Codecheck: `0 differ`.
 
 ### Task 9: The launcher, the docs and the final check
