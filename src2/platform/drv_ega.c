@@ -19,6 +19,7 @@
 #include "platform/platform.h"
 #include "platform/vga.h"
 #include "platform/video.h"
+#include "remaster/rm_tags.h"
 
 static inline u8 ror8(u8 v, unsigned n) { n &= 7; return (u8)(v >> n | v << ((8 - n) & 7)); }
 static inline u16 ror16(u16 v, unsigned n) { n &= 15; return n ? (u16)(v >> n | v << (16 - n)) : v; }
@@ -422,6 +423,7 @@ s16 ega_sprite_over_bg(FarPtr spr, FarPtr dst, FarPtr bg, const Tail *t, const R
     FarPtr bpl = desc_planes(bg);
     u16 bo = sstr == bgstr ? (u16)((u16)((u16)c.dy * bgstr) + bpl.off)            /* (sic) no x offset */
                            : (u16)((u16)((u16)c.sy * bgstr) + bpl.off + (u16)c.dx); /* (sic) */
+    u16 bo0 = bo;
     for (u16 mm = 1; mm < 9; mm <<= 1) {
         if (dstep == 0) { out(0x3C4, 2); out(0x3C5, (u8)mm); }
         rows_composite(dp, seg, so, mo, bo, (s16)sstr, c.w, hmain, (s16)bgstr, (s16)dstr);
@@ -435,6 +437,7 @@ s16 ega_sprite_over_bg(FarPtr spr, FarPtr dst, FarPtr bg, const Tail *t, const R
         ax = (u16)(0x28 * hmain);
         dp.off = (u16)(dp.off + ax);
         ega_latch_copy_to40(tsrc, c.w, trows, dp, (s16)sstr);
+        rm_tail_holes(dp, 0x28, far_make(bpl.seg, (u16)(bo0 + hmain * bgstr)), bgstr, c.w, trows);   /* ENH */
         if (c.w >= 1) ax = (u16)(c.w & 0xFF00);                    /* AX left by 24e7:008b */
     }
     return (s16)ax;
@@ -475,10 +478,12 @@ void ega_save_rect(FarPtr src, s16 w, s16 h, FarPtr dst, s16 sstride)
 {
     if (h < 1) return;
     out(0x3CE, 5); out(0x3CF, 1);
+    rm_copy_begin();                                     /* ENH: a copy carries the remaster tags */
     for (s16 y = 0; y < h; y++, src.off = (u16)(src.off + sstride)) {
         u16 p = src.off;
         for (s16 x = 0; x < w; x++) vwr(dst.seg, dst.off++, vrd(src.seg, p++));
     }
+    rm_copy_end();
     out(0x3CE, 5); out(0x3CF, 0);
 }
 
@@ -577,10 +582,17 @@ void ega_blit_shifted(FarPtr s, FarPtr d, const Rect *r)
                 if (i < sizeof buf) buf[i] = v;
             }
         }
+        rm_suspend();                                     /* ENH: remaster tags, pixel by pixel */
         if (shift) {
             for (int k = 0; k < 4; k++) shift_row(buf + 0x28 * k, shift, nshift > 0x28 ? 0x28 : nshift);
         }
         ega_put_shifted_row(dp, buf, w, bit);
+        rm_resume();
+        if (rm_tags_on())
+            for (s16 j = 0; j < w; j++) {
+                int dx = bit + j, sx = (r->sx & 7) + j;
+                rm_copy_px(dp.seg, (u16)(dp.off + dx / 8), 7 - (dx & 7), sp.seg, (u16)(sp.off + sx / 8), 7 - (sx & 7));
+            }
         sp.off = (u16)(sp.off + desc_stride(s));
         dp.off = (u16)(dp.off + desc_stride(d));
         if (--n == 0) break;
