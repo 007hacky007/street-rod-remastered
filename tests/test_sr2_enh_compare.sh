@@ -80,7 +80,7 @@ after grudge 0 4 20
 check grudge 2 20 enh
 check grudge 4 20 enh
 check mulholland 0 0 enh
-none mulholland 16
+check mulholland 16 20 enh noobj   # the rails and trusses are still row cuts (Task 8)
 none aqueduct 8
 check aqueduct 0 0 enh
 exit $fail

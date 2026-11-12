@@ -3,8 +3,9 @@
  * bands between them drawn as the original draws them (straight edges from row to row), the sky and the
  * horizon scrolled continuously. At a game frame's own position the result is the original's geometry. Road modes 0 (the
  * town), 1 (the street drag), 2 and 4 (the Grudge drag strip: its own flags, flat, the wide dash at the start and
- * the barrier walls); the objects and the opponent the game drew are drawn again in the band loop at their own
- * segment (enh_cuts_at); the mirror is drawn after it (enh_mirror2.c).
+ * the barrier walls) and 10h (Mulholland: its backdrop and hillsides from enh_hills2.c, the shoulders beside the
+ * banks, the grass on the flat sides, the row-0 dx clamp); the objects and the opponent the game drew are drawn
+ * again in the band loop at their own segment (enh_cuts_at); the mirror is drawn after it (enh_mirror2.c).
  *
  * Projection (road_proj_x / road_proj_y, src2/game/race_road.c), a point at world x X, height Y, on the road
  * at continuous segment position s, seen from position pos:
@@ -53,6 +54,7 @@ static Row row_k(const Cam *c, int k)
     r.k = k;
     r.z = k == 0 ? 4.0 : k == FAR_ROWS ? 8.0 * FAR_ROWS + 4.0 : 8.0 * k + 4.0 - q;
     r.dx = c->hv - yaw_rel(c, r.n);
+    if (k == 0 && c->mode == 0x10) r.dx = SDL_clamp(r.dx, -0x30, 0x30);   /* Mulholland's row-0 clamp */
     r.dy = c->hpos - hgt_rel(c, r.n);
     return r;
 }
@@ -69,22 +71,6 @@ int enh_proj_y_i(int z, int Y, int dy, int cam_y, int bounce)   /* road_proj_y *
     s16 t = add16(shl16((s16)((s16)(z * dy) & 0xFFFE), 1), shl16(sub16((s16)Y, (s16)cam_y), 2));
     if (z == 0) z = 1;
     return add16(add16(cdiv16(t, (s16)z), (s16)bounce), 0x3C);
-}
-
-/* The outer edges' world x (the town's facades, the crossings' kerbs, the shoulders): 5DCh - w on the left,
- * w + CE4h on the right; row 0 has the original's quirk (road_project_front), -(w - cam_x) and
- * (w - cam_x) + 19C8h, in s16 in exact mode. */
-static double x_out(const Cam *c, const Row *r, int side)
-{
-    if (r->k == 0) {
-        if (c->exact) {
-            s16 d = sub16((s16)c->w, (s16)(int)c->lat);
-            return side ? (s16)(d + 0x19C8) : (s16)-d;
-        }
-        double d = c->w - c->lat;
-        return side ? d + 0x19C8 : -d;
-    }
-    return side ? c->w + 0xCE4 : 0x5DC - c->w;
 }
 
 double enh_dash_width(int k, double q, bool exact)
@@ -112,7 +98,7 @@ void enh_sheets_read(void)
     }
 }
 
-static void sheet_row(int j, double syf, double shift)
+void enh_sheet_row(int j, double syf, double shift)
 {
     EnhBuf *b = &enh_buf;
     int sy = (int)floor(syf);
@@ -168,8 +154,8 @@ static void draw_sky(const Cam *c, bool town, double hy, double ground)
     if (town) {                    /* fixed: sky 1Dh rows from 66h, skyline 10h rows from A3h at 2Fh */
         for (int j = 0; j < b->h; j++) {
             double y = ENH_VIEW_Y0 + (j + 0.5) / b->sa;
-            if (y < 0x2F) sheet_row(j, 0x66 + (y - 0x12), 0);
-            else if (y < 0x3F) sheet_row(j, 0xA3 + (y - 0x2F), 0);
+            if (y < 0x2F) enh_sheet_row(j, 0x66 + (y - 0x12), 0);
+            else if (y < 0x3F) enh_sheet_row(j, 0xA3 + (y - 0x2F), 0);
             else { enh_fill_rows(y - 0.5 / b->sa, ENH_VIEW_Y1, COL_ROAD); break; }
         }
         enh_ground_y = 0x3F;
@@ -186,11 +172,11 @@ static void draw_sky(const Cam *c, bool town, double hy, double ground)
     }
     for (int j = 0; j < b->h; j++) {
         double y = ENH_VIEW_Y0 + (j + 0.5) / b->sa;
-        if (y < hy - 12) sheet_row(j, y + 0xA6 - hy, sky);
-        else if (y < hy + 8) sheet_row(j, 0xA3 + (y - (hy - 12)), strip);
+        if (y < hy - 12) enh_sheet_row(j, y + 0xA6 - hy, sky);
+        else if (y < hy + 8) enh_sheet_row(j, 0xA3 + (y - (hy - 12)), strip);
         else break;
     }
-    if (c->mode != 0x10) enh_fill_rows(ground < ENH_VIEW_Y0 ? ENH_VIEW_Y0 : ground, ENH_VIEW_Y1, COL_GRASS);
+    enh_fill_rows(ground < ENH_VIEW_Y0 ? ENH_VIEW_Y0 : ground, ENH_VIEW_Y1, COL_GRASS);
     enh_ground_y = ground;
 }
 
@@ -260,6 +246,34 @@ static void dash_quad(double a0, double a1, double ya, double b0, double b1, dou
     quad(a0, a1, ya, b0, b1, yb, col);
 }
 
+static s16 slope16(s16 xa, s16 ya, s16 xb, s16 yb) { return yb == ya ? 0 : cdiv16(shl16(sub16(xb, xa), 4), sub16(yb, ya)); }
+
+void enh_dash_exact(int xlq, int xrq, int yq, int xlp, int xrp, int yp, int w, u8 col)
+{
+    s16 xl = (s16)xlp, xr = (s16)xrp, axl = shl16(xl, 4), axr = shl16(xr, 4);
+    s16 sl = slope16((s16)xlq, (s16)yq, xl, (s16)yp), sr = slope16((s16)xrq, (s16)yq, xr, (s16)yp);
+    for (int y = yp, n = yq - yp; n > 0 && y < 0x66; y++, n--) {
+        s16 dx = sub16((s16)(add16(xl, xr) >> 1), (s16)(w >> 1));
+        if (xl < 0x13F) enh_fill_rect(dx, y, dx + w + 1, y + 1, col);
+        axl = add16(axl, sl); axr = add16(axr, sr);
+        xl = (s16)(axl >> 4); xr = (s16)(axr >> 4);
+    }
+}
+
+/* The centre dash of the band of far segment n: x from mid - (w >> 1) to mid - (w >> 1) + w, mid = (xl + xr) >> 1;
+ * on the strip by the start 8 times as wide, colour 2. */
+static void centre_dash(const Cam *c, int n, double dash, double xla, double xra, double ya, double xlb, double xrb, double yb)
+{
+    u8 col = COL_KERB;
+    if (on_strip(c) && n < c->start_seg + 5) { dash *= 8; col = COL_START; }   /* the start box: 8 wide */
+    if (c->exact) {
+        enh_dash_exact((int)xla, (int)xra, (int)floor(ya), (int)xlb, (int)xrb, (int)floor(yb), (int)dash, col);
+        return;
+    }
+    double h = dash / 2, ca = (xla + xra) / 2, cb = (xlb + xrb) / 2;
+    dash_quad(ca - h, ca - h + dash + 1, ya, cb - h, cb - h + dash + 1, yb, xla, xlb, col);
+}
+
 /* the band between row ra (near) and rb (far), with the far row's flags: road_draw_band_front, and in town
  * town_walls_front; dash: the centre dash's width (enh_dash_width) */
 static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, double dash)
@@ -321,14 +335,41 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
         } else
             quad(xra, xora, ya, xrb, xorb, yb, COL_KERB);
     }
-    if (C & 8) {                    /* centre dash: x from mid - (w >> 1) to mid - (w >> 1) + w, mid = (xl + xr) >> 1 */
-        u8 col = COL_KERB;
-        if (on_strip(c) && n < c->start_seg + 5) { dash *= 8; col = COL_START; }   /* the start box: 8 wide */
-        double h = c->exact ? floor(dash / 2) : dash / 2;
-        double ca = (xla + xra) / 2, cb = (xlb + xrb) / 2;
-        if (c->exact) { ca = floor(ca); cb = floor(cb); }
-        dash_quad(ca - h, ca - h + dash + 1, ya, cb - h, cb - h + dash + 1, yb, xla, xlb, col);
+    if (C & 8) centre_dash(c, n, dash, xla, xra, ya, xlb, xrb, yb);
+}
+
+/* Mulholland's band (road_draw_band_front, mode 10h) between row ra (near) and rb (far), the far row's flags: the
+ * shoulders (colour 2, xol..xl and xr..xor) beside the banks while the car has not fallen below the road, the
+ * grass (colour 9) over them on a flat side (the near row's bank at the road's height), to the screen's edge or,
+ * in rows 10..14 of a frame where a bridge ends far ahead (l16), ext px out; then the road and the dash. Beside a
+ * bank or a bridge the hillsides and the backdrop show. */
+static void hill_band(const Cam *c, const Row *pa, const Row *pb, bool l16, double dash)
+{
+    const Row ra = *pa, rb = *pb;
+    double ya = py(c, &ra, Y_ROAD), yb = py(c, &rb, Y_ROAD);
+    if (yb >= ya) return;
+    int n = rb.n, row = rb.k;
+    u16 C = trk(c, TRK_C, n);
+    double la, ra_, lb, rb_;
+    edges(trk(c, TRK_C, ra.n), &la, &ra_);
+    edges(trk(c, TRK_C, rb.n), &lb, &rb_);
+    double xla = px(c, &ra, la), xra = px(c, &ra, ra_), xlb = px(c, &rb, lb), xrb = px(c, &rb, rb_);
+    if (!(C & 0x80) && c->hoff >= -0x0B) {
+        quad(px(c, &ra, x_out(c, &ra, 0)), xla, ya, px(c, &rb, x_out(c, &rb, 0)), xlb, yb, COL_SHOULDER);
+        quad(xra, px(c, &ra, x_out(c, &ra, 1)), ya, xrb, px(c, &rb, x_out(c, &rb, 1)), yb, COL_SHOULDER);
     }
+    bool ext = l16 && row >= 10;
+    double e = ext ? DSS((u16)(DS_hill_peak_tab + 4 + 4 * (16 - row))) : 0;
+    for (int side = 0; side < 2; side++) {
+        u16 bank = trk(c, side ? TRK_BR : TRK_BL, ra.n);
+        bool flat = c->exact ? py_i(c, &ra, sub16(Y_ROAD, (s16)bank)) == py_i(c, &ra, Y_ROAD) : bank == 0;
+        if (!flat) continue;
+        if (!side) quad(ext ? xla - e : 0, xla, ya, ext ? xlb - e : 0, xlb, yb, COL_GRASS);
+        else quad(xra, ext ? xra + e : 320, ya, xrb, ext ? xrb + e : 320, yb, COL_GRASS);
+    }
+    bool white = (C & 0x10) && c->base >= 0x3AD;            /* the finish, once the car is near it */
+    quad(xla, xra, ya, xlb, xrb, yb, white ? COL_FINISH : COL_ROAD);
+    if (C & 8) centre_dash(c, n, dash, xla, xra, ya, xlb, xrb, yb);
 }
 
 /* road_draw_barrier_walls on the strip, beside the band of row p (far) and row q (near): on each side, right then
@@ -374,23 +415,34 @@ void enh_draw_road(const EnhView *v)
     enh_clip_view();
     Cam c;
     cam_of(v, &c);
+    bool hills = c.mode == 0x10;
     Row rows[FAR_ROWS + 1];
-    double ys[FAR_ROWS + 1], hy = horizon_y(&c), ground = 0x3F;
+    double ys[FAR_ROWS + 1], hy = hills ? enh_mulholland_horizon(&c) : horizon_y(&c), ground = 0x3F;
     for (int k = 0; k <= FAR_ROWS; k++) {
         rows[k] = row_k(&c, k);
         ys[k] = py(&c, &rows[k], Y_ROAD) - ROW_TOP;         /* the line y: the integer row in exact mode */
     }
     /* a race hides the bands beyond a crest (road_draw_sky's top_band_row); the town draws them all */
     int top = v->town ? FAR_ROWS : enh_top_band_row(ys, hy + 8, &ground);
-    draw_sky(&c, v->town, hy, ground);
+    int base = c.base;
+    if (hills) { enh_draw_mulholland_sky(&c, v); enh_ground_y = ground; }
+    else draw_sky(&c, v->town, hy, ground);
+    /* Mulholland: a bridge ends in rows 14..10 (road_draw_front's L16, one flag for the frame) */
+    bool l16 = false;
+    for (int k = FAR_ROWS; k > 9 && hills; k--)
+        if (!(trk(&c, TRK_C, base + k) & 0x80) && (trk(&c, TRK_C, base + k - 1) & 0x80)) l16 = true;
     double q = 8.0 * (c.pos - c.base);
     /* far to near, each segment's cuts after its band and the opponent after its row's objects, then the strip's walls
      * (road_draw_front); cuts beyond the far row first, those at or behind the near row last */
-    int base = c.base;
     enh_cuts_at(v, ENH_PASS_FRONT, base + FAR_ROWS + 1, INT_MAX, false);
     enh_cuts_at(v, ENH_PASS_FRONT, base + FAR_ROWS + 1, INT_MAX, true);
     for (int k = FAR_ROWS; k >= 1; k--) {
-        if (k <= top) draw_band(&c, &rows[k - 1], &rows[k], v->town, enh_dash_width(k, q, c.exact));
+        /* Mulholland's hillsides beside a row off the bridges, whatever top_band_row */
+        if (hills && !(trk(&c, TRK_C, base + k) & 0x80)) enh_front_hillsides(&c, rows, k, l16, c.fall_dir);
+        if (k <= top) {
+            if (hills) hill_band(&c, &rows[k - 1], &rows[k], l16, enh_dash_width(k, q, c.exact));
+            else draw_band(&c, &rows[k - 1], &rows[k], v->town, enh_dash_width(k, q, c.exact));
+        }
         enh_cuts_at(v, ENH_PASS_FRONT, base + k, base + k, false);
         enh_cuts_at(v, ENH_PASS_FRONT, base + k, base + k, true);
         if (on_strip(&c))          /* whatever top_band_row */

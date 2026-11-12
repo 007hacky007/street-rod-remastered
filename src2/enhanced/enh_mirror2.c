@@ -8,6 +8,7 @@
  *     sy = dy + (Y - cam_y) / z + 24h                   (no bounce)
  *     a band's flags one segment off (base - r - 1), the banks read forward (base + k), YK written twice per row
  *     (the strip's barrier walls take their tops from it), the strip's walls coloured by the front's phase
+ *     Mulholland's shoulders not stepped over a band, its grass only on the flat sides, its hillsides (enh_hills2.c)
  * The cuts of the mirror (its rows' objects, the starter, the opponent behind) are drawn in the band loop at their
  * own segment, far to near. */
 #include "enhanced/enh_geo2.h"
@@ -58,23 +59,6 @@ static Row mrow(const Cam *c, int k)
     r.dy = (c->mode & 6) ? 0 : hgt_rel(c, r.n) - c->hpos;
     return r;
 }
-
-static int mpx_i(const Cam *c, const Row *r, double X) { return enh_proj_x_mirror_i((int)r->z, (int)X, i16(r->dx), (int)c->lat); }
-static int mpy_i(const Cam *c, const Row *r, double Y) { return enh_proj_y_mirror_i((int)r->z, (int)Y, i16(r->dy), (int)c->cam_y); }
-
-static double mpx(const Cam *c, const Row *r, double X)
-{
-    if (c->exact) return mpx_i(c, r, X);
-    return 0x118 - (c->lat - (X + r->z * r->dx / 4.0)) / r->z;
-}
-static double mpy(const Cam *c, const Row *r, double Y)
-{
-    if (c->exact) return mpy_i(c, r, Y) + ROW_TOP;
-    return r->dy + (Y - c->cam_y) / r->z + 0x24 + ROW_TOP;
-}
-
-/* the outer edges (road_project_mirror: no row-0 quirk) */
-static double mx_out(const Cam *c, int side) { return side ? c->w + 0xCE4 : 0x5DC - c->w; }
 
 void enh_rows_exact_mirror(const EnhView *v, EnhRowTab *t)
 {
@@ -210,8 +194,25 @@ static void band(const Cam *c, const Row *near_, const Row *far_, int r, int fs)
     edges(trk(c, TRK_C, rb.n), &lb, &rb_);
     double xla = mpx(c, &ra, la), xra = mpx(c, &ra, ra_), xlb = mpx(c, &rb, lb), xrb = mpx(c, &rb, rb_);
     /* The game's spans include both ends (x1..x2), and a later span covers the one before. */
-    if (!(C & 1)) {
+    if (!(C & 1) && c->mode == 0x10) {
+        /* Mulholland: the shoulders from xol - 6 and to xor + 6, the outer ends not stepped over the band (the far
+         * row's), then the grass where the near row's bank (read forward) is at the road's height */
+        if (!(C & 0x80) && c->hoff >= -0x0B) {
+            double xol = mpx(c, &rb, mx_out(c, 0)) - 6, xor_ = mpx(c, &rb, mx_out(c, 1)) + 6;
+            quad(xol, xla + 1, ya, xol, xlb + 1, yb, COL_SHOULDER);
+            quad(xra, xor_ + 1, ya, xrb, xor_ + 1, yb, COL_SHOULDER);
+        }
+        int k = c->base - ra.n;
+        for (int side = 0; side < 2; side++) {
+            u16 bank = trk(c, side ? TRK_BR : TRK_BL, c->base + k);
+            bool flat = c->exact ? mpy_i(c, &ra, sub16(Y_ROAD, (s16)bank)) == mpy_i(c, &ra, Y_ROAD) : bank == 0;
+            if (!flat) continue;
+            if (!side) quad(0xF0, xla + 1, ya, 0xF0, xlb + 1, yb, COL_GRASS);
+            else quad(xra, 0x140, ya, xrb, 0x140, yb, COL_GRASS);
+        }
+    } else if (!(C & 1))
         enh_fill_rows(yb, ya, COL_GRASS);
+    if (!(C & 1)) {
         bool white = (C & 0x10) && c->base >= (c->mode == 0x10 ? 0x3AD : 0x169);
         quad(xla, xra + 1, ya, xlb, xrb + 1, yb, white ? COL_FINISH : COL_ROAD);
     } else {
@@ -283,6 +284,7 @@ void enh_draw_mirror(const EnhView *v)
     enh_cuts_at(v, ENH_PASS_MIRROR, INT_MIN, base - MIR_ROWS - 1, true);
     for (int r = MIR_ROWS; r >= 1; r--) {
         int n = base - r, fs = n - 1;
+        if (hills && !(trk(&c, TRK_C, fs) & 0x80)) enh_mirror_hillsides(&c, rows, r, c.fall_dir);
         town_walls(&c, &rows[r - 1], &rows[r], fs);
         band(&c, &rows[r - 1], &rows[r], r, fs);
         enh_cuts_at(v, ENH_PASS_MIRROR, n, n, false);

@@ -19,6 +19,8 @@
 #define COL_WALL_B   3
 #define COL_STOREY   4
 #define COL_START    2         /* the strip's wide dash by the start */
+#define COL_SHOULDER 2         /* Mulholland's shoulders beside a bank */
+#define COL_HILL     0x0E      /* Mulholland's hillsides, and below its backdrop */
 #define Y_ROAD       2000
 #define Y_EYE        0x76C
 #define Y_KERB       0x79E
@@ -31,6 +33,9 @@ typedef struct {
     double heading;            /* the view's DS_heading, unwrapped */
     int mode, w;               /* DS_road_mode; the outer edges' w (road_project_front): 200 in Mulholland, else 400 */
     int start_seg;             /* DS_start_seg: the strip's wide dash and its walls' phase */
+    double hoff;               /* DS_cur_height - HGT[seg]: Mulholland's shoulders go once the car falls (< -0Bh) */
+    int fall_dir;              /* DS_fall_dir: the cliff fall's side (Mulholland's backdrop and hillsides) */
+    s16 before[5];             /* the DS words before T_XL, T_XR, T_Y, T_YBL and T_YBR: row 1's "row -1" (hillsides) */
     bool exact;                /* the game's integer arithmetic (the compare tool, at a game frame's own position) */
 } Cam;
 
@@ -87,6 +92,38 @@ static inline double py(const Cam *c, const Row *r, double Y)
     return 2.0 * r->dy + 4.0 * (Y - c->cam_y) / r->z + c->bounce + 60.0 + ROW_TOP;
 }
 
+/* The outer edges' world x (the town's facades, the crossings' kerbs, the shoulders): 5DCh - w on the left,
+ * w + CE4h on the right; row 0 has the original's quirk (road_project_front), -(w - cam_x) and
+ * (w - cam_x) + 19C8h, in s16 in exact mode. */
+static inline double x_out(const Cam *c, const Row *r, int side)
+{
+    if (r->k == 0) {
+        if (c->exact) {
+            s16 d = sub16((s16)c->w, (s16)(int)c->lat);
+            return side ? (s16)(d + 0x19C8) : (s16)-d;
+        }
+        double d = c->w - c->lat;
+        return side ? d + 0x19C8 : -d;
+    }
+    return side ? c->w + 0xCE4 : 0x5DC - c->w;
+}
+
+/* The mirror's projection (road_proj_x_mirror, road_proj_y_mirror: quarter scale, no flip, no bounce) and its outer
+ * edges (no row-0 quirk). */
+static inline int mpx_i(const Cam *c, const Row *r, double X) { return enh_proj_x_mirror_i((int)r->z, (int)X, i16(r->dx), (int)c->lat); }
+static inline int mpy_i(const Cam *c, const Row *r, double Y) { return enh_proj_y_mirror_i((int)r->z, (int)Y, i16(r->dy), (int)c->cam_y); }
+static inline double mpx(const Cam *c, const Row *r, double X)
+{
+    if (c->exact) return mpx_i(c, r, X);
+    return 0x118 - (c->lat - (X + r->z * r->dx / 4.0)) / r->z;
+}
+static inline double mpy(const Cam *c, const Row *r, double Y)
+{
+    if (c->exact) return mpy_i(c, r, Y) + ROW_TOP;
+    return r->dy + (Y - c->cam_y) / r->z + 0x24 + ROW_TOP;
+}
+static inline double mx_out(const Cam *c, int side) { return side ? c->w + 0xCE4 : 0x5DC - c->w; }
+
 /* A wall's or storey's face as the game's quad_fill draws it: x = xa (from ya_top to ya_bot) to xb (yb_top to
  * yb_bot), its last row and column included (poly_fill_pts), unlike the road bands' lines. */
 static inline void face(double xa, double xb, double ya_bot, double yb_bot, double yb_top, double ya_top, u8 col)
@@ -120,6 +157,9 @@ static inline void cam_of(const EnhView *v, Cam *c)
     c->heading = v->heading;
     c->w = v->mode == 0x10 ? 200 : 400;
     c->start_seg = v->start_seg;
+    c->hoff = v->hoff;
+    c->fall_dir = v->fall_dir;
+    for (int i = 0; i < 5; i++) c->before[i] = v->before[i];
     c->exact = v->exact;
 }
 
@@ -136,3 +176,21 @@ static inline void poly_incl(const Cam *c, const double *x, const double *y, int
     for (int i = 0; i < m; i++) { ox[i] = out[2 * i]; oy[i] = out[2 * i + 1] + ROW_TOP; }
     enh_fill_poly_incl(ox, oy, m, col);
 }
+
+/* The sky sheets (enh_road2.c): output sample row j shows page 1's row floor(syf) (66h..C7h), its column 0 at x shift. */
+void enh_sheet_row(int j, double syf, double shift);
+
+/* Mulholland (enh_hills2.c). The view's backdrop dy (enh_mulholland_sky_dy of the climb from 4 segments back: the
+ * game's integers in exact mode, the track's height at pos - 4 in a smooth view) and its horizon,
+ * road_proj_y(F0h, 2000, dy) unclamped. */
+double enh_mulholland_dy(const Cam *c);
+double enh_mulholland_horizon(const Cam *c);
+/* road_draw_sky_mulholland: screen rows 12h .. 12h + h - 1 show sheet row y + 5Ch - dy (h = min(53h, 199 - (6Eh - dy))),
+ * scrolled as sky_scroll(1) does (exact) or at 2 px per heading unit (smooth); colour 0Eh below it. */
+void enh_draw_mulholland_sky(const Cam *c, const EnhView *v);
+/* front_hillsides of row `row` (far row p = row, near q = row - 1, q1 = row - 2, row 1's from c->before), rows[]
+ * the front's 15 rows; l16 the frame's flag (a bridge ends in rows 14..10), o the fall's side. */
+void enh_front_hillsides(const Cam *c, const Row *rows, int row, bool l16, int fall_dir);
+/* mirror_hillsides of mirror row `row` (mrows[] rows 0..7, the banks read forward), on the mirror's clip
+ * F0h..13Fh x 16h..2Ah. */
+void enh_mirror_hillsides(const Cam *c, const Row *mrows, int row, int fall_dir);

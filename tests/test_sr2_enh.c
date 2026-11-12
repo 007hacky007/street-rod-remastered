@@ -616,6 +616,33 @@ static void sr2_enh_dash_width(void)
     CHECK(enh_dash_width(5, 4, false) == (t5 + t4) / 2);
 }
 
+/* An exact view's centre dash is road_draw_band_front's: each line's x from the edges stepped by slope16, not a
+ * straight line between the rows (a 1-px step off it moves the dash next to the screen's edge). */
+static void sr2_enh_dash_exact(void)
+{
+    EnhOptions keep = enh_opt;
+    enh_opt.res_scale = enh_opt.aa = 1;
+    enh_buf_setup();
+    enh_clip_view();
+    enh_fill_rows(ENH_VIEW_Y0, ENH_VIEW_Y1, 0);
+    const int xlq = 150, xrq = 330, yq = 0x5F, xlp = 250, xrp = 314, yp = 0x50, w = 5;
+    enh_dash_exact(xlq, xrq, yq, xlp, xrp, yp, w, 4);
+    s16 sl = cdiv16(shl16((s16)(xlp - xlq), 4), (s16)(yp - yq)), sr = cdiv16(shl16((s16)(xrp - xrq), 4), (s16)(yp - yq));
+    s16 axl = shl16(xlp, 4), axr = shl16(xrp, 4), xl = xlp, xr = xrp;
+    int bad = 0;
+    for (int y = yp; y < yq; y++) {
+        int dx = ((xl + xr) >> 1) - (w >> 1), l = -1, r = -1;
+        const u8 *row = enh_buf.px + (size_t)(y - ENH_VIEW_Y0) * enh_buf.w;
+        for (int x = 0; x < 320; x++) if (row[x] == 4) { if (l < 0) l = x; r = x; }
+        if (l != dx || r != dx + w) { printf("  line %02X: %d..%d, the game's %d..%d\n", y, l, r, dx, dx + w); bad++; }
+        axl = add16(axl, sl); axr = add16(axr, sr);
+        xl = (s16)(axl >> 4); xr = (s16)(axr >> 4);
+    }
+    CHECK(bad == 0);
+    enh_opt = keep;
+    enh_buf_setup();
+}
+
 /* sky_scroll's shift: where the sheet's column 0 lands. */
 static void sr2_enh_sky_shift(void)
 {
@@ -758,6 +785,63 @@ static void sr2_enh_fallen_not_composed(void)
     enh_race_end();
     DSW(DS_fallen) = keep_fallen;
     DSS(DS_road_mode) = keep_mode; DSS(DS_shown_page) = keep_page; DSB(DS_racing) = keep_racing;
+}
+
+/* ---------------------------------------------------------------- Mulholland */
+
+/* Mulholland's rows: the outer edges at w 200 (world 514h and DACh), row 0's dx clamped to +-30h in the front
+ * view and beyond +-3Ch to +-46h in the mirror. */
+static void sr2_enh_mulholland_rows(void)
+{
+    static const u16 arrs[] = { TRK_C, TRK_L, TRK_R, TRK_YAW, TRK_HGT, TRK_BL, TRK_BR };
+    u16 keep[7][40];
+    for (int a = 0; a < 7; a++)
+        for (int i = 0; i < 40; i++) { keep[a][i] = TRKW(arrs[a], 30 + i); TRKW(arrs[a], 30 + i) = 0; }
+    s16 keep_cx = DSS(DS_cam_x), keep_cy = DSS(DS_cam_y), keep_b = DSS(DS_view_bounce_y), keep_mode = DSS(DS_road_mode);
+    DSS(DS_cam_x) = 0xA00;
+    DSS(DS_cam_y) = 0x76C;
+    DSS(DS_view_bounce_y) = 0;
+    DSS(DS_road_mode) = 0x10;
+    EnhView v;
+    memset(&v, 0, sizeof v);
+    v.pos = 50.375;                                 /* q 3 */
+    v.lat = 0xA00;
+    v.cam_y = 0x76C;
+    v.mode = 0x10;
+    v.exact = true;
+    EnhRowTab t;
+    enh_rows_exact_front(&v, &t);
+    CHECK(t.xol[1] == road_proj_x(12 - 3, 0x514, 0) && t.xor_[1] == road_proj_x(12 - 3, 0xDAC, 0));
+    v.heading = 0x50;
+    enh_rows_exact_front(&v, &t);
+    printf("  front xl0 %d (the game's %d)\n", t.xl[0], road_proj_x(4, 0x5DC, 0x30));
+    CHECK(t.xl[0] == road_proj_x(4, 0x5DC, 0x30));
+    v.heading = -0x50;
+    memset(&t, 0, sizeof t);
+    enh_rows_exact_mirror(&v, &t);
+    CHECK(t.xl[0] == enh_proj_x_mirror_i(8, 0x5DC, 0x46, 0xA00));
+    for (int a = 0; a < 7; a++)
+        for (int i = 0; i < 40; i++) TRKW(arrs[a], 30 + i) = keep[a][i];
+    DSS(DS_cam_x) = keep_cx; DSS(DS_cam_y) = keep_cy; DSS(DS_view_bounce_y) = keep_b; DSS(DS_road_mode) = keep_mode;
+}
+
+/* front_hillsides' screen constants of a row, read from DS at k = 15 - row (row 1's run into DS_dash_width). */
+static void sr2_enh_hill_consts(void)
+{
+    s16 w0, h0, w1, h1, e;
+    enh_hill_consts(14, &w0, &h0, &w1, &h1, &e);
+    CHECK(w0 == DSS(0x7E22) && h0 == DSS(0x7E24) && w1 == DSS(0x7E26) && h1 == DSS(0x7E28) && e == DSS(0x7E3E));
+    enh_hill_consts(1, &w0, &h0, &w1, &h1, &e);
+    CHECK(w0 == DSS(0x7E1E + 56));
+}
+
+/* road_draw_sky_mulholland's dy: at most 8, at least -8 unless the car falls off the edge. */
+static void sr2_enh_mulholland_sky_dy(void)
+{
+    CHECK(enh_mulholland_sky_dy(12, 0) == 8);
+    CHECK(enh_mulholland_sky_dy(-12, 0) == -8);
+    CHECK(enh_mulholland_sky_dy(-12, 1) == -12);
+    CHECK(enh_mulholland_sky_dy(3, 0) == 3);
 }
 
 /* ---------------------------------------------------------------- the rear-view mirror */
@@ -1072,10 +1156,14 @@ int main(int argc, char **argv)
     RUN(sr2_enh_top_band_row);
     RUN(sr2_enh_dash_width);
     RUN(sr2_enh_sky_shift);
+    RUN(sr2_enh_dash_exact);
     RUN(sr2_enh_strip_tracks);
     RUN(sr2_enh_wall_colour);
     RUN(sr2_enh_clip_poly_i);
     RUN(sr2_enh_poly_incl);
+    RUN(sr2_enh_mulholland_rows);
+    RUN(sr2_enh_hill_consts);
+    RUN(sr2_enh_mulholland_sky_dy);
     RUN(sr2_enh_mirror_depths);
     RUN(sr2_enh_proj_mirror_exact);
     RUN(sr2_enh_mirror_yk);

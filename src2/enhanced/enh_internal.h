@@ -44,6 +44,8 @@ typedef struct {
     s16 ground_top_y;          /* DS_ground_top_y */
     s16 top_band_row;          /* DS_top_band_row */
     s16 police;                /* DS_police_state */
+    s16 before[5];             /* the DS words just before T_XL, T_XR, T_Y, T_YBL and T_YBR, read at enh_frame_built:
+                                  front_hillsides and mirror_hillsides read them as row 1's "row -1" */
     EnhRowTab game_front;      /* read at enh_frame_built: the mirror overwrites rows 0..7 and all of YK later */
     EnhRowTab game_mirror;     /* read at enh_frame_presented */
 } EnhSnap;
@@ -63,6 +65,7 @@ typedef struct {
                                   by the cars' motion since then in a smooth view */
     s16 mode, opp_sprite;
     s16 opp_seg, opp_sx, fall_dir, start_seg, rail_phase, ground_top_y;
+    s16 before[5];             /* EnhSnap.before */
     bool opp_fixed;
     bool town;
     bool exact;                /* the newest frame itself (the compare tool): the game's integer projection */
@@ -72,7 +75,7 @@ bool enh_view_at(Uint64 now_ns, EnhView *v);
 /* The newest frame's view, not interpolated (the compare tool). */
 bool enh_view_newest(EnhView *v);
 
-/* enh_road2.c: modes 0 (town), 1 (street drag), 2 and 4 (the Grudge drag strip). */
+/* enh_road2.c: modes 0 (town), 1 (street drag), 2 and 4 (the Grudge drag strip), 10h (Mulholland). */
 void enh_draw_road(const EnhView *v);
 /* The word of track array arr the game reads for index i in road mode `mode` (road_set_seg_ptrs): on the drag
  * strip (modes 2, 4) TRK_C, TRK_L and TRK_R come from TRK_C2, TRK_L2 and TRK_R2 at i (not clamped) and the other
@@ -99,6 +102,10 @@ int enh_top_band_row(const double y[15], double ground0, double *ground);
 /* The centre dash's width of the band whose far row is k: DS_dash_width[k]; in a smooth view interpolated towards
  * row k - 1 as the row nears it (q = 8 frac(pos), 0..8). */
 double enh_dash_width(int k, double q, bool exact);
+/* An exact view's centre dash of the band from row p (far: its line y yp, edges xlp, xrp) down to row q (near), w
+ * wide, as road_draw_band_front draws it: on each line from yp to yq - 1 (and above 66h) the edges stepped as the
+ * game steps them (slope16, 1/16 px), x from ((xl + xr) >> 1) - (w >> 1) to that + w, where xl < 13Fh. */
+void enh_dash_exact(int xlq, int xrq, int yq, int xlp, int xrp, int yp, int w, u8 col);
 /* sky_scroll's shift a (race_road.c): the screen x of the sheet's column 0, for heading h and shift sh (1 the sky,
  * 2 the horizon strip). */
 int enh_sky_shift(s16 h, int sh);
@@ -110,6 +117,12 @@ int enh_proj_y_mirror_i(int z, int Y, int dy, int cam_y);   /* road_proj_y_mirro
 /* road_project_mirror's rows 0..7 of an exact view, and YK 0..14 with its quirk (row k >= 1 writes 2k - 1, 2k). */
 void enh_rows_exact_mirror(const EnhView *v, EnhRowTab *t);
 void enh_draw_mirror(const EnhView *v);
+/* enh_hills2.c: Mulholland (road mode 10h). road_draw_sky_mulholland's dy (the climb from 4 segments back): at most 8,
+ * at least -8 while the car is not falling off the edge (fall_dir 0). */
+int enh_mulholland_sky_dy(int dy, int fall_dir);
+/* front_hillsides' screen constants of row `row`, the DS words 7E1Eh, 7E20h, 7E22h, 7E24h and 7E3Ah + 4 (15 - row)
+ * (the near rows' run into DS_dash_width), read at run time. */
+void enh_hill_consts(int row, s16 *w0, s16 *h0, s16 *w1, s16 *h1, s16 *e);
 /* The captured objects (enhanced.c). A cut is one id's pixels of the frame shown; its kind says how it is placed,
  * its segment (absolute) where in the band loop it is drawn. */
 enum { ENH_CUT_ROW, ENH_CUT_OPP, ENH_CUT_MIR, ENH_CUT_STARTER };

@@ -122,8 +122,9 @@ void enh_init(bool enabled, int res_scale, int aa, int motion_delay, bool town)
 bool enh_enabled(void) { return enh_opt.enabled; }
 int  enh_res_scale(void) { return enh_opt.res_scale; }
 
-/* The road modes drawn enhanced so far: the town (0), the street drag (1) and the Grudge drag strip (2, 4). */
-static bool mode_enhanced(s16 mode) { return mode == 0 || mode == 1 || mode == 2 || mode == 4; }
+/* The road modes drawn enhanced so far: the town (0), the street drag (1), the Grudge drag strip (2, 4) and
+ * Mulholland (10h). */
+static bool mode_enhanced(s16 mode) { return mode == 0 || mode == 1 || mode == 2 || mode == 4 || mode == 0x10; }
 
 void enh_race_begin(void)
 {
@@ -179,6 +180,8 @@ void enh_frame_built(void)
     last_heading = heading;
     enh_ser_push(&frames, host_tick_time_ns(), v, NOMINAL_FRAME_NS);
     enh_rowtab_read(&snap.game_front);   /* before road_project_mirror overwrites rows 0..7 and YK */
+    static const u16 tabs[5] = { DS_row_xl, DS_row_xr, DS_row_y, DS_row_ybank_l, DS_row_ybank_r };
+    for (int i = 0; i < 5; i++) snap.before[i] = DSS((u16)(tabs[i] - 2));
 }
 
 void enh_phys_step(void)
@@ -477,6 +480,7 @@ static void view_of(const double *f, const double *p, EnhView *v)
     v->start_seg = snap.start_seg;
     v->rail_phase = snap.rail_phase;
     v->ground_top_y = snap.ground_top_y;
+    memcpy(v->before, snap.before, sizeof v->before);
     v->town = snap.town;
     v->mode = snap.mode;
     v->exact = false;
