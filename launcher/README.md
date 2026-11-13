@@ -49,6 +49,15 @@ like the Street Rod and Test Drive III launchers it is modelled on.
 
 ## On a Mac
 
+* **Updates** (`update.cpp`, `updatestrip.cpp`; Mac and Windows): on start the launcher reads the manifest of the
+  latest release of street-rod-remastered (`Street-Rod-Enhanced.txt`, written by `tools/release-manifest.sh`)
+  and, for a newer version, shows a strip across the top: **Update**, **Later** (remembered as `Skipped` under
+  `[Update]`), and **What's new** (the release page). **Update** downloads the disk image or the zip, checks
+  its size and SHA-256 and stages it beside the install (`.Street Rod Enhanced.app.update` next to the app;
+  `.update` in the launcher's folder on Windows, where only the zip's own files are replaced and the old ones
+  kept as `*.old` until the next start). **Restart** swaps it in and opens it; a failed swap puts the old
+  version back. **Check for Updates...** (the application menu on a Mac, File on Windows) asks again.
+  `SRE_UPDATE_BASE=<url>` (a developer aid) reads the manifest and the downloads from there.
 * When the game folder is empty or missing, the launcher offers to download the game from streetrodonline.com,
   the official site, on start (and the first time a run switches to that game) and with a **Download game**
   button: Street Rod into the folder and Street Rod SE into its `datadisk` folder, or Street Rod 2
@@ -97,6 +106,8 @@ launcher itself is linked in.
   installer; `download.h`, `download.cpp`: fetching them (wxWebRequest), and one file at a time (`WebFetch`).
 * `artpack.h`, `artpack.cpp`: the remastered pictures as a download: the manifest, the update offer and the
   installer.
+* `update.h`, `update.cpp`: the launcher's own updates: the manifest, the version rules and the swaps of the
+  Windows folder and the Mac app; `updatestrip.cpp`: the strip and the update in the window.
 * `macos/`: the app bundle's `Info.plist.in` and `AppIcon.icns` (written by `make_icon.py` on a Mac).
 * `icon.h`, `icon.cpp`: the app icon, Street Rod's night road drawn in code. `make_icon.py` (Pillow) writes the
   same drawing to `app.ico` for Explorer.

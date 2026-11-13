@@ -9,10 +9,20 @@
 #include "artpack.h"
 #include "download.h"
 #include "game.h"
+#include "update.h"
+
+// The launcher updates itself where there's a release to update from: the macOS app and the Windows zip.
+#if defined(__WXOSX__) || defined(__WXMSW__)
+#define SRL_UPDATES 1
+#else
+#define SRL_UPDATES 0
+#endif
 
 class wxButton;
 class wxCheckBox;
 class wxChoice;
+class wxHyperlinkCtrl;
+class wxPanel;
 class wxSimplebook;
 class wxSlider;
 class wxSpinCtrl;
@@ -49,6 +59,20 @@ private:
     void AskArt(artpack::OfferKind kind);
     void StartArtDownload();
     void ArtFailed(const wxString& error);
+    // The launcher's own updates (updatestrip.cpp): the strip across the top of the main page; CheckUpdate
+    // reads the latest release's manifest quietly unless `asked` (Check for Updates).
+    enum StripStage { STRIP_HIDDEN, STRIP_OFFER, STRIP_DOWNLOADING, STRIP_FAILED, STRIP_READY };
+    wxWindow* CreateUpdateStrip(wxWindow* parent);  // null where the launcher can't update
+    void ShowStrip(StripStage stage, const wxString& text = wxString());
+    void CleanUpdateLeftovers();
+    void CheckUpdate(bool asked);
+    // Empty if this copy can update itself, else why not.
+    wxString CantUpdateHere() const;
+    void AskUpdate();
+    void StartUpdate();
+    void UpdateFailed(const wxString& error);
+    void RestartIntoUpdate();
+    unsigned long UpdateSize() const;  // this platform's download
     // After a download ends while the window is closing: destroys it once nothing runs any more.
     bool FinishClosing();
     void Play();
@@ -107,6 +131,19 @@ private:
     artpack::Manifest artLatest_;    // the latest release, once CheckArt has read it
     bool artKnown_ = false;
     bool artDownloading_ = false;    // the zip, not only the manifest
+    wxPanel* strip_ = nullptr;
+    wxStaticText* stripText_ = nullptr;
+    wxHyperlinkCtrl* stripLink_ = nullptr;
+    wxButton* stripUpdate_ = nullptr;
+    wxButton* stripLater_ = nullptr;
+    wxButton* stripCancel_ = nullptr;
+    wxButton* stripRetry_ = nullptr;
+    wxButton* stripRestart_ = nullptr;
+    StripStage stripStage_ = STRIP_HIDDEN;
+    WebFetch updateFetch_;
+    wxTimer updateTimer_;             // the download's progress on the strip
+    update::Manifest updateLatest_;   // the latest release, once CheckUpdate has read it
+    bool updateCancelled_ = false;    // Cancel, not a failure
     wxChoice* resolution_ = nullptr;
     wxChoice* aa_ = nullptr;
     wxCheckBox* town_ = nullptr;

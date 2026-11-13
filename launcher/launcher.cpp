@@ -46,6 +46,7 @@ const char* const ART = "Art";  // Declined: the first offer was turned down; Sk
 
 const int ID_SOUNDS = wxID_HIGHEST + 1;
 [[maybe_unused]] const int ID_ABOUT = wxID_HIGHEST + 2;  // macOS uses wxID_ABOUT
+[[maybe_unused]] const int ID_CHECK_UPDATES = wxID_HIGHEST + 3;
 // The book's pages.
 const int PAGE_MAIN = 0, PAGE_SOUNDS = 1;
 
@@ -166,14 +167,16 @@ LauncherFrame::LauncherFrame()
     });
     Bind(wxEVT_CLOSE_WINDOW, [this](wxCloseEvent&) {
         Save();
-        if (downloader_.Running() || artFetch_.Running()) {
+        if (downloader_.Running() || artFetch_.Running() || updateFetch_.Running()) {
             // The requests report to downloader_ and artFetch_, which this frame owns: stop them and go once
             // they have ended.
             closing_ = true;
             Hide();
             artTimer_.Stop();
+            updateTimer_.Stop();
             downloader_.Cancel();
             artFetch_.Cancel();
+            updateFetch_.Cancel();
             return;
         }
         Destroy();
@@ -197,6 +200,8 @@ LauncherFrame::LauncherFrame()
             OfferDownload();
         }
 #endif
+        CleanUpdateLeftovers();
+        CheckUpdate(false);
         CheckArt(true);
     });
 }
@@ -412,6 +417,7 @@ wxWindow* LauncherFrame::CreateMainPage(wxWindow* parent) {
     columns->Add(left, 0, wxEXPAND);
     columns->Add(right, 0, wxEXPAND | wxLEFT, margin);
     auto* all = new wxBoxSizer(wxVERTICAL);
+    if (wxWindow* strip = CreateUpdateStrip(page)) all->Add(strip, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, margin);
     all->Add(gameRow, 0, wxLEFT | wxRIGHT | wxTOP, margin);
     all->Add(columns, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, margin);
     all->Add(buttons, 0, wxEXPAND | wxALL, margin);
@@ -491,10 +497,15 @@ void LauncherFrame::CreateMenus() {
     auto* bar = new wxMenuBar;
     bar->Append(settingsMenu, "&Game settings");
     SetMenuBar(bar);
+    // Beside About in the application menu, as Mac apps have it.
+    bar->OSXGetAppleMenu()->Insert(1, ID_CHECK_UPDATES, wxString::FromUTF8("Check for Updates…"));
     Bind(wxEVT_MENU, [this](wxCommandEvent&) { About(); }, wxID_ABOUT);
 #else
     auto* file = new wxMenu;
     file->Append(wxID_PREFERENCES, wxString::FromUTF8("&Preferences…"));
+#ifdef __WXMSW__
+    file->Append(ID_CHECK_UPDATES, wxString::FromUTF8("Check for &Updates…"));
+#endif
     file->AppendSeparator();
     file->Append(wxID_EXIT, "E&xit\tAlt+F4");
     auto* settingsMenu = new wxMenu;
@@ -522,6 +533,7 @@ void LauncherFrame::CreateMenus() {
     Bind(wxEVT_MENU, [this](wxCommandEvent&) { Close(); }, wxID_EXIT);
     Bind(wxEVT_MENU, [this](wxCommandEvent&) { Preferences(); }, wxID_PREFERENCES);
     Bind(wxEVT_MENU, [this](wxCommandEvent&) { OpenPage(PAGE_SOUNDS); }, ID_SOUNDS);
+    Bind(wxEVT_MENU, [this](wxCommandEvent&) { CheckUpdate(true); }, ID_CHECK_UPDATES);
 }
 
 #ifdef __WXMSW__
@@ -768,7 +780,7 @@ void LauncherFrame::DownloadFailed(const wxString& error) {
 
 bool LauncherFrame::FinishClosing() {
     if (!closing_) return false;
-    if (!downloader_.Running() && !artFetch_.Running()) Destroy();
+    if (!downloader_.Running() && !artFetch_.Running() && !updateFetch_.Running()) Destroy();
     return true;
 }
 

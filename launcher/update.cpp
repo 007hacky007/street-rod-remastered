@@ -310,8 +310,8 @@ bool StageBundle(const wxString& bundle, const wxMemoryBuffer& dmg, const Manife
     if (!ok) error = "Couldn't save the download of the new version.";
     bool attached = false;
     if (ok) {
-        attached = ok = Run({"/usr/bin/hdiutil", "attach", "-nobrowse", "-readonly", "-noautoopen", "-mountpoint",
-                             mount, image});
+        attached = ok = Run({"/usr/bin/hdiutil", "attach", "-quiet", "-nobrowse", "-readonly", "-noautoopen",
+                             "-mountpoint", mount, image});
         if (!ok) error = "Couldn't open the disk image of the new version.";
     }
     if (ok) {

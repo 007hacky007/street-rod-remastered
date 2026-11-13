@@ -2,6 +2,10 @@
 
 ## 0.5.0
 
+- The launcher tells when a new version is out, in a strip across the top of its window, and updates itself:
+  **Update** downloads it from the latest release, checks it against the release's manifest and puts it in
+  place of the app (Mac) or the program's files (Windows); **Restart** opens it. **Later** waits for the next
+  version; **Check for Updates...** asks again. Settings, saved games, the game files and the pictures stay.
 - The enhanced race view of both games draws on worker threads, one horizontal band per core (bsvdoom's change
   to kylofon/streetrod-enhanced): the same frames, the view three to six times faster on 10 cores. At 1280 x 800
   Street Rod 2's Mulholland with the remastered art takes 5 ms for the view instead of 31, and 11 ms for the
