@@ -34,6 +34,7 @@ add_executable(srelauncher WIN32
     icon.cpp
     launcher.cpp
     settings.cpp
+    update.cpp
 )
 set_target_properties(srelauncher PROPERTIES OUTPUT_NAME "Street Rod Enhanced" CXX_EXTENSIONS OFF)
 target_compile_features(srelauncher PRIVATE cxx_std_17)

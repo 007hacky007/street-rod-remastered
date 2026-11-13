@@ -37,6 +37,20 @@ if(TARGET srelauncher)
     add_test(NAME artpack COMMAND test_artpack)
 endif()
 
+# The launcher's own updates: the manifest, the version rules and the file swaps; wxBase only.
+if(TARGET srelauncher)
+    add_executable(test_update test_update.cpp ../launcher/update.cpp ../launcher/gamefiles.cpp
+                   ../launcher/sha256.cpp)
+    target_include_directories(test_update PRIVATE ../launcher)
+    target_compile_features(test_update PRIVATE cxx_std_17)
+    if(TARGET wx::wxbase)
+        target_link_libraries(test_update PRIVATE wx::wxbase)
+    else()
+        target_link_libraries(test_update PRIVATE ${wxWidgets_LIBRARIES})
+    endif()
+    add_test(NAME update COMMAND test_update)
+endif()
+
 # The launcher's command line for the game: wxBase only.
 if(TARGET srelauncher)
     add_executable(test_args test_args.cpp ../launcher/gameargs.cpp)
