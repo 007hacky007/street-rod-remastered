@@ -164,8 +164,8 @@ Mac (Apple Silicon, Xcode command line tools, CMake, Ninja and Python 3):
 
 ```bash
 tools/macos/build-deps.sh                  # SDL3 and wxWidgets, static, into build-deps/prefix
-tools/macos/package.sh --version 0.4.2     # tests, then dist/Street Rod Enhanced.app
-tools/macos/make-dmg.sh --version 0.4.2    # dist/Street-Rod-Enhanced.dmg
+tools/macos/package.sh --version 0.5.0     # tests, then dist/Street Rod Enhanced.app
+tools/macos/make-dmg.sh --version 0.5.0    # dist/Street-Rod-Enhanced.dmg
 ```
 
 * Needs CMake 3.24+, a C11 compiler and SDL 3; the launcher needs C++17 and wxWidgets 3.2.

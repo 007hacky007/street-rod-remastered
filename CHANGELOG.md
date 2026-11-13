@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.0
 
 - The enhanced race view of both games draws on worker threads, one horizontal band per core (bsvdoom's change
   to kylofon/streetrod-enhanced): the same frames, the view three to six times faster on 10 cores. At 1280 x 800

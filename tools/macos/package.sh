@@ -3,7 +3,7 @@
 # runs the unit tests and assembles dist/Street Rod Enhanced.app, ad-hoc signed: the launcher and both games. The remastered pictures are
 # not in it: the launcher downloads them.
 #
-#   tools/macos/package.sh --version 0.4.2
+#   tools/macos/package.sh --version 0.5.0
 set -eu
 
 version=

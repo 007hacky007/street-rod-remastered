@@ -3,7 +3,7 @@
 # variable the bands read, SR_ENH_TRACE's fields common to both games and SR_DEBUG_FPS's compose time; ENHANCED.md
 # says the remaster's self-test draws in bands (only the palette log stays on one thread); the timings are the
 # measured ones (none of 1fbc94f's first figures) and every frame time quoted for the threads in ENHANCED.md and
-# CHANGELOG's Unreleased entry comes with the whole frame's time, not only the enhanced view's.
+# CHANGELOG's newest section (Unreleased, or the version being released) comes with the whole frame's time, not only the enhanced view's.
 #   test_enh_docs.sh <repo>
 set -u
 cd "$1" || exit 2
@@ -47,9 +47,9 @@ for old in '4.2 / 0.9' '19.3 / 4.4' '4.8 / 1.0' '19.0 / 12.7' '4.9 / 1.7' '18.4 
     grep -n -F "$old" ENHANCED.md CHANGELOG.md README.md && no "1fbc94f's figure $old"
 done
 # Every threads timing comes with the whole frame's time
-entry=$(awk '/^## Unreleased/ { p = 1; next } /^## / { p = 0 } p' CHANGELOG.md |
+entry=$(awk '/^## / { n++; next } n == 1' CHANGELOG.md |
         awk '/^- / { if (e ~ /worker threads/) print e; e = "" } { e = e " " $0 } END { if (e ~ /worker threads/) print e }')
-[ -n "$entry" ] || no "CHANGELOG's Unreleased has no worker threads entry"
+[ -n "$entry" ] || no "CHANGELOG's newest section has no worker threads entry"
 echo "$entry" | grep -q "bsvdoom's change *to kylofon/streetrod-enhanced" || no "CHANGELOG lost bsvdoom's credit"
 echo "$entry" | grep -q ' ms' && ! echo "$entry" | grep -q 'whole frame' &&
     no "CHANGELOG's threads entry quotes ms without the whole frame's time"
