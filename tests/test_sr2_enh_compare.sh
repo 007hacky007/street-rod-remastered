@@ -26,7 +26,7 @@ run() {  # run <kind> <seconds> [race] [VAR=value ...] [-- ARGS ...]: in the bac
     shift 2; [ $# -gt 0 ] && shift
     while [ $# -gt 0 ] && [ "$1" != -- ]; do envs="$envs $1"; shift; done
     [ $# -gt 0 ] && shift
-    [ "$k" = drag_art ] && dump="$tmp/art_dump"
+    if [ "$k" = drag_art ]; then dump="$tmp/art_dump"; else dump="$tmp/dump_$k"; mkdir -p "$dump"; fi
     env SDL_VIDEO_DRIVER=dummy SDL_AUDIO_DRIVER=dummy SR_SEED=2 SR_DEBUG_RACE="$race" SR_KEYS=1:03 $envs \
         SR_ENH_COMPARE="$tmp/$k.cmp" SR_ENH_COMPARE_DUMP="$dump" "$exe" --game-dir "$tmp/game" "$@" \
         --run-ms "$s"000 demo v >"$tmp/$k.log" 2>&1 &
@@ -173,4 +173,9 @@ print("  %d compare dumps, %d magenta pixels" % (len(files), bad))
 sys.exit(0 if files and not bad else 1)
 ' "$tmp/art_dump"
 if [ $? = 0 ]; then echo "ok   drag_art indices"; else echo "FAIL drag_art indices"; fail=1; fi
+if [ $fail != 0 ]; then    # keep the logs and the dumped frames (every 40th, and the bad ones) for a look
+    keep="${TMPDIR:-/tmp}/sr2_enh_compare-failed-$$"
+    mkdir -p "$keep" && cp "$tmp"/*.cmp "$tmp"/*.log "$keep"/ 2>/dev/null && cp -R "$tmp"/dump_* "$keep"/ 2>/dev/null
+    echo "  kept in $keep"
+fi
 exit $fail
