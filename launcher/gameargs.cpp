@@ -7,8 +7,7 @@ const GameTraits& Traits(Game game) {
     static const GameTraits sr1{"Street Rod", "streetrod-enhanced", "Game", "Game",
                                 true, true, false, true, true, true, true, ""};
     static const GameTraits sr2{"Street Rod 2", "streetrod2-enhanced", "Game2", "Game2",
-                                false, false, true, true, true, true, false,
-                                "Street Rod 2: a picture the art pack has not redrawn shows the original."};
+                                false, false, true, true, true, true, false, ""};
     return game == Game::SR2 ? sr2 : sr1;
 }
 

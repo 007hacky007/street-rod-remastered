@@ -43,8 +43,7 @@ like the Street Rod and Test Drive III launchers it is modelled on.
   smooth, high-resolution road view, the default) or original (`--classic`); **Resolution** of the picture, 640 × 400 to 2560 × 1600 (`--res-scale`, default 1280 × 800);
   **Anti-aliasing** off, 2 × 2 (default), 3 × 3 or 4 × 4 (`--aa`); **Drives through town enhanced too**
   (`--town`). The last three are greyed out with the original graphics.
-* Street Rod 2 shows the original for every picture the art pack has not redrawn yet, and a note says so
-  (`GameTraits::pictureNote`). Its enhanced race view covers every race kind (the town, the street drags, the
+* Street Rod 2's enhanced race view covers every race kind (the town, the street drags, the
   Grudge drag strip, Mulholland and the Aqueduct) and the rear-view mirror in each.
 * **Play** starts the game; the launcher stays open.
 
