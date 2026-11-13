@@ -55,6 +55,17 @@ bool ValidDownload(const Download& d) { return d.size > 0 && IsSha256(d.sha256);
 
 const char* const OLD_LIST = ".update-old.txt";
 
+// A rename that never falls back to copying (wxRenameFile does, and then ignores a failed delete) and never
+// replaces anything. A few tries: a virus scanner may hold a file it has just seen for a moment.
+bool Move(const wxString& from, const wxString& to) {
+    for (int i = 0; i < 3; i++) {
+        if (wxFileName::Exists(to)) return false;
+        if (wxRename(from, to) == 0) return true;
+        wxMilliSleep(200);
+    }
+    return false;
+}
+
 wxString Join(const wxString& dir, const wxString& rel) {
     wxString r = rel;
     r.Replace("/", wxFILE_SEP_PATH);
@@ -130,7 +141,8 @@ bool ParseManifest(const wxString& text, Manifest& m, wxString& error) {
     }
     got.format = int(format);
     unsigned long n[3];
-    if (!Numbers(got.version, n) || got.format <= 0 || !ValidDownload(got.mac) || !ValidDownload(got.windows)) {
+    const bool readable = got.format > FORMAT || (ValidDownload(got.mac) && ValidDownload(got.windows));
+    if (!Numbers(got.version, n) || got.format <= 0 || !readable) {
         error = "The description of the new version on GitHub couldn't be read.";
         return false;
     }
@@ -149,6 +161,10 @@ bool IsNewer(const wxString& a, const wxString& b) {
 bool ShouldOffer(const Manifest& latest, const wxString& current, const wxString& skipped, bool asked) {
     if (!IsNewer(latest.version, current)) return false;
     return asked || skipped.empty() || IsNewer(latest.version, skipped);
+}
+
+wxString ManualReason(const Manifest& m) {
+    return m.format > FORMAT ? "This version needs a manual download." : wxString();
 }
 
 bool Verify(const wxMemoryBuffer& data, const Download& d, wxString& error) {
@@ -194,13 +210,15 @@ bool ApplyFolder(const wxString& dir, wxString& error) {
         bool keptOld;
     };
     std::vector<Step> done;
+    // Back in reverse order; a .old that can't go back stays listed, so CleanFolder restores it later.
     auto undo = [&](const wxString& why) {
+        wxString keep = listBefore;
         for (auto it = done.rbegin(); it != done.rend(); ++it) {
             const wxString target = Join(dir, it->rel);
-            wxRenameFile(target, Join(staging, it->rel), false);
-            if (it->keptOld) wxRenameFile(target + ".old", target, false);
+            const bool out = Move(target, Join(staging, it->rel));
+            if (it->keptOld && !(out && Move(target + ".old", target))) keep += it->rel + ".old\n";
         }
-        WriteText(list, listBefore);
+        WriteText(list, keep);
         error = why;
         return false;
     };
@@ -214,10 +232,10 @@ bool ApplyFolder(const wxString& dir, wxString& error) {
         if (keepOld) {
             if (wxFileName::FileExists(old) && !wxRemoveFile(old)) return undo(cant);
             listNow += rel + ".old\n";
-            if (!WriteText(list, listNow) || !wxRenameFile(target, old, false)) return undo(cant);
+            if (!WriteText(list, listNow) || !Move(target, old)) return undo(cant);
         }
-        if (!wxRenameFile(Join(staging, rel), target, false)) {
-            if (keepOld) wxRenameFile(old, target, false);
+        if (!Move(Join(staging, rel), target)) {
+            if (keepOld) Move(old, target);
             return undo(cant);
         }
         done.push_back({rel, keepOld});
@@ -234,8 +252,11 @@ void CleanFolder(const wxString& dir) {
     while (lines.HasMoreTokens()) {
         const wxString rel = lines.GetNextToken();
         if (!rel.EndsWith(".old") || rel.Contains("..") || wxFileName(rel).IsAbsolute()) continue;
-        const wxString path = Join(dir, rel);
-        if (wxFileName::FileExists(path) && !wxRemoveFile(path)) left += rel + "\n";
+        const wxString path = Join(dir, rel), original = path.Left(path.length() - 4);
+        if (!wxFileName::FileExists(path)) continue;
+        // Stopped mid-swap: the old file is all there is, so it goes back.
+        const bool gone = wxFileName::Exists(original) ? wxRemoveFile(path) : Move(path, original);
+        if (!gone) left += rel + "\n";
     }
     WriteText(list, left);
     gamefiles::RemoveTree(StagingDir(dir));
@@ -279,9 +300,9 @@ bool ApplyBundle(const wxString& bundle, wxString& error) {
     const wxString staged = StagedBundle(bundle), old = OldBundle(bundle);
     error = wxString::Format("Couldn't replace %s.", bundle);
     if (!wxFileName::DirExists(staged) || !gamefiles::RemoveTree(old)) return false;
-    if (!wxRenameFile(bundle, old, false)) return false;
-    if (!wxRenameFile(staged, bundle, false)) {
-        wxRenameFile(old, bundle, false);
+    if (!Move(bundle, old)) return false;
+    if (!Move(staged, bundle)) {
+        Move(old, bundle);
         return false;
     }
     error.clear();

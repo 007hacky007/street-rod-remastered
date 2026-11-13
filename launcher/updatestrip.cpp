@@ -176,9 +176,13 @@ wxString LauncherFrame::CantUpdateHere() const {
 }
 
 void LauncherFrame::AskUpdate() {
-    wxString why = CantUpdateHere();
-    if (updateLatest_.format > update::FORMAT) why = "This version needs a manual download.";
+    wxString why = update::ManualReason(updateLatest_);
+    if (why.empty()) why = CantUpdateHere();
     if (why.empty()) return StartUpdate();
+    OfferManualDownload(why);
+}
+
+void LauncherFrame::OfferManualDownload(const wxString& why) {
     wxMessageDialog dialog(this, why, APP_TITLE, wxOK | wxCANCEL | wxICON_INFORMATION);
     dialog.SetOKCancelLabels("Open GitHub", "Cancel");
     if (dialog.ShowModal() == wxID_OK) wxLaunchDefaultBrowser(update::ReleasePage(updateLatest_.version));
@@ -204,6 +208,12 @@ void LauncherFrame::StartUpdate() {
                                return ShowStrip(STRIP_HIDDEN);
                            }
                            updateLatest_ = m;
+                           const wxString manual = update::ManualReason(m);
+                           if (!manual.empty()) {
+                               updateTimer_.Stop();
+                               ShowStrip(STRIP_OFFER);
+                               return OfferManualDownload(manual);
+                           }
 #ifdef __WXOSX__
                            const wxString url = update::DmgUrl();
 #else
@@ -235,17 +245,24 @@ void LauncherFrame::UpdateFailed(const wxString& error) {
     ShowStrip(STRIP_FAILED, error);
 }
 
+// A swap that fails here fails again on Try Again (a locked file, macOS refusing): the release page instead.
+void LauncherFrame::SwapFailed(const wxString& error) {
+    ShowStrip(STRIP_FAILED, error);
+    OfferManualDownload(error);
+}
+
 void LauncherFrame::RestartIntoUpdate() {
     wxString error;
+    updateCancelled_ = false;
     Save();
 #ifdef __WXOSX__
     const wxString bundle = Bundle();
-    if (!update::ApplyBundle(bundle, error)) return UpdateFailed(error);
+    if (!update::ApplyBundle(bundle, error)) return SwapFailed(error);
     const wxCharBuffer path = bundle.utf8_str();
     const char* argv[] = {"/usr/bin/open", "-n", path.data(), nullptr};
     const bool started = wxExecute(argv, wxEXEC_ASYNC) != 0;
 #elif defined(__WXMSW__)
-    if (!update::ApplyFolder(LauncherDir(), error)) return UpdateFailed(error);
+    if (!update::ApplyFolder(LauncherDir(), error)) return SwapFailed(error);
     wxExecuteEnv env;
     env.cwd = LauncherDir();
     const wxString exe = LauncherDir() + "\\Street Rod Enhanced.exe";

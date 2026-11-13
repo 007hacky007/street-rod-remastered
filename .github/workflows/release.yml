@@ -100,7 +100,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          sparse-checkout: tools
+          sparse-checkout: |
+            tools
+            launcher
 
       - uses: actions/download-artifact@v7
         with:
@@ -108,7 +110,13 @@ jobs:
           merge-multiple: true
 
       - name: Update manifest
-        run: tools/release-manifest.sh "${GITHUB_REF_NAME#v}" dist
+        run: |
+          set -eu
+          VERSION="${GITHUB_REF_NAME#v}"
+          # The launcher offers the manifest's version against its own: they must agree, or it offers it forever.
+          BUILT=$(sed -n 's/^#define APP_VERSION_TEXT "\(.*\)"$/\1/p' launcher/version.h)
+          [ "$BUILT" = "$VERSION" ] || { echo "tag $VERSION but launcher/version.h says $BUILT" >&2; exit 1; }
+          tools/release-manifest.sh "$VERSION" dist
 
       - name: Draft release
         env:

@@ -69,6 +69,9 @@ private:
     // Empty if this copy can update itself, else why not.
     wxString CantUpdateHere() const;
     void AskUpdate();
+    // Explains why, with Open GitHub (the release page) and Cancel.
+    void OfferManualDownload(const wxString& why);
+    void SwapFailed(const wxString& error);
     void StartUpdate();
     void UpdateFailed(const wxString& error);
     void RestartIntoUpdate();

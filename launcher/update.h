@@ -31,8 +31,9 @@ wxString ZipUrl();
 // The release's page on GitHub, for "What's new".
 wxString ReleasePage(const wxString& version);
 
-// False (and why in `error`) unless the text has an X.Y.Z version, a format above 0 and both downloads with a
-// size above 0 and a SHA-256.
+// False (and why in `error`) unless the text has an X.Y.Z version, a format above 0 and, in a format this
+// launcher reads, both downloads with a size above 0 and a SHA-256. A newer format needs only the version: the
+// strip still shows, and Update sends the player to the release page.
 bool ParseManifest(const wxString& text, Manifest& m, wxString& error);
 
 // Whether version `a` is newer than `b`; false unless both are three dot-separated numbers.
@@ -41,6 +42,9 @@ bool IsNewer(const wxString& a, const wxString& b);
 // Whether to show `latest` to a launcher at version `current`: it's newer, and it isn't the version turned
 // down with Later (`skipped`) or an older one, unless the player `asked` (Check for Updates).
 bool ShouldOffer(const Manifest& latest, const wxString& current, const wxString& skipped, bool asked);
+
+// Empty if this launcher can install `m` itself, else why the player has to download it.
+wxString ManualReason(const Manifest& m);
 
 // Whether `data` has the size and SHA-256 of `d`.
 bool Verify(const wxMemoryBuffer& data, const Download& d, wxString& error);
@@ -57,7 +61,7 @@ bool StageFolder(const wxString& dir, const wxMemoryBuffer& zip, const Download&
 // CleanFolder; a running program can be renamed, not deleted). On failure everything is put back.
 bool ApplyFolder(const wxString& dir, wxString& error);
 // Deletes the .old files ApplyFolder listed (those still in use stay listed for next time) and a leftover
-// staging folder.
+// staging folder. A listed X.old without its X (the launcher stopped mid-swap) is put back as X instead.
 void CleanFolder(const wxString& dir);
 // Empty if the launcher can write into `dir`, else what to tell the player.
 wxString CantUpdateFolder(const wxString& dir);

@@ -340,6 +340,37 @@ void clean_bundle_removes_leftover_staging() {
     CHECK(ReadFile(bundle + Sep() + "Contents" + Sep() + "v") == "old");
 }
 
+void newer_format_needs_only_a_version() {
+    update::Manifest m;
+    wxString error;
+    CHECK(update::ParseManifest("version=0.7.0\nformat=2\ndownloads=elsewhere\n", m, error));
+    CHECK(m.version == "0.7.0");
+    CHECK(m.format == 2);
+    CHECK(!update::ParseManifest("version=0.7.0\nformat=1\n", m, error));  // this format needs its downloads
+}
+
+void manual_download_for_newer_format() {
+    update::Manifest m;
+    wxString error;
+    CHECK(update::ParseManifest(GoodManifest(), m, error));
+    CHECK(update::ManualReason(m).empty());
+    m.format = update::FORMAT + 1;
+    CHECK(!update::ManualReason(m).empty());
+}
+
+void interrupted_swap_is_recovered() {
+    // The launcher died between moving b.dll aside and moving the new one in.
+    const wxString dir = WindowsInstall();
+    WriteFile(dir + Sep() + "a.dll.old", "old");
+    WriteFile(dir + Sep() + "b.dll.old", "old");
+    WriteFile(dir + Sep() + ".update-old.txt", "a.dll.old\nb.dll.old\n");
+    update::CleanFolder(dir);
+    CHECK(ReadFile(dir + Sep() + "b.dll") == "old");
+    CHECK(!Exists(dir + Sep() + "a.dll.old"));
+    CHECK(!Exists(dir + Sep() + "b.dll.old"));
+    CheckPlayersFiles(dir);
+}
+
 }  // namespace
 
 #define RUN(t)                     \
@@ -369,6 +400,9 @@ int main(int argc, char** argv) {
     RUN(swaps_bundle);
     RUN(failed_bundle_swap_keeps_old);
     RUN(clean_bundle_removes_leftover_staging);
+    RUN(newer_format_needs_only_a_version);
+    RUN(manual_download_for_newer_format);
+    RUN(interrupted_swap_is_recovered);
     std::printf(failures ? "%d failures\n" : "all ok\n", failures);
     return failures ? 1 : 0;
 }
