@@ -47,11 +47,15 @@ Stage 1 is done; stage 2 (the longer draw distance) is not started.
   anything a command may read, and Street Rod 2's check flushes before it reads the samples. A full list (warn
   once) is run and emptied mid-frame; a worker that cannot start leaves fewer bands, none leaves the direct
   drawing. The workers end before `SDL_Quit` (a host shutdown handler) or at exit. One band draws directly:
-  `SR_ENH_THREADS=N` sets the bands (1: the single-threaded drawing), and the remaster's self-test and palette log
-  keep it so (their counts and log in drawing order). `SR_ENH_THREADS_CHECK=1` draws each composed frame both ways
-  and compares the sample buffers and resolved frames (a line on stderr; `tests/test_enh_threads.sh`). Median
-  drawing and resolve time (`SR_ENH_TRACE`) at 1280 x 800, aa 2, on 10 cores, one band / all: Street Rod 1's demo
-  race 4.2 / 0.9 ms, with an identity art pack 19.3 / 4.4 ms.
+  `SR_ENH_THREADS=N` sets the bands (1: the single-threaded drawing) and `SR_ENH_CMDS=N` shortens the list (it
+  fills and is run mid-frame). The remaster's self-test draws in bands too (its counts are atomic and a command
+  never loads a picture); only the palette log keeps the drawing on one thread (its log in drawing order).
+  `SR_ENH_THREADS_CHECK=1` draws each composed frame both ways, alternating which goes first, and compares the
+  sample buffers and resolved frames (a line on stderr; `tests/test_enh_threads.sh`). Median ms a frame at
+  1280 x 800, aa 2, on 10 cores (load 2 to 5), before the threads (`153e779`) / one band / 10 bands, the enhanced
+  view (`SR_ENH_TRACE`) and the whole frame's compose (`SR_DEBUG_FPS`): Street Rod 1's demo race 4.9 / 4.6 / 1.6,
+  whole frame 5.0 / 5.1 / 2.0; with an identity art pack 16.7 / 16.5 / 3.3, whole frame 22.4 / 22.2 / 9.1. With
+  the art about 6 ms of the whole frame is `rm_compose` (the art over the whole picture), still on the main thread.
 * Not done yet: mip levels for far sprites, the developer aids of §5 beyond `SR_ENH_TRACE`.
 
 References:
@@ -278,13 +282,27 @@ The road ahead exists in the table, so the geometry comes almost for free. The w
 `--motion-delay`, `--town`), the same layers, and the drawing core shared with Street Rod 1 (`common/enhanced`:
 `enh_raster.c`, `enh_sprite.c`, and `enh_bands.c`'s worker threads: Street Rod 2's own drawing calls, the sky rows
 `enh_sheet_row`, `enh_fill_poly_incl`, `enh_line1` and the turned images `enh_draw_image_xf`, record commands
-through `enh_submit` too). `SR_ENH_TRACE=<file>` logs each composed frame's mode and drawing time. Median ms at
-1280 x 800, aa 2, 10 cores, one band / all, without art and with an identity pack: the drag 4.8 / 1.0 and
-19.0 / 12.7, the town drive 4.9 / 1.7 and 18.4 / 3.5, the Aqueduct 5.1 / 2.1 and 6.3 / 1.6, Mulholland
-5.9 / 2.2 and 31.9 / 5.6. Done: the town drive (road mode 0), the street drag (1), the Grudge drag strip
-(2 and 4), Mulholland (10h), the Aqueduct (8) and the rear-view mirror in each of them: every race kind. Still
-the original's: the dashboard's side mirror, and the art until Street Rod 2 has its remastered pictures and
-shapes.
+through `enh_submit` too). `SR_ENH_TRACE=<file>` logs each composed frame's mode and time (README's developer
+aids). Median ms a frame at 1280 x 800, aa 2, on 10 cores (load 2 to 5), the enhanced view and the whole frame's
+compose (`SR_DEBUG_FPS`), with an identity art pack or without:
+
+| Race (ms: view, whole frame) | before the threads (`153e779`) | one band | 10 bands |
+|---|---|---|---|
+| drag | 4.26, 4.59 | 4.64, 4.97 | 0.86, 1.22 |
+| drag, art | 16.95, 22.90 | 15.62, 21.60 | 3.00, 9.24 |
+| town drive | 4.64, 4.89 | 5.10, 5.46 | 1.21, 1.55 |
+| town drive, art | 15.73, 21.42 | 14.66, 20.38 | 3.19, 9.29 |
+| Aqueduct | 4.51, 4.87 | 4.80, 5.19 | 0.96, 1.35 |
+| Aqueduct, art | 5.18, 10.33 | 5.53, 10.66 | 1.37, 6.71 |
+| Mulholland | 5.25, 5.59 | 5.47, 5.80 | 1.28, 1.61 |
+| Mulholland, art | 30.67, 36.62 | 28.33, 34.19 | 4.98, 11.11 |
+
+An art frame is still dearer than a plain one: about 6 ms of its whole frame is `rm_compose` (the art over the
+whole picture) on the main thread, which the bands do not reach.
+
+Done: the town drive (road mode 0), the street drag (1), the Grudge drag strip (2 and 4), Mulholland (10h), the
+Aqueduct (8) and the rear-view mirror in each of them: every race kind. Still the original's: the dashboard's
+side mirror, and the art until Street Rod 2 has its remastered pictures and shapes.
 
 * **Road** (`enh_road2.c`): Street Rod 2's own 15 rows, row 0 at depth 4, row k at 8k + 4 - q, row 14 fixed at
   116, with its projection (half Street Rod 1's height term, the moving eye `DS_cam_y`, `DS_view_bounce_y`), its

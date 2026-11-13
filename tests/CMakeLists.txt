@@ -198,6 +198,9 @@ endif()
 add_test(NAME frame_options COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_frame_options.sh $<TARGET_FILE:streetrod-enhanced>)
 add_test(NAME sr2_frame_options COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_frame_options.sh $<TARGET_FILE:streetrod2-enhanced>)
 
+# The worker threads' docs: README's aids, ENHANCED.md's self-test and timings, CHANGELOG's frame times.
+add_test(NAME enh_docs COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_enh_docs.sh ${CMAKE_SOURCE_DIR})
+
 # The unit tests read the sample buffer right after a drawing call: drawn directly, on one thread (the bands
 # against one thread: enh_threads).
 foreach(t compose side_mirror tags sr2_enh sr2_tags)

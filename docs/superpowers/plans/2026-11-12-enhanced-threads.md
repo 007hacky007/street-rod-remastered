@@ -295,29 +295,48 @@ git commit -m "Split the enhanced view's frame time in the trace"
 - Consumes: Tasks 1 to 4.
 - Produces: final timings in the docs.
 
-- [ ] **Step 1: Measure on a quiet machine** (load average under 2): `sh tools/enh-timing.sh build-mac/streetrod-enhanced <SR1 dir> build-mac/streetrod2-enhanced <SR2 dir> 1` and again without the last argument. Also build `153e779` in a temporary folder outside the repo (`git archive 153e779`) and run the same script against it for the "before" column (its SR2 has no trace and its host no compose field: add those lines there only, never commit them). If the machine cannot be made quiet, say so in the docs next to the numbers.
+- [x] **Step 1: Measure on a quiet machine** (load average under 2): `sh tools/enh-timing.sh build-mac/streetrod-enhanced <SR1 dir> build-mac/streetrod2-enhanced <SR2 dir> 1` and again without the last argument. Also build `153e779` in a temporary folder outside the repo (`git archive 153e779`) and run the same script against it for the "before" column (its SR2 has no trace and its host no compose field: add those lines there only, never commit them). If the machine cannot be made quiet, say so in the docs next to the numbers.
 
-- [ ] **Step 2: Write the numbers** - replace the 1fbc94f figures in ENHANCED.md (SR1 bullet and SR2 paragraph) and in CHANGELOG (keep the credit: "bsvdoom's change to kylofon/streetrod-enhanced") with the measured before / one band / all bands medians for SR1 and SR2 with and without art, the enhanced view's time and the whole compose time; mention `SR_ENH_CMDS`, the alternating check, that the self-test now draws in bands, and that the palette log still draws on one thread; confirm `grep -n -i "worker threads" ENHANCED.md` shows no not-done list entry.
+- [x] **Step 2: Write the numbers** - replace the 1fbc94f figures in ENHANCED.md (SR1 bullet and SR2 paragraph) and in CHANGELOG (keep the credit: "bsvdoom's change to kylofon/streetrod-enhanced") with the measured before / one band / all bands medians for SR1 and SR2 with and without art, the enhanced view's time and the whole compose time; mention `SR_ENH_CMDS`, the alternating check, that the self-test now draws in bands, and that the palette log still draws on one thread; confirm `grep -n -i "worker threads" ENHANCED.md` shows no not-done list entry.
 
-- [ ] **Step 3: ENGINE2.md** - `git diff 153e779 -- src2/game | grep '^[-+]' | grep -v '^[-+][-+]'`
+- [x] **Step 3: ENGINE2.md** - `git diff 153e779 -- src2/game | grep '^[-+]' | grep -v '^[-+][-+]'`
 Expected: no output (no game hook changed, so ENGINE2.md stays as it is).
 
-- [ ] **Step 4: Final checks**
+- [x] **Step 4: Final checks**
 
 Run: `SRE_PREFIX=$PWD/build-deps/prefix tools/sr1-codecheck.sh 153e779 HEAD --allow host.c.o enhanced.c.o enh_road.c.o enh_raster.c.o enh_sprite.c.o enh_bands.c.o rm_pack.c.o | tail -1 && ctest --test-dir build-mac -LE slow && ctest --test-dir build-mac -L slow`
 Expected: `... 0 differ ...`, `100% tests passed` twice.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ENHANCED.md CHANGELOG.md README.md docs/superpowers/plans/2026-11-12-enhanced-threads.md
 git commit -m "Document the enhanced view's measured frame times"
 ```
 
+## Results (Task 5)
+
+`tools/enh-timing.sh` at 1280 x 800 (`--res-scale 4 --aa 2`), 10 cores, load 2 to 5 (the quietest the machine got; a first pass under load 30 was discarded and rerun). Median ms per composed frame: the enhanced view (`SR_ENH_TRACE` `ms`), then the whole frame's compose (`SR_DEBUG_FPS` `compose`). Before: `153e779` built in a scratch folder with only `d152360`'s host compose field added (never committed). One band: HEAD with `SR_ENH_THREADS=1`. 10 bands: HEAD.
+
+| Run | before (`153e779`) | one band | 10 bands |
+|---|---|---|---|
+| SR2 drag | 4.26, 4.59 | 4.64, 4.97 | 0.86, 1.22 |
+| SR2 drag, art | 16.95, 22.90 | 15.62, 21.60 | 3.00, 9.24 |
+| SR2 cruise | 4.64, 4.89 | 5.10, 5.46 | 1.21, 1.55 |
+| SR2 cruise, art | 15.73, 21.42 | 14.66, 20.38 | 3.19, 9.29 |
+| SR2 Aqueduct | 4.51, 4.87 | 4.80, 5.19 | 0.96, 1.35 |
+| SR2 Aqueduct, art | 5.18, 10.33 | 5.53, 10.66 | 1.37, 6.71 |
+| SR2 Mulholland | 5.25, 5.59 | 5.47, 5.80 | 1.28, 1.61 |
+| SR2 Mulholland, art | 30.67, 36.62 | 28.33, 34.19 | 4.98, 11.11 |
+| SR1 demo | 4.94, 5.03 | 4.59, 5.08 | 1.57, 2.02 |
+| SR1 demo, art | 16.74, 22.43 | 16.53, 22.19 | 3.32, 9.09 |
+
+The view is 3 to 6 times faster; the whole art frame 1.5 to 3.3 times (Mulholland 36.6 to 11.1 ms). About 6 ms of every art frame is `rm_compose` on the main thread (the ledger's Task 4 finding), so an art frame still costs 4 to 8 times a plain one. ENGINE2.md unchanged (`git diff 153e779 -- src2/game` has no changed line).
+
 ## Ledger (rulings and findings for the owner)
 
 - `1fbc94f` landed before this plan existed; the plan treats it as the first cut and keeps its design.
-- Timings above were taken under load average 64 to 115; Task 5 replaces them.
+- Timings above were taken under load average 64 to 115; Task 5's (load 2 to 5) are in Results and in ENHANCED.md.
 - Ruling (Task 3, taken): `rm_pack.c.o` differs in SR1's code check and is allowed from Task 3 on. It is the remaster core shared by both games, not game code: a non-loading picture lookup for the command bodies and atomic self-test counters. Without it the bodies would keep calling the lazily loading `rm_pic` on worker threads (safe only by an unenforced invariant) and the identity tests would keep drawing on one thread.
 - Plan review (before Task 1): `1fbc94f`'s shutdown dropped recorded commands, its workers could not be restarted, its check reported `nbands` instead of the bands drawn, never reset the `rgb` plane between passes and depended on the core count, and SR2's compare-tool frames were not checked; Tasks 1 to 3 cover these.
 - Finding (Task 4, the drag): SR2 drag with art, 10 bands, 1280 x 800 aa 2 (load 12 to 21 on 10 cores): view 3.15 ms median, `bmax` 3.09 / `bmean` 1.83 = 1.69. Not one band holding the work: a per-command timing (temporary, not committed) shows the drawing in bands 0 to 6 (output rows 0 to 235 of 336) and almost none in bands 7 to 9 (rows 235 to 336, the road below, plain fills; their resolve is the heaviest). In bands 0 to 6 about 85 to 90 % of the command time is SR2's `sheet_row_run` (`enh_road2.c`, the sky and backdrop sheet rows sampled from the art with `rm_texel`, about 400 commands a frame), heaviest in bands 4 and 5 (rows 134 to 201); `draw_image_run` (the sprites) comes second, mostly in bands 0 to 2. The same shape without art (1.5) and in the other art runs (cruise 1.9, SR1 demo 1.75). Recording is not the cost: `draw` is 0.02 ms in bands (13.97 ms with one band is the drawing itself, 2.32 ms the resolve). The bands stay one per core; splitting on work instead of rows would be a design change for the owner.

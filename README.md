@@ -134,8 +134,9 @@ All with the remastered pictures.
 * **Full screen**: Alt+Enter. On a Mac also Ctrl+Cmd+F, Option+Return or the green window button.
 * **On a Mac**: Cmd+Q quits. Mac keyboards have no Ins or keypad: Space clicks and shifts gear. Ctrl turns
   the sound on or off when you let go of it.
-* One CPU core draws the road (about 8.5 ms a frame at the default). On a slow computer, lower the
-  **Resolution** or the **Anti-aliasing** in the launcher.
+* Every CPU core shares the drawing of the road (on a 10-core Mac about 2 ms a frame at the default, up to
+  11 ms with the remastered pictures). On a slow computer, lower the **Resolution** or the **Anti-aliasing** in
+  the launcher.
 
 ## For developers
 
@@ -174,8 +175,15 @@ tools/macos/make-dmg.sh --version 0.4.2    # dist/Street-Rod-Enhanced.dmg
   remaster's picture tests run against the original game files too; with `-DSRE_TEST_GAME2_DIR=<folder>`
   (Street Rod 2's files) its checks, volumes and the 15 smoke paths (`ctest -L slow`, about 15 minutes) run.
 * The enhanced race view draws on one worker thread per core. Developer aids: `SR_ENH_THREADS=N` sets the
-  number of bands (1: one thread), `SR_ENH_THREADS_CHECK=1` draws every frame both ways and compares them byte
-  for byte (`ctest -R enh_threads`), `SR_ENH_TRACE=<file>` logs each frame's drawing time.
+  number of bands (1: one thread), `SR_ENH_CMDS=N` shortens the command list to N commands so it fills and is
+  run mid-frame, `SR_ENH_THREADS_CHECK=1` draws every frame both ways (in bands and on one thread, alternating
+  which goes first) and compares them byte for byte (`ctest -R enh_threads`).
+* `SR_ENH_TRACE=<file>` logs one line per enhanced frame: `ms` (the view's time), split into `draw` (the drawing
+  calls; in bands only recording) and `resolve` (running the commands in bands and resolving), then `cmds`
+  (commands recorded), `flushes` (runs before the resolve: a full list, a cache reset), `bands` (the bands the
+  commands ran in, 1: drawn directly) and `bmax` / `bmean` (the slowest and the mean band, ms).
+  `SR_DEBUG_FPS=1` prints the host's frame rate each second with `compose`, the whole frame's mean compose time
+  (the remastered art over the whole picture, the EGA decode and the enhanced view).
 * `tools/enh-timing.sh` measures the enhanced view's frame time and the whole frame's compose time in every
   race kind (one run at a time; on a quiet machine).
 * `tools/sr1-codecheck.sh BASE [HEAD]` builds Street Rod 1 at two commits and compares the compiled code of
