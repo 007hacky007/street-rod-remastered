@@ -139,6 +139,20 @@ static inline void face(double xa, double xb, double ya_bot, double yb_bot, doub
     enh_fill_poly(xs, ys, 4, col);
 }
 
+/* The near row's x that a band's edge reaches from the far row's (xf at line y yf) towards the near row's (xn at yn),
+ * as road_draw_band_front and road_draw_band_mirror step it: in exact mode from xf by slope16 (16ths of a pixel per
+ * line, truncated towards 0) each line, the sum floored, so the edge is the straight line to xf + n slope16 / 16 at
+ * the near row (n lines on), not to xn; over a long band the truncation adds up to more than half a pixel. A smooth
+ * view keeps xn. yf, yn as py gives them (the line y + ROW_TOP). */
+static inline double band_near_x(const Cam *c, double xf, double yf, double xn, double yn)
+{
+    if (!c->exact) return xn;
+    s16 f = (s16)(int)floor(yf), n = (s16)(int)floor(yn);
+    if (f == n) return xn;
+    s16 s = cdiv16(shl16(sub16((s16)(int)xf, (s16)(int)xn), 4), sub16(f, n));
+    return xf + (double)(n - f) * s / 16.0;
+}
+
 static inline void quad(double xa0, double xa1, double ya, double xb0, double xb1, double yb, u8 col)
 {
     double xs[4] = { xb0, xb1, xa1, xa0 }, ys[4] = { yb, yb, ya, ya };

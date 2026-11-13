@@ -1083,6 +1083,64 @@ static void sr2_enh_mulholland_rows(void)
     DSS(DS_cam_x) = keep_cx; DSS(DS_cam_y) = keep_cy; DSS(DS_view_bounce_y) = keep_b; DSS(DS_road_mode) = keep_mode;
 }
 
+/* An exact view's band edges are road_draw_band_front's: from the far row's x, slope16 (16ths of a pixel per line,
+ * truncated towards 0) added each line and the sum floored, not the straight line to the near row's x. Over a long
+ * band slope16's truncation adds up: SR_SEED 4's Mulholland bridge drive (bridge.cmp frame 703) had row 1's right
+ * edge at (357, 56h) and row 0's off the screen below, slope16 -413 (-25.94 px a line in the straight line); at
+ * line 61h the game's road ended at x 73 and the straight line's at 71, an edge 2 px off (the compare's limit is 1).
+ * Here such a near band on a flat Mulholland: row 1 (356, 56h), row 0 (-592, 7Dh), slope16 -388 against -388.9. */
+static void sr2_enh_band_slope_exact(void)
+{
+    static const u16 arrs[] = { TRK_C, TRK_L, TRK_R, TRK_YAW, TRK_HGT, TRK_BL, TRK_BR };
+    u16 keep[7][40];
+    for (int a = 0; a < 7; a++)
+        for (int i = 0; i < 40; i++) { keep[a][i] = TRKW(arrs[a], 30 + i); TRKW(arrs[a], 30 + i) = 0; }
+    s16 keep_cx = DSS(DS_cam_x), keep_cy = DSS(DS_cam_y), keep_b = DSS(DS_view_bounce_y), keep_mode = DSS(DS_road_mode);
+    DSS(DS_cam_x) = 4100;
+    DSS(DS_cam_y) = 1935;
+    DSS(DS_view_bounce_y) = 0;
+    DSS(DS_road_mode) = 0x10;
+    EnhOptions keep_opt = enh_opt;
+    enh_opt.res_scale = enh_opt.aa = 1;
+    enh_buf_setup();
+    enh_clip_view();
+    EnhView v;
+    memset(&v, 0, sizeof v);
+    v.pos = 50.25;                                  /* q 2: row 1 at depth 10 */
+    v.lat = 4100;
+    v.cam_y = 1935;
+    v.heading = 516;                                /* row 0's dx clamped to 30h, row 1's not */
+    v.mode = 0x10;
+    v.exact = true;
+    EnhRowTab t;
+    enh_rows_exact_front(&v, &t);
+    printf("  row 1 (%d, %d), row 0 (%d, %d)\n", t.xr[1], t.y[1], t.xr[0], t.y[0]);
+    CHECK(t.xr[1] == 356 && t.y[1] == 0x56 && t.xr[0] == -592 && t.y[0] == 0x7D);
+    enh_cuts_begin();
+    enh_draw_road(&v);
+    enh_flush();
+    s16 s = cdiv16(shl16(sub16(t.xr[1], t.xr[0]), 4), sub16(t.y[1], t.y[0])), a = shl16(t.xr[1], 4);
+    int worst = 0, lines = 0;
+    for (int y = t.y[1]; y < t.y[0] && y < 0x66; y++, a = add16(a, s)) {
+        int want = a >> 4, got = -1;
+        if (want < 0 || want > 0x13F) continue;
+        const u8 *row = enh_buf.px + (size_t)(y - ENH_VIEW_Y0) * enh_buf.w;
+        for (int x = 0; x < 320; x++) if (row[x] == COL_ROAD) got = x;
+        if (abs(got - want) > worst) {
+            worst = abs(got - want);
+            printf("  line %02X: the road ends at %d, the game's at %d\n", y, got, want);
+        }
+        lines++;
+    }
+    printf("  %d lines, the right edge at most %d px off the game's\n", lines, worst);
+    CHECK(lines >= 10 && worst <= 1);
+    enh_opt = keep_opt;
+    enh_buf_setup();
+    for (int a2 = 0; a2 < 7; a2++)
+        for (int i = 0; i < 40; i++) TRKW(arrs[a2], 30 + i) = keep[a2][i];
+    DSS(DS_cam_x) = keep_cx; DSS(DS_cam_y) = keep_cy; DSS(DS_view_bounce_y) = keep_b; DSS(DS_road_mode) = keep_mode;
+}
+
 /* front_hillsides' screen constants of a row, read from DS at k = 15 - row (row 1's run into DS_dash_width). */
 static void sr2_enh_hill_consts(void)
 {
@@ -2756,6 +2814,7 @@ int main(int argc, char **argv)
     RUN(sr2_enh_poly_edge);
     RUN(sr2_enh_poly_fill_i);
     RUN(sr2_enh_mulholland_rows);
+    RUN(sr2_enh_band_slope_exact);
     RUN(sr2_enh_hill_consts);
     RUN(sr2_enh_mulholland_sky_dy);
     RUN(sr2_enh_rail_post);

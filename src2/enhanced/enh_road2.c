@@ -359,25 +359,27 @@ static void draw_band(const Cam *c, const Row *pa, const Row *pb, bool town, dou
         }
     }
     if (yb >= ya) return;                                   /* no rows, or back-facing (beyond a crest) */
+    double sla = band_near_x(c, xlb, yb, xla, ya), sra = band_near_x(c, xrb, yb, xra, ya);   /* as the edges step */
     if (!cross) {
         enh_fill_rows(yb, ya, COL_GRASS);
-        quad(xla, xra, ya, xlb, xrb, yb, (C & 0x10) ? COL_FINISH : COL_ROAD);
+        quad(sla, sra, ya, xlb, xrb, yb, (C & 0x10) ? COL_FINISH : COL_ROAD);
     } else {
         if (C & 4) return;                                  /* intersection */
-        double xola = px(c, &ra, x_out(c, &ra, 0)), xolb = px(c, &rb, x_out(c, &rb, 0));
-        double xora = px(c, &ra, x_out(c, &ra, 1)), xorb = px(c, &rb, x_out(c, &rb, 1));
+        double xolb = px(c, &rb, x_out(c, &rb, 0)), xorb = px(c, &rb, x_out(c, &rb, 1));
+        double xola = band_near_x(c, xolb, yb, px(c, &ra, x_out(c, &ra, 0)), ya);
+        double xora = band_near_x(c, xorb, yb, px(c, &ra, x_out(c, &ra, 1)), ya);
         if (L & 0x80) {
-            double ma = (xola + xla) / 2, mb = (xolb + xlb) / 2;
+            double ma = (xola + sla) / 2, mb = (xolb + xlb) / 2;
             quad(xola, ma, ya, xolb, mb, yb, COL_KERB);
-            quad(ma, xla, ya, mb, xlb, yb, COL_GRASS);
+            quad(ma, sla, ya, mb, xlb, yb, COL_GRASS);
         } else
-            quad(xola, xla, ya, xolb, xlb, yb, COL_KERB);
+            quad(xola, sla, ya, xolb, xlb, yb, COL_KERB);
         if (R & 0x80) {
-            double ma = (xora + xra) / 2, mb = (xorb + xrb) / 2;
-            quad(xra, ma, ya, xrb, mb, yb, COL_GRASS);
+            double ma = (xora + sra) / 2, mb = (xorb + xrb) / 2;
+            quad(sra, ma, ya, xrb, mb, yb, COL_GRASS);
             quad(ma, xora, ya, mb, xorb, yb, COL_KERB);
         } else
-            quad(xra, xora, ya, xrb, xorb, yb, COL_KERB);
+            quad(sra, xora, ya, xrb, xorb, yb, COL_KERB);
     }
     if (C & 8) centre_dash(c, n, dash, xla, xra, ya, xlb, xrb, yb);
 }
@@ -398,9 +400,11 @@ static void hill_band(const Cam *c, const Row *pa, const Row *pb, bool l16, doub
     edges(trk(c, TRK_C, ra.n), &la, &ra_);
     edges(trk(c, TRK_C, rb.n), &lb, &rb_);
     double xla = px(c, &ra, la), xra = px(c, &ra, ra_), xlb = px(c, &rb, lb), xrb = px(c, &rb, rb_);
+    double sla = band_near_x(c, xlb, yb, xla, ya), sra = band_near_x(c, xrb, yb, xra, ya);   /* as the edges step */
     if (!(C & 0x80) && c->hoff >= -0x0B) {
-        quad(px(c, &ra, x_out(c, &ra, 0)), xla, ya, px(c, &rb, x_out(c, &rb, 0)), xlb, yb, COL_SHOULDER);
-        quad(xra, px(c, &ra, x_out(c, &ra, 1)), ya, xrb, px(c, &rb, x_out(c, &rb, 1)), yb, COL_SHOULDER);
+        double xolb = px(c, &rb, x_out(c, &rb, 0)), xorb = px(c, &rb, x_out(c, &rb, 1));
+        quad(band_near_x(c, xolb, yb, px(c, &ra, x_out(c, &ra, 0)), ya), sla, ya, xolb, xlb, yb, COL_SHOULDER);
+        quad(sra, band_near_x(c, xorb, yb, px(c, &ra, x_out(c, &ra, 1)), ya), ya, xrb, xorb, yb, COL_SHOULDER);
     }
     bool ext = l16 && row >= 10;
     double e = ext ? DSS((u16)(DS_hill_peak_tab + 4 + 4 * (16 - row))) : 0;
@@ -408,11 +412,11 @@ static void hill_band(const Cam *c, const Row *pa, const Row *pb, bool l16, doub
         u16 bank = trk(c, side ? TRK_BR : TRK_BL, ra.n);
         bool flat = c->exact ? py_i(c, &ra, sub16(Y_ROAD, (s16)bank)) == py_i(c, &ra, Y_ROAD) : bank == 0;
         if (!flat) continue;
-        if (!side) quad(ext ? xla - e : 0, xla, ya, ext ? xlb - e : 0, xlb, yb, COL_GRASS);
-        else quad(xra, ext ? xra + e : 320, ya, xrb, ext ? xrb + e : 320, yb, COL_GRASS);
+        if (!side) quad(ext ? sla - e : 0, sla, ya, ext ? xlb - e : 0, xlb, yb, COL_GRASS);
+        else quad(sra, ext ? sra + e : 320, ya, xrb, ext ? xrb + e : 320, yb, COL_GRASS);
     }
     bool white = (C & 0x10) && c->base >= 0x3AD;            /* the finish, once the car is near it */
-    quad(xla, xra, ya, xlb, xrb, yb, white ? COL_FINISH : COL_ROAD);
+    quad(sla, sra, ya, xlb, xrb, yb, white ? COL_FINISH : COL_ROAD);
     if (C & 8) centre_dash(c, n, dash, xla, xra, ya, xlb, xrb, yb);
 }
 

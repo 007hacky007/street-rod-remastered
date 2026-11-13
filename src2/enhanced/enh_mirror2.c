@@ -195,45 +195,47 @@ static void band(const Cam *c, const Row *near_, const Row *far_, int r, int fs)
     edges(trk(c, TRK_C, ra.n), &la, &ra_);
     edges(trk(c, TRK_C, rb.n), &lb, &rb_);
     double xla = mpx(c, &ra, la), xra = mpx(c, &ra, ra_), xlb = mpx(c, &rb, lb), xrb = mpx(c, &rb, rb_);
+    double sla = band_near_x(c, xlb, yb, xla, ya), sra = band_near_x(c, xrb, yb, xra, ya);   /* as the edges step */
     /* The game's spans include both ends (x1..x2), and a later span covers the one before. */
     if (!(C & 1) && c->mode == 0x10) {
         /* Mulholland: the shoulders from xol - 6 and to xor + 6, the outer ends not stepped over the band (the far
          * row's), then the grass where the near row's bank (read forward) is at the road's height */
         if (!(C & 0x80) && c->hoff >= -0x0B) {
             double xol = mpx(c, &rb, mx_out(c, 0)) - 6, xor_ = mpx(c, &rb, mx_out(c, 1)) + 6;
-            quad(xol, xla + 1, ya, xol, xlb + 1, yb, COL_SHOULDER);
-            quad(xra, xor_ + 1, ya, xrb, xor_ + 1, yb, COL_SHOULDER);
+            quad(xol, sla + 1, ya, xol, xlb + 1, yb, COL_SHOULDER);
+            quad(sra, xor_ + 1, ya, xrb, xor_ + 1, yb, COL_SHOULDER);
         }
         int k = c->base - ra.n;
         for (int side = 0; side < 2; side++) {
             u16 bank = trk(c, side ? TRK_BR : TRK_BL, c->base + k);
             bool flat = c->exact ? mpy_i(c, &ra, sub16(Y_ROAD, (s16)bank)) == mpy_i(c, &ra, Y_ROAD) : bank == 0;
             if (!flat) continue;
-            if (!side) quad(0xF0, xla + 1, ya, 0xF0, xlb + 1, yb, COL_GRASS);
-            else quad(xra, 0x140, ya, xrb, 0x140, yb, COL_GRASS);
+            if (!side) quad(0xF0, sla + 1, ya, 0xF0, xlb + 1, yb, COL_GRASS);
+            else quad(sra, 0x140, ya, xrb, 0x140, yb, COL_GRASS);
         }
     } else if (!(C & 1))
         enh_fill_rows(yb, ya, COL_GRASS);
     if (!(C & 1)) {
         bool white = (C & 0x10) && c->base >= (c->mode == 0x10 ? 0x3AD : 0x169);
-        quad(xla, xra + 1, ya, xlb, xrb + 1, yb, white ? COL_FINISH : COL_ROAD);
+        quad(sla, sra + 1, ya, xlb, xrb + 1, yb, white ? COL_FINISH : COL_ROAD);
     } else {
         if (C & 4) return;                                  /* intersection */
-        double xola = mpx(c, &ra, mx_out(c, 0)), xolb = mpx(c, &rb, mx_out(c, 0));
-        double xora = mpx(c, &ra, mx_out(c, 1)), xorb = mpx(c, &rb, mx_out(c, 1));
+        double xolb = mpx(c, &rb, mx_out(c, 0)), xorb = mpx(c, &rb, mx_out(c, 1));
+        double xola = band_near_x(c, xolb, yb, mpx(c, &ra, mx_out(c, 0)), ya);
+        double xora = band_near_x(c, xorb, yb, mpx(c, &ra, mx_out(c, 1)), ya);
         if (L & 0x80) {             /* the kerb to the middle, m = xol + ((xl - xol) >> 1), then the grass */
-            double ma = mid(c, xola, xla), mb = mid(c, xolb, xlb);
+            double ma = mid(c, xola, sla), mb = mid(c, xolb, xlb);
             quad(xola, ma + 1, ya, xolb, mb + 1, yb, COL_KERB);
-            quad(ma, xla + 1, ya, mb, xlb + 1, yb, COL_GRASS);
+            quad(ma, sla + 1, ya, mb, xlb + 1, yb, COL_GRASS);
         } else
-            quad(xola, xla + 1, ya, xolb, xlb + 1, yb, COL_KERB);
+            quad(xola, sla + 1, ya, xolb, xlb + 1, yb, COL_KERB);
         if (R & 0x80) {             /* the kerb from the middle, m = xor - ((xor - xr) >> 1), then the grass */
-            double ma = c->exact ? xora - floor((xora - xra) / 2) : (xora + xra) / 2;
+            double ma = c->exact ? xora - floor((xora - sra) / 2) : (xora + sra) / 2;
             double mb = c->exact ? xorb - floor((xorb - xrb) / 2) : (xorb + xrb) / 2;
             quad(ma, xora + 1, ya, mb, xorb + 1, yb, COL_KERB);
-            quad(xra, ma + 1, ya, xrb, mb + 1, yb, COL_GRASS);
+            quad(sra, ma + 1, ya, xrb, mb + 1, yb, COL_GRASS);
         } else
-            quad(xra, xora + 1, ya, xrb, xorb + 1, yb, COL_KERB);
+            quad(sra, xora + 1, ya, xrb, xorb + 1, yb, COL_KERB);
     }
     if (C & 8) {                    /* x from mid - (w >> 1) to mid - (w >> 1) + w, mid = (xl + xr) >> 1 */
         double w = DSS((u16)(DS_dash_width + 2 * (13 + r)));
