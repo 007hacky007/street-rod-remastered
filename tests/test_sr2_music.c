@@ -1,12 +1,15 @@
 /* test_sr2_music.c -- Street Rod 2's AdLib voices take the music or the effects volume: after an effect
- * (the police siren on voice 2) the music sequencer, resumed in the same song, takes the voice back.
+ * (the police siren on voice 2) the music sequencer, resumed in the same song, takes the voice back. The band
+ * plays the AdLib songs as loud as the chip plays them, so the effects keep their balance with the music.
  *   test_sr2_music <SR2 game dir>
  * Runs headless with the SDL dummy drivers, the emulated clock driven by busy waits. */
 #include <SDL3/SDL.h>
+#include <math.h>
 #include <stdio.h>
 
 #include "host.h"
 #include "mem.h"
+#include "sound/band.h"
 #include "sound/snd_int.h"
 
 static int failures;
@@ -19,6 +22,29 @@ static int failures;
     } while (0)
 
 static void wait_ms(int ms) { host_busy_wait_us((u32)ms * 1000); }
+
+/* The mean power of the host's output (left channel) over the first `ms` of each AdLib song (slots 1..4). */
+static double songs_power(int ms)
+{
+    char path[1024];
+    SDL_snprintf(path, sizeof path, "%stest_sr2_music.wav", SDL_GetBasePath());
+    double sum = 0;
+    long n = 0;
+    for (int slot = 1; slot <= 4; slot++) {
+        if (!host_audio_dump_begin(path)) { printf("  FAIL dump\n"); return 0; }
+        mus_play(slot);
+        wait_ms(ms);
+        mus_stop();
+        host_audio_dump_end();
+        size_t len;
+        Sint16 *w = SDL_LoadFile(path, &len);
+        for (size_t i = 22; w && 2 * i + 1 < len; i += 2) { sum += (double)w[i] * w[i]; n++; }
+        SDL_free(w);
+        wait_ms(500);                               /* the band's tails */
+    }
+    SDL_RemovePath(path);
+    return n ? sum / (double)n : 0;
+}
 
 int main(int argc, char **argv)
 {
@@ -49,7 +75,21 @@ int main(int argc, char **argv)
     wait_ms(8000);
     CHECK(host_opl_voice_is_music(2));
 
-    host_shutdown();
     printf("%s sr2_music_voice_ownership\n", failures ? "FAIL" : "ok  ");
+
+    /* The band in place of the chip's music: as loud (within 1.5 dB) as the chip, which the effects are
+     * mixed against. Louder, the quiet effects (the putt, a bolt, the air wrench) went under the music. */
+    int before = failures;
+    mus_songs_load();
+    double chip = songs_power(20000);
+    band_enable(true);
+    double band = songs_power(20000);
+    band_disable();
+    double db = 10 * log10(band / chip);
+    printf("  chip rms %.0f, band rms %.0f: %+.1f dB\n", sqrt(chip), sqrt(band), db);
+    CHECK(fabs(db) <= 1.5);
+    printf("%s sr2_music_band_level\n", failures != before ? "FAIL" : "ok  ");
+
+    host_shutdown();
     return failures ? 1 : 0;
 }

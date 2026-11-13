@@ -103,9 +103,11 @@ static float pan_of(int inst)
     return inst == INST_EPIANO ? 0.15f : inst == INST_VIBES ? 0.3f : -0.25f;
 }
 
-/* The AdLib songs play three voices and the drums at once, denser than the speaker tune's arrangement: at
- * Street Rod 1's levels they reached full scale. ADLIB_LEVEL brings them to the speaker band's loudness. */
-#define ADLIB_LEVEL 0.75f
+/* The band takes the place of the chip's music, and the game's AdLib effects are mixed against that: so it plays
+ * the AdLib songs as loud as the chip does (their RMS over MSRBEG, MSR2, MSR24 and MSR21, test sr2_music). At
+ * Street Rod 1's levels (the speaker band's loudness) it was 13 dB louder and the quiet effects (the putt, a
+ * bolt, the air wrench) went under it. The speaker tune keeps Street Rod 1's levels: its effects are as loud. */
+#define ADLIB_LEVEL 0.16f
 
 static float level_of(int inst)
 {
@@ -116,7 +118,7 @@ static void drum_hit(int drum, int note, float vel)
 {
     static const float LEVEL[4] = { 0.55f, 0.35f, 0.16f, 0.45f };   /* KICK, SNARE, BRUSH, TOM */
     last_drum = drum;
-    float v = ADLIB_LEVEL * LEVEL[drum] * vel / 0.75f;               /* the songs' usual velocity 95 = SR1's level */
+    float v = ADLIB_LEVEL * LEVEL[drum] * vel / 0.75f;               /* the songs' usual velocity 95: LEVEL x ADLIB_LEVEL */
     if (drum == DRUM_TOM) synth_drum_pitched(DRUM_TOM, (float)note, v);
     else synth_drum(drum, v);
 }
