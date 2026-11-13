@@ -287,6 +287,59 @@ void writable_folder_can_update() {
 #endif
 }
 
+void finds_bundle() {
+    CHECK(update::BundleOf("/Applications/Street Rod Enhanced.app/Contents/MacOS/Street Rod Enhanced") ==
+          "/Applications/Street Rod Enhanced.app");
+    CHECK(update::BundleOf("/usr/local/bin/srelauncher").empty());
+    CHECK(update::StagedBundle("/Applications/Street Rod Enhanced.app") ==
+          "/Applications/.Street Rod Enhanced.app.update");
+    CHECK(update::OldBundle("/Applications/Street Rod Enhanced.app") == "/Applications/.Street Rod Enhanced.app.old");
+}
+
+void refuses_bundles_it_cant_replace() {
+    CHECK(!update::CantUpdateBundle("").empty());
+    const wxString moveFirst = update::CantUpdateBundle(
+        "/private/var/folders/x/AppTranslocation/y/d/Street Rod Enhanced.app");
+    CHECK(moveFirst.Contains("Applications"));
+    CHECK(update::CantUpdateBundle("/Volumes/Street Rod Enhanced 0.5.0/Street Rod Enhanced.app") == moveFirst);
+    const wxString dir = TempDir();
+    wxFileName::Mkdir(dir + Sep() + "Street Rod Enhanced.app", wxS_DIR_DEFAULT, 0);
+    CHECK(update::CantUpdateBundle(dir + Sep() + "Street Rod Enhanced.app").empty());
+}
+
+void swaps_bundle() {
+    const wxString dir = TempDir(), bundle = dir + Sep() + "Street Rod Enhanced.app";
+    WriteFile(bundle + Sep() + "Contents" + Sep() + "v", "old");
+    WriteFile(update::StagedBundle(bundle) + Sep() + "Contents" + Sep() + "v", "new");
+    wxString error;
+    CHECK(update::ApplyBundle(bundle, error));
+    CHECK(ReadFile(bundle + Sep() + "Contents" + Sep() + "v") == "new");
+    CHECK(ReadFile(update::OldBundle(bundle) + Sep() + "Contents" + Sep() + "v") == "old");
+    CHECK(!Exists(update::StagedBundle(bundle)));
+    update::CleanBundle(bundle);
+    CHECK(!Exists(update::OldBundle(bundle)));
+    CHECK(ReadFile(bundle + Sep() + "Contents" + Sep() + "v") == "new");
+}
+
+void failed_bundle_swap_keeps_old() {
+    const wxString dir = TempDir(), bundle = dir + Sep() + "Street Rod Enhanced.app";
+    WriteFile(bundle + Sep() + "Contents" + Sep() + "v", "old");
+    wxString error;
+    CHECK(!update::ApplyBundle(bundle, error));
+    CHECK(!error.empty());
+    CHECK(ReadFile(bundle + Sep() + "Contents" + Sep() + "v") == "old");
+    CHECK(!Exists(update::OldBundle(bundle)));
+}
+
+void clean_bundle_removes_leftover_staging() {
+    const wxString dir = TempDir(), bundle = dir + Sep() + "Street Rod Enhanced.app";
+    WriteFile(bundle + Sep() + "Contents" + Sep() + "v", "old");
+    WriteFile(update::StagedBundle(bundle) + Sep() + "Contents" + Sep() + "v", "new");
+    update::CleanBundle(bundle);
+    CHECK(!Exists(update::StagedBundle(bundle)));
+    CHECK(ReadFile(bundle + Sep() + "Contents" + Sep() + "v") == "old");
+}
+
 }  // namespace
 
 #define RUN(t)                     \
@@ -311,6 +364,11 @@ int main(int argc, char** argv) {
     RUN(failed_swap_puts_everything_back);
     RUN(clean_folder_removes_leftover_staging);
     RUN(writable_folder_can_update);
+    RUN(finds_bundle);
+    RUN(refuses_bundles_it_cant_replace);
+    RUN(swaps_bundle);
+    RUN(failed_bundle_swap_keeps_old);
+    RUN(clean_bundle_removes_leftover_staging);
     std::printf(failures ? "%d failures\n" : "all ok\n", failures);
     return failures ? 1 : 0;
 }

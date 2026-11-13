@@ -6,6 +6,7 @@
 #include <wx/filefn.h>
 #include <wx/filename.h>
 #include <wx/log.h>
+#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/utils.h>
 
@@ -86,6 +87,25 @@ std::vector<wxString> FilesUnder(const wxString& dir) {
     }
     return rel;
 }
+
+// "<parent><sep>.<name><suffix>" for a path ending in <name>; either separator.
+wxString Beside(const wxString& path, const wxString& suffix) {
+    const size_t at = path.find_last_of("/\\");
+    if (at == wxString::npos) return "." + path + suffix;
+    return path.Left(at + 1) + "." + path.Mid(at + 1) + suffix;
+}
+
+#ifdef __APPLE__
+// Runs a program with these arguments (no shell); true if it exits with 0.
+bool Run(const std::vector<wxString>& args) {
+    std::vector<wxCharBuffer> utf8;
+    for (const wxString& a : args) utf8.push_back(a.utf8_str());
+    std::vector<const char*> argv;
+    for (const wxCharBuffer& b : utf8) argv.push_back(b.data());
+    argv.push_back(nullptr);
+    return wxExecute(argv.data(), wxEXEC_SYNC | wxEXEC_HIDE_CONSOLE) == 0;
+}
+#endif
 
 }  // namespace
 
@@ -235,5 +255,85 @@ wxString CantUpdateFolder(const wxString& dir) {
                             "instead.",
                             dir);
 }
+
+wxString BundleOf(const wxString& executable) {
+    const wxString macos = "/Contents/MacOS/";
+    const size_t at = executable.rfind(macos);
+    if (at == wxString::npos || executable.find('/', at + macos.length()) != wxString::npos) return wxString();
+    const wxString bundle = executable.Left(at);
+    return bundle.EndsWith(".app") ? bundle : wxString();
+}
+
+wxString StagedBundle(const wxString& bundle) { return Beside(bundle, ".update"); }
+wxString OldBundle(const wxString& bundle) { return Beside(bundle, ".old"); }
+
+wxString CantUpdateBundle(const wxString& bundle) {
+    if (bundle.empty()) return "This copy of Street Rod Enhanced isn't an installed app.";
+    if (bundle.Contains("/AppTranslocation/") || bundle.StartsWith("/Volumes/"))
+        return "Move Street Rod Enhanced to Applications first, then update.";
+    return CantUpdateFolder(wxFileName(bundle).GetPath());
+}
+
+bool ApplyBundle(const wxString& bundle, wxString& error) {
+    wxLogNull quiet;
+    const wxString staged = StagedBundle(bundle), old = OldBundle(bundle);
+    error = wxString::Format("Couldn't replace %s.", bundle);
+    if (!wxFileName::DirExists(staged) || !gamefiles::RemoveTree(old)) return false;
+    if (!wxRenameFile(bundle, old, false)) return false;
+    if (!wxRenameFile(staged, bundle, false)) {
+        wxRenameFile(old, bundle, false);
+        return false;
+    }
+    error.clear();
+    return true;
+}
+
+void CleanBundle(const wxString& bundle) {
+    wxLogNull quiet;
+    gamefiles::RemoveTree(OldBundle(bundle));
+    gamefiles::RemoveTree(StagedBundle(bundle));
+}
+
+#ifdef __APPLE__
+bool StageBundle(const wxString& bundle, const wxMemoryBuffer& dmg, const Manifest& m, wxString& error) {
+    if (!Verify(dmg, m.mac, error)) return false;
+    wxLogNull quiet;
+    const wxString staged = StagedBundle(bundle);
+    const wxString image = wxFileName::CreateTempFileName("sre-update") + ".dmg";
+    wxString mount = wxFileName::CreateTempFileName("sre-update-mount");
+    wxRemoveFile(mount);
+    bool ok = gamefiles::RemoveTree(staged) && wxFileName::Mkdir(mount, wxS_DIR_DEFAULT, 0);
+    if (ok) {
+        wxFFile f(image, "wb");
+        ok = f.IsOpened() && f.Write(dmg.GetData(), dmg.GetDataLen()) == dmg.GetDataLen() && f.Close();
+    }
+    if (!ok) error = "Couldn't save the download of the new version.";
+    bool attached = false;
+    if (ok) {
+        attached = ok = Run({"/usr/bin/hdiutil", "attach", "-nobrowse", "-readonly", "-noautoopen", "-mountpoint",
+                             mount, image});
+        if (!ok) error = "Couldn't open the disk image of the new version.";
+    }
+    if (ok) {
+        ok = Run({"/usr/bin/ditto", mount + "/Street Rod Enhanced.app", staged});
+        if (!ok) error = wxString::Format("Couldn't copy the new version into %s.", wxFileName(bundle).GetPath());
+    }
+    if (attached) Run({"/usr/bin/hdiutil", "detach", "-quiet", mount});
+    wxRmdir(mount);
+    wxRemoveFile(image);
+    if (ok) {
+        ok = Run({"/usr/bin/codesign", "--verify", "--strict", staged});
+        if (!ok) error = "The new version's signature doesn't check out.";
+    }
+    if (ok) {
+        wxRegEx re("<key>CFBundleShortVersionString</key>[[:space:]]*<string>([^<]*)</string>");
+        const wxString plist = ReadText(staged + "/Contents/Info.plist");
+        ok = re.Matches(plist) && re.GetMatch(plist, 1) == m.version;
+        if (!ok) error = "The download isn't the version it should be.";
+    }
+    if (!ok) gamefiles::RemoveTree(staged);
+    return ok;
+}
+#endif
 
 }  // namespace update

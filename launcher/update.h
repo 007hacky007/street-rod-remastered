@@ -62,4 +62,25 @@ void CleanFolder(const wxString& dir);
 // Empty if the launcher can write into `dir`, else what to tell the player.
 wxString CantUpdateFolder(const wxString& dir);
 
+// macOS: the app bundle is replaced whole; the settings, games and pictures live outside it.
+//
+// The .app folder of a launcher at `executable` (<X>.app/Contents/MacOS/<name>), or empty.
+wxString BundleOf(const wxString& executable);
+// Beside the bundle: the new version while it's checked, and the old one after the swap.
+wxString StagedBundle(const wxString& bundle);
+wxString OldBundle(const wxString& bundle);
+// Empty if the bundle can be replaced, else what to tell the player (move it to Applications first, or the
+// folder can't be written).
+wxString CantUpdateBundle(const wxString& bundle);
+// Puts StagedBundle(bundle) in place of `bundle`, the old one moved to OldBundle(bundle). On failure the old
+// bundle is put back.
+bool ApplyBundle(const wxString& bundle, wxString& error);
+// Removes a leftover OldBundle and StagedBundle.
+void CleanBundle(const wxString& bundle);
+#ifdef __APPLE__
+// Checks the disk image against `m`, copies its Street Rod Enhanced.app to StagedBundle(bundle) and checks
+// that copy's signature and version. On failure nothing is left staged.
+bool StageBundle(const wxString& bundle, const wxMemoryBuffer& dmg, const Manifest& m, wxString& error);
+#endif
+
 }  // namespace update
