@@ -8,7 +8,7 @@ Street Rod Enhanced
    For Street Rod 2, download sr2pc.zip from the same page and copy its files (SR.EXE, LIB1,
    LIB2, LIB3, SR2_DATA ...) straight into the Game2 folder here.
 3. Run "Street Rod Enhanced.exe", choose the game under Game, pick your options and press Play.
-   It offers to download the remastered pictures (26 MB) from GitHub; they are kept in
+   It offers to download the remastered pictures (47 MB) from GitHub; they are kept in
    %APPDATA%\Street Rod Enhanced\Remaster.
 
 Keep this folder somewhere you can write to (not Program Files): saved games are stored in Game and Game2.
