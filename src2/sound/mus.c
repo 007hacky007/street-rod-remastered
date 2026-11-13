@@ -9,9 +9,10 @@
  * rate and chains the game ISR when its 0x4000 accumulator expires, with the remainder discarded. The game
  * tick is then 68.6 Hz (tempo 120) / 60 Hz (tempo 60) instead of 72.8 Hz.
  *
- * PORT: verify U5 - at the end of a song the next song's first delay (0) is returned raw by mus_tick, so the
- * countdown wraps and the next mus_tick runs 65 536 music interrupts later (136 s at 480 Hz): the ~2 min
- * silence between playlist entries that sound.md 7.2 / 9 derive from the code. Kept as the code does it. */
+ * At the end of a song mus_tick returns the next song's first delay raw (0 in every song): the ISR then calls
+ * mus_tick again at once (2f1b:00cb compares the wait with the interrupts it missed, none), so the next song
+ * starts in the same interrupt. (U5 of sound.md read a 65 536-interrupt wrap there, a ~2 min silence between
+ * playlist entries; the ISR's loop rules it out.) */
 #include "sound/snd_int.h"
 #include "sound/band.h"
 
@@ -164,8 +165,9 @@ static void mus_timer_isr(void)                                          /* 2f1b
     }
     if (mus_playing) {
         if (--cs_count == 0) {                      /* (the re-entrancy guard cs:[26] is never set in a single thread) */
-            int n = mus_tick();
-            cs_count = (u16)n;                      /* interrupts that arrived during mus_tick: none (e = 0) */
+            int n;
+            do n = mus_tick(); while (n == 0);     /* a wait not above the interrupts that arrived meanwhile */
+            cs_count = (u16)n;                      /* (none, e = 0): mus_tick again; else count the rest */
         }
     }
 }
@@ -258,7 +260,8 @@ static void mus_skip_unknown(void)
     rd = p;
 }
 
-/* 2c57:2875: returns the number of PIT interrupts to wait (>= 1, 0 after the playlist ended) */
+/* 2c57:2875: returns the number of PIT interrupts to wait (>= 1; 0 after the playlist ended, and at a song's end
+ * the next song's first delay raw, mostly 0) */
 static int mus_tick(void)
 {
     if (!mus_playing) return 1;
@@ -283,7 +286,7 @@ static int mus_tick(void)
                     band_adlib_bend_range(m->hdr[0x3B]);   /* ENH: the band */
                     mus_set_tempo(hdr_tempo(m), m->hdr[0x24]);
                     mus_delay = *rd++;
-                    return mus_delay;               /* raw, no F8 / 0 handling (see the PORT note at the top) */
+                    return mus_delay;               /* raw, no F8 / 0 handling (the ISR calls again on 0) */
                 }
             }
             mus_stop();

@@ -197,6 +197,26 @@ static void sr2_band_perc_timbre(void)
     band_adlib_all_off();
 }
 
+/* A song of the playlist ends: the next one starts at once (the music ISR 2f1b:00cb calls mus_tick again when it
+ * returns no wait), so the band never falls silent between songs. The title list plays MSRBEG twice: its ~36 s,
+ * then the same song again. */
+static void sr2_band_next_song(void)
+{
+    mus_songs_load();
+    mus_list_play(DS_SONG_LIST_A);
+    int last = band_notes_started(), quiet = 0, longest = 0;
+    for (int s = 0; s < 45; s++) {
+        wait_ms(1000);
+        int n = band_notes_started();
+        quiet = n == last ? quiet + 1 : 0;
+        if (quiet > longest) longest = quiet;
+        last = n;
+    }
+    mus_stop();
+    printf("  longest silence %d s\n", longest);
+    CHECK(longest <= 2);
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) { fprintf(stderr, "usage: %s <SR2 game dir>\n", argv[0]); return 2; }
@@ -218,6 +238,7 @@ int main(int argc, char **argv)
     RUN(sr2_band_speaker_sound_off);
     RUN(sr2_band_speaker_race_enter);
     RUN(sr2_band_perc_timbre);
+    RUN(sr2_band_next_song);
     host_shutdown();
     return failures ? 1 : 0;
 }

@@ -162,8 +162,11 @@ timing constants. `host_opl_write` is stamped on the emulated timeline and the O
   rate (D = 0x1234DC / (tick_beat * tempo / 60) = 2485 at tempo 120) and calls the game ISR when its 0x4000 accumulator is <= 0,
   remainder discarded: 68.6 Hz at tempo 120, 60 Hz at tempo 60 (72.8 Hz when no song plays). `platform/timer.c` therefore sets
   its ISR with `snd_int8_set` (chained pointer while the music ISR is installed), not `host_set_tick_handler`.
-* **Playlist stall (PORT: verify U5):** when a song ends the next song's first delay (0) is returned raw, the countdown wraps and the
-  next `mus_tick` runs 65 536 interrupts later (136 s at 480 Hz), as the code does (sound.md 7.2 item 3).
+* **Playlist without a stall (U5 checked):** when a song ends `mus_tick` returns the next song's first delay (0) raw; the music
+  ISR 2f1b:00cb then calls `mus_tick` again at once (it loops while the wait is not above the interrupts that arrived meanwhile),
+  so the next song starts in the same interrupt. The port read this as a countdown wrap, 65 536 interrupts (136 s at 480 Hz) of
+  silence between songs (sound.md 7.2 item 3); fixed. The title list DS:73A0 is MSRBEG, MSRBEG, PAUSE (4 s), MSR2, PAUSE,
+  MSR24, MSR24, and over again; the ending's list DS:73B0 is MSR21 twice, then stops.
 * Fixed in game code: the text-edit reject beep called slot 15 (the crash) instead of slot 12 (`ui_edit.c`);
   `race_isr_enter/leave` now set / clear DS:A2B2, 1F7C, 1F78, 72E2, 72E0, 7BA2 as the original (in `snd_race_enter/leave`).
 
