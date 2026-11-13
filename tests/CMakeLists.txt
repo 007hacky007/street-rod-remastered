@@ -51,6 +51,9 @@ if(TARGET srelauncher)
     add_test(NAME update COMMAND test_update)
 endif()
 
+# The update manifest a release carries (tools/release-manifest.sh).
+add_test(NAME release_manifest COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/test_release_manifest.sh ${PROJECT_SOURCE_DIR})
+
 # The launcher's command line for the game: wxBase only.
 if(TARGET srelauncher)
     add_executable(test_args test_args.cpp ../launcher/gameargs.cpp)

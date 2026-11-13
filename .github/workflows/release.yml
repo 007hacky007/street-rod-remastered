@@ -98,10 +98,17 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: tools
+
       - uses: actions/download-artifact@v7
         with:
           path: dist
           merge-multiple: true
+
+      - name: Update manifest
+        run: tools/release-manifest.sh "${GITHUB_REF_NAME#v}" dist
 
       - name: Draft release
         env:
