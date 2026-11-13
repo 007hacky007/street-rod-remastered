@@ -45,4 +45,21 @@ bool ShouldOffer(const Manifest& latest, const wxString& current, const wxString
 // Whether `data` has the size and SHA-256 of `d`.
 bool Verify(const wxMemoryBuffer& data, const Download& d, wxString& error);
 
+// Windows: the launcher's folder `dir` holds the program; the player's Game, Game2 and Remaster folders and
+// settings.ini beside it are never touched, only the files the zip holds.
+//
+// Where StageFolder unpacks the new version: <dir>/.update.
+wxString StagingDir(const wxString& dir);
+// Checks the zip against `d` and unpacks its "Street Rod Enhanced" folder into StagingDir(dir); `dir` itself
+// is untouched. On failure nothing is left staged and `error` says why.
+bool StageFolder(const wxString& dir, const wxMemoryBuffer& zip, const Download& d, wxString& error);
+// Moves every staged file into `dir`, the file it replaces kept as <name>.old (listed in .update-old.txt for
+// CleanFolder; a running program can be renamed, not deleted). On failure everything is put back.
+bool ApplyFolder(const wxString& dir, wxString& error);
+// Deletes the .old files ApplyFolder listed (those still in use stay listed for next time) and a leftover
+// staging folder.
+void CleanFolder(const wxString& dir);
+// Empty if the launcher can write into `dir`, else what to tell the player.
+wxString CantUpdateFolder(const wxString& dir);
+
 }  // namespace update

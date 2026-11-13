@@ -36,6 +36,57 @@ wxString GoodManifest(const char* eol = "\n") {
                             eol, eol, ABC_SHA, eol, eol, HELLO_SHA, eol, eol);
 }
 
+wxString TempDir() {
+    wxString path = wxFileName::CreateTempFileName("sre-update");
+    wxRemoveFile(path);
+    wxFileName::Mkdir(path, wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
+    return path;
+}
+
+wxString Sep() { return wxString(wxFILE_SEP_PATH); }
+
+void WriteFile(const wxString& path, const std::string& content) {
+    wxFileName::Mkdir(wxFileName(path).GetPath(), wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
+    wxFFile f(path, "wb");
+    f.Write(content.data(), content.size());
+}
+
+std::string ReadFile(const wxString& path) {
+    wxFFile f(path, "rb");
+    if (!f.IsOpened()) return "<missing>";
+    std::string s(static_cast<size_t>(f.Length()), '\0');
+    f.Read(&s[0], s.size());
+    return s;
+}
+
+bool Exists(const wxString& path) { return wxFileName::FileExists(path) || wxFileName::DirExists(path); }
+
+// Names ending in "/" are folder entries.
+wxMemoryBuffer Zip(const std::vector<std::pair<std::string, std::string>>& entries) {
+    wxMemoryOutputStream mem;
+    {
+        wxZipOutputStream zip(mem);
+        for (const auto& e : entries) {
+            if (!e.first.empty() && e.first.back() == '/') {
+                zip.PutNextDirEntry(wxString::FromUTF8(e.first));
+                continue;
+            }
+            zip.PutNextEntry(wxString::FromUTF8(e.first));
+            zip.Write(e.second.data(), e.second.size());
+        }
+    }
+    wxMemoryBuffer buf;
+    buf.AppendData(mem.GetOutputStreamBuffer()->GetBufferStart(), mem.GetSize());
+    return buf;
+}
+
+update::Download DownloadOf(const wxMemoryBuffer& data) {
+    update::Download d;
+    d.size = data.GetDataLen();
+    d.sha256 = Sha256Hex(data.GetData(), data.GetDataLen());
+    return d;
+}
+
 update::Manifest Latest(const char* version) {
     update::Manifest m;
     m.version = version;
@@ -129,6 +180,113 @@ void verifies_downloads() {
     CHECK(!update::Verify(abc, wrongHash, error));
 }
 
+// An installed Windows folder: the program's files ("old") and the player's ("mine").
+wxString WindowsInstall() {
+    const wxString dir = TempDir();
+    WriteFile(dir + Sep() + "Street Rod Enhanced.exe", "old");
+    WriteFile(dir + Sep() + "a.dll", "old");
+    WriteFile(dir + Sep() + "Game" + Sep() + "SAVE.OLD", "mine");
+    WriteFile(dir + Sep() + "Game2" + Sep() + "x", "mine");
+    WriteFile(dir + Sep() + "Remaster" + Sep() + "pack.json", "mine");
+    WriteFile(dir + Sep() + "settings.ini", "mine");
+    WriteFile(dir + Sep() + "notes.old", "mine");
+    return dir;
+}
+
+wxMemoryBuffer WindowsZip() {
+    return Zip({{"Street Rod Enhanced/", ""},
+                {"Street Rod Enhanced/Street Rod Enhanced.exe", "new"},
+                {"Street Rod Enhanced/a.dll", "new"},
+                {"Street Rod Enhanced/b.dll", "new"},
+                {"Street Rod Enhanced/Game/", ""},
+                {"Street Rod Enhanced/Game2/", ""}});
+}
+
+void CheckPlayersFiles(const wxString& dir) {
+    CHECK(ReadFile(dir + Sep() + "Game" + Sep() + "SAVE.OLD") == "mine");
+    CHECK(ReadFile(dir + Sep() + "Game2" + Sep() + "x") == "mine");
+    CHECK(ReadFile(dir + Sep() + "Remaster" + Sep() + "pack.json") == "mine");
+    CHECK(ReadFile(dir + Sep() + "settings.ini") == "mine");
+    CHECK(ReadFile(dir + Sep() + "notes.old") == "mine");
+}
+
+void damaged_zip_stages_nothing() {
+    const wxString dir = WindowsInstall();
+    const wxMemoryBuffer zip = WindowsZip();
+    update::Download d = DownloadOf(zip);
+    d.sha256 = HELLO_SHA;
+    wxString error;
+    CHECK(!update::StageFolder(dir, zip, d, error));
+    CHECK(!error.empty());
+    CHECK(!Exists(update::StagingDir(dir)));
+    CHECK(ReadFile(dir + Sep() + "Street Rod Enhanced.exe") == "old");
+}
+
+void zip_without_launcher_stages_nothing() {
+    const wxString dir = WindowsInstall();
+    const wxMemoryBuffer zip = Zip({{"Street Rod Enhanced/a.dll", "new"}});
+    wxString error;
+    CHECK(!update::StageFolder(dir, zip, DownloadOf(zip), error));
+    CHECK(!error.empty());
+    CHECK(!Exists(update::StagingDir(dir)));
+}
+
+void swaps_windows_folder() {
+    const wxString dir = WindowsInstall();
+    const wxMemoryBuffer zip = WindowsZip();
+    wxString error;
+    CHECK(update::StageFolder(dir, zip, DownloadOf(zip), error));
+    CHECK(ReadFile(dir + Sep() + "Street Rod Enhanced.exe") == "old");  // staged only
+    CHECK(update::ApplyFolder(dir, error));
+    CHECK(ReadFile(dir + Sep() + "Street Rod Enhanced.exe") == "new");
+    CHECK(ReadFile(dir + Sep() + "a.dll") == "new");
+    CHECK(ReadFile(dir + Sep() + "b.dll") == "new");
+    CHECK(ReadFile(dir + Sep() + "Street Rod Enhanced.exe.old") == "old");
+    CHECK(!Exists(update::StagingDir(dir)));
+    CheckPlayersFiles(dir);
+
+    update::CleanFolder(dir);
+    CHECK(!Exists(dir + Sep() + "Street Rod Enhanced.exe.old"));
+    CHECK(!Exists(dir + Sep() + "a.dll.old"));
+    CHECK(!Exists(dir + Sep() + ".update-old.txt"));
+    CHECK(ReadFile(dir + Sep() + "Street Rod Enhanced.exe") == "new");
+    CheckPlayersFiles(dir);
+}
+
+void failed_swap_puts_everything_back() {
+    const wxString dir = WindowsInstall();
+    WriteFile(dir + Sep() + "b.dll" + Sep() + "inside", "mine");  // a folder where a file should go
+    const wxMemoryBuffer zip = WindowsZip();
+    wxString error;
+    CHECK(update::StageFolder(dir, zip, DownloadOf(zip), error));
+    CHECK(!update::ApplyFolder(dir, error));
+    CHECK(!error.empty());
+    CHECK(ReadFile(dir + Sep() + "Street Rod Enhanced.exe") == "old");
+    CHECK(ReadFile(dir + Sep() + "a.dll") == "old");
+    CHECK(ReadFile(dir + Sep() + "b.dll" + Sep() + "inside") == "mine");
+    CHECK(!Exists(dir + Sep() + "Street Rod Enhanced.exe.old"));
+    CHECK(!Exists(dir + Sep() + "a.dll.old"));
+    CHECK(!Exists(dir + Sep() + ".update-old.txt"));
+    CheckPlayersFiles(dir);
+}
+
+void clean_folder_removes_leftover_staging() {
+    const wxString dir = WindowsInstall();
+    WriteFile(update::StagingDir(dir) + Sep() + "a.dll", "new");
+    update::CleanFolder(dir);
+    CHECK(!Exists(update::StagingDir(dir)));
+    CheckPlayersFiles(dir);
+}
+
+void writable_folder_can_update() {
+    const wxString dir = TempDir();
+    CHECK(update::CantUpdateFolder(dir).empty());
+#ifndef __WINDOWS__
+    wxFileName::Mkdir(dir + Sep() + "ro", 0555, 0);
+    CHECK(!update::CantUpdateFolder(dir + Sep() + "ro").empty());
+#endif
+}
+
 }  // namespace
 
 #define RUN(t)                     \
@@ -147,6 +305,12 @@ int main(int argc, char** argv) {
     RUN(offers);
     RUN(urls_and_override);
     RUN(verifies_downloads);
+    RUN(damaged_zip_stages_nothing);
+    RUN(zip_without_launcher_stages_nothing);
+    RUN(swaps_windows_folder);
+    RUN(failed_swap_puts_everything_back);
+    RUN(clean_folder_removes_leftover_staging);
+    RUN(writable_folder_can_update);
     std::printf(failures ? "%d failures\n" : "all ok\n", failures);
     return failures ? 1 : 0;
 }
